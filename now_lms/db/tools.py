@@ -250,134 +250,57 @@ def _check_consecutive_alternatives(recurso_actual: CursoRecurso) -> bool:
     return recurso_siguiente is not None and _is_recurso_alternativo(recurso_siguiente.requerido)
 
 
+def _navigation_resource(recurso_actual: CursoRecurso, seccion: CursoSeccion, direction: str) -> tuple[CursoRecurso | None, bool]:
+    """Find a resource in the requested direction, crossing sections when needed."""
+    offset = -1 if direction == "previous" else 1
+    order = CursoRecurso.indice.desc() if direction == "previous" else CursoRecurso.indice
+    resource = database.session.execute(
+        database.select(CursoRecurso).filter(
+            CursoRecurso.seccion == recurso_actual.seccion,
+            CursoRecurso.indice == recurso_actual.indice + offset,
+        )
+    ).scalars().first()
+    if resource:
+        if direction == "previous":
+            is_alternative = _is_recurso_alternativo(resource.requerido) and _is_recurso_alternativo(recurso_actual.requerido)
+        else:
+            is_alternative = _check_consecutive_alternatives(resource)
+        return resource, is_alternative
+
+    adjacent_section = database.session.execute(
+        database.select(CursoSeccion).filter(
+            CursoSeccion.curso == recurso_actual.curso,
+            CursoSeccion.indice == seccion.indice + offset,
+        )
+    ).scalars().first()
+    if not adjacent_section:
+        return None, False
+    resource = database.session.execute(
+        database.select(CursoRecurso)
+        .filter(CursoRecurso.seccion == adjacent_section.id)
+        .order_by(order)
+    ).scalars().first()
+    if not resource:
+        return None, False
+    return resource, direction != "previous" and _check_consecutive_alternatives(resource)
+
+
 def crear_indice_recurso(recurso: str) -> RecursoIndex:
     """Devuelve el indice de un recurso para determinar elemento previo y posterior."""
-    has_next: bool = False
-    has_prev: bool = False
-    prev_is_alternative: bool = False
-    next_is_alternative: bool = False
-    next_resource: CursoRecurso | None = None
-    prev_resource: CursoRecurso | None = None
+    recurso_from_db = database.session.get(CursoRecurso, recurso)
+    if not recurso_from_db:
+        return RecursoIndex()
+    seccion_from_db = database.session.get(CursoSeccion, recurso_from_db.seccion)
+    if not seccion_from_db:
+        return RecursoIndex()
 
-    # Obtenemos el recurso actual de la base de datos.
-    recurso_from_db: CursoRecurso | None = database.session.get(CursoRecurso, recurso)
-
-    if recurso_from_db:
-        seccion_from_db: CursoSeccion | None = database.session.get(CursoSeccion, recurso_from_db.seccion)
-        # Verifica si existe un recurso anterior o posterior en la misma sección.
-        recurso_anterior = (
-            (
-                database.session.execute(
-                    database.select(CursoRecurso).filter(
-                        CursoRecurso.seccion == recurso_from_db.seccion,
-                        CursoRecurso.indice == recurso_from_db.indice - 1,
-                    )
-                )
-            )
-            .scalars()
-            .first()
-        )
-        recurso_posterior = (
-            (
-                database.session.execute(
-                    database.select(CursoRecurso).filter(
-                        CursoRecurso.seccion == recurso_from_db.seccion,
-                        CursoRecurso.indice == recurso_from_db.indice + 1,
-                    )
-                )
-            )
-            .scalars()
-            .first()
-        )
-    else:
-        seccion_from_db = None
-        recurso_anterior = None
-        recurso_posterior = None
-
-    if recurso_anterior:
-        has_prev = True
-        # Check if prev resource is alternative and if current resource is also alternative (consecutive)
-        prev_is_alternative = (
-            _is_recurso_alternativo(recurso_anterior.requerido)
-            and recurso_from_db is not None
-            and _is_recurso_alternativo(recurso_from_db.requerido)
-        )
-        prev_resource = RecursoInfo(
-            recurso_anterior.curso, recurso_anterior.tipo, recurso_anterior.id
-        )  # type: ignore[assignment]
-    elif seccion_from_db and recurso_from_db:
-        # Filter by course to prevent cross-course navigation
-        seccion_anterior = (
-            database.session.execute(
-                database.select(CursoSeccion).filter(
-                    CursoSeccion.curso == recurso_from_db.curso,
-                    CursoSeccion.indice == seccion_from_db.indice - 1,
-                )
-            )
-            .scalars()
-            .first()
-        )
-        if seccion_anterior:
-            recurso_de_seccion_anterior = (
-                (
-                    database.session.execute(
-                        database.select(CursoRecurso)
-                        .filter(CursoRecurso.seccion == seccion_anterior.id)
-                        .order_by(CursoRecurso.indice.desc())
-                    )
-                )
-                .scalars()
-                .first()
-            )
-            if recurso_de_seccion_anterior:
-                has_prev = True
-                # Check if prev resource is alternative and if current resource is also alternative (consecutive)
-                # When crossing sections, we don't treat it as consecutive alternatives
-                prev_is_alternative = False
-                prev_resource = RecursoInfo(
-                    recurso_de_seccion_anterior.curso, recurso_de_seccion_anterior.tipo, recurso_de_seccion_anterior.id
-                )  # type: ignore[assignment]
-
-    if recurso_posterior:
-        has_next = True
-        # Check if next resource is alternative and if there's another alternative after it (consecutive)
-        next_is_alternative = _check_consecutive_alternatives(recurso_posterior)
-        next_resource = RecursoInfo(
-            recurso_posterior.curso, recurso_posterior.tipo, recurso_posterior.id
-        )  # type: ignore[assignment]
-    elif seccion_from_db and recurso_from_db:
-        # Filter by course to prevent cross-course navigation
-        seccion_posterior = (
-            database.session.execute(
-                database.select(CursoSeccion).filter(
-                    CursoSeccion.curso == recurso_from_db.curso,
-                    CursoSeccion.indice == seccion_from_db.indice + 1,
-                )
-            )
-            .scalars()
-            .first()
-        )
-        if seccion_posterior:
-            recurso_de_seccion_posterior = (
-                (
-                    database.session.execute(
-                        database.select(CursoRecurso)
-                        .filter(CursoRecurso.seccion == seccion_posterior.id)
-                        .order_by(CursoRecurso.indice)
-                    )
-                )
-                .scalars()
-                .first()
-            )
-            if recurso_de_seccion_posterior:
-                has_next = True
-                # When crossing sections, check if there are consecutive alternatives at the start of next section
-                next_is_alternative = _check_consecutive_alternatives(recurso_de_seccion_posterior)
-                next_resource = RecursoInfo(
-                    recurso_de_seccion_posterior.curso, recurso_de_seccion_posterior.tipo, recurso_de_seccion_posterior.id
-                )  # type: ignore[assignment]
-
-    return RecursoIndex(has_prev, has_next, prev_is_alternative, next_is_alternative, prev_resource, next_resource)
+    previous, previous_alternative = _navigation_resource(recurso_from_db, seccion_from_db, "previous")
+    following, following_alternative = _navigation_resource(recurso_from_db, seccion_from_db, "next")
+    previous_info = RecursoInfo(previous.curso, previous.tipo, previous.id) if previous else None
+    following_info = RecursoInfo(following.curso, following.tipo, following.id) if following else None
+    return RecursoIndex(
+        bool(previous), bool(following), previous_alternative, following_alternative, previous_info, following_info
+    )
 
 
 @cache.cached(timeout=60, key_prefix="cached_logo")
