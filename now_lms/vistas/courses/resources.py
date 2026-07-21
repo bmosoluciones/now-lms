@@ -1522,6 +1522,43 @@ def course_library(course_code: str) -> str:
     return render_template("learning/curso/library.html", curso=_curso, library_files=library_files)
 
 
+def _store_library_file(course_code: str, uploaded_file: Any, form: Any) -> str:
+    """Persist a validated library upload and its database record."""
+    library_path = ensure_course_library_directory(course_code)
+    sanitized_filename = sanitize_filename(uploaded_file.filename or "")
+    if not sanitized_filename:
+        raise ValueError("Nombre de archivo inválido.")
+    existing_file = database.session.execute(
+        database.select(CourseLibrary).filter_by(curso=course_code, filename=sanitized_filename)
+    ).scalar_one_or_none()
+    if existing_file:
+        raise ValueError(f"Ya existe un archivo con el nombre '{sanitized_filename}' en la biblioteca.")
+
+    destination_path = path.realpath(path.join(library_path, sanitized_filename))
+    if not destination_path.startswith(path.realpath(library_path)):
+        raise ValueError("Ruta de destino inválida.")
+    try:
+        uploaded_file.save(destination_path)
+        library_file = CourseLibrary(
+            curso=course_code,
+            filename=sanitized_filename,
+            original_filename=uploaded_file.filename or "",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            file_size=uploaded_file.content_length or path.getsize(destination_path),
+            mime_type=uploaded_file.content_type,
+            creado_por=current_user.usuario,
+        )
+        database.session.add(library_file)
+        database.session.commit()
+        return sanitized_filename
+    except Exception:
+        database.session.rollback()
+        if path.exists(destination_path):
+            path.remove(destination_path)
+        raise
+
+
 @resources.route("/course/<course_code>/library/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -1552,59 +1589,14 @@ def upload_library_file(course_code: str) -> str | Response:
             flash(error_msg, "warning")
             return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
-        original_filename = uploaded_file.filename or ""
-        sanitized_filename = sanitize_filename(original_filename)
-        if not sanitized_filename:
-            flash("Nombre de archivo inválido.", "warning")
-            return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
-
         try:
-            library_path = ensure_course_library_directory(course_code)
-
-            existing_file = database.session.execute(
-                database.select(CourseLibrary).filter_by(curso=course_code, filename=sanitized_filename)
-            ).scalar_one_or_none()
-            if existing_file:
-                flash(f"Ya existe un archivo con el nombre '{sanitized_filename}' en la biblioteca.", "warning")
-                return render_template(
-                    TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size
-                )
-
-            destination_path = path.realpath(path.join(library_path, sanitized_filename))
-            if not destination_path.startswith(path.realpath(library_path)):
-                flash("Ruta de destino inválida.", "warning")
-                return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
-            uploaded_file.save(destination_path)
-            file_size = uploaded_file.content_length or path.getsize(destination_path)
-
-            library_file = CourseLibrary(
-                curso=course_code,
-                filename=sanitized_filename,
-                original_filename=original_filename,
-                nombre=form.nombre.data,
-                descripcion=form.descripcion.data,
-                file_size=file_size,
-                mime_type=uploaded_file.content_type,
-                creado_por=current_user.usuario,
-            )
-
-            database.session.add(library_file)
-            database.session.commit()
-
+            sanitized_filename = _store_library_file(course_code, uploaded_file, form)
             flash(f"Archivo '{sanitized_filename}' subido exitosamente a la biblioteca del curso.", "success")
             return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
-
+        except ValueError as e:
+            flash(str(e), "warning")
         except Exception as e:
-            database.session.rollback()
-            try:
-                cleanup_path = path.realpath(path.join(library_path, sanitized_filename))
-                if cleanup_path.startswith(path.realpath(library_path)) and path.exists(cleanup_path):
-                    path.remove(cleanup_path)
-            except Exception:
-                pass
-
             flash(f"Error al subir el archivo: {str(e)}", "error")
-            return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
     return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
