@@ -24,6 +24,8 @@ from flask_login import current_user, login_required
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import UserEvent, database
 
+ICS_DATETIME_FORMAT_UTC = ICS_DATETIME_FORMAT_UTC
+
 calendar = Blueprint("calendar", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -166,10 +168,10 @@ def _generate_ics_content(events) -> str:
                 pass
 
         # Format datetime for ICS (UTC)
-        start_dt = start_time.strftime("%Y%m%dT%H%M%SZ")
-        end_dt = end_time.strftime("%Y%m%dT%H%M%SZ")
+        start_dt = start_time.strftime(ICS_DATETIME_FORMAT_UTC)
+        end_dt = end_time.strftime(ICS_DATETIME_FORMAT_UTC)
         # Use event creation timestamp for DTSTAMP field
-        created_dt = event.timestamp.strftime("%Y%m%dT%H%M%SZ")
+        created_dt = event.timestamp.strftime(ICS_DATETIME_FORMAT_UTC)
 
         # Escape special characters in text fields
         title = _escape_ics_text(event.title)

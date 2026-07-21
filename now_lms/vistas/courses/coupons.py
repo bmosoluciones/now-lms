@@ -12,7 +12,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.db import Configuracion, Coupon, Curso, DocenteCurso, EstudianteCurso, database
 from now_lms.forms import CouponForm
 from now_lms.logs import log
-from .base import ROUTE_LIST_COUPONS, TEMPLATE_COUPON_CREATE, TEMPLATE_COUPON_EDIT, course
+from .base import ROUTE_LIST_COUPONS, TEMPLATE_COUPON_CREATE, TEMPLATE_COUPON_EDIT, course, VISTA_ADMINISTRAR_CURSO
 
 
 def _validate_coupon_permissions(course_code: str, user) -> tuple[object | None, str | None]:
@@ -82,7 +82,7 @@ def list_coupons(course_code: str) -> str | Response:
     course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
-        return redirect(url_for("course.administrar_curso", course_code=course_code))
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     coupons = (
         database.session.execute(select(Coupon).filter_by(course_id=course_code).order_by(Coupon.timestamp.desc()))
@@ -101,7 +101,7 @@ def create_coupon(course_code: str) -> str | Response:
     course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
-        return redirect(url_for("course.administrar_curso", course_code=course_code))
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CouponForm()
 
@@ -157,7 +157,7 @@ def edit_coupon(course_code: str, coupon_id: int) -> str | Response:
     course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
-        return redirect(url_for("course.administrar_curso", course_code=course_code))
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     coupon = database.session.execute(select(Coupon).filter_by(id=coupon_id, course_id=course_code)).scalars().first()
     if not coupon:
@@ -218,7 +218,7 @@ def delete_coupon(course_code: str, coupon_id: int) -> Response:
     _, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
-        return redirect(url_for("course.administrar_curso", course_code=course_code))
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     coupon = database.session.execute(select(Coupon).filter_by(id=coupon_id, course_id=course_code)).scalars().first()
     if not coupon:
