@@ -150,7 +150,7 @@ def get_paypal_access_token() -> str | None:
         logging.error(f"Failed to get PayPal access token: HTTP {response.status_code} - {response.text}")
         return None
 
-    except Exception as e:
+    except Exception:
         logging.exception("Exception while getting PayPal access token")
         return None
 
@@ -427,12 +427,12 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
                 200,
             )
 
-        except OperationalError as e:
+        except OperationalError:
             database.session.rollback()
             logging.exception("Database error during enrollment")
             return jsonify({"success": False, "error": "Error en la base de datos. Por favor contacte soporte."}), 500
 
-    except Exception as e:
+    except Exception:
         logging.exception("Unexpected error in payment confirmation")
         return jsonify({"success": False, "error": "Error interno del servidor. Por favor contacte soporte."}), 500
 
