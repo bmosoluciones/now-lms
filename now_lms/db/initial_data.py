@@ -1632,11 +1632,18 @@ def populate_custmon_data_dir() -> None:
     from now_lms.config import DIRECTORIO_ARCHIVOS_BASE
 
     if DIRECTORIO_ARCHIVOS != DIRECTORIO_ARCHIVOS_BASE:
-        # Check if directory doesn't exist or is empty
+        # Populate when the data dir is missing/empty, OR when the bundled frontend assets
+        # (node_modules — Bootstrap etc.) are absent. The empty-only check never fires in
+        # practice: initial_setup() writes default-course files into the data dir before this
+        # runs, so the dir is already non-empty and node_modules was never copied, leaving the
+        # UI unstyled (Flask static_folder points at DIRECTORIO_ARCHIVOS). copytree(dirs_exist_ok
+        # =True) merges without clobbering existing uploads.
         should_populate = False
         try:
-            if not path.exists(DIRECTORIO_ARCHIVOS) or (
-                path.isdir(DIRECTORIO_ARCHIVOS) and len(listdir(DIRECTORIO_ARCHIVOS)) == 0
+            if (
+                not path.exists(DIRECTORIO_ARCHIVOS)
+                or (path.isdir(DIRECTORIO_ARCHIVOS) and len(listdir(DIRECTORIO_ARCHIVOS)) == 0)
+                or not path.exists(path.join(DIRECTORIO_ARCHIVOS, "node_modules"))
             ):
                 should_populate = True
         except OSError:
