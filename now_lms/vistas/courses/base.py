@@ -589,6 +589,63 @@ def lista_cursos() -> str:
 # ---------------------------------------------------------------------------------------
 
 
+def _authorized_enrollment_course(course_code: str):
+    """Load a course and enforce the instructor enrollment permission."""
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not curso:
+        abort(404)
+    if current_user.tipo != "admin":
+        assignment = database.session.execute(
+            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+        ).scalar_one_or_none()
+        if not assignment:
+            abort(403)
+    return curso
+
+
+def _enrollment_student(course_code: str, username: str):
+    """Return the requested student and any active enrollment."""
+    student = database.session.execute(database.select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+    enrollment = database.session.execute(
+        database.select(EstudianteCurso).filter_by(curso=course_code, usuario=username, vigente=True)
+    ).scalar_one_or_none()
+    return student, enrollment
+
+
+def _persist_admin_enrollment(course_code: str, curso, student, bypass_payment: bool, notes: str) -> None:
+    """Create the administrative payment and enrollment records."""
+    pago = Pago(
+        usuario=student.usuario,
+        curso=course_code,
+        estado="completed",
+        metodo="admin_enrollment",
+        monto=0 if bypass_payment else curso.precio,
+        descripcion=f"Inscripción administrativa por {current_user.usuario}",
+        audit=not bypass_payment and curso.pagado,
+        nombre=student.nombre,
+        apellido=student.apellido,
+        correo_electronico=student.correo_electronico,
+        creado=datetime.now(timezone.utc).date(),
+        creado_por=current_user.usuario,
+    )
+    if notes:
+        pago.descripcion += f" - Notas: {notes}"
+    database.session.add(pago)
+    database.session.flush()
+    enrollment = EstudianteCurso(
+        curso=course_code,
+        usuario=student.usuario,
+        vigente=True,
+        pago=pago.id,
+        creado=datetime.now(timezone.utc).date(),
+        creado_por=current_user.usuario,
+    )
+    database.session.add(enrollment)
+    database.session.commit()
+    _crear_indice_avance_curso(course_code)
+    create_events_for_student_enrollment(student.usuario, course_code)
+
+
 @course.route("/course/<course_code>/admin/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -596,82 +653,23 @@ def admin_course_enrollment(course_code: str) -> str | Response:
     """Administrative enrollment of students to a course."""
     from now_lms.forms import AdminCourseEnrollmentForm
 
-    # Verify course exists
-    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
-    if not _curso:
-        abort(404)
-
-    # Only allow instructors to enroll in their own courses (or admins for any course)
-    if current_user.tipo != "admin":
-        # Check if current user is instructor of this course
-        instructor_assignment = database.session.execute(
-            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
-        ).scalar_one_or_none()
-        if not instructor_assignment:
-            abort(403)
-
+    _curso = _authorized_enrollment_course(course_code)
     form = AdminCourseEnrollmentForm()
 
     if form.validate_on_submit():
         student_username = form.student_username.data.strip()
         bypass_payment = form.bypass_payment.data
         notes = form.notes.data.strip() if form.notes.data else ""
-
-        # Verify student exists
-        usuario_existe = database.session.execute(
-            database.select(Usuario).filter_by(usuario=student_username)
-        ).scalar_one_or_none()
-
+        usuario_existe, existing_enrollment = _enrollment_student(course_code, student_username)
         if not usuario_existe:
             flash(f"El usuario '{student_username}' no existe en el sistema.", "error")
             return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
-
-        # Check if student is already enrolled
-        existing_enrollment = database.session.execute(
-            database.select(EstudianteCurso).filter_by(curso=course_code, usuario=student_username, vigente=True)
-        ).scalar_one_or_none()
-
         if existing_enrollment:
             flash(f"El estudiante '{student_username}' ya está inscrito en este curso.", "warning")
             return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
         try:
-            # Create payment record for administrative enrollment
-            pago = Pago()
-            pago.usuario = student_username
-            pago.curso = course_code
-            pago.estado = "completed"
-            pago.metodo = "admin_enrollment"
-            pago.monto = 0 if bypass_payment else _curso.precio
-            pago.descripcion = f"Inscripción administrativa por {current_user.usuario}"
-            if notes:
-                pago.descripcion += f" - Notas: {notes}"
-            pago.audit = not bypass_payment and _curso.pagado
-            # Populate required billing fields from student's user record
-            pago.nombre = usuario_existe.nombre
-            pago.apellido = usuario_existe.apellido
-            pago.correo_electronico = usuario_existe.correo_electronico
-            pago.creado = datetime.now(timezone.utc).date()
-            pago.creado_por = current_user.usuario
-            database.session.add(pago)
-            database.session.flush()
-
-            # Create student enrollment record
-            enrollment = EstudianteCurso(
-                curso=course_code,
-                usuario=student_username,
-                vigente=True,
-                pago=pago.id,
-            )
-            enrollment.creado = datetime.now(timezone.utc).date()
-            enrollment.creado_por = current_user.usuario
-            database.session.add(enrollment)
-            database.session.commit()
-
-            _crear_indice_avance_curso(course_code)
-
-            # Create calendar events for the enrolled student
-            create_events_for_student_enrollment(student_username, course_code)
+            _persist_admin_enrollment(course_code, _curso, usuario_existe, bypass_payment, notes)
 
             flash(f"Estudiante '{student_username}' inscrito exitosamente en el curso '{_curso.nombre}'.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))

@@ -1236,6 +1236,49 @@ def nuevo_recurso_slideshow(course_code: str, seccion: str) -> str | Response:
     )
 
 
+def _slide_orders(slide_count: int) -> list[int]:
+    """Read slide ordering values from the submitted form."""
+    return [int(request.form.get(f"slide_{index}_order", index + 1)) for index in range(slide_count)]
+
+
+def _update_slideshow(slideshow: SlideShowResource, slideshow_id: str, slides: list[Slide]) -> None:
+    """Apply submitted slideshow metadata and slide changes."""
+    slideshow.title = request.form.get("title", slideshow.title)
+    slideshow.theme = request.form.get("theme", slideshow.theme)
+    slideshow.modificado_por = current_user.usuario
+    slide_count = min(int(request.form.get("slide_count", 0)), 100)
+    existing_orders = _slide_orders(slide_count)
+    for slide in slides:
+        if slide.order not in existing_orders:
+            database.session.delete(slide)
+
+    for index in range(slide_count):
+        title = request.form.get(f"slide_{index}_title", "")
+        content = request.form.get(f"slide_{index}_content", "")
+        if not title or not content:
+            continue
+        slide_order = existing_orders[index]
+        clean_content = sanitize_slide_content(content)
+        slide_id = request.form.get(f"slide_{index}_id")
+        existing_slide = database.session.get(Slide, slide_id) if slide_id else None
+        if existing_slide is not None and existing_slide.slide_show_id == slideshow_id:
+            existing_slide.title = title
+            existing_slide.content = clean_content
+            existing_slide.order = slide_order
+            existing_slide.modificado_por = current_user.usuario
+            continue
+        database.session.add(
+            Slide(
+                slide_show_id=slideshow_id,
+                title=title,
+                content=clean_content,
+                order=slide_order,
+                creado_por=current_user.usuario,
+            )
+        )
+    database.session.commit()
+
+
 @resources.route("/course/<course_code>/slideshow/<slideshow_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -1251,47 +1294,7 @@ def editar_slideshow(course_code: str, slideshow_id: str) -> str | Response:
 
     if request.method == "POST":
         try:
-            slideshow.title = request.form.get("title", slideshow.title)
-            slideshow.theme = request.form.get("theme", slideshow.theme)
-            slideshow.modificado_por = current_user.usuario
-
-            slide_count = min(int(request.form.get("slide_count", 0)), 100)
-            existing_orders = []
-            for i in range(slide_count):
-                order = int(request.form.get(f"slide_{i}_order", i + 1))
-                existing_orders.append(order)
-
-            for slide in slides:
-                if slide.order not in existing_orders:
-                    database.session.delete(slide)
-
-            for i in range(slide_count):
-                slide_title = request.form.get(f"slide_{i}_title", "")
-                slide_content = request.form.get(f"slide_{i}_content", "")
-                slide_order = int(request.form.get(f"slide_{i}_order", i + 1))
-                slide_id = request.form.get(f"slide_{i}_id")
-
-                if slide_title and slide_content:
-                    clean_content = sanitize_slide_content(slide_content)
-
-                    if slide_id:
-                        existing_slide = database.session.get(Slide, slide_id)
-                        if existing_slide is not None and existing_slide.slide_show_id == slideshow_id:
-                            existing_slide.title = slide_title
-                            existing_slide.content = clean_content
-                            existing_slide.order = slide_order
-                            existing_slide.modificado_por = current_user.usuario
-                    else:
-                        new_slide = Slide(
-                            slide_show_id=slideshow_id,
-                            title=slide_title,
-                            content=clean_content,
-                            order=slide_order,
-                            creado_por=current_user.usuario,
-                        )
-                        database.session.add(new_slide)
-
-            database.session.commit()
+            _update_slideshow(slideshow, slideshow_id, slides)
             flash("Presentación actualizada correctamente.", "success")
 
         except Exception as e:
@@ -1601,30 +1604,28 @@ def upload_library_file(course_code: str) -> str | Response:
     return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
 
-@resources.route("/course/<course_code>/library/file/<filename>", methods=["GET"])
-@login_required
-def serve_library_file(course_code: str, filename: str) -> Response:
+def _library_access(course_code: str) -> bool:
+    """Return whether the current user can access a course library."""
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
     if not _curso:
         abort(404)
-
-    has_access = False
     if current_user.tipo == "admin":
-        has_access = True
-    else:
-        instructor_assignment = database.session.execute(
-            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
-        ).scalar_one_or_none()
-        if instructor_assignment:
-            has_access = True
-        else:
-            student_enrollment = database.session.execute(
-                database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
-            ).scalar_one_or_none()
-            if student_enrollment:
-                has_access = True
+        return True
+    instructor_assignment = database.session.execute(
+        database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+    ).scalar_one_or_none()
+    if instructor_assignment:
+        return True
+    student_enrollment = database.session.execute(
+        database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+    ).scalar_one_or_none()
+    return student_enrollment is not None
 
-    if not has_access:
+
+@resources.route("/course/<course_code>/library/file/<filename>", methods=["GET"])
+@login_required
+def serve_library_file(course_code: str, filename: str) -> Response:
+    if not _library_access(course_code):
         abort(403)
 
     safe_filename = path.basename(filename)

@@ -130,6 +130,29 @@ def _save_program_logo(programa: Programa) -> None:
         flash(_("No se pudo actualizar la portada del curso."), "warning")
 
 
+def _create_program_from_form(form: ProgramaForm) -> Programa:
+    """Create a program and its selected taxonomy records."""
+    programa = Programa(
+        nombre=form.nombre.data,
+        descripcion=form.descripcion.data,
+        codigo=form.codigo.data,
+        precio=form.precio.data,
+        publico=False,
+        estado="draft",
+        logo=False,
+        certificado=form.certificado.data if form.certificado.data else False,
+        plantilla_certificado=(
+            form.plantilla_certificado.data if form.certificado.data and form.plantilla_certificado.data else None
+        ),
+        creado_por=current_user.usuario,
+    )
+    database.session.add(programa)
+    database.session.commit()
+    _update_program_assignments(programa, form)
+    database.session.commit()
+    return programa
+
+
 @program.route("/program/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -141,37 +164,8 @@ def nuevo_programa() -> str | Response:
     form.etiquetas.choices = generate_tag_choices()
 
     if form.validate_on_submit() or request.method == "POST":
-
-        programa = Programa(
-            nombre=form.nombre.data,
-            descripcion=form.descripcion.data,
-            codigo=form.codigo.data,
-            precio=form.precio.data,
-            publico=False,
-            estado="draft",
-            logo=False,
-            certificado=form.certificado.data if form.certificado.data else False,
-            plantilla_certificado=(
-                form.plantilla_certificado.data if form.certificado.data and form.plantilla_certificado.data else None
-            ),
-            creado_por=current_user.usuario,
-        )
-        database.session.add(programa)
         try:
-            database.session.commit()
-
-            # Assign category if selected
-            if form.categoria.data:
-                categoria_programa = CategoriaPrograma(programa=programa.id, categoria=form.categoria.data)
-                database.session.add(categoria_programa)
-
-            # Assign tags if selected
-            if form.etiquetas.data:
-                for etiqueta_id in form.etiquetas.data:
-                    etiqueta_programa = EtiquetaPrograma(programa=programa.id, etiqueta=etiqueta_id)
-                    database.session.add(etiqueta_programa)
-
-            database.session.commit()
+            programa = _create_program_from_form(form)
             cache.delete("view/" + url_for(PROGRAMS_ROUTE))
             flash(_("Nuevo Programa creado."), "success")
             return redirect(url_for("program.pagina_programa", codigo=programa.codigo))
