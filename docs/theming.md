@@ -51,33 +51,13 @@ NOW LMS comes with many built-in themes:
 ### Professional Themes
 
 - **corporative**: Professional blue theme for corporate environments
-- **classic**: Minimalist white/gray design with clean typography
 - **excel**: Modern Excel-inspired theme with green professional color scheme (#217346)
     - Tab-style navigation inspired by Excel
     - Clean design for educational content
     - Professional typography for learning
 
-### Contemporary Themes
-
-- **modern**: Contemporary purple-pink gradient theme with bold, vibrant design
-    - Vibrant purple (#7c3aed) and hot pink (#ec4899) color scheme
-    - Modern gradient backgrounds and smooth animations
-    - Inter font family for crisp, contemporary look
-    - Perfect for tech-focused or creative platforms
-
-- **invest**: Professional finance-inspired theme with green palette
-    - Forest green (#2E7D32) representing growth and stability
-    - Montserrat and Roboto typography
-    - Financial icons and professional aesthetic
-    - Custom home page with investment messaging
-
 ### Color Variations
 
-- **amber**: A warm, autumn-inspired theme
-- **golden**: Warm yellow and orange theme with golden accents
-    - Golden sun (#F0B744) and bright orange (#F49640) colors
-    - Energetic and optimistic visual design
-    - High contrast for readability
 - **ocean**: A blue-based theme
 - **sakura**: A cherry blossom-inspired theme
 
@@ -86,7 +66,7 @@ NOW LMS comes with many built-in themes:
 Three prestigious academic themes inspired by world-renowned universities:
 
 - **harvard**: Burgundy theme (#A41034) inspired by Harvard University
-    - Classic academic design with traditional typography
+    - Traditional academic design with classic typography
     - Merriweather/Playfair Display fonts for titles
     - Source Sans Pro for body text
     - Clean navbar without icons
