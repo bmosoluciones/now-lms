@@ -275,7 +275,9 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
         payment_data, error_response = _validate_payment_confirmation()
         if error_response:
             return error_response
-        assert payment_data is not None
+        if payment_data is None:
+            logging.error("Payment validation returned no data without an error response")
+            return jsonify({"success": False, "error": "Invalid payment data"}), 400
         order_id = payment_data["order_id"]
         course_code = payment_data["course_code"]
         pending_payment = payment_data["pending_payment"]
