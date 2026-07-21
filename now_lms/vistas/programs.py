@@ -107,6 +107,29 @@ def _program_explore_params(tag_param: str | None, category_param: str | None):
     return params
 
 
+def _update_program_assignments(programa: Programa, form: ProgramaForm) -> None:
+    """Replace the category and tag assignments for a program."""
+    database.session.execute(delete(CategoriaPrograma).where(CategoriaPrograma.programa == programa.id))
+    if form.categoria.data:
+        database.session.add(CategoriaPrograma(programa=programa.id, categoria=form.categoria.data))
+    database.session.execute(delete(EtiquetaPrograma).where(EtiquetaPrograma.programa == programa.id))
+    for etiqueta_id in form.etiquetas.data or []:
+        database.session.add(EtiquetaPrograma(programa=programa.id, etiqueta=etiqueta_id))
+
+
+def _save_program_logo(programa: Programa) -> None:
+    """Save a program logo when supplied."""
+    if "logo" not in request.files:
+        return
+    try:
+        if images.save(request.files["logo"], folder="program" + programa.codigo, name="logo.jpg"):
+            programa.logo = True
+            flash(_("Portada del curso actualizada correctamente"), "success")
+            database.session.commit()
+    except UploadNotAllowed:
+        flash(_("No se pudo actualizar la portada del curso."), "warning")
+
+
 @program.route("/program/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -251,35 +274,10 @@ def edit_program(ulid: str) -> str | Response:
         try:
             database.session.add(programa)
 
-            # Update category assignment
-            # First remove existing category assignment
-            database.session.execute(delete(CategoriaPrograma).where(CategoriaPrograma.programa == programa.id))
-
-            # Add new category if selected
-            if form.categoria.data:
-                categoria_programa = CategoriaPrograma(programa=programa.id, categoria=form.categoria.data)
-                database.session.add(categoria_programa)
-
-            # Update tag assignments
-            # First remove existing tag assignments
-            database.session.execute(delete(EtiquetaPrograma).where(EtiquetaPrograma.programa == programa.id))
-
-            # Add new tags if selected
-            if form.etiquetas.data:
-                for etiqueta_id in form.etiquetas.data:
-                    etiqueta_programa = EtiquetaPrograma(programa=programa.id, etiqueta=etiqueta_id)
-                    database.session.add(etiqueta_programa)
+            _update_program_assignments(programa, form)
 
             database.session.commit()
-            if "logo" in request.files:
-                try:
-                    picture_file = images.save(request.files["logo"], folder="program" + programa.codigo, name="logo.jpg")
-                    if picture_file:
-                        programa.logo = True
-                        flash(_("Portada del curso actualizada correctamente"), "success")
-                        database.session.commit()
-                except UploadNotAllowed:
-                    flash(_("No se pudo actualizar la portada del curso."), "warning")
+            _save_program_logo(programa)
 
             flash(_("Programa editado correctamente."), "success")
         except OperationalError:
