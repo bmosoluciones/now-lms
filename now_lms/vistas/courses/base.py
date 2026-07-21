@@ -101,6 +101,136 @@ ROUTE_LIST_COUPONS = "course.list_coupons"
 # Helper functions moved to now_lms.vistas.courses.helpers
 
 
+def _check_course_access(_curso, course_code: str) -> tuple[bool, bool]:
+    """Check if the current user has access to the course.
+
+    Returns:
+        Tuple of (acceso, editable).
+    """
+    if course_code == "lms-training" and current_user.is_authenticated:
+        if current_user.tipo in ("admin", "instructor"):
+            return True, current_user.tipo == "admin"
+        return False, False
+
+    if current_user.is_authenticated and request.args.get("inspect"):
+        if current_user.tipo == "admin":
+            return True, True
+        docente = database.session.execute(
+            database.select(DocenteCurso).filter(
+                DocenteCurso.curso == course_code, DocenteCurso.usuario == current_user.usuario
+            )
+        ).scalars().first()
+        return bool(docente), bool(docente)
+
+    if current_user.is_authenticated:
+        enrollment = database.session.execute(
+            database.select(EstudianteCurso).filter_by(
+                curso=course_code, usuario=current_user.usuario, vigente=True
+            )
+        ).scalars().first()
+        if enrollment:
+            return True, False
+        if _curso and _curso.publico:
+            return _curso.estado == "open" and _curso.publico is True, False
+        return False, False
+
+    if _curso and _curso.publico:
+        return _curso.estado == "open" and _curso.publico is True, False
+
+    return False, False
+
+
+def _save_course_logo(curso_) -> None:
+    """Save uploaded logo for a course."""
+    if "logo" not in request.files:
+        return
+    logo = request.files["logo"]
+    logo_data = splitext(logo.filename or "")
+    logo_ext = logo_data[1] or ""
+    try:
+        log.trace("Saving logo")
+        picture_file = images.save(logo, folder=curso_.codigo, name=f"logo{logo_ext}")
+        if picture_file:
+            curso_.portada = True
+            curso_.portada_ext = logo_ext
+            database.session.commit()
+            log.info("Course Logo saved")
+        else:
+            curso_.portada = False
+            database.session.commit()
+            log.warning("Course Logo not saved")
+    except (UploadNotAllowed, AttributeError):
+        log.warning("Could not update profile photo.")
+        database.session.rollback()
+
+
+def _update_course_fields(curso_a_editar, form) -> None:
+    """Update course fields from form data."""
+    curso_a_editar.nombre = form.nombre.data
+    curso_a_editar.codigo = form.codigo.data
+    curso_a_editar.descripcion_corta = form.descripcion_corta.data
+    curso_a_editar.descripcion = form.descripcion.data
+    curso_a_editar.nivel = form.nivel.data
+    curso_a_editar.duracion = form.duracion.data
+    curso_a_editar.publico = form.publico.data
+    curso_a_editar.modalidad = form.modalidad.data
+    curso_a_editar.foro_habilitado = (
+        False if form.modalidad.data == "self_paced" else form.foro_habilitado.data
+    )
+    curso_a_editar.limitado = form.limitado.data
+    curso_a_editar.capacidad = form.capacidad.data
+    curso_a_editar.fecha_inicio = form.fecha_inicio.data
+    curso_a_editar.fecha_fin = form.fecha_fin.data
+    curso_a_editar.pagado = form.pagado.data
+    curso_a_editar.auditable = form.auditable.data
+    curso_a_editar.certificado = form.certificado.data
+    curso_a_editar.plantilla_certificado = form.plantilla_certificado.data
+    curso_a_editar.precio = form.precio.data
+    if curso_a_editar.promocionado is False and form.promocionado.data is True:
+        curso_a_editar.fecha_promocionado = datetime.today()
+    curso_a_editar.promocionado = form.promocionado.data
+    curso_a_editar.modificado_por = current_user.usuario
+
+
+def _update_course_taxonomy(original_code: str, new_code: str, form) -> None:
+    """Update course category and tag assignments."""
+    database.session.execute(delete(CategoriaCurso).where(CategoriaCurso.curso == original_code))
+    if form.categoria.data:
+        database.session.add(CategoriaCurso(curso=new_code, categoria=form.categoria.data))
+    database.session.execute(delete(EtiquetaCurso).where(EtiquetaCurso.curso == original_code))
+    if form.etiquetas.data:
+        for etiqueta_id in form.etiquetas.data:
+            database.session.add(EtiquetaCurso(curso=new_code, etiqueta=etiqueta_id))
+
+
+def _populate_edit_form(form, curso_a_editar, course_code: str) -> None:
+    """Populate form fields with existing course data for editing."""
+    field_map = {
+        "nombre": curso_a_editar.nombre,
+        "codigo": curso_a_editar.codigo,
+        "descripcion_corta": curso_a_editar.descripcion_corta,
+        "descripcion": curso_a_editar.descripcion,
+        "nivel": curso_a_editar.nivel,
+        "duracion": curso_a_editar.duracion,
+        "publico": curso_a_editar.publico,
+        "modalidad": curso_a_editar.modalidad,
+        "foro_habilitado": curso_a_editar.foro_habilitado,
+        "limitado": curso_a_editar.limitado,
+        "capacidad": curso_a_editar.capacidad,
+        "fecha_inicio": curso_a_editar.fecha_inicio,
+        "fecha_fin": curso_a_editar.fecha_fin,
+        "pagado": curso_a_editar.pagado,
+        "auditable": curso_a_editar.auditable,
+        "certificado": curso_a_editar.certificado,
+        "plantilla_certificado": curso_a_editar.plantilla_certificado,
+        "precio": curso_a_editar.precio,
+    }
+    for field, value in field_map.items():
+        getattr(form, field).data = value
+    form.categoria.data = get_course_category(course_code)
+    form.etiquetas.data = get_course_tags(course_code)
+
+
 course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -109,50 +239,7 @@ course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 def curso(course_code: str) -> str:
     """Pagina principal del curso."""
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
-
-    # Special access logic for LMS training course - accessible to admins and instructors
-    if course_code == "lms-training" and current_user.is_authenticated:
-        if current_user.tipo in ["admin", "instructor"]:
-            acceso = True
-            editable = current_user.tipo == "admin"
-        else:
-            acceso = False
-            editable = False
-    elif current_user.is_authenticated and request.args.get("inspect"):
-        if current_user.tipo == "admin":
-            acceso = True
-            editable = True
-        else:
-            _consulta = database.select(DocenteCurso).filter(
-                DocenteCurso.curso == course_code, DocenteCurso.usuario == current_user.usuario
-            )
-            docente_result = database.session.execute(_consulta).scalars().first()
-            acceso = bool(docente_result)
-            editable = bool(docente_result)
-    elif current_user.is_authenticated:
-        enrollment = (
-            database.session.execute(
-                database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
-            )
-            .scalars()
-            .first()
-        )
-
-        if enrollment:
-            acceso = True
-            editable = False
-        elif _curso and _curso.publico:
-            acceso = _curso.estado == "open" and _curso.publico is True
-            editable = False
-        else:
-            acceso = False
-            editable = False
-    elif _curso and _curso.publico:
-        acceso = _curso.estado == "open" and _curso.publico is True
-        editable = False
-    else:
-        acceso = False
-        editable = False
+    acceso, editable = _check_course_access(_curso, course_code)
 
     if acceso:
         return render_template(
@@ -218,87 +305,61 @@ def nuevo_curso() -> str | Response:
     form.categoria.choices = generate_category_choices()
     form.etiquetas.choices = generate_tag_choices()
 
-    if form.validate_on_submit():
-        nuevo_curso_ = Curso(
-            # Información básica
-            nombre=form.nombre.data,
-            codigo=form.codigo.data,
-            descripcion=form.descripcion.data,
-            descripcion_corta=form.descripcion_corta.data,
-            nivel=form.nivel.data,
-            duracion=form.duracion.data,
-            # Estado de publicación
-            estado="draft",
-            publico=form.publico.data,
-            # Modalidad
-            modalidad=form.modalidad.data,
-            # Configuración del foro
-            foro_habilitado=form.foro_habilitado.data if form.modalidad.data != "self_paced" else False,
-            # Disponibilidad de cupos
-            limitado=form.limitado.data,
-            capacidad=form.capacidad.data,
-            # Fechas de inicio y fin
-            fecha_inicio=form.fecha_inicio.data,
-            fecha_fin=form.fecha_fin.data,
-            # Información de pago
-            pagado=form.pagado.data,
-            auditable=form.auditable.data,
-            certificado=form.certificado.data,
-            plantilla_certificado=(
-                form.plantilla_certificado.data if form.certificado.data and form.plantilla_certificado.data else None
-            ),
-            precio=form.precio.data,
-            # Información adicional
-            creado_por=current_user.usuario,
-        )
-        try:
-            nuevo_curso_.creado = datetime.now(timezone.utc).date()
-            nuevo_curso_.creado_por = current_user.usuario
-            database.session.add(nuevo_curso_)
-            database.session.commit()
-
-            # Assign category if selected
-            if form.categoria.data:
-                categoria_curso = CategoriaCurso(curso=form.codigo.data, categoria=form.categoria.data)
-                database.session.add(categoria_curso)
-
-            # Assign tags if selected
-            if form.etiquetas.data:
-                for etiqueta_id in form.etiquetas.data:
-                    etiqueta_curso = EtiquetaCurso(curso=form.codigo.data, etiqueta=etiqueta_id)
-                    database.session.add(etiqueta_curso)
-
-            database.session.commit()
-            asignar_curso_a_instructor(form.codigo.data, usuario_id=current_user.usuario)
-            if "logo" in request.files:
-                logo = request.files["logo"]
-                logo_name = logo.filename
-                logo_data = splitext(logo_name or "")
-                logo_ext = logo_data[1] or ""
-                try:
-                    log.trace("Saving logo")
-                    picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
-                    if picture_file:
-                        nuevo_curso_.portada = True
-                        nuevo_curso_.portada_ext = logo_ext
-                        database.session.commit()
-                        log.info("Course Logo saved")
-                    else:
-                        log.warning("Course Logo not saved")
-                except UploadNotAllowed:
-                    log.warning("Could not update profile photo.")
-                    database.session.rollback()
-                except AttributeError:
-                    log.warning("Could not update profile photo.")
-                    database.session.rollback()
-            database.session.commit()
-            flash("Curso creado exitosamente.", "success")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
-        except OperationalError:
-            flash("Hubo en error al crear su curso.", "warning")
-            return redirect("/instructor")
-    else:
+    if not form.validate_on_submit():
         return render_template("learning/nuevo_curso.html", form=form, curso=None, edit=False)
+
+    nuevo_curso_ = Curso(
+        # Información básica
+        nombre=form.nombre.data,
+        codigo=form.codigo.data,
+        descripcion=form.descripcion.data,
+        descripcion_corta=form.descripcion_corta.data,
+        nivel=form.nivel.data,
+        duracion=form.duracion.data,
+        # Estado de publicación
+        estado="draft",
+        publico=form.publico.data,
+        # Modalidad
+        modalidad=form.modalidad.data,
+        # Configuración del foro
+        foro_habilitado=form.foro_habilitado.data if form.modalidad.data != "self_paced" else False,
+        # Disponibilidad de cupos
+        limitado=form.limitado.data,
+        capacidad=form.capacidad.data,
+        # Fechas de inicio y fin
+        fecha_inicio=form.fecha_inicio.data,
+        fecha_fin=form.fecha_fin.data,
+        # Información de pago
+        pagado=form.pagado.data,
+        auditable=form.auditable.data,
+        certificado=form.certificado.data,
+        plantilla_certificado=(
+            form.plantilla_certificado.data if form.certificado.data and form.plantilla_certificado.data else None
+        ),
+        precio=form.precio.data,
+        # Información adicional
+        creado_por=current_user.usuario,
+    )
+    try:
+        nuevo_curso_.creado = datetime.now(timezone.utc).date()
+        nuevo_curso_.creado_por = current_user.usuario
+        database.session.add(nuevo_curso_)
+        database.session.commit()
+
+        if form.categoria.data:
+            database.session.add(CategoriaCurso(curso=form.codigo.data, categoria=form.categoria.data))
+        for etiqueta_id in form.etiquetas.data or []:
+            database.session.add(EtiquetaCurso(curso=form.codigo.data, etiqueta=etiqueta_id))
+
+        database.session.commit()
+        asignar_curso_a_instructor(form.codigo.data, usuario_id=current_user.usuario)
+        _save_course_logo(nuevo_curso_)
+        database.session.commit()
+        flash("Curso creado exitosamente.", "success")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
+    except OperationalError:
+        flash("Hubo en error al crear su curso.", "warning")
+        return redirect("/instructor")
 
 
 @course.route("/course/<course_code>/edit", methods=["GET", "POST"])
@@ -312,134 +373,28 @@ def editar_curso(course_code: str) -> str | Response:
     form.etiquetas.choices = generate_tag_choices()
 
     curso_a_editar = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
-
     curso_url = url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code)
 
     if form.validate_on_submit():
-        # Información básica
-        curso_a_editar.nombre = form.nombre.data
-        curso_a_editar.codigo = form.codigo.data
-        curso_a_editar.descripcion_corta = form.descripcion_corta.data
-        curso_a_editar.descripcion = form.descripcion.data
-        curso_a_editar.nivel = form.nivel.data
-        curso_a_editar.duracion = form.duracion.data
-        # Estado de publicación
-        curso_a_editar.publico = form.publico.data
-        # Modalidad
-        curso_a_editar.modalidad = form.modalidad.data
-        # Configuración del foro (validar restricción self-paced)
-        if form.modalidad.data == "self_paced":
-            curso_a_editar.foro_habilitado = False
-        else:
-            curso_a_editar.foro_habilitado = form.foro_habilitado.data
-        # Disponibilidad de cupos
-        curso_a_editar.limitado = form.limitado.data
-        curso_a_editar.capacidad = form.capacidad.data
-        # Fechas de inicio y fin
-        curso_a_editar.fecha_inicio = form.fecha_inicio.data
-        curso_a_editar.fecha_fin = form.fecha_fin.data
-        # Información de pago
-        curso_a_editar.pagado = form.pagado.data
-        curso_a_editar.auditable = form.auditable.data
-        curso_a_editar.certificado = form.certificado.data
-        curso_a_editar.plantilla_certificado = form.plantilla_certificado.data
-        curso_a_editar.precio = form.precio.data
-        # Información de marketing
-        if curso_a_editar.promocionado is False and form.promocionado.data is True:
-            curso_a_editar.fecha_promocionado = datetime.today()
-        curso_a_editar.promocionado = form.promocionado.data
-        # Información adicional
-        curso_a_editar.modificado_por = current_user.usuario
-
+        _update_course_fields(curso_a_editar, form)
         try:
             with database.session.no_autoflush:
                 curso_a_editar.modificado = datetime.now(timezone.utc)
                 curso_a_editar.modificado_por = current_user.usuario
-
-                # Handle category and tag updates with proper foreign key reference
-                # Use the new course code if it has changed, otherwise use the original
-                new_course_code = form.codigo.data
-
-                # Update category assignment
-                # First remove existing category assignment using original course_code
-                database.session.execute(delete(CategoriaCurso).where(CategoriaCurso.curso == course_code))
-
-                # Add new category if selected using new course code
-                if form.categoria.data:
-                    categoria_curso = CategoriaCurso(curso=new_course_code, categoria=form.categoria.data)
-                    database.session.add(categoria_curso)
-
-                # Update tag assignments
-                # First remove existing tag assignments using original course_code
-                database.session.execute(delete(EtiquetaCurso).where(EtiquetaCurso.curso == course_code))
-
-                # Add new tags if selected using new course code
-                if form.etiquetas.data:
-                    for etiqueta_id in form.etiquetas.data:
-                        etiqueta_curso = EtiquetaCurso(curso=new_course_code, etiqueta=etiqueta_id)
-                        database.session.add(etiqueta_curso)
-
+                _update_course_taxonomy(course_code, form.codigo.data, form)
             database.session.commit()
-
-            if "logo" in request.files:
-                logo = request.files["logo"]
-                logo_name = logo.filename
-                logo_data = splitext(logo_name or "")
-                logo_ext = logo_data[1] or ""
-                try:
-                    log.trace("Saving logo")
-                    picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
-                    if picture_file:
-                        curso_a_editar.portada = True
-                        curso_a_editar.portada_ext = logo_ext
-                        database.session.commit()
-                        log.info("Course Logo saved")
-                    else:
-                        curso_a_editar.portada = False
-                        database.session.commit()
-                        log.warning("Course Logo not saved")
-                except UploadNotAllowed:
-                    log.warning("Could not update profile photo.")
-                    database.session.rollback()
-                except AttributeError:
-                    log.warning("Could not update profile photo.")
-                    database.session.rollback()
+            _save_course_logo(curso_a_editar)
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
-
         except OperationalError:
             flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
-
     elif request.method == "POST":
-        # Mantener los datos enviados por el usuario y mostrar errores de validación
         if form.errors:
             flash("El formulario tiene errores. Revisa los campos marcados.", "warning")
 
     if request.method == "GET":
-        # Populate form with existing data for GET requests
-        form.nombre.data = curso_a_editar.nombre
-        form.codigo.data = curso_a_editar.codigo
-        form.descripcion_corta.data = curso_a_editar.descripcion_corta
-        form.descripcion.data = curso_a_editar.descripcion
-        form.nivel.data = curso_a_editar.nivel
-        form.duracion.data = curso_a_editar.duracion
-        form.publico.data = curso_a_editar.publico
-        form.modalidad.data = curso_a_editar.modalidad
-        form.foro_habilitado.data = curso_a_editar.foro_habilitado
-        form.limitado.data = curso_a_editar.limitado
-        form.capacidad.data = curso_a_editar.capacidad
-        form.fecha_inicio.data = curso_a_editar.fecha_inicio
-        form.fecha_fin.data = curso_a_editar.fecha_fin
-        form.pagado.data = curso_a_editar.pagado
-        form.auditable.data = curso_a_editar.auditable
-        form.certificado.data = curso_a_editar.certificado
-        form.plantilla_certificado.data = curso_a_editar.plantilla_certificado
-        form.precio.data = curso_a_editar.precio
-
-        # Populate category and tag current values
-        form.categoria.data = get_course_category(course_code)
-        form.etiquetas.data = get_course_tags(course_code)
+        _populate_edit_form(form, curso_a_editar, course_code)
 
     return render_template("learning/nuevo_curso.html", form=form, curso=curso_a_editar, edit=True)
 
