@@ -266,6 +266,109 @@ def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[Fl
     }, None
 
 
+def _payment_record(payment_data: dict[str, object]) -> tuple[object, tuple[FlaskResponse, int] | None]:
+    """Find or create the local payment record for a verified order."""
+    order_id = payment_data["order_id"]
+    course_code = payment_data["course_code"]
+    existing_payment = (
+        database.session.execute(database.select(Pago).filter_by(referencia=order_id, curso=course_code)).scalars().first()
+    )
+    if existing_payment and existing_payment.estado == "completed":
+        logging.info(f"Payment {order_id} already completed for user {current_user.usuario}")
+        return existing_payment, (
+            jsonify(
+                {
+                    "success": True,
+                    "message": "Pago ya procesado anteriormente",
+                    "redirect_url": url_for("course.tomar_curso", course_code=course_code),
+                }
+            ),
+            200,
+        )
+
+    pago = existing_payment or payment_data["pending_payment"] or Pago()
+    if not existing_payment and not payment_data["pending_payment"]:
+        pago.usuario = current_user.usuario
+        pago.curso = course_code
+        pago.nombre = current_user.nombre
+        pago.apellido = current_user.apellido
+        pago.correo_electronico = current_user.correo_electronico
+    pago.referencia = order_id
+    pago.monto = payment_data["verified_amount"]
+    pago.moneda = payment_data["verified_currency"]
+    pago.metodo = "paypal"
+    pago.estado = "completed"
+    return pago, None
+
+
+def _save_payment_enrollment(pago: object, course_code: str) -> None:
+    """Persist payment and activate the student's course enrollment."""
+    from now_lms.db import EstudianteCurso
+
+    if pago not in database.session:
+        database.session.add(pago)
+    database.session.flush()
+    enrollment = (
+        database.session.execute(
+            database.select(EstudianteCurso).filter_by(usuario=current_user.usuario, curso=course_code)
+        )
+        .scalars()
+        .first()
+    )
+    if enrollment:
+        enrollment.vigente = True
+        enrollment.pago = pago.id
+    else:
+        database.session.add(EstudianteCurso(curso=pago.curso, usuario=pago.usuario, vigente=True, pago=pago.id))
+    database.session.commit()
+
+
+def _update_coupon_usage(pago: object, course_code: str, order_id: str) -> None:
+    """Increment coupon usage after a successful payment."""
+    if not pago.descripcion or "Cupón aplicado:" not in pago.descripcion:
+        return
+    try:
+        from now_lms.db import Coupon
+
+        coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
+        coupon = database.session.execute(
+            database.select(Coupon).filter_by(course_id=course_code, code=coupon_code)
+        ).scalars().first()
+        if not coupon:
+            return
+        coupon.current_uses += 1
+        database.session.commit()
+        logging.info(f"Updated coupon {coupon_code} usage count to {coupon.current_uses}")
+    except Exception as exc:
+        logging.warning(f"Failed to update coupon usage for payment {order_id}: {exc}")
+
+
+def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskResponse, int]:
+    """Complete the local payment and enrollment transaction."""
+    order_id = payment_data["order_id"]
+    course_code = payment_data["course_code"]
+    pago, already_processed = _payment_record(payment_data)
+    if already_processed:
+        return already_processed
+    try:
+        _save_payment_enrollment(pago, course_code)
+    except OperationalError:
+        database.session.rollback()
+        logging.exception("Database error during enrollment")
+        return jsonify({"success": False, "error": "Error en la base de datos. Por favor contacte soporte."}), 500
+
+    _update_coupon_usage(pago, course_code, order_id)
+    from now_lms.vistas.courses import _crear_indice_avance_curso
+
+    _crear_indice_avance_curso(course_code)
+    logging.info(f"Payment {order_id} successfully processed for user {current_user.usuario}, course {course_code}")
+    return jsonify({
+        "success": True,
+        "message": "Pago completado exitosamente",
+        "redirect_url": url_for("course.tomar_curso", course_code=course_code),
+    }), 200
+
+
 @paypal.route("/confirm_payment", methods=["POST"])
 @login_required
 @perfil_requerido("student")
@@ -278,132 +381,7 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
         if payment_data is None:
             logging.error("Payment validation returned no data without an error response")
             return jsonify({"success": False, "error": "Invalid payment data"}), 400
-        order_id = payment_data["order_id"]
-        course_code = payment_data["course_code"]
-        pending_payment = payment_data["pending_payment"]
-        verified_amount = payment_data["verified_amount"]
-        verified_currency = payment_data["verified_currency"]
-
-        # Check if this payment has already been processed
-        existing_payment = (
-            database.session.execute(database.select(Pago).filter_by(referencia=order_id, curso=course_code)).scalars().first()
-        )
-
-        if existing_payment:
-            if existing_payment.estado == "completed":
-                logging.info(f"Payment {order_id} already completed for user {current_user.usuario}")
-                return (
-                    jsonify(
-                        {
-                            "success": True,
-                            "message": "Pago ya procesado anteriormente",
-                            "redirect_url": url_for("course.tomar_curso", course_code=course_code),
-                        }
-                    ),
-                    200,
-                )
-            # Update existing payment
-            existing_payment.estado = "completed"
-            pago = existing_payment
-        elif pending_payment:
-            # Reuse the pending payment record
-            pago = pending_payment
-            pago.referencia = order_id
-            pago.estado = "completed"
-            logging.info(
-                f"Reusing pending payment {pago.id} for order {order_id}, user {current_user.usuario}, course {course_code}"
-            )
-        else:
-            # Create new payment record
-            pago = Pago()
-            pago.usuario = current_user.usuario
-            pago.curso = course_code
-            pago.nombre = current_user.nombre
-            pago.apellido = current_user.apellido
-            pago.correo_electronico = current_user.correo_electronico
-            pago.referencia = order_id
-
-        # Update payment details
-        pago.monto = verified_amount
-        pago.moneda = verified_currency
-        pago.metodo = "paypal"
-        pago.estado = "completed"
-
-        try:
-            if not (existing_payment or pending_payment):
-                database.session.add(pago)
-            database.session.flush()
-
-            # Check if enrollment already exists
-            from now_lms.db import EstudianteCurso
-
-            existing_enrollment = (
-                database.session.execute(
-                    database.select(EstudianteCurso).filter_by(usuario=current_user.usuario, curso=course_code)
-                )
-                .scalars()
-                .first()
-            )
-
-            if not existing_enrollment:
-                # Create course enrollment
-                registro = EstudianteCurso(
-                    curso=pago.curso,
-                    usuario=pago.usuario,
-                    vigente=True,
-                    pago=pago.id,
-                )
-                database.session.add(registro)
-            else:
-                # Update existing enrollment
-                existing_enrollment.vigente = True
-                existing_enrollment.pago = pago.id
-
-            database.session.commit()
-
-            # Update coupon usage if payment had coupon applied
-            if pago.descripcion and "Cupón aplicado:" in pago.descripcion:
-                try:
-                    # Extract coupon code from payment description
-                    coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
-                    from now_lms.db import Coupon
-
-                    coupon = (
-                        database.session.execute(database.select(Coupon).filter_by(course_id=course_code, code=coupon_code))
-                        .scalars()
-                        .first()
-                    )
-
-                    if coupon:
-                        coupon.current_uses += 1
-                        database.session.commit()
-                        logging.info(f"Updated coupon {coupon_code} usage count to {coupon.current_uses}")
-                except Exception as e:
-                    logging.warning(f"Failed to update coupon usage for payment {order_id}: {e}")
-
-            # Create course progress index
-            from now_lms.vistas.courses import _crear_indice_avance_curso
-
-            _crear_indice_avance_curso(course_code)
-
-            logging.info(f"Payment {order_id} successfully processed for user {current_user.usuario}, course {course_code}")
-
-            return (
-                jsonify(
-                    {
-                        "success": True,
-                        "message": "Pago completado exitosamente",
-                        "redirect_url": url_for("course.tomar_curso", course_code=course_code),
-                    }
-                ),
-                200,
-            )
-
-        except OperationalError:
-            database.session.rollback()
-            logging.exception("Database error during enrollment")
-            return jsonify({"success": False, "error": "Error en la base de datos. Por favor contacte soporte."}), 500
-
+        return _process_confirmed_payment(payment_data)
     except Exception:
         logging.exception("Unexpected error in payment confirmation")
         return jsonify({"success": False, "error": "Error interno del servidor. Por favor contacte soporte."}), 500

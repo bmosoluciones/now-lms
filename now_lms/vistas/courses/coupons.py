@@ -74,6 +74,33 @@ def _validate_coupon_for_enrollment(
     return coupon, None, None
 
 
+def _coupon_form_error(form: CouponForm, course_obj, existing=None) -> str | None:
+    """Return the first validation error for a coupon form."""
+    if existing:
+        return "Ya existe un cupón con este código para este curso"
+    if form.discount_type.data == "percentage" and form.discount_value.data > 100:
+        return "El descuento porcentual no puede ser mayor al 100%"
+    if form.discount_type.data == "fixed" and form.discount_value.data > course_obj.precio:
+        return "El descuento fijo no puede ser mayor al precio del curso"
+    return None
+
+
+def _save_coupon(form: CouponForm, course_code: str, username: str, coupon=None) -> None:
+    """Persist a new or edited coupon."""
+    if coupon is None:
+        coupon = Coupon(course_id=course_code, created_by=username)
+    coupon.code = form.code.data.upper()
+    coupon.discount_type = form.discount_type.data
+    coupon.discount_value = float(form.discount_value.data)
+    coupon.max_uses = form.max_uses.data if form.max_uses.data else None
+    coupon.expires_at = form.expires_at.data if form.expires_at.data else None
+    if coupon.id:
+        coupon.modificado_por = username
+    else:
+        database.session.add(coupon)
+    database.session.commit()
+
+
 @course.route("/course/<course_code>/coupons/")
 @login_required
 @perfil_requerido("instructor")
@@ -112,31 +139,13 @@ def create_coupon(course_code: str) -> str | Response:
             .first()
         )
 
-        if existing:
-            flash("Ya existe un cupón con este código para este curso", "warning")
-            return render_template(TEMPLATE_COUPON_CREATE, curso=course_obj, form=form)
-
-        if form.discount_type.data == "percentage" and form.discount_value.data > 100:
-            flash("El descuento porcentual no puede ser mayor al 100%", "warning")
-            return render_template(TEMPLATE_COUPON_CREATE, curso=course_obj, form=form)
-
-        if form.discount_type.data == "fixed" and form.discount_value.data > course_obj.precio:
-            flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
+        validation_error = _coupon_form_error(form, course_obj, existing)
+        if validation_error:
+            flash(validation_error, "warning")
             return render_template(TEMPLATE_COUPON_CREATE, curso=course_obj, form=form)
 
         try:
-            coupon = Coupon(
-                course_id=course_code,
-                code=form.code.data.upper(),
-                discount_type=form.discount_type.data,
-                discount_value=float(form.discount_value.data),
-                max_uses=form.max_uses.data if form.max_uses.data else None,
-                expires_at=form.expires_at.data if form.expires_at.data else None,
-                created_by=current_user.usuario,
-            )
-
-            database.session.add(coupon)
-            database.session.commit()
+            _save_coupon(form, course_code, current_user.usuario)
 
             flash("Cupón creado exitosamente", "success")
             return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
@@ -177,27 +186,13 @@ def edit_coupon(course_code: str, coupon_id: int) -> str | Response:
             .first()
         )
 
-        if existing:
-            flash("Ya existe un cupón con este código para este curso", "warning")
-            return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
-
-        if form.discount_type.data == "percentage" and form.discount_value.data > 100:
-            flash("El descuento porcentual no puede ser mayor al 100%", "warning")
-            return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
-
-        if form.discount_type.data == "fixed" and form.discount_value.data > course_obj.precio:
-            flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
+        validation_error = _coupon_form_error(form, course_obj, existing)
+        if validation_error:
+            flash(validation_error, "warning")
             return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
 
         try:
-            coupon.code = form.code.data.upper()
-            coupon.discount_type = form.discount_type.data
-            coupon.discount_value = float(form.discount_value.data)
-            coupon.max_uses = form.max_uses.data if form.max_uses.data else None
-            coupon.expires_at = form.expires_at.data if form.expires_at.data else None
-            coupon.modificado_por = current_user.usuario
-
-            database.session.commit()
+            _save_coupon(form, course_code, current_user.usuario, coupon)
 
             flash("Cupón actualizado exitosamente", "success")
             return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))

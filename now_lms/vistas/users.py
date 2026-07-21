@@ -215,6 +215,23 @@ def check_mail(token: str) -> Response:
     return redirect(url_for("user.cerrar_sesion"))
 
 
+def _send_password_reset_message(usuario) -> None:
+    """Send the reset message when the account and mail service are eligible."""
+    if usuario and usuario.correo_electronico_verificado:
+        mail_config = database.session.execute(database.select(MailConfig)).first()
+        if mail_config and mail_config[0].email_verificado:
+            from now_lms.auth import send_password_reset_email
+
+            if send_password_reset_email(usuario):
+                flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
+            else:
+                flash("Error al enviar el correo de recuperación. Intente más tarde.", "error")
+        else:
+            flash("El sistema de correo no está configurado. Contacte al administrador.", "warning")
+    else:
+        flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
+
+
 @user.route("/user/forgot_password", methods=["GET", "POST"])
 def forgot_password() -> str | Response:
     """Solicitar recuperación de contraseña."""
@@ -228,21 +245,7 @@ def forgot_password() -> str | Response:
         usuario = database.session.execute(
             database.select(Usuario).filter_by(correo_electronico=form.email.data)
         ).scalar_one_or_none()
-        if usuario and usuario.correo_electronico_verificado:
-            # Check if email system is configured
-            mail_config = database.session.execute(database.select(MailConfig)).first()
-            if mail_config and mail_config[0].email_verificado:
-                from now_lms.auth import send_password_reset_email
-
-                if send_password_reset_email(usuario):
-                    flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
-                else:
-                    flash("Error al enviar el correo de recuperación. Intente más tarde.", "error")
-            else:
-                flash("El sistema de correo no está configurado. Contacte al administrador.", "warning")
-        else:
-            # For security, we show the same message even if user doesn't exist or email not verified
-            flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
+        _send_password_reset_message(usuario)
 
         return redirect(url_for(USER_LOGIN_ROUTE))
 
