@@ -1723,33 +1723,42 @@ def _generate_meet_ics_content(recurso: Any) -> str:
     return "\r\n".join(lines)
 
 
+def _meet_resource_context(course_code: str, codigo: str):
+    """Load and authorize a meeting resource and its course."""
+    recurso = database.session.execute(
+        database.select(CursoRecurso).filter(
+            CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+        )
+    ).scalars().first()
+    course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not recurso or not course_obj:
+        abort(404)
+    can_view = current_user.tipo in ("admin", "instructor") or (
+        current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code)
+    )
+    if not (can_view or recurso.publico):
+        abort(403)
+    return recurso, course_obj
+
+
+def _meet_calendar_details(recurso: Any, course_obj: Any):
+    """Return calendar timestamps and description for a meeting resource."""
+    if not recurso.fecha or not recurso.hora_inicio:
+        return None
+    start = datetime.combine(recurso.fecha, recurso.hora_inicio)
+    end = datetime.combine(recurso.fecha, recurso.hora_fin) if recurso.hora_fin else start + timedelta(hours=1)
+    description_parts = [f"Curso: {course_obj.nombre}"]
+    if recurso.descripcion:
+        description_parts.extend(["", recurso.descripcion])
+    if recurso.url:
+        description_parts.extend(["", f"Enlace: {recurso.url}"])
+    return start.strftime(ICS_DATETIME_FORMAT), end.strftime(ICS_DATETIME_FORMAT), "\n".join(description_parts)
+
+
 @resources.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics", methods=["GET"])
 @login_required
 def download_meet_calendar(course_code: str, codigo: str) -> Response:
-    recurso = (
-        database.session.execute(
-            database.select(CursoRecurso).filter(
-                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
-            )
-        )
-        .scalars()
-        .first()
-    )
-    if not recurso:
-        abort(404)
-
-    if current_user.is_authenticated:
-        if current_user.tipo in ("admin", "instructor"):
-            show_resource = True
-        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
-            show_resource = True
-        else:
-            show_resource = False
-    else:
-        show_resource = False
-
-    if not (show_resource or recurso.publico):
-        abort(403)
+    recurso, _ = _meet_resource_context(course_code, codigo)
 
     ics_content = _generate_meet_ics_content(recurso)
     filename = f"meet-{recurso.nombre[:20].replace(' ', '-')}-{recurso.id}.ics"
@@ -1764,53 +1773,10 @@ def download_meet_calendar(course_code: str, codigo: str) -> Response:
 @login_required
 def google_calendar_link(course_code: str, codigo: str) -> Response:
     from urllib.parse import quote
-
-    recurso = (
-        database.session.execute(
-            database.select(CursoRecurso).filter(
-                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
-            )
-        )
-        .scalars()
-        .first()
-    )
-    if not recurso:
-        abort(404)
-
-    course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
-    if not course_obj:
-        abort(404)
-
-    if current_user.is_authenticated:
-        if current_user.tipo in ("admin", "instructor"):
-            show_resource = True
-        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
-            show_resource = True
-        else:
-            show_resource = False
-    else:
-        show_resource = False
-
-    if not (show_resource or recurso.publico):
-        abort(403)
-
-    if recurso.fecha and recurso.hora_inicio:
-        start_datetime = datetime.combine(recurso.fecha, recurso.hora_inicio)
-        end_datetime = (
-            datetime.combine(recurso.fecha, recurso.hora_fin) if recurso.hora_fin else start_datetime + timedelta(hours=1)
-        )
-        start_str = start_datetime.strftime(ICS_DATETIME_FORMAT)
-        end_str = end_datetime.strftime(ICS_DATETIME_FORMAT)
-
-        description_parts = [f"Curso: {course_obj.nombre}"]
-        if recurso.descripcion:
-            description_parts.append("")
-            description_parts.append(recurso.descripcion)
-        if recurso.url:
-            description_parts.append("")
-            description_parts.append(f"Enlace: {recurso.url}")
-
-        description = "\n".join(description_parts)
+    recurso, course_obj = _meet_resource_context(course_code, codigo)
+    details = _meet_calendar_details(recurso, course_obj)
+    if details:
+        start_str, end_str, description = details
         google_url = (
             f"https://calendar.google.com/calendar/render?action=TEMPLATE"
             f"&text={quote(recurso.nombre)}"
@@ -1828,53 +1794,10 @@ def google_calendar_link(course_code: str, codigo: str) -> Response:
 @login_required
 def outlook_calendar_link(course_code: str, codigo: str) -> str | Response:
     from urllib.parse import quote
-
-    recurso = (
-        database.session.execute(
-            database.select(CursoRecurso).filter(
-                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
-            )
-        )
-        .scalars()
-        .first()
-    )
-    if not recurso:
-        abort(404)
-
-    course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
-    if not course_obj:
-        abort(404)
-
-    if current_user.is_authenticated:
-        if current_user.tipo in ("admin", "instructor"):
-            show_resource = True
-        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
-            show_resource = True
-        else:
-            show_resource = False
-    else:
-        show_resource = False
-
-    if not (show_resource or recurso.publico):
-        abort(403)
-
-    if recurso.fecha and recurso.hora_inicio:
-        start_datetime = datetime.combine(recurso.fecha, recurso.hora_inicio)
-        end_datetime = (
-            datetime.combine(recurso.fecha, recurso.hora_fin) if recurso.hora_fin else start_datetime + timedelta(hours=1)
-        )
-        start_str = start_datetime.strftime(ICS_DATETIME_FORMAT)
-        end_str = end_datetime.strftime(ICS_DATETIME_FORMAT)
-
-        description_parts = [f"Curso: {course_obj.nombre}"]
-        if recurso.descripcion:
-            description_parts.append("")
-            description_parts.append(recurso.descripcion)
-        if recurso.url:
-            description_parts.append("")
-            description_parts.append(f"Enlace: {recurso.url}")
-
-        description = "\n".join(description_parts)
+    recurso, course_obj = _meet_resource_context(course_code, codigo)
+    details = _meet_calendar_details(recurso, course_obj)
+    if details:
+        start_str, end_str, description = details
         outlook_url = (
             f"https://outlook.live.com/calendar/0/deeplink/compose?"
             f"subject={quote(recurso.nombre)}"
