@@ -158,17 +158,12 @@ NOW-LMS automatically generates a compliant `ads.txt` file at `/ads.txt` that me
 
 ## Theme Compatibility
 
-The AdSense integration works across all NOW-LMS themes:
+The AdSense integration works across all eight bundled NOW-LMS themes:
 
-- Amber
 - Cambridge
-- Classic
 - Corporative
 - Excel
-- Golden
 - Harvard
-- Invest (Finance)
-- Modern
 - NOW LMS (Default)
 - Ocean (Ocean Blue)
 - Oxford
