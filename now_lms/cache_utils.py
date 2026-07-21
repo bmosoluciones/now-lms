@@ -47,7 +47,8 @@ def get_memory_cache_config() -> dict[str, object]:
             os.makedirs(cache_dir, mode=0o700, exist_ok=True)
 
         # Test if we can write to this directory
-        with open(test_file := os.path.join(cache_dir, ".test_write"), "w", encoding="utf-8") as f:
+        test_file = os.path.join(cache_dir, ".test_write")
+        with open(test_file, "w", encoding="utf-8") as f:
             f.write("test")
         os.remove(test_file)
 
@@ -60,11 +61,12 @@ def get_memory_cache_config() -> dict[str, object]:
     # Second try: system temp directory
     if cache_dir is None:
         try:
-            if not os.path.exists(cache_dir := os.path.join(tempfile.gettempdir(), "now_lms_cache")):
+            cache_dir = os.path.join(tempfile.gettempdir(), "now_lms_cache")
+            if not os.path.exists(cache_dir):
                 os.makedirs(cache_dir, mode=0o700, exist_ok=True)
 
-            # Test write access
-            with open(test_file := os.path.join(cache_dir, ".test_write"), "w", encoding="utf-8") as f:
+            test_file = os.path.join(cache_dir, ".test_write")
+            with open(test_file, "w", encoding="utf-8") as f:
                 f.write("test")
             os.remove(test_file)
 
