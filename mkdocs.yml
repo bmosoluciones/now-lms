@@ -97,6 +97,7 @@ nav:
           - Database Queries Help: development/query_guide.md
           - Session Scoped Tests Fixtures: development/session_fixtures_guide.md
           - Python Features: development/python-features.md
+          - Adding a Language (i18n): development/i18n-add-a-language.md
     - About:
           - About: faq.md
           - Releases: release.md
