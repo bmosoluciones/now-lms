@@ -233,3 +233,49 @@ def cambiar_contrasena(ulid: str) -> str | Response:
             flash("Error al actualizar la contraseña.", "error")
 
     return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)
+
+
+@user_profile.route("/payments", methods=["GET"])
+@login_required
+def payments_history() -> str:
+    """Historial de pagos para cualquier usuario autenticado."""
+    from now_lms.db import Pago, Curso
+
+    results = database.session.execute(
+        database.select(Pago, Curso)
+        .outerjoin(Curso, Pago.curso == Curso.codigo)
+        .filter(Pago.usuario == current_user.usuario)
+        .order_by(Pago.fecha.desc())
+    ).all()
+
+    pago_rows = []
+    for pago, curso in results:
+        pago_rows.append({"pago": pago, "curso": curso})
+
+    return render_template("payments/history.html", pago_rows=pago_rows)
+
+
+@user_profile.route("/payments/receipt/<payment_id>", methods=["GET"])
+@login_required
+def download_receipt(payment_id: str) -> Response:
+    """Descargar recibo de pago sencillo en PDF."""
+    from now_lms.db import Pago, Curso
+    from flask_weasyprint import HTML, render_pdf
+
+    pago = database.session.execute(
+        database.select(Pago).filter_by(id=payment_id, usuario=current_user.usuario, estado="completed")
+    ).scalar_one_or_none()
+
+    if not pago:
+        abort(404)
+
+    curso = database.session.execute(
+        database.select(Curso).filter_by(codigo=pago.curso)
+    ).scalar_one_or_none()
+
+    html_content = render_template("payments/receipt_pdf.html", pago=pago, curso=curso)
+
+    return render_pdf(
+        HTML(string=html_content),
+        download_filename=f"receipt_{pago.referencia or pago.id}.pdf"
+    )

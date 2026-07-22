@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Added:
+ - Payment receipt generation: automatically sends a beautiful HTML receipt via email when PayPal payments are completed (if SMTP is configured).
+ - Student payment history: a new `/payments` dashboard where students can view their transaction history, and download a simple PDF copy of their receipt using Weasyprint.
+
 ## [1.2.4] - 2026-05-12
 
 ### Changed:
