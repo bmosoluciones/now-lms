@@ -1,0 +1,70 @@
+name: AI Code Review (MiniMax)
+
+# Intent Solutions deploy-line reviewer for now-lms. Runs the MiniMax-M3 reviewer
+# (our fork of the action, pinned) on PRs into the IS deploy branch only — this is
+# IS-specific CI that never merges upstream. Same-repo PRs get the secret; PRs from
+# outside forks do not (GitHub withholds secrets from fork PRs), so those simply skip.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [deploy/now-lms-fixed]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: MiniMax-M3 review
+    runs-on: ubuntu-latest
+    # Skip when the secret is unavailable (e.g. an external fork PR) so the job
+    # doesn't fail red on contributions we can't key.
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - name: Review
+        uses: jeremylongshore/minimax-code-review@v0.5.0
+        with:
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          MINIMAX_MODEL: MiniMax-M3
+          MINIMAX_BASE_URL: https://api.minimax.io/v1
+          MINIMAX_REVIEWER_NAME: "now-lms reviewer (MiniMax-M3)"
+          INCLUDE_PR_BODY: "true"
+          MAX_DIFF_CHARS: "80000"
+          EXCLUDE_PATTERNS: "*.lock,package-lock.json,poetry.lock,*.po,*.mo,*.pot,*.min.js,*.min.css,now_lms/static/vendor/**"
+          MINIMAX_SYSTEM_PROMPT: >-
+            You are the code reviewer for now-lms, a self-hosted Flask LMS in Python
+            (SQLAlchemy + Jinja/Bootstrap + Alpine.js, argon2 auth, JWT/Fernet reset
+            tokens, PayPal payments, WeasyPrint+qrcode certificates, flask-babel i18n).
+            It is an Intent Solutions FORK of an upstream project, deployed on
+            PostgreSQL (pg8000 driver, postgresql+pg8000://), NOT SQLite.
+
+
+            Review the diff and give clear, actionable, file:line feedback on:
+
+
+            1. SECURITY — auth/session handling (argon2, JWT/Fernet tokens), payment
+            flows, PII exposure, hardcoded secrets, SQL injection, and Jinja template
+            injection / autoescape bypass.
+
+            2. i18n DISCIPLINE — every user-facing string must go through gettext
+            (`_`, `_n`, `_l`). Flag any hardcoded English or Spanish string in Python,
+            templates, or JS; the app is fully internationalized and must stay that way.
+
+            3. POSTGRES MIGRATION SAFETY — this is the highest-risk area. Review Alembic
+            migrations and any create_all/init path for correctness on a FRESH Postgres
+            database: create_all-vs-Alembic ordering, idempotent/IF NOT EXISTS guards,
+            no unguarded CREATE TABLE collisions, and FK-before-table ordering (Postgres
+            enforces these strictly where SQLite silently tolerates them — first-boot on
+            clean Postgres has broken here before). Flag anything that only works on SQLite.
+
+            4. FORK HYGIENE — prefer changes that are upstream-friendly (contributable to
+            the parent project). Flag anything that needlessly diverges from upstream or
+            hardcodes Intent-Solutions-only assumptions into shared code paths.
+
+
+            Verify the PR's stated claims against the actual diff. Be specific and
+            concise; do not restate the diff. If the change is clean, say so briefly.
