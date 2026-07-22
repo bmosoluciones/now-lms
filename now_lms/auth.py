@@ -364,7 +364,7 @@ def send_password_reset_email(user) -> bool:
     config = row[0]
 
     msg = Message(
-        subject="Recuperación de Contraseña - NOW LMS",
+        subject="Password Recovery - NOW LMS",
         recipients=[user.correo_electronico],
         sender=((config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), config.MAIL_DEFAULT_SENDER),
     )
@@ -373,21 +373,21 @@ def send_password_reset_email(user) -> bool:
     msg.html = f"""
     <div class="container">
         <div class="header">
-          <h1>Recuperación de Contraseña</h1>
+          <h1>Password Recovery</h1>
         </div>
         <div class="content">
-          <p>Hola {user.nombre},</p>
-          <p>Has solicitado recuperar tu contraseña. Haz clic en el siguiente enlace para establecer una nueva contraseña:</p>
+          <p>Hello {user.nombre},</p>
+          <p>You requested to reset your password. Click the link below to set a new password:</p>
           <p>
-              <a href="{url}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Restablecer Contraseña</a>
+              <a href="{url}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Reset Password</a>
           </p>
-          <p>Si no puedes hacer clic en el botón, copia y pega la siguiente URL en tu navegador:</p>
+          <p>If you can't click the button, copy and paste the following URL into your browser:</p>
           <p>{url}</p>
-          <p>Este enlace expirará en 1 hora por seguridad.</p>
-          <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
+          <p>This link will expire in 1 hour for security reasons.</p>
+          <p>If you did not request this change, you can safely ignore this email.</p>
         </div>
         <div class="footer">
-          <p>Este es un mensaje automático. Por favor no respondas a este correo.</p>
+          <p>This is an automated message. Please do not reply to this email.</p>
         </div>
       </div>
     """

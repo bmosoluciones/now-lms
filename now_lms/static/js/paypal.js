@@ -39,10 +39,10 @@ function setPaymentState(state) {
     
     switch(state) {
         case PaymentState.PROCESSING:
-            showPaymentMessage('Procesando pago...', 'info');
+            showPaymentMessage('Processing payment...', 'info');
             break;
         case PaymentState.COMPLETED:
-            showPaymentMessage('¡Pago completado exitosamente! Redirigiendo...', 'success');
+            showPaymentMessage('Payment completed successfully! Redirecting...', 'success');
             break;
         case PaymentState.FAILED:
             break;
@@ -54,14 +54,14 @@ function initializePayPalButtons(courseCode, amount, currency = 'USD') {
     // Check if PayPal SDK is loaded
     if (typeof paypal === 'undefined') {
         console.error('PayPal SDK not loaded');
-        showPaymentMessage('Error: PayPal no está disponible. Por favor recargue la página.', 'error');
+        showPaymentMessage('Error: PayPal is not available. Please reload the page.', 'error');
         return;
     }
 
     // Validate required parameters
     if (!courseCode || !amount || amount <= 0) {
         console.error('Invalid payment parameters:', { courseCode, amount, currency });
-        showPaymentMessage('Error: Parámetros de pago inválidos.', 'error');
+        showPaymentMessage('Error: Invalid payment parameters.', 'error');
         return;
     }
 
@@ -77,13 +77,13 @@ function initializePayPalButtons(courseCode, amount, currency = 'USD') {
                             value: Number.parseFloat(amount).toFixed(2),
                             currency_code: currency
                         },
-                        description: `Pago por curso ${courseCode}`,
+                        description: `Payment for course ${courseCode}`,
                         custom_id: `${courseCode}-${Date.now()}`
                     }]
                 }).catch(error => {
                     console.error('Error creating PayPal order:', error);
                     setPaymentState(PaymentState.FAILED);
-                    showPaymentMessage('Error al crear la orden de pago. Por favor intente nuevamente.', 'error');
+                    showPaymentMessage('Error creating the payment order. Please try again.', 'error');
                     throw error;
                 });
             },
@@ -105,19 +105,19 @@ function initializePayPalButtons(courseCode, amount, currency = 'USD') {
                 }).catch(error => {
                     console.error('Payment capture failed:', error);
                     setPaymentState(PaymentState.FAILED);
-                    showPaymentMessage('Error al capturar el pago. Por favor contacte soporte.', 'error');
+                    showPaymentMessage('Error capturing the payment. Please contact support.', 'error');
                     throw error;
                 });
             },
             onError: function(err) {
                 console.error("PayPal error:", err);
                 setPaymentState(PaymentState.FAILED);
-                showPaymentMessage('Error de PayPal: ' + (err.message || 'Error desconocido'), 'error');
+                showPaymentMessage('PayPal error: ' + (err.message || 'Unknown error'), 'error');
             },
             onCancel: function(data) {
                 console.log('Payment cancelled by user:', data);
                 setPaymentState(PaymentState.IDLE);
-                showPaymentMessage('Pago cancelado por el usuario.', 'info');
+                showPaymentMessage('Payment cancelled by user.', 'info');
             }
         }).render('#paypal-button-container').then(function() {
             console.log('PayPal buttons rendered successfully');
@@ -128,12 +128,12 @@ function initializePayPalButtons(courseCode, amount, currency = 'USD') {
             }
         }).catch(function(error) {
             console.error('Error rendering PayPal buttons:', error);
-            showPaymentMessage('Error al cargar los botones de PayPal. Por favor recargue la página.', 'error');
+            showPaymentMessage('Error loading PayPal buttons. Please reload the page.', 'error');
         });
     } catch (error) {
         console.error('Error initializing PayPal buttons:', error);
         setPaymentState(PaymentState.FAILED);
-        showPaymentMessage('Error al inicializar PayPal. Por favor recargue la página.', 'error');
+        showPaymentMessage('Error initializing PayPal. Please reload the page.', 'error');
     }
 }
 
@@ -175,8 +175,8 @@ async function confirmPaymentWithRetry(paymentData, maxRetries = 3) {
             if (attempt === maxRetries) {
                 setPaymentState(PaymentState.FAILED);
                 showPaymentMessage(
-                    `Error al confirmar el pago después de ${maxRetries} intentos. ` +
-                    `Por favor contacte soporte con el ID de orden: ${paymentData.orderID}`,
+                    `Error confirming payment after ${maxRetries} attempts. ` +
+                    `Please contact support with order ID: ${paymentData.orderID}`,
                     'error'
                 );
                 throw error;
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 100); // Small delay to ensure DOM is ready
             });
         } else {
-            showPaymentMessage('Error: Datos del curso inválidos.', 'error');
+            showPaymentMessage('Error: Invalid course data.', 'error');
         }
     }
 });
@@ -299,6 +299,6 @@ document.addEventListener('visibilitychange', function() {
         console.log('Page hidden during payment processing');
     } else if (!document.hidden && currentPaymentState === PaymentState.PROCESSING) {
         console.log('Page visible again - payment may still be processing');
-        showPaymentMessage('Verificando estado del pago...', 'info');
+        showPaymentMessage('Checking payment status...', 'info');
     }
 });
