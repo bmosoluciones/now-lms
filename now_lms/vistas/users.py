@@ -33,7 +33,7 @@ from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
 
 
 # Constants
-USER_ALREADY_LOGGED_IN_MSG = "Su usuario ya tiene una sesión iniciada."
+USER_ALREADY_LOGGED_IN_MSG = "You already have an active session."
 ACCOUNT_CREATION_ERROR_MSG = "Error al crear la cuenta."
 USER_LOGIN_ROUTE = "user.inicio_sesion"
 

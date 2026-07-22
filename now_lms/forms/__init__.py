@@ -361,7 +361,7 @@ class ConfigForm(FlaskForm):
     # Localización
     moneda = SelectField(_("Moneda"), choices=[], validators=[])
     lang = SelectField(
-        _("Idioma"), choices=[("es", "Español"), ("en", "English"), ("pt_BR", "Português do Brasil")], validators=[]
+        _("Idioma"), choices=[("es", "Spanish"), ("en", "English"), ("pt_BR", "Portuguese (Brazil)")], validators=[]
     )
     timezone = SelectField(_("Zona Horaria"), choices=[], validators=[])
 
@@ -1116,6 +1116,6 @@ class StaticPageFooterForm(FlaskForm):
 class ExternalApiKeyForm(FlaskForm):
     """Form to create a new external API key."""
 
-    name = StringField(_("Nombre de la integración"), validators=[DataRequired(), Length(max=100)])
+    name = StringField(_("Integration name"), validators=[DataRequired(), Length(max=100)])
     allowed_origin = StringField(_("Origen permitido (opcional)"), validators=[Optional(), Length(max=255)])
     notes = TextAreaField(_("Notas"), validators=[Optional()])
