@@ -10482,6 +10482,618 @@ msgstr "External Link"
 msgid "enlace externo:"
 msgstr "external link:"
 
+msgid "Configuración de PayPal válida"
+msgstr "PayPal configuration valid"
+
+msgid "Pago ya procesado anteriormente"
+msgstr "Payment already processed previously"
+
+msgid "Error en la base de datos. Por favor contacte soporte."
+msgstr "Database error. Please contact support."
+
+msgid "Pago completado exitosamente"
+msgstr "Payment completed successfully"
+
+msgid "Error interno del servidor. Por favor contacte soporte."
+msgstr "Internal server error. Please contact support."
+
+msgid "Pago no encontrado o ya procesado."
+msgstr "Payment not found or already processed."
+
+msgid "Error al reanudar el pago."
+msgstr "Error resuming payment."
+
+msgid "Curso no encontrado."
+msgstr "Course not found."
+
+msgid "Este curso es gratuito."
+msgstr "This course is free."
+
+msgid "Los pagos con PayPal no están habilitados."
+msgstr "PayPal payments are not enabled."
+
+msgid "No se ha seleccionado ningún archivo"
+msgstr "No file has been selected"
+
+msgid "Certificado de finalización emitido."
+msgstr "Completion certificate issued."
+
+msgid "Curso completado"
+msgstr "Course completed"
+
+msgid "Este curso cuenta con certificación al finalizar exitosamente."
+msgstr "This course includes certification upon successful completion."
+
+msgid "Usuario Agregado Correctamente."
+msgstr "User added successfully."
+
+msgid "No se pudo agregar al usuario."
+msgstr "Could not add user."
+
+msgid "No tiene permisos para acceder a este curso."
+msgstr "You do not have permission to access this course."
+
+msgid "Sección no encontrada."
+msgstr "Section not found."
+
+msgid "Evaluación creada correctamente."
+msgstr "Evaluation created successfully."
+
+msgid "Error al crear la evaluación."
+msgstr "Error creating the evaluation."
+
+msgid "No tiene permisos para editar esta evaluación."
+msgstr "You do not have permission to edit this evaluation."
+
+msgid "Evaluación actualizada correctamente."
+msgstr "Evaluation updated successfully."
+
+msgid "Error al actualizar la evaluación."
+msgstr "Error updating the evaluation."
+
+msgid "No tiene permisos para modificar esta evaluación."
+msgstr "You do not have permission to modify this evaluation."
+
+msgid "Evaluación deshabilitada."
+msgstr "Evaluation disabled."
+
+msgid "Evaluación habilitada."
+msgstr "Evaluation enabled."
+
+msgid "Error al cambiar el estado de la evaluación."
+msgstr "Error changing the evaluation status."
+
+msgid "Pregunta creada correctamente."
+msgstr "Question created successfully."
+
+msgid "Error al crear la pregunta."
+msgstr "Error creating the question."
+
+msgid "No tiene permisos para editar esta pregunta."
+msgstr "You do not have permission to edit this question."
+
+msgid "Pregunta actualizada correctamente."
+msgstr "Question updated successfully."
+
+msgid "Error al actualizar la pregunta."
+msgstr "Error updating the question."
+
+msgid "No tiene permisos para ver los resultados de esta evaluación."
+msgstr "You do not have permission to view the results of this evaluation."
+
+msgid "Las preguntas de verdadero/falso solo pueden tener 2 opciones."
+msgstr "True/false questions can only have 2 options."
+
+msgid "Opción agregada correctamente."
+msgstr "Option added successfully."
+
+msgid "Error al agregar la opción."
+msgstr "Error adding the option."
+
+msgid "Opción no encontrada."
+msgstr "Option not found."
+
+msgid "No tiene permisos para editar esta opción."
+msgstr "You do not have permission to edit this option."
+
+msgid "Opción actualizada correctamente."
+msgstr "Option updated successfully."
+
+msgid "Error al actualizar la opción."
+msgstr "Error updating the option."
+
+msgid "No tiene permisos para eliminar esta opción."
+msgstr "You do not have permission to delete this option."
+
+msgid ""
+"No se puede eliminar esta opción. Las preguntas necesitan al menos 2 "
+"opciones."
+msgstr "This option cannot be deleted. Questions need at least 2 options."
+
+msgid "Opción eliminada correctamente."
+msgstr "Option deleted successfully."
+
+msgid "Error al eliminar la opción."
+msgstr "Error deleting the option."
+
+msgid "No tiene permisos para eliminar esta pregunta."
+msgstr "You do not have permission to delete this question."
+
+msgid "Pregunta eliminada correctamente."
+msgstr "Question deleted successfully."
+
+msgid "Error al eliminar la pregunta."
+msgstr "Error deleting the question."
+
+msgid "Imagen de perfil actualizada."
+msgstr "Profile image updated."
+
+msgid "Favor verifique su nuevo correo electronico."
+msgstr "Please verify your new email address."
+
+msgid "Pefil actualizado."
+msgstr "Profile updated."
+
+msgid "Error al editar el perfil."
+msgstr "Error editing the profile."
+
+msgid "La contraseña actual es incorrecta."
+msgstr "The current password is incorrect."
+
+msgid "Las nuevas contraseñas no coinciden."
+msgstr "The new passwords do not match."
+
+msgid "Contraseña actualizada exitosamente."
+msgstr "Password updated successfully."
+
+msgid "Error al actualizar la contraseña."
+msgstr "Error updating the password."
+
+msgid "Anuncio global creado exitosamente."
+msgstr "Global announcement created successfully."
+
+msgid "Anuncio no encontrado o no es un anuncio global."
+msgstr "Announcement not found or is not a global announcement."
+
+msgid "Anuncio global actualizado exitosamente."
+msgstr "Global announcement updated successfully."
+
+msgid "Anuncio global eliminado exitosamente."
+msgstr "Global announcement deleted successfully."
+
+msgid "No tienes acceso a los anuncios de este curso."
+msgstr "You do not have access to this course's announcements."
+
+msgid ""
+"Su correo electrónico no ha sido verificado. Su acceso a la plataforma está "
+"limitado. Por favor, verifique su correo electrónico para acceder a todas "
+"las funcionalidades."
+msgstr ""
+"Your email has not been verified. Your access to the platform is limited. "
+"Please verify your email to access all features."
+
+msgid "Su cuenta esta inactiva."
+msgstr "Your account is inactive."
+
+msgid ""
+"Su correo electrónico no ha sido verificado. Su acceso a algunas "
+"funcionalidades está limitado."
+msgstr ""
+"Your email has not been verified. Your access to some features is limited."
+
+msgid "Inicio de Sesion Incorrecto."
+msgstr "Incorrect login."
+
+msgid "Usted ya posee una cuenta en el sistema."
+msgstr "You already have an account in the system."
+
+msgid "Error al crear la cuenta."
+msgstr "Error creating the account."
+
+msgid "Usuario creado exitosamente."
+msgstr "User created successfully."
+
+msgid "Correo verificado exitosamente. Ya puede iniciar sesión en el sistema"
+msgstr "Email verified successfully. You can now log in to the system."
+
+msgid "Token de verificación invalido."
+msgstr "Invalid verification token."
+
+msgid ""
+"Se ha enviado un correo con instrucciones para recuperar su contraseña."
+msgstr "An email with instructions to recover your password has been sent."
+
+msgid "Error al enviar el correo de recuperación. Intente más tarde."
+msgstr "Error sending the recovery email. Please try again later."
+
+msgid "El sistema de correo no está configurado. Contacte al administrador."
+msgstr "The email system is not configured. Please contact the administrator."
+
+msgid "El enlace de recuperación es inválido o ha expirado."
+msgstr "The recovery link is invalid or has expired."
+
+msgid "Contraseña actualizada exitosamente. Ya puede iniciar sesión."
+msgstr "Password updated successfully. You can now log in."
+
+msgid "Error al inscribir al estudiante en el programa."
+msgstr "Error enrolling the student in the program."
+
+msgid "Los comentarios están deshabilitados para esta entrada."
+msgstr "Comments are disabled for this entry."
+
+msgid "Comentario agregado exitosamente."
+msgstr "Comment added successfully."
+
+msgid "Error al agregar el comentario."
+msgstr "Error adding the comment."
+
+msgid "Comentario marcado como inapropiado."
+msgstr "Comment flagged as inappropriate."
+
+msgid "Tipo de archivo no permitido para la imagen de portada."
+msgstr "File type not allowed for the cover image."
+
+msgid "Entrada de blog creada exitosamente."
+msgstr "Blog post created successfully."
+
+msgid "Entrada de blog actualizada exitosamente."
+msgstr "Blog post updated successfully."
+
+msgid "Una etiqueta con ese nombre ya existe."
+msgstr "A tag with that name already exists."
+
+msgid "Etiqueta creada exitosamente."
+msgstr "Tag created successfully."
+
+msgid "Comentario baneado."
+msgstr "Comment banned."
+
+msgid "Comentario eliminado."
+msgstr "Comment deleted."
+
+msgid "Hubo en error al crear el registro de pago."
+msgstr "There was an error creating the payment record."
+
+msgid "Error al procesar el pago"
+msgstr "Error processing the payment."
+
+msgid ""
+"Debe verificar su correo electrónico para inscribirse en cursos de pago o "
+"usar cupones. Los cursos gratuitos están disponibles sin verificación."
+msgstr ""
+"You must verify your email to enroll in paid courses or use coupons. Free "
+"courses are available without verification."
+
+msgid "Ya estás inscrito en esta clase magistral."
+msgstr "You are already enrolled in this master class."
+
+msgid "Te has inscrito exitosamente en la clase magistral."
+msgstr "You have enrolled successfully in the master class."
+
+msgid "Clase magistral creada exitosamente."
+msgstr "Master class created successfully."
+
+msgid "Clase magistral actualizada exitosamente."
+msgstr "Master class updated successfully."
+
+msgid "Curso creado exitosamente."
+msgstr "Course created successfully."
+
+msgid "Hubo en error al crear su curso."
+msgstr "There was an error creating your course."
+
+msgid "Curso actualizado exitosamente."
+msgstr "Course updated successfully."
+
+msgid "Hubo en error al actualizar el curso."
+msgstr "There was an error updating the course."
+
+msgid "El formulario tiene errores. Revisa los campos marcados."
+msgstr "The form has errors. Review the marked fields."
+
+msgid "Sección agregada correctamente al curso."
+msgstr "Section added successfully to the course."
+
+msgid "Hubo en error al crear la seccion."
+msgstr "There was an error creating the section."
+
+msgid "Sección modificada correctamente."
+msgstr "Section modified successfully."
+
+msgid "Hubo en error al actualizar la seccion."
+msgstr "There was an error updating the section."
+
+msgid "No tienes cursos asignados para crear anuncios."
+msgstr "You have no courses assigned to create announcements."
+
+msgid "No tienes permisos para crear anuncios en ese curso."
+msgstr "You do not have permission to create announcements in that course."
+
+msgid "Anuncio de curso creado exitosamente."
+msgstr "Course announcement created successfully."
+
+msgid "Anuncio no encontrado o no es un anuncio de curso."
+msgstr "Announcement not found or is not a course announcement."
+
+msgid "No tienes permisos para editar este anuncio."
+msgstr "You do not have permission to edit this announcement."
+
+msgid "No tienes permisos para asignar este anuncio a ese curso."
+msgstr ""
+"You do not have permission to assign this announcement to that course."
+
+msgid "Anuncio de curso actualizado exitosamente."
+msgstr "Course announcement updated successfully."
+
+msgid "No tienes permisos para eliminar este anuncio."
+msgstr "You do not have permission to delete this announcement."
+
+msgid "Anuncio de curso eliminado exitosamente."
+msgstr "Course announcement deleted successfully."
+
+msgid "Mensaje enviado correctamente."
+msgstr "Message sent successfully."
+
+msgid "No se puede responder a un hilo cerrado."
+msgstr "You cannot reply to a closed thread."
+
+msgid "Respuesta enviada correctamente."
+msgstr "Reply sent successfully."
+
+msgid "Transición de estado no válida."
+msgstr "Invalid status transition."
+
+msgid "Mensaje reportado correctamente."
+msgstr "Message reported successfully."
+
+msgid "Debe seleccionar un mensaje y proporcionar un motivo."
+msgstr "You must select a message and provide a reason."
+
+msgid "Hilo de conversación no encontrado."
+msgstr "Conversation thread not found."
+
+msgid "Mensaje reportado correctamente. El administrador será notificado."
+msgstr "Message reported successfully. The administrator will be notified."
+
+msgid "Nuevo Recurso creado correctamente."
+msgstr "New resource created successfully."
+
+msgid "Hubo un error al crear el recurso."
+msgstr "There was an error creating the resource."
+
+msgid "Recurso actualizado correctamente."
+msgstr "Resource updated successfully."
+
+msgid "Error al editar el recurso."
+msgstr "Error editing the resource."
+
+msgid "Grupo creado correctamente"
+msgstr "Group created successfully"
+
+msgid "Error al crear el nuevo grupo."
+msgstr "There was an error creating the new group."
+
+msgid "Recurso marcado como completado."
+msgstr "Resource marked as completed."
+
+msgid ""
+"La subida de archivos descargables no está habilitada por el administrador."
+msgstr "Downloadable file uploads are not enabled by the administrator."
+
+msgid "Tipo de archivo no permitido."
+msgstr "File type not allowed."
+
+msgid "Presentación no encontrada."
+msgstr "Presentation not found."
+
+msgid "Presentación actualizada correctamente."
+msgstr "Presentation updated successfully."
+
+msgid "La subida de archivos no está habilitada por el administrador."
+msgstr "File uploads are not enabled by the administrator."
+
+msgid "No se puede crear el evento: faltan datos de fecha/hora"
+msgstr "Cannot create the event: date/time information is missing"
+
+msgid "El foro no está habilitado para este curso."
+msgstr "The forum is not enabled for this course."
+
+msgid "No se pueden crear mensajes en cursos finalizados."
+msgstr "Messages cannot be created in finished courses."
+
+msgid "Mensaje creado exitosamente."
+msgstr "Message created successfully."
+
+msgid "No se puede responder a este mensaje."
+msgstr "You cannot reply to this message."
+
+msgid "Respuesta enviada exitosamente."
+msgstr "Reply sent successfully."
+
+msgid "Mensaje cerrado exitosamente."
+msgstr "Message closed successfully."
+
+msgid "No se pueden abrir mensajes en cursos finalizados."
+msgstr "Messages cannot be opened in finished courses."
+
+msgid "Mensaje abierto exitosamente."
+msgstr "Message opened successfully."
+
+msgid "No tiene acceso a esta evaluación."
+msgstr "You do not have access to this evaluation."
+
+msgid "No puede realizar más intentos en esta evaluación."
+msgstr "You cannot make any more attempts on this evaluation."
+
+msgid "Aún tiene intentos disponibles."
+msgstr "You still have attempts available."
+
+msgid "Ya ha aprobado esta evaluación."
+msgstr "You have already passed this evaluation."
+
+msgid "Ya tiene una solicitud pendiente para esta evaluación."
+msgstr "You already have a pending request for this evaluation."
+
+msgid "Nueva etiqueta creada."
+msgstr "New tag created."
+
+msgid "Hubo un error al crear la etiqueta."
+msgstr "There was an error creating the tag."
+
+msgid "Etiqueta editada correctamente."
+msgstr "Tag edited successfully."
+
+msgid "No se puedo editar la etiqueta."
+msgstr "The tag could not be edited."
+
+msgid "Curso no encontrado"
+msgstr "Course not found"
+
+msgid "Los cupones solo están disponibles para cursos pagados"
+msgstr "Coupons are only available for paid courses"
+
+msgid "Solo el instructor del curso puede gestionar cupones"
+msgstr "Only the course instructor can manage coupons"
+
+msgid "No se proporcionó código de cupón"
+msgstr "No coupon code was provided"
+
+msgid "Código de cupón inválido"
+msgstr "Invalid coupon code"
+
+msgid "No puede aplicar cupón - ya está inscrito en el curso"
+msgstr "Cannot apply coupon - you are already enrolled in the course"
+
+msgid ""
+"Debe verificar su correo electrónico antes de usar cupones de descuento"
+msgstr "You must verify your email before using discount coupons"
+
+msgid "Ya existe un cupón con este código para este curso"
+msgstr "A coupon with this code already exists for this course"
+
+msgid "El descuento porcentual no puede ser mayor al 100%"
+msgstr "The percentage discount cannot be greater than 100%"
+
+msgid "El descuento fijo no puede ser mayor al precio del curso"
+msgstr "The fixed discount cannot be greater than the course price"
+
+msgid "Cupón creado exitosamente"
+msgstr "Coupon created successfully"
+
+msgid "Error al crear el cupón"
+msgstr "Error creating the coupon"
+
+msgid "Cupón no encontrado"
+msgstr "Coupon not found"
+
+msgid "Cupón actualizado exitosamente"
+msgstr "Coupon updated successfully"
+
+msgid "Error al actualizar el cupón"
+msgstr "Error updating the coupon"
+
+msgid "Cupón eliminado exitosamente"
+msgstr "Coupon deleted successfully"
+
+msgid "Error al eliminar el cupón"
+msgstr "Error deleting the coupon"
+
+msgid "Usuario definido como activo"
+msgstr "User set as active"
+
+msgid "Usuario ya se encuentra definido como activo"
+msgstr "User is already set as active"
+
+msgid "Usuario definido como inactivo"
+msgstr "User set as inactive"
+
+msgid "Usuario ya se encuentra definido como inactivo"
+msgstr "User is already set as inactive"
+
+msgid "Usuario eliminado correctamente."
+msgstr "User deleted successfully."
+
+msgid "El rango de fechas no es válido."
+msgstr "The date range is not valid."
+
+msgid "Nuevo certificado creado correctamente."
+msgstr "New certificate created successfully."
+
+msgid "Hubo un error al crear el certificado."
+msgstr "There was an error creating the certificate."
+
+msgid "Certificado editado correctamente."
+msgstr "Certificate edited successfully."
+
+msgid "No se puedo editar el certificado."
+msgstr "The certificate could not be edited."
+
+msgid "Por favor selecciona un curso."
+msgstr "Please select a course."
+
+msgid "Por favor selecciona una clase magistral."
+msgstr "Please select a master class."
+
+msgid "El usuario debe estar inscrito y confirmado en la clase magistral."
+msgstr "The user must be enrolled and confirmed in the master class."
+
+msgid "Certificado generado correctamente."
+msgstr "Certificate generated successfully."
+
+msgid "Hubo en error al crear la plantilla."
+msgstr "There was an error creating the template."
+
+msgid "Nueva categoria creada."
+msgstr "New category created."
+
+msgid "Hubo un error al crear la categoria."
+msgstr "There was an error creating the category."
+
+msgid "Categoria editada correctamente."
+msgstr "Category edited successfully."
+
+msgid "No se puedo editar la categoria."
+msgstr "The category could not be edited."
+
+msgid "Debe completar todos los recursos del curso."
+msgstr "You must complete all course resources."
+
+msgid "Cumple todos los requisitos para recibir el certificado."
+msgstr "You meet all requirements to receive the certificate."
+
+msgid "Evaluación eliminada correctamente."
+msgstr "Evaluation deleted successfully."
+
+msgid "Evaluación enviada correctamente."
+msgstr "Evaluation submitted successfully."
+
+msgid "Evaluación no encontrada."
+msgstr "Evaluation not found."
+
+msgid "Hubo en error al crear el recurso."
+msgstr "There was an error creating the resource."
+
+msgid "Hubo un error al actualizar el recurso."
+msgstr "There was an error updating the resource."
+
+msgid "No se encuentra autorizado a acceder al recurso solicitado."
+msgstr "You are not authorized to access the requested resource."
+
+msgid "Pregunta no encontrada."
+msgstr "Question not found."
+
+msgid "Recurso agregado correctamente al curso."
+msgstr "Resource added to the course successfully."
+
+msgid "Recurso no encontrado."
+msgstr "Resource not found."
+
+msgid "Solicitud aprobada. El estudiante puede realizar un nuevo intento."
+msgstr "Request approved. The student can make a new attempt."
+
+msgid "Solicitud de reabrir evaluación enviada."
+msgstr "Request to reopen the evaluation submitted."
+
 #~ msgid "Ver Certicado"
 #~ msgstr "View Certificate"
 
