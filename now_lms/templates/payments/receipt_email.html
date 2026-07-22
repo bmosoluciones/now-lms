@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="{{ current_locale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('Recibo de Pago') }}</title>
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif; background-color: #f7fafc; margin: 0; padding: 20px; color: #2d3748;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+        <!-- Header -->
+        <tr>
+            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px;">{{ _('Recibo de Pago') }}</h1>
+                <p style="color: #e2e8f0; margin: 5px 0 0 0; font-size: 14px;">{{ _('Transacción completada exitosamente') }}</p>
+            </td>
+        </tr>
+        <!-- Content -->
+        <tr>
+            <td style="padding: 30px;">
+                <p style="font-size: 16px; margin-top: 0;">{{ _('Hola') }} <strong>{{ pago.nombre }}</strong>,</p>
+                <p style="font-size: 14px; line-height: 1.6; color: #4a5568;">
+                    {{ _('Hemos recibido correctamente tu pago. A continuación encontrarás el resumen de tu transacción.') }}
+                </p>
+
+                <!-- Transaction Details Block -->
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f7fafc; border-radius: 6px; padding: 20px; margin: 20px 0; border: 1px solid #edf2f7; font-size: 14px;">
+                    <tr>
+                        <td style="padding-bottom: 10px; color: #718096;"><strong>{{ _('ID Transacción') }}:</strong></td>
+                        <td style="padding-bottom: 10px; text-align: right; font-family: monospace;">{{ pago.referencia or pago.id }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-bottom: 10px; color: #718096;"><strong>{{ _('Fecha') }}:</strong></td>
+                        <td style="padding-bottom: 10px; text-align: right;">{{ pago.fecha.strftime('%Y-%m-%d %H:%M') if pago.fecha else '' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-bottom: 10px; color: #718096;"><strong>{{ _('Método de Pago') }}:</strong></td>
+                        <td style="padding-bottom: 10px; text-align: right;">{{ pago.metodo | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #718096;"><strong>{{ _('Estado') }}:</strong></td>
+                        <td style="text-align: right; color: #38a169; font-weight: bold;">{{ _('Completado') }}</td>
+                    </tr>
+                </table>
+
+                <!-- Summary Table -->
+                <h3 style="font-size: 16px; color: #4a5568; margin: 25px 0 10px 0; border-bottom: 2px solid #edf2f7; padding-bottom: 8px;">{{ _('Resumen de Compra') }}</h3>
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px;">
+                    <tr>
+                        <td style="padding: 10px 0;">
+                            <strong>{{ curso.nombre if curso else pago.curso }}</strong><br>
+                            <span style="font-size: 12px; color: #718096;">{{ _('Curso en Línea') }}</span>
+                        </td>
+                        <td style="text-align: right; padding: 10px 0; font-weight: bold; font-size: 16px;">
+                            {{ pago.monto }} {{ pago.moneda }}
+                        </td>
+                    </tr>
+                    <tr style="border-top: 1px solid #edf2f7;">
+                        <td style="padding: 15px 0 5px 0; text-align: right; font-weight: bold;">{{ _('Total Pagado') }}:</td>
+                        <td style="padding: 15px 0 5px 0; text-align: right; font-weight: bold; font-size: 18px; color: #667eea;">
+                            {{ pago.monto }} {{ pago.moneda }}
+                        </td>
+                    </tr>
+                </table>
+
+                <p style="font-size: 14px; line-height: 1.6; color: #4a5568; margin-top: 30px;">
+                    {{ _('Ya tienes acceso completo al curso. Haz clic en el siguiente enlace para comenzar tu aprendizaje:') }}
+                </p>
+
+                <!-- Call to Action -->
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 20px 0 30px 0; text-align: center;">
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('course.tomar_curso', course_code=pago.curso, _external=True) }}" style="background-color: #667eea; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">
+                                {{ _('Comenzar Curso') }}
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+
+                <p style="font-size: 12px; color: #a0aec0; text-align: center; margin-top: 30px; border-top: 1px solid #edf2f7; padding-top: 20px;">
+                    {{ _('Gracias por formar parte de nuestra comunidad.') }}<br>
+                    <strong>{{ config().titulo or 'NOW LMS' }}</strong>
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

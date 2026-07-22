@@ -119,6 +119,21 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <div class="card border-secondary">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-credit-card fa-2x text-secondary mb-2"></i>
+                                                <h5>{{ _('Historial de Pagos') }}</h5>
+                                                <p class="text-muted">{{ _('Consulta tus transacciones y descarga tus recibos') }}</p>
+                                                <a href="{{ url_for('user_profile.payments_history') }}" class="btn btn-secondary"
+                                                    >{{ _('Ver Pagos') }}</a
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -143,6 +158,9 @@
                                     </a>
                                     <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-success btn-sm">
                                         <i class="fas fa-calendar"></i> {{ _('Mi Calendario') }}
+                                    </a>
+                                    <a href="{{ url_for('user_profile.payments_history') }}" class="btn btn-outline-warning btn-sm">
+                                        <i class="bi bi-wallet2 me-2"></i> {{ _('Historial de Pagos') }}
                                     </a>
                                     <a href="{{ url_for('calendar.export_ics') }}" class="btn btn-outline-info btn-sm">
                                         <i class="fas fa-download"></i> {{ _('Exportar Calendario') }}
