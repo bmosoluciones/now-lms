@@ -1,0 +1,105 @@
+{# Intent Solutions Learn — shared auth-page branding (Charcoal Slate).
+   Mirrors intentsolutions.io / the intent_learn front door: zinc-950 ground,
+   ember #F97316 accent, Syne display + Inter body (loaded by the theme's
+   headertags()). Scoped under body.isl-auth so it restyles the existing
+   Bootstrap .form-control/.btn-primary without touching the form markup. #}
+<style>
+    body.isl-auth {
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background: #18181b; /* zinc-900 */
+        background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(249, 115, 22, 0.16), transparent 70%);
+        color: #fafafa; /* zinc-50 */
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+    }
+    .isl-auth-card {
+        width: 100%;
+        max-width: 25rem;
+        background: #09090b; /* zinc-950 */
+        border: 1px solid #27272a; /* zinc-800 */
+        border-radius: 1rem;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+        text-align: center;
+    }
+    .isl-auth-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+        text-decoration: none;
+    }
+    .isl-auth-brand img { width: 2.25rem; height: 2.25rem; }
+    .isl-auth-brand span {
+        font-family: "Syne", system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 1.15rem;
+        letter-spacing: -0.01em;
+        color: #fafafa;
+    }
+    .isl-auth-brand span b { color: #f97316; font-weight: 800; } /* ember */
+    .isl-auth-title {
+        font-family: "Syne", system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 1.4rem;
+        margin: 0 0 0.4rem;
+        color: #fafafa;
+    }
+    .isl-auth-sub { color: #a1a1aa; font-size: 0.9rem; margin: 0 0 1.5rem; } /* zinc-400 */
+    body.isl-auth .form-control {
+        display: block;
+        width: 100%;
+        background: #18181b;
+        border: 1px solid #3f3f46; /* zinc-700 */
+        border-radius: 0.6rem;
+        color: #fafafa;
+        padding: 0.7rem 0.9rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    body.isl-auth .form-control::placeholder { color: #71717a; } /* zinc-500 */
+    body.isl-auth .form-control:focus {
+        outline: none;
+        border-color: #f97316;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25);
+    }
+    body.isl-auth .btn-primary {
+        display: block;
+        width: 100%;
+        background: #f97316;
+        border: none;
+        border-radius: 0.6rem;
+        color: #09090b;
+        font-weight: 700;
+        font-size: 0.98rem;
+        padding: 0.75rem 1rem;
+        margin-top: 0.5rem;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    body.isl-auth .btn-primary:hover,
+    body.isl-auth .btn-primary:focus { background: #fb923c; } /* ember-hi */
+    body.isl-auth a { color: #fb923c; }
+    body.isl-auth a:hover { color: #f97316; }
+    .isl-auth-links { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem; }
+    body.isl-auth .alert {
+        border-radius: 0.6rem;
+        padding: 0.65rem 0.9rem;
+        margin-bottom: 0.85rem;
+        font-size: 0.9rem;
+        border: 1px solid transparent;
+        text-align: left;
+    }
+    body.isl-auth .alert-success { background: rgba(34, 197, 94, 0.12); border-color: rgba(34, 197, 94, 0.35); color: #86efac; }
+    body.isl-auth .alert-warning { background: rgba(249, 115, 22, 0.12); border-color: rgba(249, 115, 22, 0.35); color: #fdba74; }
+    body.isl-auth .alert-danger { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.35); color: #fca5a5; }
+    .isl-auth-foot { margin-top: 1.75rem; color: #52525b; font-size: 0.78rem; } /* zinc-600 */
+    .isl-auth-foot a { color: #71717a; text-decoration: none; }
+    body.isl-auth .invalid-feedback,
+    body.isl-auth .text-danger { color: #fca5a5 !important; font-size: 0.82rem; text-align: left; display: block; }
+</style>

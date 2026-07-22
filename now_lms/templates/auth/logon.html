@@ -3,41 +3,21 @@
     {% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %}
 
     <head>
-        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>{{ _('Crear nueva cuenta') }}</title>
-
-        <style>
-            .bd-placeholder-img {
-                font-size: 1.125rem;
-                text-anchor: middle;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                user-select: none;
-            }
-
-            @media (min-width: 768px) {
-                .bd-placeholder-img-lg {
-                    font-size: 3.5rem;
-                }
-            }
-        </style>
-        <!-- Custom styles for this template -->
-        <link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet" />
+        {{ current_theme.headertags() }}
+        <title>{{ _('Crear nueva cuenta') }} · Intent Solutions Learn</title>
+        {% include "auth/_isl_auth.html" %}
     </head>
 
-    <body class="text-center">
-        <main class="form-signin">
+    <body class="isl-auth">
+        <main class="isl-auth-card">
+            <a class="isl-auth-brand" href="{{ url_for('home.pagina_de_inicio') }}">
+                <img src="{{ url_for('static', filename='themes/intent_learn/logo-mark.png') }}" alt="Intent Solutions Learn" />
+                <span>Intent Solutions <b>Learn</b></span>
+            </a>
+            <h1 class="isl-auth-title">{{ _('Create your account') }}</h1>
+            <p class="isl-auth-sub">{{ _('Join Intent Solutions Learn to start your Claude prep courses.') }}</p>
             <form method="post">
                 {{ form.csrf_token }} {{ render_form_errors(form) }}
-                <a href="/home">
-                    <img
-                        class="mb-4"
-                        src="{{ url_for('static', filename='icons/logo/logo.svg') }}"
-                        alt="NOW - LMS"
-                        width="200"
-                    />
-                </a>
-                <h1 class="h3 mb-3 fw-normal">{{ _('Crear nuevo usuario') }}</h1>
                 {% with messages = get_flashed_messages() %}{% if messages %}{% for message in messages %}
                 <div class="alert alert-success">{{ message }}</div>
                 {% endfor %}{% endif %}{% endwith %}
@@ -54,10 +34,12 @@
                 {{ form.acceso(class="form-control", id="acceso", placeholder=_("Contraseña")) }} {{
                 render_field_errors(form.acceso) }}
                 <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">{{ _('Crear Cuenta') }}</button>
-                <a href="/home"><i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Regresar') }}</a>
-                <p class="mt-5 mb-3 text-muted text-center">BMO Soluciones &copy; 2025</p>
-                <img src="{{ url_for('static', filename='/img/bmo-logo.png') }}" alt="BMO Soluciones" />
+                <div class="isl-auth-links">
+                    <a href="{{ url_for('user.inicio_sesion') }}">{{ _('Already have an account? Sign in') }}</a>
+                    <a href="{{ url_for('home.pagina_de_inicio') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Regresar') }}</a>
+                </div>
             </form>
+            <div class="isl-auth-foot">&copy; Intent Solutions · <a href="https://intentsolutions.io">intentsolutions.io</a></div>
         </main>
     </body>
 </html>
