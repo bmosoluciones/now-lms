@@ -1202,7 +1202,7 @@ msgstr "Origen permitido (opcional)"
 
 #: now_lms/forms/__init__.py:1121
 msgid "Notas"
-msgstr "Notas"
+msgstr "Notes"
 
 #: now_lms/forms/masterclass.py:38
 msgid "Otra"
@@ -9182,6 +9182,1305 @@ msgstr "File not found in the library."
 #: now_lms/vistas/courses/resources.py:1682
 msgid "Archivo eliminado exitosamente de la biblioteca."
 msgstr "File successfully deleted from the library."
+
+msgid "Agregar al curso."
+msgstr "Add to the course."
+
+msgid "Seleccione un elemento a añadir al curso."
+msgstr "Select an item to add to the course."
+
+msgid "Vídeo en YouTube"
+msgstr "YouTube Video"
+
+msgid "Una lección en video alojada en YouTube."
+msgstr "A video lesson hosted on YouTube."
+
+msgid "Archivo PDF"
+msgstr "PDF File"
+
+msgid "Comparta un archivo en PDF con sus estudiantes."
+msgstr "Share a PDF file with your students."
+
+msgid "Audio"
+msgstr "Audio"
+
+msgid "Comparta un archivo de audio con sus estudiantes."
+msgstr "Share an audio file with your students."
+
+msgid "Imagen"
+msgstr "Image"
+
+msgid "Comparta una imagen con sus estudiantes."
+msgstr "Share an image with your students."
+
+msgid "Documento de Texto"
+msgstr "Text Document"
+
+msgid "Redacte un documento para compatirlo con sus alumnos."
+msgstr "Write a document to share with your students."
+
+msgid "Diapositivas"
+msgstr "Slides"
+
+msgid ""
+"Cree una presentación de diapositivas interactiva para sus estudiantes."
+msgstr "Create an interactive slideshow for your students."
+
+msgid "Externo"
+msgstr "External"
+
+msgid "Un link a un recurso externo."
+msgstr "A link to an external resource."
+
+msgid "Codigo HTLM"
+msgstr "HTML Code"
+
+msgid "Agregue un elemento personalizado a su curso."
+msgstr "Add a custom element to your course."
+
+msgid "Reunión Virtual"
+msgstr "Virtual Meeting"
+
+msgid "Programe una reunión virtual con sus estudiantes."
+msgstr "Schedule a virtual meeting with your students."
+
+msgid "Descargable"
+msgstr "Downloadable"
+
+msgid "Suba un archivo descargable como Excel, Word, Project, etc."
+msgstr "Upload a downloadable file such as Excel, Word, Project, etc."
+
+msgid "curso"
+msgstr "course"
+
+msgid "nuevo curso."
+msgstr "new course."
+
+msgid "General del"
+msgstr "General of the"
+
+msgid "del"
+msgstr "of the"
+
+msgid "Corta"
+msgstr "Short"
+
+msgid "de pago."
+msgstr "of Payment"
+
+msgid "del curso"
+msgstr "of the course"
+
+msgid "Vista previa de la descripción:"
+msgstr "Description preview:"
+
+msgid "Pago del"
+msgstr "Payment for the"
+
+msgid "del Pago"
+msgstr "of the Payment"
+
+msgid "del curso:"
+msgstr "of the course:"
+
+msgid "Procesar Pago"
+msgstr "Process Payment"
+
+msgid ""
+"Serás redirigido a PayPal para completar el pago de forma segura. Una vez "
+"completado el pago, tendrás acceso inmediato al curso."
+msgstr ""
+"You will be redirected to PayPal to complete the payment securely. Once the "
+"payment is complete, you will have immediate access to the course."
+
+msgid "Cargando PayPal..."
+msgstr "Loading PayPal..."
+
+msgid "Cargando opciones de pago..."
+msgstr "Loading payment options..."
+
+msgid ""
+"Pago seguro procesado por PayPal. Sus datos financieros están protegidos."
+msgstr "Secure payment processed by PayPal. Your financial data is protected."
+
+msgid "Cupones"
+msgstr "Coupons"
+
+msgid "Cupones del"
+msgstr "Coupons for the"
+
+msgid "Usos"
+msgstr "Uses"
+
+msgid "Expira"
+msgstr "Expires"
+
+msgid "Fijo"
+msgstr "Fixed"
+
+msgid "Sin expiración"
+msgstr "No expiration"
+
+msgid "No hay cupones creados"
+msgstr "No coupons created"
+
+msgid "Cree el primer cupón de descuento para este curso."
+msgstr "Create the first discount coupon for this course."
+
+msgid "Primer Cupón"
+msgstr "First Coupon"
+
+msgid "Volver al"
+msgstr "Back to the"
+
+msgid "Reportar"
+msgstr "Report"
+
+msgid ""
+"Seleccione el mensaje que desea reportar y proporcione el motivo del "
+"reporte."
+msgstr ""
+"Select the message you want to report and provide the reason for the report."
+
+msgid "Seleccionar"
+msgstr "Select"
+
+msgid "Por:"
+msgstr "By:"
+
+msgid "Describa por qué está reportando este mensaje..."
+msgstr "Describe why you are reporting this message..."
+
+msgid ""
+"Proporcione detalles específicos sobre por qué considera que este mensaje es"
+" inapropiado."
+msgstr ""
+"Provide specific details about why you consider this message inappropriate."
+
+msgid "No hay mensajes disponibles"
+msgstr "No messages available"
+
+msgid ""
+"No se encontraron mensajes en los cursos en los que está inscrito para "
+"reportar."
+msgstr "No messages were found in the courses you are enrolled in to report."
+
+msgid "Volver al Panel"
+msgstr "Back to Dashboard"
+
+msgid "Agregar un nuevo audio"
+msgstr "Add a new audio"
+
+msgid "del archivo."
+msgstr "of the file."
+
+msgid "Subtítulos Principales (Opcional)"
+msgstr "Main Subtitles (Optional)"
+
+msgid ""
+"Archivo WebVTT (.vtt) con los subtítulos principales para mejorar la "
+"accesibilidad"
+msgstr "WebVTT file (.vtt) with the main subtitles to improve accessibility"
+
+msgid "Subtítulos Secundarios (Opcional)"
+msgstr "Secondary Subtitles (Optional)"
+
+msgid ""
+"Archivo WebVTT (.vtt) con subtítulos secundarios (ej: traducción). Se "
+"mostrarán con estilo diferenciado"
+msgstr ""
+"WebVTT file (.vtt) with secondary subtitles (e.g. translation). They will be"
+" displayed with a distinct style"
+
+msgid "Agregar un nuevo vídeo en Youtube."
+msgstr "Add a new YouTube video."
+
+msgid "Titulo del Video"
+msgstr "Video Title"
+
+msgid "Dirección del Vídeo"
+msgstr "Video URL"
+
+msgid "nuevo"
+msgstr "new"
+
+msgid "Documento"
+msgstr "Document"
+
+msgid "documento:"
+msgstr "document:"
+
+msgid "Titulo del Documento"
+msgstr "Document Title"
+
+msgid "Resultados de Evaluación"
+msgstr "Evaluation Results"
+
+msgid "Resultados"
+msgstr "Results"
+
+msgid "Total Intentos"
+msgstr "Total Attempts"
+
+msgid "Intentos Completados"
+msgstr "Completed Attempts"
+
+msgid "Intentos Aprobados"
+msgstr "Passed Attempts"
+
+msgid "Tasa de Aprobación"
+msgstr "Pass Rate"
+
+msgid "Información de la Evaluación"
+msgstr "Evaluation Information"
+
+msgid "Puntaje Mínimo:"
+msgstr "Minimum Score:"
+
+msgid "Máximo Intentos:"
+msgstr "Maximum Attempts:"
+
+msgid "Ilimitado"
+msgstr "Unlimited"
+
+msgid "Total Preguntas:"
+msgstr "Total Questions:"
+
+msgid "Estadísticas de Rendimiento"
+msgstr "Performance Statistics"
+
+msgid "Puntaje Promedio:"
+msgstr "Average Score:"
+
+msgid "Intentos Recientes"
+msgstr "Recent Attempts"
+
+msgid "Puntaje"
+msgstr "Score"
+
+msgid "Fecha Envío"
+msgstr "Submission Date"
+
+msgid "Retrasado"
+msgstr "Late"
+
+msgid "Sin calificar"
+msgstr "Ungraded"
+
+msgid "Sin Calificar"
+msgstr "Ungraded"
+
+msgid "No enviado"
+msgstr "Not submitted"
+
+msgid "Sí"
+msgstr "Yes"
+
+msgid "No"
+msgstr "No"
+
+msgid "Mostrando los 10 intentos más recientes de"
+msgstr "Showing the 10 most recent attempts out of"
+
+msgid "total."
+msgstr "total."
+
+msgid "No hay intentos completados para esta evaluación aún."
+msgstr "No completed attempts for this evaluation yet."
+
+msgid "Editar Evaluación"
+msgstr "Edit Evaluation"
+
+msgid "Volver a Evaluaciones del Curso"
+msgstr "Back to Course Evaluations"
+
+msgid "Todas las Evaluaciones"
+msgstr "All Evaluations"
+
+msgid "archivo de audio:"
+msgstr "audio file:"
+
+msgid "del Audio"
+msgstr "of the Audio"
+
+msgid "Archivo Actual"
+msgstr "Current File"
+
+msgid "Reemplazar Audio (opcional)"
+msgstr "Replace Audio (optional)"
+
+msgid "Deje vacío para mantener el archivo actual"
+msgstr "Leave empty to keep the current file"
+
+msgid ""
+"Archivo WebVTT (.vtt) con los subtítulos principales. Deje vacío para "
+"mantener los subtítulos actuales"
+msgstr ""
+"WebVTT file (.vtt) with the main subtitles. Leave empty to keep the current "
+"subtitles"
+
+msgid "Actualmente tiene subtítulos principales configurados"
+msgstr "Main subtitles are currently configured"
+
+msgid ""
+"Archivo WebVTT (.vtt) con subtítulos secundarios (ej: traducción). Se "
+"mostrarán con estilo diferenciado. Deje vacío para mantener los subtítulos "
+"secundarios actuales"
+msgstr ""
+"WebVTT file (.vtt) with secondary subtitles (e.g. translation). They will be"
+" shown with a distinct style. Leave empty to keep the current secondary "
+"subtitles"
+
+msgid "Actualmente tiene subtítulos secundarios configurados"
+msgstr "Secondary subtitles are currently configured"
+
+msgid "Recurso Anterior"
+msgstr "Previous Resource"
+
+msgid "Marcar Completado"
+msgstr "Mark as Completed"
+
+msgid "Recurso Completado"
+msgstr "Resource Completed"
+
+msgid "Recurso Siguiente"
+msgstr "Next Resource"
+
+msgid "recursos completados"
+msgstr "resources completed"
+
+msgid "Prueba"
+msgstr "Test"
+
+msgid "intentos"
+msgstr "attempts"
+
+msgid "Progreso"
+msgstr "Progress"
+
+msgid "En Progreso"
+msgstr "In Progress"
+
+msgid "¡Certificado disponible!"
+msgstr "Certificate available!"
+
+msgid "Completa todos los cursos para obtener tu certificado."
+msgstr "Complete all courses to earn your certificate."
+
+msgid "Archivo:"
+msgstr "File:"
+
+msgid "Descargar Archivo"
+msgstr "Download File"
+
+msgid "Vista previa:"
+msgstr "Preview:"
+
+msgid "Reproductor de audio:"
+msgstr "Audio player:"
+
+msgid "Su navegador no soporta el elemento de audio."
+msgstr "Your browser does not support the audio element."
+
+msgid "Reproductor de video:"
+msgstr "Video player:"
+
+msgid "Su navegador no soporta el elemento de video."
+msgstr "Your browser does not support the video element."
+
+msgid "Vista previa del PDF:"
+msgstr "PDF preview:"
+
+msgid "Complete la inscripción para acceder al programa."
+msgstr "Complete the enrollment to access the program."
+
+msgid "Inscribirse al programa"
+msgstr "Enroll in the program"
+
+msgid "Al inscribirse, acepta los términos y condiciones del programa."
+msgstr "By enrolling, you accept the terms and conditions of the program."
+
+msgid "Lista de etiquetas disponibles en el sistema."
+msgstr "List of tags available in the system."
+
+msgid "No hay etiquetas disponibles"
+msgstr "No tags available"
+
+msgid "Usted no ha creado ninguna etiqueta todavía."
+msgstr "You have not created any tags yet."
+
+msgid "Primera Etiqueta"
+msgstr "First Tag"
+
+msgid "documento PDF:"
+msgstr "PDF document:"
+
+msgid "del Documento"
+msgstr "of the Document"
+
+msgid "Documento Actual"
+msgstr "Current Document"
+
+msgid "Reemplazar Documento (opcional)"
+msgstr "Replace Document (optional)"
+
+msgid "Seleccione un recurso."
+msgstr "Select a resource."
+
+msgid "Agregar una nueva imagen"
+msgstr "Add a new image"
+
+msgid "de la imagen."
+msgstr "of the image."
+
+msgid "Más"
+msgstr "More"
+
+msgid "disponibles en esta sección"
+msgstr "available in this section"
+
+msgid "Bajar"
+msgstr "Move Down"
+
+msgid "Subir"
+msgstr "Move Up"
+
+msgid "publicado en el sitio Web."
+msgstr "published on the website."
+
+msgid "Agrega la primer sección a tu nuevo curso"
+msgstr "Add the first section to your new course"
+
+msgid "Configuración de la Presentación"
+msgstr "Presentation Settings"
+
+msgid "Agregar Diapositiva"
+msgstr "Add Slide"
+
+msgid "Diapositiva"
+msgstr "Slide"
+
+msgid "Contenido HTML"
+msgstr "HTML Content"
+
+msgid "Etiquetas permitidas:"
+msgstr "Allowed tags:"
+
+msgid "Vista Previa:"
+msgstr "Preview:"
+
+msgid "Etiquetas HTML Permitidas:"
+msgstr "Allowed HTML Tags:"
+
+msgid "Párrafos"
+msgstr "Paragraphs"
+
+msgid "Encabezados"
+msgstr "Headings"
+
+msgid "Texto en negrita"
+msgstr "Bold text"
+
+msgid "Texto en cursiva"
+msgstr "Italic text"
+
+msgid "Enlaces"
+msgstr "Links"
+
+msgid "Imágenes"
+msgstr "Images"
+
+msgid "Saltos de línea"
+msgstr "Line breaks"
+
+msgid "Navegación:"
+msgstr "Navigation:"
+
+msgid "Flecha derecha/izquierda: Cambiar diapositivas"
+msgstr "Right/left arrow: Change slides"
+
+msgid "Espacio: Siguiente diapositiva"
+msgstr "Space: Next slide"
+
+msgid "Esc: Vista general"
+msgstr "Esc: Overview"
+
+msgid "Conversación"
+msgstr "Conversation"
+
+msgid "Marcar como Resuelto"
+msgstr "Mark as Resolved"
+
+msgid "Leído:"
+msgstr "Read:"
+
+msgid "Este hilo ha sido cerrado y no se pueden agregar más respuestas."
+msgstr "This thread has been closed and no more replies can be added."
+
+msgid "del Hilo"
+msgstr "of the Thread"
+
+msgid "Reportar Hilo"
+msgstr "Report Thread"
+
+msgid "Describe el motivo del reporte..."
+msgstr "Describe the reason for the report..."
+
+msgid "Agregar una nueva presentación de diapositivas"
+msgstr "Add a new slideshow"
+
+msgid "una presentación interactiva usando Reveal.js"
+msgstr "an interactive presentation using Reveal.js"
+
+msgid "Título de la Presentación"
+msgstr "Presentation Title"
+
+msgid "Ingrese un título válido para la presentación."
+msgstr "Enter a valid title for the presentation."
+
+msgid "Tema de la Presentación"
+msgstr "Presentation Theme"
+
+msgid "Seleccione el tema visual para su presentación."
+msgstr "Select the visual theme for your presentation."
+
+msgid "breve de la presentación."
+msgstr "brief of the presentation."
+
+msgid "Agregar un nuevo Meet."
+msgstr "Add a new Meet."
+
+msgid "Titulo del Meet"
+msgstr "Meet Title"
+
+msgid "URL del Meet"
+msgstr "Meet URL"
+
+msgid "del Meet"
+msgstr "of the Meet"
+
+msgid "Hora de"
+msgstr "Time of"
+
+msgid "Hora de Finalización del Meet"
+msgstr "Meet End Time"
+
+msgid "Promocionado"
+msgstr "Promoted"
+
+msgid "Reunión"
+msgstr "Meeting"
+
+msgid "reunión"
+msgstr "meeting"
+
+msgid "Titulo de la Reunión"
+msgstr "Meeting Title"
+
+msgid "Link de la reunión"
+msgstr "Meeting Link"
+
+msgid "Hora Final"
+msgstr "End Time"
+
+msgid "Notas adicionales"
+msgstr "Additional notes"
+
+msgid "al"
+msgstr "to the"
+
+msgid "Correo Electrónico del"
+msgstr "Email of the"
+
+msgid ""
+"Ingrese el correo electrónico del usuario que desea inscribir en este "
+"programa."
+msgstr "Enter the email of the user you want to enroll in this program."
+
+msgid "Administrativa"
+msgstr "Administrative"
+
+msgid "Administrativa a"
+msgstr "Administrative to"
+
+msgid "estudiante al programa:"
+msgstr "student to the program:"
+
+msgid "a"
+msgstr "to"
+
+msgid ""
+"Al inscribir un estudiante a este programa, será automáticamente inscrito a "
+"todos los cursos que forman parte del programa."
+msgstr ""
+"When enrolling a student in this program, they will be automatically "
+"enrolled in all courses that are part of the program."
+
+msgid ""
+"Si algunos cursos son pagados, puedes omitir el pago para dar acceso "
+"completo al estudiante."
+msgstr ""
+"If some courses are paid, you can skip the payment to give the student full "
+"access."
+
+msgid ""
+"Si está marcado, el estudiante tendrá acceso completo a todos los cursos del"
+" programa, incluso aquellos que requieren pago."
+msgstr ""
+"If checked, the student will have full access to all courses in the program,"
+" including those that require payment."
+
+msgid "HTML Externo"
+msgstr "External HTML"
+
+msgid "Agregar un recurso externo a su curso."
+msgstr "Add an external resource to your course."
+
+msgid "Titulo del"
+msgstr "Title of the"
+
+msgid "Secundario"
+msgstr "Secondary"
+
+msgid "Reproductor de audio"
+msgstr "Audio player"
+
+msgid "Retroceder 5 segundos"
+msgstr "Rewind 5 seconds"
+
+msgid "Retroceder 10 segundos"
+msgstr "Rewind 10 seconds"
+
+msgid "Reproducir/Pausar"
+msgstr "Play/Pause"
+
+msgid "Avanzar 10 segundos"
+msgstr "Forward 10 seconds"
+
+msgid "Avanzar 5 segundos"
+msgstr "Forward 5 seconds"
+
+msgid "Velocidad:"
+msgstr "Speed:"
+
+msgid "Tamaño texto:"
+msgstr "Text size:"
+
+msgid "Reducir tamaño de texto"
+msgstr "Decrease text size"
+
+msgid "Aumentar tamaño de texto"
+msgstr "Increase text size"
+
+msgid "Descargar Audio"
+msgstr "Download Audio"
+
+msgid "Confirmada"
+msgstr "Confirmed"
+
+msgid "Unirse Ahora"
+msgstr "Join Now"
+
+msgid "Acceder a"
+msgstr "Access"
+
+msgid "Ver Grabación"
+msgstr "View Recording"
+
+msgid "No tienes inscripciones"
+msgstr "You have no enrollments"
+
+msgid "Explorar Clases Magistrales"
+msgstr "Explore Master Classes"
+
+msgid "Editar Pregunta"
+msgstr "Edit Question"
+
+msgid "Cambiar el tipo de pregunta puede afectar las opciones existentes."
+msgstr "Changing the question type may affect existing options."
+
+msgid ""
+"Explicación opcional que se mostrará después de que el estudiante responda."
+msgstr "Optional explanation shown after the student answers."
+
+msgid "Título:"
+msgstr "Title:"
+
+msgid "Descripción:"
+msgstr "Description:"
+
+msgid "Puntuación mínima:"
+msgstr "Minimum score:"
+
+msgid "Máximo intentos:"
+msgstr "Maximum attempts:"
+
+msgid "Información de la Pregunta"
+msgstr "Question Information"
+
+msgid "Tipo actual:"
+msgstr "Current type:"
+
+msgid "Orden:"
+msgstr "Order:"
+
+msgid "Opciones:"
+msgstr "Options:"
+
+msgid "Opciones actuales:"
+msgstr "Current options:"
+
+msgid "Tipos de Pregunta:"
+msgstr "Question Types:"
+
+msgid "Opción múltiple:"
+msgstr "Multiple choice:"
+
+msgid "Permite múltiples opciones de respuesta."
+msgstr "Allows multiple answer options."
+
+msgid "Verdadero/Falso:"
+msgstr "True/False:"
+
+msgid "Solo dos opciones: \"Verdadero\" y \"Falso\"."
+msgstr "Only two options: \"True\" and \"False\"."
+
+msgid ""
+"Después de guardar los cambios, podrás editar las opciones de respuesta si "
+"es necesario."
+msgstr "After saving changes, you can edit the answer options if needed."
+
+msgid "Ingrese un código único para el cupón (ej: DESCUENTO50)"
+msgstr "Enter a unique code for the coupon (e.g. DESCUENTO50)"
+
+msgid "de Descuento"
+msgstr "of Discount"
+
+msgid "Ingrese el valor del descuento"
+msgstr "Enter the discount value"
+
+msgid "Dejar vacío para usos ilimitados"
+msgstr "Leave empty for unlimited uses"
+
+msgid "de Expiración"
+msgstr "of Expiration"
+
+msgid "actual:"
+msgstr "current:"
+
+msgid "Gestión de Evaluaciones"
+msgstr "Evaluation Management"
+
+msgid "Evaluaciones del Curso:"
+msgstr "Course Evaluations:"
+
+msgid "Máx. Intentos"
+msgstr "Max. Attempts"
+
+msgid "No hay evaluaciones creadas para esta sección."
+msgstr "No evaluations created for this section."
+
+msgid ""
+"Este curso no tiene secciones creadas. Debe crear secciones antes de poder "
+"agregar evaluaciones."
+msgstr ""
+"This course has no sections created. You must create sections before adding "
+"evaluations."
+
+msgid "Nueva Opción"
+msgstr "New Option"
+
+msgid "Agregar Nueva Opción"
+msgstr "Add New Option"
+
+msgid "Pregunta:"
+msgstr "Question:"
+
+msgid "Opción Múltiple"
+msgstr "Multiple Choice"
+
+msgid "Marque esta casilla si esta es la respuesta correcta."
+msgstr "Check this box if this is the correct answer."
+
+msgid "Agregar Opción"
+msgstr "Add Option"
+
+msgid ""
+"Las opciones definen las posibles respuestas que los estudiantes pueden "
+"seleccionar para esta pregunta."
+msgstr ""
+"Options define the possible answers students can select for this question."
+
+msgid "Las preguntas de Verdadero/Falso solo pueden tener 2 opciones."
+msgstr "True/False questions can only have 2 options."
+
+msgid ""
+"Las preguntas de opción múltiple pueden tener múltiples opciones correctas."
+msgstr "Multiple choice questions can have multiple correct options."
+
+msgid "Mis"
+msgstr "My"
+
+msgid "No hay mensajes"
+msgstr "No messages"
+
+msgid "No has enviado ningún mensaje aún."
+msgstr "You have not sent any messages yet."
+
+msgid "No hay mensajes de estudiantes en tus cursos."
+msgstr "There are no student messages in your courses."
+
+msgid "una nueva sección."
+msgstr "a new section."
+
+msgid "de la"
+msgstr "of the"
+
+msgid "Sección."
+msgstr "Section."
+
+msgid "de la Sección"
+msgstr "of the Section"
+
+msgid ""
+"Las clases magistrales están deshabilitadas en la configuración principal "
+"del sitio. Los usuarios no verán esta clase magistral en el menú de "
+"navegación hasta que se habilite la opción \"Habilitar Master Class\" en la "
+"configuración general."
+msgstr ""
+"Master classes are disabled in the site's main settings. Users will not see "
+"this master class in the navigation menu until the \"Enable Master Class\" "
+"option is enabled in the general settings."
+
+msgid "⚠️ Aviso:"
+msgstr "⚠️ Notice:"
+
+msgid "contenido HTML:"
+msgstr "HTML content:"
+
+msgid "Código HTML"
+msgstr "HTML Code"
+
+msgid "Ingrese el código HTML"
+msgstr "Enter the HTML code"
+
+msgid "Agregar un link a un recurso externo."
+msgstr "Add a link to an external resource."
+
+msgid "Titulo del Link."
+msgstr "Link Title."
+
+msgid "Link Externo"
+msgstr "External Link"
+
+msgid "Sin fecha"
+msgstr "No date"
+
+msgid "Sin horario programado"
+msgstr "No scheduled time"
+
+msgid "Sin ubicación"
+msgstr "No location"
+
+msgid "Link al Meet"
+msgstr "Meeting Link"
+
+msgid "Agregar al Calendario"
+msgstr "Add to Calendar"
+
+msgid "Descargar archivo ICS"
+msgstr "Download ICS file"
+
+msgid "Descargar archivo (.ics)"
+msgstr "Download file (.ics)"
+
+msgid "Agregar a Google Calendar"
+msgstr "Add to Google Calendar"
+
+msgid "Agregar a Outlook"
+msgstr "Add to Outlook"
+
+msgid "Recomendaciones para la reunión"
+msgstr "Recommendations for the meeting"
+
+msgid "Revisa tu conexión a internet antes de la reunión"
+msgstr "Check your internet connection before the meeting"
+
+msgid "Asegúrate de tener cámara y micrófono funcionando"
+msgstr "Make sure your camera and microphone are working"
+
+msgid "Únete 5 minutos antes del horario programado"
+msgstr "Join 5 minutes before the scheduled time"
+
+msgid "Busca un lugar tranquilo y bien iluminado"
+msgstr "Find a quiet, well-lit place"
+
+msgid "Ten preparados tus materiales de estudio"
+msgstr "Have your study materials ready"
+
+msgid "Mantén silenciado tu micrófono cuando no hables"
+msgstr "Keep your microphone muted when not speaking"
+
+msgid "Actual del Cupón"
+msgstr "Current Coupon"
+
+msgid "Usos actuales:"
+msgstr "Current uses:"
+
+msgid "(ilimitado)"
+msgstr "(unlimited)"
+
+msgid "Código único para el cupón"
+msgstr "Unique code for the coupon"
+
+msgid "Valor del descuento"
+msgstr "Discount value"
+
+msgid "Mínimo:"
+msgstr "Minimum:"
+
+msgid "(usos actuales)"
+msgstr "(current uses)"
+
+msgid "Actualmente: Ilimitado"
+msgstr "Currently: Unlimited"
+
+msgid "Actualizar Cupón"
+msgstr "Update Coupon"
+
+msgid "Seleccione el curso y la sección donde desea crear la evaluación"
+msgstr "Select the course and section where you want to create the evaluation"
+
+msgid "Información:"
+msgstr "Information:"
+
+msgid ""
+"Seleccione el curso y luego la sección donde desea crear la evaluación."
+msgstr ""
+"Select the course and then the section where you want to create the "
+"evaluation."
+
+msgid "Solo puede crear evaluaciones en cursos asignados a usted."
+msgstr "You can only create evaluations in courses assigned to you."
+
+msgid "Las evaluaciones se asocian a secciones específicas del curso."
+msgstr "Evaluations are associated with specific course sections."
+
+msgid "Secciones disponibles:"
+msgstr "Available sections:"
+
+msgid "Este curso no tiene secciones creadas."
+msgstr "This course has no sections created."
+
+msgid "No hay cursos asignados"
+msgstr "No courses assigned"
+
+msgid ""
+"No tiene cursos asignados para crear evaluaciones. Contacte al administrador"
+" o cree un curso primero."
+msgstr ""
+"You have no courses assigned to create evaluations. Contact the "
+"administrator or create a course first."
+
+msgid "Plataforma:"
+msgstr "Platform:"
+
+msgid "Instructor:"
+msgstr "Instructor:"
+
+msgid "Disponible"
+msgstr "Available"
+
+msgid "Acceso Gratuito"
+msgstr "Free Access"
+
+msgid ""
+"Esta clase magistral es completamente gratuita. Solo necesitas registrarte "
+"para participar."
+msgstr ""
+"This masterclass is completely free. You only need to register to "
+"participate."
+
+msgid "Ya estás inscrito en esta clase magistral"
+msgstr "You are already enrolled in this masterclass"
+
+msgid "Recomendaciones para la Participación:"
+msgstr "Recommendations for Participation:"
+
+msgid "Asegúrate de tener una conexión estable a internet"
+msgstr "Make sure you have a stable internet connection"
+
+msgid "Prueba tu audio y video beforehand"
+msgstr "Test your audio and video beforehand"
+
+msgid "Busca un ambiente tranquilo"
+msgstr "Find a quiet environment"
+
+msgid "Inscríbete en esta Clase Magistral"
+msgstr "Enroll in this Masterclass"
+
+msgid "Inscribirse Ahora"
+msgstr "Enroll Now"
+
+msgid "Inicia Sesión para Inscribirte"
+msgstr "Log In to Enroll"
+
+msgid "Necesitas una cuenta para inscribirte en esta clase magistral."
+msgstr "You need an account to enroll in this masterclass."
+
+msgid "Tiempo Restante"
+msgstr "Time Remaining"
+
+msgid "Costo"
+msgstr "Cost"
+
+msgid "¡Oferta por Tiempo Limitado!"
+msgstr "Limited Time Offer!"
+
+msgid "Oferta válida hasta"
+msgstr "Offer valid until"
+
+msgid ""
+"Esta clase magistral requiere pago. Serás redirigido al proceso de pago "
+"después de confirmar tu inscripción."
+msgstr ""
+"This masterclass requires payment. You will be redirected to the payment "
+"process after confirming your enrollment."
+
+msgid "Términos de Inscripción"
+msgstr "Enrollment Terms"
+
+msgid "Recibirás el enlace de acceso una vez confirmada tu inscripción"
+msgstr "You will receive the access link once your enrollment is confirmed"
+
+msgid "Los pagos son procesados de forma segura"
+msgstr "Payments are processed securely"
+
+msgid "Una vez confirmado el pago, no se permiten reembolsos"
+msgstr "Once payment is confirmed, no refunds are allowed"
+
+msgid "Proceder al Pago"
+msgstr "Proceed to Payment"
+
+msgid "Confirmar Inscripción"
+msgstr "Confirm Enrollment"
+
+msgid "Inscripciones del"
+msgstr "Enrollments of the"
+
+msgid "Aún no hay estudiantes inscritos en este programa."
+msgstr "There are no students enrolled in this program yet."
+
+msgid "Primer"
+msgstr "First"
+
+msgid "en el"
+msgstr "in the"
+
+msgid "Remover"
+msgstr "Remove"
+
+msgid "No hay cursos en este programa."
+msgstr "There are no courses in this program."
+
+msgid "Agregar"
+msgstr "Add"
+
+msgid "Seleccione un curso..."
+msgstr "Select a course..."
+
+msgid "¿Tienes alguna pregunta sobre el curso?"
+msgstr "Do you have any questions about the course?"
+
+msgid "No hay mensajes de estudiantes en este curso."
+msgstr "There are no student messages in this course."
+
+msgid "Seleccione el archivo que desea compartir."
+msgstr "Select the file you want to share."
+
+msgid "Seleccione una imagén para usar como portada."
+msgstr "Select an image to use as cover."
+
+msgid "Agregar un nuevo documento en PDF."
+msgstr "Add a new PDF document."
+
+msgid "imagen:"
+msgstr "image:"
+
+msgid "de la Imagen"
+msgstr "of the Image"
+
+msgid "Imagen Actual"
+msgstr "Current Image"
+
+msgid "Reemplazar Imagen (opcional)"
+msgstr "Replace Image (optional)"
+
+msgid "Deje vacío para mantener la imagen actual"
+msgstr "Leave empty to keep the current image"
+
+msgid "Nueva Pregunta"
+msgstr "New Question"
+
+msgid "Nueva Pregunta para:"
+msgstr "New Question for:"
+
+msgid ""
+"Las opciones de respuesta se crearán automáticamente según el tipo "
+"seleccionado."
+msgstr ""
+"Answer options will be created automatically based on the selected type."
+
+msgid "Crear Pregunta"
+msgstr "Create Question"
+
+msgid "Se crearán 4 opciones que podrás editar posteriormente."
+msgstr "4 options will be created that you can edit later."
+
+msgid "Se crearán automáticamente las opciones \"Verdadero\" y \"Falso\"."
+msgstr "The \"True\" and \"False\" options will be created automatically."
+
+msgid ""
+"Después de crear la pregunta, podrás editar las opciones de respuesta y "
+"marcar cuáles son correctas."
+msgstr ""
+"After creating the question, you can edit the answer options and mark which "
+"are correct."
+
+msgid "Configuración de la Evaluación"
+msgstr "Evaluation Settings"
+
+msgid "Deje vacío para intentos ilimitados."
+msgstr "Leave empty for unlimited attempts."
+
+msgid "Actualizar Evaluación"
+msgstr "Update Evaluation"
+
+msgid "opciones"
+msgstr "options"
+
+msgid "Agregar opción"
+msgstr "Add option"
+
+msgid "Editar pregunta"
+msgstr "Edit question"
+
+msgid "Eliminar pregunta"
+msgstr "Delete question"
+
+msgid "No hay preguntas creadas para esta evaluación."
+msgstr "No questions have been created for this evaluation."
+
+msgid "Crear primera pregunta"
+msgstr "Create first question"
+
+msgid "Evaluación lista para estudiantes:"
+msgstr "Evaluation ready for students:"
+
+msgid "pregunta(s) configurada(s)"
+msgstr "question(s) configured"
+
+msgid "Descargable al"
+msgstr "Downloadable to"
+
+msgid "Suba un archivo descargable para sus estudiantes. Tamaño máximo:"
+msgstr "Upload a downloadable file for your students. Maximum size:"
+
+msgid ""
+"Tipos permitidos: PDF, Word, Excel, PowerPoint, imágenes, audio, video, "
+"archivos comprimidos, etc."
+msgstr ""
+"Allowed types: PDF, Word, Excel, PowerPoint, images, audio, video, "
+"compressed files, etc."
+
+msgid "del recurso"
+msgstr "of the resource"
+
+msgid "Por favor, ingrese un nombre para el recurso."
+msgstr "Please enter a name for the resource."
+
+msgid "Por favor, ingrese una descripción para el recurso."
+msgstr "Please enter a description for the resource."
+
+msgid ""
+"Seleccione un archivo seguro. No se permiten archivos ejecutables (.exe, "
+".bat, .sh, etc.)"
+msgstr ""
+"Select a safe file. Executable files are not allowed (.exe, .bat, .sh, etc.)"
+
+msgid "de recurso"
+msgstr "of resource"
+
+msgid "Editar Opción"
+msgstr "Edit Option"
+
+msgid "Actualizar Opción"
+msgstr "Update Option"
+
+msgid "Edite el texto de la opción y marque si es correcta o no."
+msgstr "Edit the option text and mark whether it is correct or not."
+
+msgid "En preguntas de Verdadero/Falso, solo una opción debe ser correcta."
+msgstr "In True/False questions, only one option must be correct."
+
+msgid ""
+"En preguntas de opción múltiple, puede haber múltiples opciones correctas."
+msgstr "In multiple choice questions, there can be multiple correct options."
+
+msgid "Cursos que has desarrollado y publicas"
+msgstr "Courses you have developed and published"
+
+msgid "No tienes cursos creados actualmente."
+msgstr "You have no created courses at the moment."
+
+msgid "Perfil de usuario estándar."
+msgstr "Standard user profile."
+
+msgid ""
+"Edite la información del recurso o suba un nuevo archivo. Tamaño máximo:"
+msgstr "Edit the resource information or upload a new file. Maximum size:"
+
+msgid "Archivo actual:"
+msgstr "Current file:"
+
+msgid "Reemplazar archivo (opcional)"
+msgstr "Replace file (optional)"
+
+msgid ""
+"Deje vacío para conservar el archivo actual. No se permiten archivos "
+"ejecutables (.exe, .bat, .sh, etc.)"
+msgstr ""
+"Leave empty to keep the current file. Executable files are not allowed "
+"(.exe, .bat, .sh, etc.)"
+
+msgid ""
+"Los programas están deshabilitados en la configuración principal del sitio. "
+"Los usuarios no verán este programa en el menú de navegación hasta que se "
+"habilite la opción \"Habilitar"
+msgstr ""
+"Programs are disabled in the site's main settings. Users will not see this "
+"program in the navigation menu until the \"Enable"
+
+msgid "\" en la configuración general."
+msgstr "\" option in the general settings."
+
+msgid "Categoria"
+msgstr "Category"
+
+msgid "Portada del programa"
+msgstr "Program cover"
+
+msgid "vídeo de YouTube:"
+msgstr "YouTube video:"
+
+msgid "Agregar un nuevo documento."
+msgstr "Add a new document."
+
+msgid "Enlace Externo"
+msgstr "External Link"
+
+msgid "enlace externo:"
+msgstr "external link:"
 
 #~ msgid "Ver Certicado"
 #~ msgstr "View Certificate"

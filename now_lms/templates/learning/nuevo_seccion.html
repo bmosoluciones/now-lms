@@ -18,23 +18,23 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _("Crear") }} una nueva sección.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Crear") }} {{ _('una nueva sección.') }}</h4>
                 <form method="post">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-12">
-                            <label for="nombre" class="form-label">{{ _("Nombre") }} de la {{ _("Nueva") }} Sección.</label>
+                            <label for="nombre" class="form-label">{{ _("Nombre") }} {{ _('de la') }} {{ _("Nueva") }} {{ _('Sección.') }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre de la Nueva Sección")) }}
                             {{ render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-md-12">
-                            <label for="descripcion" class="form-label">{{ _("Descripción") }} de la Sección</label>
+                            <label for="descripcion" class="form-label">{{ _("Descripción") }} {{ _('de la Sección') }}</label>
                             {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción de la nueva
                             Sección.")) }} {{ render_field_errors(form.descripcion) }}
                         </div>
                     </div>
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">{{ _("Crear") }} Sección</button>
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">{{ _("Crear") }} {{ _('Sección') }}</button>
                 </form>
             </div>
         </main>

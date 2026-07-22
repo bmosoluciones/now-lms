@@ -4,7 +4,7 @@ from 'macros/form_buttons.j2' import render_form_buttons %}
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>{{ _("Editar") }} {{ _("Recurso") }} - Enlace Externo</title>
+        <title>{{ _("Editar") }} {{ _("Recurso") }} - {{ _('Enlace Externo') }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,24 +18,24 @@ from 'macros/form_buttons.j2' import render_form_buttons %}
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _("Editar") }} enlace externo: {{ recurso.nombre }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar") }} {{ _('enlace externo:') }} {{ recurso.nombre }}</h4>
                 <form method="post">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Titulo del Link.</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Link.") }} {{
+                            <label for="nombre" class="form-label">{{ _('Titulo del Link.') }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_('Titulo del Link.')) }} {{
                             render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-md-6">
-                            <label for="url" class="form-label">Link Externo</label>
-                            {{ form.url(class="form-control", id="url", placeholder="Link Externo") }} {{
+                            <label for="url" class="form-label">{{ _('Link Externo') }}</label>
+                            {{ form.url(class="form-control", id="url", placeholder=_('Link Externo')) }} {{
                             render_field_errors(form.url) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
+                            <label for="requerido" class="form-label">{{ _("Tipo") }} {{ _('de') }} {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
                             }}
                         </div>

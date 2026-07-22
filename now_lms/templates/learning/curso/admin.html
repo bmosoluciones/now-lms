@@ -151,11 +151,11 @@ permitir_docente %}
                             _('Borrador') }}
                         </p>
                         {% elif curso.estado == "open" %}
-                        <p>Estatus del curso: <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _("Abierto") }}</p>
+                        <p>{{ _('Estatus del curso:') }} <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _("Abierto") }}</p>
                         {% elif curso.estado == "closed" %}
-                        <p>Estatus del curso: <i class="bi bi-x-octagon" aria-hidden="true"></i> {{ _("Cerrado") }}</p>
+                        <p>{{ _('Estatus del curso:') }} <i class="bi bi-x-octagon" aria-hidden="true"></i> {{ _("Cerrado") }}</p>
                         {% endif %} {% if curso.publico == True %}
-                        <p>{{ _("Curso") }} publicado en el sitio Web.</p>
+                        <p>{{ _("Curso") }} {{ _('publicado en el sitio Web.') }}</p>
                         {% else %}
                         <p>{{ _('Este curso no se ha publicado en el sitio Web.') }}</p>
                         {% endif %}
@@ -166,12 +166,12 @@ permitir_docente %}
                         <a
                             href="{{ url_for('course.nuevo_seccion', course_code=curso.codigo) }}"
                             class="btn btn-sm btn-success"
-                            ><i class="bi bi-bookmark-plus-fill" aria-hidden="true"></i> {{ _("Nueva") }} Sección</a
+                            ><i class="bi bi-bookmark-plus-fill" aria-hidden="true"></i> {{ _("Nueva") }} {{ _('Sección') }}</a
                         >
 
                         {% if curso.pagado %}
                         <a href="{{ url_for('course.list_coupons', course_code=curso.codigo) }}" class="btn btn-sm btn-primary"
-                            ><i class="bi bi-tags" aria-hidden="true"></i> {{ _("Gestionar") }} Cupones</a
+                            ><i class="bi bi-tags" aria-hidden="true"></i> {{ _("Gestionar") }} {{ _('Cupones') }}</a
                         >
                         {% endif %}
 
@@ -184,7 +184,7 @@ permitir_docente %}
                         <a
                             href="{{ url_for('course.admin_course_enrollments', course_code=curso.codigo) }}"
                             class="btn btn-sm btn-outline-info"
-                            ><i class="bi bi-people" aria-hidden="true"></i> {{ _("Ver") }} Inscripciones</a
+                            ><i class="bi bi-people" aria-hidden="true"></i> {{ _("Ver") }} {{ _('Inscripciones') }}</a
                         >
 
                         {% if secciones %}
@@ -209,8 +209,7 @@ permitir_docente %}
                                         <a
                                             href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
                                             class="btn btn-success btn-sm me-2"
-                                            ><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _("Crear") }}
-                                            Evaluación</a
+                                            ><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _("Crear") }} {{ _('Evaluación') }}</a
                                         >
 
                                         <div class="btn-group me-2">
@@ -223,21 +222,21 @@ permitir_docente %}
                                                 data-bs-toggle="dropdown"
                                                 aria-expanded="false"
                                             >
-                                                <span class="visually-hidden">{{ _("Ocultar") }} Menu Ordenar</span>
+                                                <span class="visually-hidden">{{ _("Ocultar") }} Menu {{ _('Ordenar') }}</span>
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li>
                                                     <a
                                                         href="{{ url_for('course.reducir_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
                                                         class="dropdown-item"
-                                                        ><i class="bi bi-arrow-down-short" aria-hidden="true"></i> Bajar</a
+                                                        ><i class="bi bi-arrow-down-short" aria-hidden="true"></i> {{ _('Bajar') }}</a
                                                     >
                                                 </li>
                                                 <li>
                                                     <a
                                                         href="{{ url_for('course.incrementar_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
                                                         class="dropdown-item"
-                                                        ><i class="bi bi-arrow-up-short" aria-hidden="true"></i> Subir</a
+                                                        ><i class="bi bi-arrow-up-short" aria-hidden="true"></i> {{ _('Subir') }}</a
                                                     >
                                                 </li>
                                             </ul>
@@ -245,8 +244,7 @@ permitir_docente %}
                                         <a
                                             href="{{ url_for('course.editar_seccion', course_code=seccion.curso, seccion=seccion.id) }}"
                                             class="btn btn-warning btn-sm me-2"
-                                            ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar") }}
-                                            Sección</a
+                                            ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar") }} {{ _('Sección') }}</a
                                         >
                                         <div class="btn-group">
                                             <button class="btn btn-secondary btn-sm" type="button">
@@ -274,7 +272,7 @@ permitir_docente %}
                                                     <a
                                                         href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
                                                         class="dropdown-item"
-                                                        >{{ _("Ocultar") }} Sección</a
+                                                        >{{ _("Ocultar") }} {{ _('Sección') }}</a
                                                     >
                                                 </li>
                                                 <li>
@@ -297,8 +295,7 @@ permitir_docente %}
                                                 data-bs-toggle="dropdown"
                                                 aria-expanded="false"
                                             >
-                                                <i class="bi bi-three-dots" aria-hidden="true"></i> {{ _("Acciones") }} de
-                                                Sección
+                                                <i class="bi bi-three-dots" aria-hidden="true"></i> {{ _("Acciones") }} de {{ _('Sección') }}
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li>
@@ -341,7 +338,7 @@ permitir_docente %}
                                                         href="{{ url_for('course.editar_seccion', course_code=seccion.curso, seccion=seccion.id) }}"
                                                         class="dropdown-item"
                                                         ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
-                                                        }} Sección</a
+                                                        }} {{ _('Sección') }}</a
                                                     >
                                                 </li>
                                                 <li>
@@ -349,15 +346,14 @@ permitir_docente %}
                                                 </li>
                                                 <li>
                                                     <span class="dropdown-item-text"
-                                                        ><strong>Más {{ _("Acciones") }}:</strong></span
+                                                        ><strong>{{ _('Más') }} {{ _("Acciones") }}:</strong></span
                                                     >
                                                 </li>
                                                 <li>
                                                     <a
                                                         href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
                                                         class="dropdown-item"
-                                                        ><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _("Crear") }}
-                                                        Evaluación</a
+                                                        ><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _("Crear") }} {{ _('Evaluación') }}</a
                                                     >
                                                 </li>
                                                 <li>
@@ -371,15 +367,14 @@ permitir_docente %}
                                                     <a
                                                         href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
                                                         class="dropdown-item"
-                                                        >{{ _("Ocultar") }} Sección</a
+                                                        >{{ _("Ocultar") }} {{ _('Sección') }}</a
                                                     >
                                                 </li>
                                                 <li>
                                                     <a
                                                         href="{{ url_for('course.eliminar_seccion', curso_id=curso.codigo, id_=seccion.id) }}"
                                                         class="dropdown-item text-danger"
-                                                        ><i class="bi bi-trash3" aria-hidden="true"></i> {{ _("Eliminar") }}
-                                                        Sección</a
+                                                        ><i class="bi bi-trash3" aria-hidden="true"></i> {{ _("Eliminar") }} {{ _('Sección') }}</a
                                                     >
                                                 </li>
                                             </ul>
@@ -388,7 +383,7 @@ permitir_docente %}
                                 </div>
                             </div>
                             <p>{{ seccion.descripcion }}</p>
-                            <h6>{{ _("Recursos") }} disponibles en esta sección</h6>
+                            <h6>{{ _("Recursos") }} {{ _('disponibles en esta sección') }}</h6>
 
                             <ul>
                                 {% for recurso in recursos %} {% if recurso.seccion == seccion.id %}
@@ -496,14 +491,14 @@ permitir_docente %}
                                                     <a
                                                         href="{{ url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice , task='increment') }}"
                                                         class="link-light"
-                                                        ><i class="bi bi-arrow-down-short" aria-hidden="true"></i> Bajar</a
+                                                        ><i class="bi bi-arrow-down-short" aria-hidden="true"></i> {{ _('Bajar') }}</a
                                                     >
                                                 </span>
                                                 <span class="badge bg-primary me-1">
                                                     <a
                                                         href="{{  url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice, task='decrement')  }}"
                                                         class="link-light"
-                                                        ><i class="bi bi-arrow-up-short" aria-hidden="true"></i> Subir</a
+                                                        ><i class="bi bi-arrow-up-short" aria-hidden="true"></i> {{ _('Subir') }}</a
                                                     >
                                                 </span>
                                                 <span class="badge bg-danger">
@@ -599,14 +594,14 @@ permitir_docente %}
                                                             <hr class="dropdown-divider" />
                                                         </li>
                                                         <li>
-                                                            <span class="dropdown-item-text"><strong>Ordenar:</strong></span>
+                                                            <span class="dropdown-item-text"><strong>{{ _('Ordenar') }}:</strong></span>
                                                         </li>
                                                         <li>
                                                             <a
                                                                 href="{{ url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice , task='increment') }}"
                                                                 class="dropdown-item"
                                                                 ><i class="bi bi-arrow-down-short" aria-hidden="true"></i>
-                                                                Bajar</a
+                                                                {{ _('Bajar') }}</a
                                                             >
                                                         </li>
                                                         <li>
@@ -614,7 +609,7 @@ permitir_docente %}
                                                                 href="{{  url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice, task='decrement')  }}"
                                                                 class="dropdown-item"
                                                                 ><i class="bi bi-arrow-up-short" aria-hidden="true"></i>
-                                                                Subir</a
+                                                                {{ _('Subir') }}</a
                                                             >
                                                         </li>
                                                         <li>
@@ -648,8 +643,7 @@ permitir_docente %}
                                     class="btn btn-success btn-sm"
                                     role="button"
                                     aria-disabled="true"
-                                    ><i class="bi bi-plus-circle-fill" aria-hidden="true"></i>Agrega la primer sección a tu
-                                    nuevo curso
+                                    ><i class="bi bi-plus-circle-fill" aria-hidden="true"></i>{{ _('Agrega la primer sección a tu nuevo curso') }}
                                 </a>
                             </div>
 

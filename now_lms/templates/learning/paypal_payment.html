@@ -89,7 +89,7 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="mb-0">Pago del {{ _("Curso") }}</h4>
+                                <h4 class="mb-0">{{ _('Pago del') }} {{ _("Curso") }}</h4>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -115,9 +115,9 @@
                                         <p>{{ curso.descripcion_corta }}</p>
 
                                         <div class="mt-4">
-                                            <h6>{{ _("Detalles") }} del Pago</h6>
+                                            <h6>{{ _("Detalles") }} {{ _('del Pago') }}</h6>
                                             <div class="d-flex justify-content-between">
-                                                <span>{{ _("Precio") }} del curso:</span>
+                                                <span>{{ _("Precio") }} {{ _('del curso:') }}</span>
                                                 <strong>{{ "%.2f"|format(curso.precio) }} {{ site_currency }}</strong>
                                             </div>
                                             {% if pago and pago.monto < curso.precio %}
@@ -142,10 +142,9 @@
                                 </div>
 
                                 <div class="mt-4">
-                                    <h6>Procesar Pago</h6>
+                                    <h6>{{ _('Procesar Pago') }}</h6>
                                     <p class="text-muted small">
-                                        Serás redirigido a PayPal para completar el pago de forma segura. Una vez completado el
-                                        pago, tendrás acceso inmediato al curso.
+                                        {{ _('Serás redirigido a PayPal para completar el pago de forma segura. Una vez completado el pago, tendrás acceso inmediato al curso.') }}
                                     </p>
 
                                     <!-- Payment Messages Container -->
@@ -163,9 +162,9 @@
                                     <!-- Loading message -->
                                     <div id="paypal-loading" class="text-center">
                                         <div class="spinner-border text-primary" role="status">
-                                            <span class="visually-hidden">Cargando PayPal...</span>
+                                            <span class="visually-hidden">{{ _('Cargando PayPal...') }}</span>
                                         </div>
-                                        <p class="mt-2 text-muted">Cargando opciones de pago...</p>
+                                        <p class="mt-2 text-muted">{{ _('Cargando opciones de pago...') }}</p>
                                         <div class="progress mt-3" style="height: 6px">
                                             <div
                                                 class="progress-bar progress-bar-striped progress-bar-animated"
@@ -179,7 +178,7 @@
                                     <div class="mt-3">
                                         <small class="text-muted">
                                             <i class="fas fa-shield-alt text-success"></i>
-                                            Pago seguro procesado por PayPal. Sus datos financieros están protegidos.
+                                            {{ _('Pago seguro procesado por PayPal. Sus datos financieros están protegidos.') }}
                                         </small>
                                     </div>
                                 </div>
@@ -189,7 +188,7 @@
                                         href="{{ url_for('course.curso', course_code=curso.codigo) }}"
                                         class="btn btn-outline-secondary"
                                     >
-                                        <i class="fas fa-arrow-left"></i> Volver al curso
+                                        <i class="fas fa-arrow-left"></i> {{ _('Volver al curso') }}
                                     </a>
                                 </div>
                             </div>

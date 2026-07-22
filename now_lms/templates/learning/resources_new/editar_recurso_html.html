@@ -18,26 +18,25 @@ from 'macros/form_buttons.j2' import render_form_buttons %} {% set config = conf
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _("Editar") }} contenido HTML: {{ recurso.nombre }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar") }} {{ _('contenido HTML:') }} {{ recurso.nombre }}</h4>
                 <form method="post">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Titulo del {{ _("Recurso") }}</label>
+                            <label for="nombre" class="form-label">{{ _('Titulo del') }} {{ _("Recurso") }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Recurso")) }} {{
                             render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
+                            <label for="requerido" class="form-label">{{ _("Tipo") }} {{ _('de') }} {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
                             }}
                         </div>
 
                         <div class="col-sm-12">
-                            <label for="html_externo" class="form-label">Código HTML</label>
-                            {{ form.html_externo(class="form-control", id="html_externo", rows="20", placeholder="Ingrese el
-                            código HTML") }} {{ render_field_errors(form.html_externo) }}
+                            <label for="html_externo" class="form-label">{{ _('Código HTML') }}</label>
+                            {{ form.html_externo(class="form-control", id="html_externo", rows="20", placeholder=_("Ingrese el código HTML")) }} {{ render_field_errors(form.html_externo) }}
                         </div>
 
                         <div>

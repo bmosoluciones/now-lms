@@ -4,7 +4,7 @@
 <html lang="es" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Nueva Pregunta - {{ evaluacion.title }}</title>
+        <title>{{ _('Nueva Pregunta') }} - {{ evaluacion.title }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -24,14 +24,14 @@
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.pagina_instructor') }}"
-                                        >Panel Instructor</a
+                                        >{{ _('Panel Instructor') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.evaluaciones_lista') }}"
-                                        >Evaluaciones</a
+                                        >{{ _('Evaluaciones') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
@@ -41,7 +41,7 @@
                                         >{{ evaluacion.title }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Nueva Pregunta</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Nueva Pregunta') }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -53,7 +53,7 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Nueva Pregunta para: {{ evaluacion.title }}</h5>
+                                <h5 class="card-title mb-0">{{ _('Nueva Pregunta para:') }} {{ evaluacion.title }}</h5>
                             </div>
                             <div class="card-body">
                                 <form method="post">
@@ -80,7 +80,7 @@
                                         </div>
                                         {% endif %}
                                         <div class="form-text">
-                                            Las opciones de respuesta se crearán automáticamente según el tipo seleccionado.
+                                            {{ _('Las opciones de respuesta se crearán automáticamente según el tipo seleccionado.') }}
                                         </div>
                                     </div>
 
@@ -94,19 +94,19 @@
                                         </div>
                                         {% endif %}
                                         <div class="form-text">
-                                            Explicación opcional que se mostrará después de que el estudiante responda.
+                                            {{ _('Explicación opcional que se mostrará después de que el estudiante responda.') }}
                                         </div>
                                     </div>
 
                                     <div class="d-flex gap-2">
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-plus"></i> Crear Pregunta
+                                            <i class="bi bi-plus"></i> {{ _('Crear Pregunta') }}
                                         </button>
                                         <a
                                             href="{{ url_for('instructor_profile.edit_evaluation', evaluation_id=evaluacion.id) }}"
                                             class="btn btn-secondary"
                                         >
-                                            <i class="bi bi-arrow-left"></i> Cancelar
+                                            <i class="bi bi-arrow-left"></i> {{ _('Cancelar') }}
                                         </a>
                                     </div>
                                 </form>
@@ -117,41 +117,38 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="card-title mb-0">Información de la Evaluación</h6>
+                                <h6 class="card-title mb-0">{{ _('Información de la Evaluación') }}</h6>
                             </div>
                             <div class="card-body">
-                                <p><strong>Título:</strong> {{ evaluacion.title }}</p>
+                                <p><strong>{{ _('Título:') }}</strong> {{ evaluacion.title }}</p>
                                 {% if evaluacion.description %}
-                                <p><strong>Descripción:</strong> {{ evaluacion.description }}</p>
+                                <p><strong>{{ _('Descripción:') }}</strong> {{ evaluacion.description }}</p>
                                 {% endif %}
-                                <p><strong>Tipo:</strong> {% if evaluacion.is_exam %}Examen{% else %}Evaluación{% endif %}</p>
-                                <p><strong>Puntuación mínima:</strong> {{ evaluacion.passing_score }}%</p>
+                                <p><strong>{{ _('Tipo:') }}</strong> {% if evaluacion.is_exam %}{{ _('Examen') }}{% else %}{{ _('Evaluación') }}{% endif %}</p>
+                                <p><strong>{{ _('Puntuación mínima:') }}</strong> {{ evaluacion.passing_score }}%</p>
                                 <p>
-                                    <strong>Máximo intentos:</strong>
-                                    {% if evaluacion.max_attempts %}{{ evaluacion.max_attempts }}{% else %}Ilimitado{% endif %}
+                                    <strong>{{ _('Máximo intentos:') }}</strong>
+                                    {% if evaluacion.max_attempts %}{{ evaluacion.max_attempts }}{% else %}{{ _('Ilimitado') }}{% endif %}
                                 </p>
                             </div>
                         </div>
 
                         <div class="card mt-3">
                             <div class="card-header">
-                                <h6 class="card-title mb-0">Ayuda</h6>
+                                <h6 class="card-title mb-0">{{ _('Ayuda') }}</h6>
                             </div>
                             <div class="card-body">
-                                <h6>Tipos de Pregunta:</h6>
+                                <h6>{{ _('Tipos de Pregunta:') }}</h6>
                                 <ul class="small">
                                     <li>
-                                        <strong>Opción múltiple:</strong> Se crearán 4 opciones que podrás editar
-                                        posteriormente.
+                                        <strong>{{ _('Opción múltiple:') }}</strong> {{ _('Se crearán 4 opciones que podrás editar posteriormente.') }}
                                     </li>
                                     <li>
-                                        <strong>Verdadero/Falso:</strong> Se crearán automáticamente las opciones "Verdadero" y
-                                        "Falso".
+                                        <strong>{{ _('Verdadero/Falso:') }}</strong> {{ _('Se crearán automáticamente las opciones "Verdadero" y "Falso".') }}
                                     </li>
                                 </ul>
                                 <p class="small mt-2">
-                                    Después de crear la pregunta, podrás editar las opciones de respuesta y marcar cuáles son
-                                    correctas.
+                                    {{ _('Después de crear la pregunta, podrás editar las opciones de respuesta y marcar cuáles son correctas.') }}
                                 </p>
                             </div>
                         </div>

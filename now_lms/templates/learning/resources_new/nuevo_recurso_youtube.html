@@ -18,24 +18,24 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Agregar un nuevo vídeo en Youtube.</h4>
+                <h4 class="pb-2 border-bottom">{{ _('Agregar un nuevo vídeo en Youtube.') }}</h4>
                 <form method="post">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Titulo del Video</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Video") }} {{
+                            <label for="nombre" class="form-label">{{ _('Titulo del Video') }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_('Titulo del Video')) }} {{
                             render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="youtube_url" class="form-label">Dirección del Vídeo</label>
-                            {{ form.youtube_url(class="form-control", id="youtube_url", placeholder="Dirección del Vídeo") }}
+                            <label for="youtube_url" class="form-label">{{ _('Dirección del Vídeo') }}</label>
+                            {{ form.youtube_url(class="form-control", id="youtube_url", placeholder=_('Dirección del Vídeo')) }}
                             {{ render_field_errors(form.youtube_url) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
+                            <label for="requerido" class="form-label">{{ _("Tipo") }} {{ _('de') }} {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
                             }}
                         </div>

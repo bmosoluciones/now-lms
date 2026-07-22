@@ -279,7 +279,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                 {% if recurso.subtitle_vtt_secondary %}
                 <track kind="subtitles"
                   src="{{ url_for('resources.recurso_vtt_secondary', recurso_code=recurso.id, course_code=recurso.curso) }}"
-                  srclang="es-sec" label="Secundario">
+                  srclang="es-sec" label="{{ _('Secundario') }}">
                 {% endif %}
                 {{_("Su navegador no soporta el elemento de audio")}}.
               </audio>
@@ -294,7 +294,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
               </div>
               {% else %}
               <div id="lyrics-container" class="lyrics-container">
-                <div class="lyrics text-muted">Reproductor de audio</div>
+                <div class="lyrics text-muted">{{ _('Reproductor de audio') }}</div>
                 <div class="lyrics active">{{ recurso.nombre | title }}</div>
               </div>
               {% endif %}
@@ -311,18 +311,18 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
               <!-- Controls -->
               <div class="controls mt-3">
-                <button id="rewind5" title="Retroceder 5 segundos"><i class="bi bi-rewind"></i></button>
-                <button id="prev" title="Retroceder 10 segundos"><i class="bi bi-skip-backward-fill"></i></button>
-                <button id="playPause" title="Reproducir/Pausar"><i class="bi bi-play-fill"></i></button>
-                <button id="next" title="Avanzar 10 segundos"><i class="bi bi-skip-forward-fill"></i></button>
-                <button id="forward5" title="Avanzar 5 segundos"><i class="bi bi-fast-forward"></i></button>
+                <button id="rewind5" title="{{ _('Retroceder 5 segundos') }}"><i class="bi bi-rewind"></i></button>
+                <button id="prev" title="{{ _('Retroceder 10 segundos') }}"><i class="bi bi-skip-backward-fill"></i></button>
+                <button id="playPause" title="{{ _('Reproducir/Pausar') }}"><i class="bi bi-play-fill"></i></button>
+                <button id="next" title="{{ _('Avanzar 10 segundos') }}"><i class="bi bi-skip-forward-fill"></i></button>
+                <button id="forward5" title="{{ _('Avanzar 5 segundos') }}"><i class="bi bi-fast-forward"></i></button>
               </div>
 
               <!-- Additional Controls Row -->
               <div class="control-row">
                 <!-- Playback Speed Control -->
                 <div class="control-group">
-                  <span class="control-label">Velocidad:</span>
+                  <span class="control-label">{{ _('Velocidad:') }}</span>
                   <button class="speed-btn" data-speed="0.5">0.5x</button>
                   <button class="speed-btn" data-speed="0.75">0.75x</button>
                   <button class="speed-btn active" data-speed="1">1x</button>
@@ -333,10 +333,10 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                 {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
                 <!-- Text Size Control (only show if subtitles are available) -->
                 <div class="control-group">
-                  <span class="control-label">Tamaño texto:</span>
-                  <button class="zoom-btn" id="zoomOut" title="Reducir tamaño de texto"><i
+                  <span class="control-label">{{ _('Tamaño texto:') }}</span>
+                  <button class="zoom-btn" id="zoomOut" title="{{ _('Reducir tamaño de texto') }}"><i
                       class="bi bi-zoom-out"></i></button>
-                  <button class="zoom-btn" id="zoomIn" title="Aumentar tamaño de texto"><i
+                  <button class="zoom-btn" id="zoomIn" title="{{ _('Aumentar tamaño de texto') }}"><i
                       class="bi bi-zoom-in"></i></button>
                 </div>
                 {% endif %}
@@ -348,7 +348,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
             <a type="button" class="btn btn-success" id="download"
               href="{{ url_for('resources.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}">
               <i class="bi bi-soundwave" aria-hidden="true"></i>
-              Descargar Audio
+              {{ _('Descargar Audio') }}
             </a>
           </div>
 
@@ -364,7 +364,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
           {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
                         %}
           <div class="mt-4 mb-4" style="text-align: center">
-            <small class="text-muted">Publicidad</small>
+            <small class="text-muted">{{ _('Publicidad') }}</small>
             {{ ad_code | safe }}
           </div>
           {% endif %} {% endif %}
