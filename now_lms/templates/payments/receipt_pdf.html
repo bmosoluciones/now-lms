@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="{{ current_locale() }}">
+<head>
+    <meta charset="utf-8">
+    <title>{{ _('Recibo de Pago') }}</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 40px;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333333;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        .header {
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header-title {
+            font-size: 28px;
+            color: #667eea;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        .company-details {
+            text-align: right;
+            float: right;
+        }
+        .receipt-info {
+            margin-bottom: 30px;
+        }
+        .receipt-info-col {
+            width: 48%;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .section-title {
+            font-size: 16px;
+            color: #764ba2;
+            border-bottom: 1px solid #764ba2;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        th {
+            background-color: #667eea;
+            color: white;
+            text-align: left;
+            padding: 10px;
+            font-weight: bold;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .total-row {
+            font-weight: bold;
+            font-size: 16px;
+            background-color: #f7fafc;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 12px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+        .badge {
+            background-color: #48bb78;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="receipt-info-col">
+            <h1 class="header-title">{{ _('Recibo de Pago') }}</h1>
+            <p style="margin: 5px 0 0 0; font-size: 16px; color: #718096;">
+                {{ _('Referencia') }}: {{ pago.referencia or pago.id }}
+            </p>
+        </div>
+        <div class="receipt-info-col" style="text-align: right;">
+            <p style="font-size: 20px; font-weight: bold; margin: 0; color: #4a5568;">
+                {{ config().titulo or 'NOW LMS' }}
+            </p>
+            <p style="margin: 5px 0 0 0; color: #718096;">
+                {{ _('Fecha') }}: {{ pago.fecha.strftime('%Y-%m-%d %H:%M') if pago.fecha else '' }}
+            </p>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="receipt-info">
+        <div class="receipt-info-col">
+            <div class="section-title">{{ _('Facturado a') }}</div>
+            <p style="margin: 0 0 5px 0;"><strong>{{ pago.nombre }} {{ pago.apellido }}</strong></p>
+            <p style="margin: 0 0 5px 0;">{{ pago.correo_electronico }}</p>
+            {% if pago.direccion1 %}
+                <p style="margin: 0 0 5px 0;">{{ pago.direccion1 }}</p>
+            {% endif %}
+            {% if pago.direccion2 %}
+                <p style="margin: 0 0 5px 0;">{{ pago.direccion2 }}</p>
+            {% endif %}
+            <p style="margin: 0;">
+                {% if pago.provincia %}{{ pago.provincia }}, {% endif %}
+                {% if pago.pais %}{{ pago.pais }} {% endif %}
+                {% if pago.codigo_postal %}({{ pago.codigo_postal }}){% endif %}
+            </p>
+        </div>
+        <div class="receipt-info-col" style="float: right;">
+            <div class="section-title">{{ _('Detalles del Pago') }}</div>
+            <p style="margin: 0 0 5px 0;"><strong>{{ _('Método') }}:</strong> {{ pago.metodo | capitalize }}</p>
+            <p style="margin: 0 0 5px 0;"><strong>{{ _('Estado') }}:</strong> <span class="badge">{{ _('Completado') }}</span></p>
+            <p style="margin: 0;"><strong>{{ _('ID Transacción') }}:</strong> {{ pago.referencia or pago.id }}</p>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="section-title">{{ _('Resumen de la Transacción') }}</div>
+    <table>
+        <thead>
+            <tr>
+                <th>{{ _('Descripción') }}</th>
+                <th style="text-align: right; width: 150px;">{{ _('Total') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>{{ curso.nombre if curso else pago.curso }}</strong>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #718096;">
+                        {{ _('Curso en Línea') }} - {{ _('Código') }}: {{ pago.curso }}
+                    </p>
+                </td>
+                <td style="text-align: right; vertical-align: middle; font-size: 16px;">
+                    {{ pago.monto }} {{ pago.moneda }}
+                </td>
+            </tr>
+            <tr class="total-row">
+                <td style="text-align: right;">{{ _('Total Pagado') }}:</td>
+                <td style="text-align: right; color: #667eea; font-size: 18px;">
+                    {{ pago.monto }} {{ pago.moneda }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>{{ _('Gracias por su confianza y preferencia en nuestra plataforma.') }}</p>
+        <p style="margin-top: 10px; font-size: 10px;">
+            {{ _('Este es un recibo generado automáticamente y sirve como comprobante de pago.') }}
+        </p>
+    </div>
+</body>
+</html>

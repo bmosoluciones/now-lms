@@ -359,6 +359,29 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Student Payments Link -->
+                        <div class="profile-card p-4 mt-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="mb-2">
+                                        <i class="bi bi-wallet2 text-success me-2"></i>{{ _('Historial de Pagos') }}
+                                    </h4>
+                                    <p class="text-muted mb-0">
+                                        {{ _('Consulta tus transacciones de pago, estados y descarga tus recibos de pago en PDF.') }}
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <a
+                                        href="{{ url_for('user_profile.payments_history') }}"
+                                        class="btn btn-outline-success"
+                                        style="border-radius: 25px"
+                                    >
+                                        <i class="bi bi-file-earmark-text me-1"></i> {{ _('Mis Pagos') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         {% elif perfil.tipo == "instructor" %}
                         <!-- Instructor Profile Section -->
                         <div class="profile-card p-4 mb-4">

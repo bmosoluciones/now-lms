@@ -344,6 +344,53 @@ def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
         logging.warning(f"Failed to update coupon usage for payment {order_id}: {exc}")
 
 
+def enviar_recibo_pago(pago: Pago) -> None:
+    """Envía un recibo de pago por correo electrónico en HTML si el correo está configurado."""
+    from now_lms.mail import send_mail, _config
+    from flask_mail import Message
+    from flask import render_template
+    from now_lms.db import Curso
+    from now_lms.i18n import _
+
+    recipient = pago.correo_electronico
+    if not recipient:
+        logging.warning(
+            "Payment %s has no email address; receipt not sent.",
+            pago.referencia or pago.id,
+        )
+        return
+
+    try:
+        mail_config = _config()
+        if not mail_config.mail_configured:
+            logging.info("El correo electrónico no está configurado. No se enviará recibo por correo.")
+            return
+
+        curso = database.session.execute(
+            database.select(Curso).filter_by(codigo=pago.curso)
+        ).scalars().first()
+
+        html_body = render_template("payments/receipt_email.html", pago=pago, curso=curso)
+
+        msg = Message(
+            subject=_("Recibo de Pago - %(curso_nombre)s") % {"curso_nombre": curso.nombre if curso else pago.curso},
+            recipients=[recipient],
+            sender=((mail_config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), mail_config.MAIL_DEFAULT_SENDER),
+        )
+        msg.html = html_body
+
+        send_mail(
+            msg,
+            background=True,
+            _log=f"Recibo de pago {pago.referencia} enviado por correo electrónico a {msg.recipients}."
+        )
+    except Exception:
+        logging.exception(
+            "Failed to send receipt for payment %s",
+            pago.referencia or pago.id,
+        )
+
+
 def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskResponse, int]:
     """Complete the local payment and enrollment transaction."""
     order_id = cast(str, payment_data["order_id"])
@@ -363,6 +410,10 @@ def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskRe
 
     _crear_indice_avance_curso(course_code)
     logging.info(f"Payment {order_id} successfully processed for user {current_user.usuario}, course {course_code}")
+
+    # Enviar recibo de pago
+    enviar_recibo_pago(pago)
+
     return jsonify({
         "success": True,
         "message": "Pago completado exitosamente",

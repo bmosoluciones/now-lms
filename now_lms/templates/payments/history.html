@@ -1,0 +1,115 @@
+{% set current_theme = current_theme() %}
+{% set config = config() %}
+
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        {{ current_theme.local_style() }}
+        <title>{{ _('Historial de Pagos') }} - {{ config.sitio_nombre }}</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main class="container my-5">
+            {{ current_theme.notify() }}
+
+            <div class="d-flex justify-content-between border-bottom mb-4 pb-2">
+                <h2>
+                    <nav aria-label="{{ _('breadcrumb') }}">
+                        <ol class="breadcrumb mb-0" style="background: none; padding: 0;">
+                            <li class="breadcrumb-item">
+                                <a class="text-reset text-decoration-none" href="{{ url_for('home.panel') }}">{{ _('Inicio') }}</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ _('Historial de Pagos') }}</li>
+                        </ol>
+                    </nav>
+                </h2>
+            </div>
+
+            <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-header bg-light d-flex align-items-center py-3">
+                    <h5 class="mb-0 text-secondary">
+                        <i class="bi bi-wallet2 me-2 text-primary"></i>
+                        {{ _('Mis Pagos Registrados') }}
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if pago_rows %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">{{ _('Curso') }}</th>
+                                        <th>{{ _('Fecha') }}</th>
+                                        <th>{{ _('Monto') }}</th>
+                                        <th>{{ _('ID Transacción') }}</th>
+                                        <th>{{ _('Método') }}</th>
+                                        <th>{{ _('Estado') }}</th>
+                                        <th class="text-end pe-4">{{ _('Acciones') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in pago_rows %}
+                                        <tr>
+                                            <td class="ps-4">
+                                                <div class="fw-bold text-dark">{{ row.curso.nombre if row.curso else row.pago.curso }}</div>
+                                                <small class="text-muted">{{ row.pago.curso }}</small>
+                                            </td>
+                                            <td>
+                                                {{ row.pago.fecha.strftime('%Y-%m-%d %H:%M') if row.pago.fecha else '' }}
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold">{{ row.pago.monto }} {{ row.pago.moneda }}</span>
+                                            </td>
+                                            <td>
+                                                <code class="text-muted small">{{ row.pago.referencia or row.pago.id }}</code>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary text-capitalize">{{ row.pago.metodo }}</span>
+                                            </td>
+                                            <td>
+                                                {% if row.pago.estado == 'completed' %}
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                                        <i class="bi bi-check-circle-fill me-1"></i>{{ _('Completado') }}
+                                                    </span>
+                                                {% elif row.pago.estado == 'pending' %}
+                                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle">
+                                                        <i class="bi bi-hourglass-split me-1"></i>{{ _('Pendiente') }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                                        <i class="bi bi-x-circle-fill me-1"></i>{{ _('Fallido') }}
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                {% if row.pago.estado == 'completed' %}
+                                                    <a href="{{ url_for('user_profile.download_receipt', payment_id=row.pago.id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                                        <i class="bi bi-file-earmark-pdf me-1"></i>
+                                                        {{ _('Bajar Recibo') }}
+                                                    </a>
+                                                {% elif row.pago.estado == 'pending' %}
+                                                    <a href="{{ url_for('paypal.resume_payment', payment_id=row.pago.id) }}" class="btn btn-primary btn-sm rounded-pill px-3">
+                                                        <i class="bi bi-credit-card me-1"></i>
+                                                        {{ _('Pagar') }}
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-wallet2 text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-3 mb-0">{{ _('No tienes pagos registrados actualmente.') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
