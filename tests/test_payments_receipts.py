@@ -1,11 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2025 - 2026 BMO Soluciones, S.A.
 
-import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
 from now_lms.auth import proteger_passwd
-from now_lms.db import Curso, Pago, Usuario, database
+from now_lms.db import Curso, Pago, Usuario
 
 
 def _crear_estudiante(db_session, username="student_receipts", email="student@example.com") -> Usuario:
@@ -170,3 +169,120 @@ def test_email_receipt_sending(mock_config, mock_send_mail, app, db_session):
         assert "email_test@example.com" in sent_msg.recipients
         assert "ORDER-EMAIL-888" in sent_msg.html
         assert "Email Course" in sent_msg.html
+
+
+@patch("now_lms.mail.send_mail")
+@patch("now_lms.mail._config")
+def test_email_receipt_not_sent_when_smtp_disabled(mock_config, mock_send_mail, app, db_session):
+    # Set up mock configuration to simulate SMTP disabled
+    mock_config.return_value = MagicMock(
+        mail_configured=False
+    )
+
+    from now_lms.vistas.paypal import enviar_recibo_pago
+
+    student = _crear_estudiante(db_session, "student_smtp_off", "smtp_off@example.com")
+    curso = _crear_curso(db_session, "PAY_SMTPOFF", "SMTP Off Course")
+
+    pago = Pago(
+        usuario=student.usuario,
+        curso=curso.codigo,
+        nombre=student.nombre,
+        apellido=student.apellido,
+        correo_electronico=student.correo_electronico,
+        monto=50.00,
+        moneda="USD",
+        metodo="paypal",
+        estado="completed",
+        referencia="ORDER-SMTPOFF",
+        fecha=datetime.now(),
+    )
+    db_session.add(pago)
+    db_session.commit()
+
+    with app.test_request_context():
+        enviar_recibo_pago(pago)
+
+        # Verify send_mail was NOT called
+        mock_send_mail.assert_not_called()
+
+
+@patch("now_lms.mail.send_mail")
+def test_email_receipt_not_sent_when_no_payment_email(mock_send_mail, app, db_session):
+    from now_lms.vistas.paypal import enviar_recibo_pago
+
+    student = _crear_estudiante(db_session, "student_no_email", "no_email@example.com")
+    curso = _crear_curso(db_session, "PAY_NOEMAIL", "No Email Course")
+
+    pago = Pago(
+        usuario=student.usuario,
+        curso=curso.codigo,
+        nombre=student.nombre,
+        apellido=student.apellido,
+        correo_electronico="",  # empty string is falsy but passes DB NOT NULL constraint
+        monto=50.00,
+        moneda="USD",
+        metodo="paypal",
+        estado="completed",
+        referencia="ORDER-NOEMAIL",
+        fecha=datetime.now(),
+    )
+    db_session.add(pago)
+    db_session.commit()
+
+    with app.test_request_context():
+        enviar_recibo_pago(pago)
+
+        # Verify send_mail was NOT called
+        mock_send_mail.assert_not_called()
+
+
+@patch("now_lms.mail.send_mail")
+@patch("now_lms.mail._config")
+@patch("now_lms.vistas.paypal.get_paypal_access_token")
+@patch("now_lms.vistas.paypal.verify_paypal_payment")
+def test_payment_idempotency_ignores_already_completed(mock_verify, mock_token, mock_config, mock_send_mail, app, client, db_session):
+    # Set up mock configuration to simulate SMTP enabled
+    mock_config.return_value = MagicMock(
+        mail_configured=True,
+        MAIL_DEFAULT_SENDER_NAME="NOW LMS",
+        MAIL_DEFAULT_SENDER="no-reply@nowlms.com"
+    )
+
+    # Tests that processing a second payment confirmation for the same orderID behaves idempotently and does NOT send receipt email twice.
+    student = _crear_estudiante(db_session, "student_idemp", "idemp@example.com")
+    curso = _crear_curso(db_session, "PAY_IDEMP", "Idempotency Course")
+
+    # Configure mock responses for paypal API
+    mock_token.return_value = "fake-access-token"
+    mock_verify.return_value = {
+        "verified": True,
+        "status": "COMPLETED",
+        "amount": "50.00",
+        "currency": "USD",
+        "payer_id": "PAYER123"
+    }
+
+    # Log in as student
+    client.post("/user/login", data={"usuario": student.usuario, "acceso": "password"}, follow_redirects=False)
+
+    payload = {
+        "orderID": "ORDER-IDEMP-111",
+        "payerID": "PAYER123",
+        "courseCode": "PAY_IDEMP",
+        "amount": "50.00"
+    }
+
+    # First payment request
+    resp1 = client.post("/paypal_checkout/confirm_payment", json=payload)
+    assert resp1.status_code == 200
+
+    # Capture how many times send_mail was called (should be 1)
+    assert mock_send_mail.call_count == 1
+
+    # Second payment request with same details (simulating client retry or duplicate callback)
+    resp2 = client.post("/paypal_checkout/confirm_payment", json=payload)
+    assert resp2.status_code == 200
+
+    # Email count should still be 1 (idempotent, didn't resend)
+    assert mock_send_mail.call_count == 1

@@ -238,20 +238,18 @@ def cambiar_contrasena(ulid: str) -> str | Response:
 @user_profile.route("/payments", methods=["GET"])
 @login_required
 def payments_history() -> str:
-    """Historial de pagos del estudiante."""
+    """Historial de pagos para cualquier usuario autenticado."""
     from now_lms.db import Pago, Curso
 
-    pagos = database.session.execute(
-        database.select(Pago)
-        .filter_by(usuario=current_user.usuario)
+    results = database.session.execute(
+        database.select(Pago, Curso)
+        .outerjoin(Curso, Pago.curso == Curso.codigo)
+        .filter(Pago.usuario == current_user.usuario)
         .order_by(Pago.fecha.desc())
-    ).scalars().all()
+    ).all()
 
     pago_rows = []
-    for pago in pagos:
-        curso = database.session.execute(
-            database.select(Curso).filter_by(codigo=pago.curso)
-        ).scalar_one_or_none()
+    for pago, curso in results:
         pago_rows.append({"pago": pago, "curso": curso})
 
     return render_template("payments/history.html", pago_rows=pago_rows)

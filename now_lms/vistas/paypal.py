@@ -352,6 +352,14 @@ def enviar_recibo_pago(pago: Pago) -> None:
     from now_lms.db import Curso
     from now_lms.i18n import _
 
+    recipient = pago.correo_electronico
+    if not recipient:
+        logging.warning(
+            "Payment %s has no email address; receipt not sent.",
+            pago.referencia or pago.id,
+        )
+        return
+
     try:
         mail_config = _config()
         if not mail_config.mail_configured:
@@ -366,7 +374,7 @@ def enviar_recibo_pago(pago: Pago) -> None:
 
         msg = Message(
             subject=_("Recibo de Pago - %(curso_nombre)s") % {"curso_nombre": curso.nombre if curso else pago.curso},
-            recipients=[pago.correo_electronico or current_user.correo_electronico],
+            recipients=[recipient],
             sender=((mail_config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), mail_config.MAIL_DEFAULT_SENDER),
         )
         msg.html = html_body
@@ -376,8 +384,11 @@ def enviar_recibo_pago(pago: Pago) -> None:
             background=True,
             _log=f"Recibo de pago {pago.referencia} enviado por correo electrónico a {msg.recipients}."
         )
-    except Exception as exc:
-        logging.exception(f"Error al enviar el recibo de pago por correo electrónico: {exc}")
+    except Exception:
+        logging.exception(
+            "Failed to send receipt for payment %s",
+            pago.referencia or pago.id,
+        )
 
 
 def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskResponse, int]:
