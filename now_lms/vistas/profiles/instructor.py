@@ -43,6 +43,7 @@ from now_lms.db import (
     select,
 )
 from now_lms.forms import EvaluationForm, QuestionForm
+from now_lms.i18n import _, _l
 
 # Route constants
 ROUTE_INSTRUCTOR_PROFILE_CURSOS = "instructor_profile.cursos"
@@ -50,8 +51,8 @@ ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA = "instructor_profile.evaluaciones_l
 ROUTE_INSTRUCTOR_EDIT_EVALUATION = "instructor_profile.edit_evaluation"
 
 # Message constants
-MESSAGE_EVALUACION_NO_ENCONTRADA = "Evaluación no encontrada."
-MESSAGE_PREGUNTA_NO_ENCONTRADA = "Pregunta no encontrada."
+MESSAGE_EVALUACION_NO_ENCONTRADA = _l("Evaluación no encontrada.")
+MESSAGE_PREGUNTA_NO_ENCONTRADA = _l("Pregunta no encontrada.")
 
 instructor_profile = Blueprint("instructor_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -213,10 +214,10 @@ def agrega_usuario_a_grupo() -> Response:
     url_grupo = url_for("instructor_profile.grupo", ulid=id_)
     try:
         database.session.commit()
-        flash("Usuario Agregado Correctamente.", "success")
+        flash(_("Usuario Agregado Correctamente."), "success")
         return redirect(url_grupo)
     except OperationalError:
-        flash("No se pudo agregar al usuario.", "warning")
+        flash(_("No se pudo agregar al usuario."), "warning")
         return redirect(url_grupo)
 
 
@@ -240,12 +241,12 @@ def course_evaluations(course_code: str) -> str | Response:
             .first()
         )
         if not instructor_assignment:
-            flash("No tiene permisos para acceder a este curso.", "danger")
+            flash(_("No tiene permisos para acceder a este curso."), "danger")
             return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_CURSOS))
 
     curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
-        flash("Curso no encontrado.", "danger")
+        flash(_("Curso no encontrado."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_CURSOS))
 
     # Get course sections and their evaluations
@@ -278,12 +279,12 @@ def new_evaluation(course_code: str, section_id: str) -> str | Response:
             .first()
         )
         if not instructor_assignment:
-            flash("No tiene permisos para acceder a este curso.", "danger")
+            flash(_("No tiene permisos para acceder a este curso."), "danger")
             return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_CURSOS))
 
     seccion = database.session.get(CursoSeccion, section_id)
     if not seccion or seccion.curso != course_code:
-        flash("Sección no encontrada.", "danger")
+        flash(_("Sección no encontrada."), "danger")
         return redirect(url_for("instructor_profile.course_evaluations", course_code=course_code))
 
     form = EvaluationForm()
@@ -302,10 +303,10 @@ def new_evaluation(course_code: str, section_id: str) -> str | Response:
         try:
             database.session.add(evaluacion)
             database.session.commit()
-            flash("Evaluación creada correctamente.", "success")
+            flash(_("Evaluación creada correctamente."), "success")
             return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, course_code=course_code, evaluation_id=evaluacion.id))
         except OperationalError:
-            flash("Error al crear la evaluación.", "danger")
+            flash(_("Error al crear la evaluación."), "danger")
             return redirect(url_for("instructor_profile.course_evaluations", course_code=course_code))
 
     return render_template("instructor/new_evaluation.html", form=form, seccion=seccion)
@@ -365,7 +366,7 @@ def edit_evaluation(evaluation_id: str) -> str | Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para editar esta evaluación.", "danger")
+        flash(_("No tiene permisos para editar esta evaluación."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     seccion = database.session.get(CursoSeccion, evaluacion.section_id)
@@ -382,10 +383,10 @@ def edit_evaluation(evaluation_id: str) -> str | Response:
 
         try:
             database.session.commit()
-            flash("Evaluación actualizada correctamente.", "success")
+            flash(_("Evaluación actualizada correctamente."), "success")
             return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=evaluation_id))
         except OperationalError:
-            flash("Error al actualizar la evaluación.", "danger")
+            flash(_("Error al actualizar la evaluación."), "danger")
 
     # Get questions for this evaluation
     preguntas = (
@@ -417,7 +418,7 @@ def toggle_evaluation_status(evaluation_id: str) -> Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para modificar esta evaluación.", "danger")
+        flash(_("No tiene permisos para modificar esta evaluación."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     # Toggle enabled status (assuming we need to add this field to the model)
@@ -429,17 +430,17 @@ def toggle_evaluation_status(evaluation_id: str) -> Response:
             from datetime import timedelta
 
             evaluacion.available_until = datetime.now() - timedelta(days=1)
-            flash("Evaluación deshabilitada.", "info")
+            flash(_("Evaluación deshabilitada."), "info")
         else:
             # Enable by removing the restriction
             evaluacion.available_until = None
-            flash("Evaluación habilitada.", "success")
+            flash(_("Evaluación habilitada."), "success")
 
         database.session.commit()
         # Update calendar events for this evaluation
         update_evaluation_events(evaluation_id)
     except OperationalError:
-        flash("Error al cambiar el estado de la evaluación.", "danger")
+        flash(_("Error al cambiar el estado de la evaluación."), "danger")
 
     return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
@@ -456,7 +457,7 @@ def new_question(evaluation_id: str) -> str | Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para editar esta evaluación.", "danger")
+        flash(_("No tiene permisos para editar esta evaluación."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     form = QuestionForm()
@@ -510,10 +511,10 @@ def new_question(evaluation_id: str) -> str | Response:
                     database.session.add(option)
 
             database.session.commit()
-            flash("Pregunta creada correctamente.", "success")
+            flash(_("Pregunta creada correctamente."), "success")
             return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=evaluation_id))
         except OperationalError:
-            flash("Error al crear la pregunta.", "danger")
+            flash(_("Error al crear la pregunta."), "danger")
 
     return render_template("instructor/new_question.html", form=form, evaluacion=evaluacion)
 
@@ -536,7 +537,7 @@ def edit_question(question_id: str) -> str | Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para editar esta pregunta.", "danger")
+        flash(_("No tiene permisos para editar esta pregunta."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     form = QuestionForm(obj=question)
@@ -548,10 +549,10 @@ def edit_question(question_id: str) -> str | Response:
             question.explanation = form.explanation.data
 
             database.session.commit()
-            flash("Pregunta actualizada correctamente.", "success")
+            flash(_("Pregunta actualizada correctamente."), "success")
             return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))
         except OperationalError:
-            flash("Error al actualizar la pregunta.", "danger")
+            flash(_("Error al actualizar la pregunta."), "danger")
 
     return render_template("instructor/edit_question.html", form=form, question=question, evaluacion=evaluacion)
 
@@ -568,7 +569,7 @@ def evaluation_results(evaluation_id: str) -> str | Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para ver los resultados de esta evaluación.", "danger")
+        flash(_("No tiene permisos para ver los resultados de esta evaluación."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     # Get evaluation attempts
@@ -623,14 +624,14 @@ def new_question_option(question_id: str) -> str | Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para editar esta pregunta.", "danger")
+        flash(_("No tiene permisos para editar esta pregunta."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     # For boolean questions, limit to 2 options
     if question.type == "boolean":
         existing_options = database.session.execute(select(QuestionOption).filter_by(question_id=question_id)).scalars().all()
         if len(existing_options) >= 2:
-            flash("Las preguntas de verdadero/falso solo pueden tener 2 opciones.", "warning")
+            flash(_("Las preguntas de verdadero/falso solo pueden tener 2 opciones."), "warning")
             return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))
 
     from now_lms.forms import QuestionOptionForm
@@ -648,10 +649,10 @@ def new_question_option(question_id: str) -> str | Response:
         try:
             database.session.add(option)
             database.session.commit()
-            flash("Opción agregada correctamente.", "success")
+            flash(_("Opción agregada correctamente."), "success")
             return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))
         except OperationalError:
-            flash("Error al agregar la opción.", "danger")
+            flash(_("Error al agregar la opción."), "danger")
 
     return render_template("instructor/new_question_option.html", form=form, question=question, evaluacion=evaluacion)
 
@@ -663,7 +664,7 @@ def edit_question_option(option_id: str) -> str | Response:
     """Edit an existing question option."""
     option = database.session.get(QuestionOption, option_id)
     if not option:
-        flash("Opción no encontrada.", "danger")
+        flash(_("Opción no encontrada."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     question = database.session.get(Question, option.question_id)
@@ -679,7 +680,7 @@ def edit_question_option(option_id: str) -> str | Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para editar esta opción.", "danger")
+        flash(_("No tiene permisos para editar esta opción."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     from now_lms.forms import QuestionOptionForm
@@ -693,10 +694,10 @@ def edit_question_option(option_id: str) -> str | Response:
             option.modificado_por = current_user.usuario
 
             database.session.commit()
-            flash("Opción actualizada correctamente.", "success")
+            flash(_("Opción actualizada correctamente."), "success")
             return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))
         except OperationalError:
-            flash("Error al actualizar la opción.", "danger")
+            flash(_("Error al actualizar la opción."), "danger")
 
     return render_template(
         "instructor/edit_question_option.html", form=form, option=option, question=question, evaluacion=evaluacion
@@ -710,7 +711,7 @@ def delete_question_option(option_id: str) -> Response:
     """Delete a question option."""
     option = database.session.get(QuestionOption, option_id)
     if not option:
-        flash("Opción no encontrada.", "danger")
+        flash(_("Opción no encontrada."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     question = database.session.get(Question, option.question_id)
@@ -726,7 +727,7 @@ def delete_question_option(option_id: str) -> Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para eliminar esta opción.", "danger")
+        flash(_("No tiene permisos para eliminar esta opción."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     # Check if this would leave the question with too few options
@@ -735,15 +736,15 @@ def delete_question_option(option_id: str) -> Response:
     ).scalar()
 
     if remaining_options is not None and remaining_options <= 2:
-        flash("No se puede eliminar esta opción. Las preguntas necesitan al menos 2 opciones.", "warning")
+        flash(_("No se puede eliminar esta opción. Las preguntas necesitan al menos 2 opciones."), "warning")
         return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))
 
     try:
         database.session.delete(option)
         database.session.commit()
-        flash("Opción eliminada correctamente.", "success")
+        flash(_("Opción eliminada correctamente."), "success")
     except OperationalError:
-        flash("Error al eliminar la opción.", "danger")
+        flash(_("Error al eliminar la opción."), "danger")
 
     return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))
 
@@ -766,15 +767,15 @@ def delete_question(question_id: str) -> Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para eliminar esta pregunta.", "danger")
+        flash(_("No tiene permisos para eliminar esta pregunta."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     try:
         # Delete the question (options will be deleted automatically due to cascade)
         database.session.delete(question)
         database.session.commit()
-        flash("Pregunta eliminada correctamente.", "success")
+        flash(_("Pregunta eliminada correctamente."), "success")
     except OperationalError:
-        flash("Error al eliminar la pregunta.", "danger")
+        flash(_("Error al eliminar la pregunta."), "danger")
 
     return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))

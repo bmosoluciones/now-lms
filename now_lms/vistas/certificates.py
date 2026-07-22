@@ -40,6 +40,7 @@ from now_lms.db import (
     database,
 )
 from now_lms.forms import CertificateForm, EmitCertificateForm
+from now_lms.i18n import _
 
 # Template constants
 TEMPLATE_EMITIR_CERTIFICADO = "learning/certificados/emitir_certificado.html"
@@ -144,10 +145,10 @@ def certificate_new() -> str | Response:
         database.session.add(certificado_obj)
         try:
             database.session.commit()
-            flash("Nuevo certificado creado correctamente.", "success")
+            flash(_("Nuevo certificado creado correctamente."), "success")
         except OperationalError:
             database.session.rollback()
-            flash("Hubo un error al crear el certificado.", "warning")
+            flash(_("Hubo un error al crear el certificado."), "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
 
     return render_template("learning/certificados/nuevo_certificado.html", form=form)
@@ -182,9 +183,9 @@ def certificate_edit(ulid: str) -> str | Response:
         try:
             database.session.add(certificado_obj)
             database.session.commit()
-            flash("Certificado editado correctamente.", "success")
+            flash(_("Certificado editado correctamente."), "success")
         except OperationalError:
-            flash("No se puedo editar el certificado.", "warning")
+            flash(_("No se puedo editar el certificado."), "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
 
     return render_template("learning/certificados/editar_certificado.html", form=form)
@@ -425,7 +426,7 @@ def certificacion_crear(course_id: str, user: str, template: str) -> Response:
 
     can_receive, reason = can_user_receive_certificate(course_id, user)
     if not can_receive:
-        flash(f"No se puede emitir el certificado: {reason}", "warning")
+        flash(f"Cannot issue the certificate: {reason}", "warning")
         return redirect(url_for("certificate.certificaciones"))
 
     # Calculate expiration date if required
@@ -445,13 +446,13 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
     """Validate certificate prerequisites and build the pending model."""
     if form.content_type.data == "course":
         if not form.curso.data:
-            flash("Por favor selecciona un curso.", "warning")
+            flash(_("Por favor selecciona un curso."), "warning")
             return None
         from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 
         can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
         if not can_receive:
-            flash(f"No se puede emitir el certificado: {reason}", "warning")
+            flash(f"Cannot issue the certificate: {reason}", "warning")
             return None
         curso_obj = database.session.execute(
             database.select(Curso).filter_by(codigo=form.curso.data)
@@ -466,7 +467,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
         )
 
     if not form.master_class.data:
-        flash("Por favor selecciona una clase magistral.", "warning")
+        flash(_("Por favor selecciona una clase magistral."), "warning")
         return None
     enrollment = database.session.execute(
         database.select(MasterClassEnrollment).filter_by(
@@ -474,7 +475,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
         )
     ).first()
     if not enrollment or not enrollment[0].is_confirmed:
-        flash("El usuario debe estar inscrito y confirmado en la clase magistral.", "warning")
+        flash(_("El usuario debe estar inscrito y confirmado en la clase magistral."), "warning")
         return None
     return Certificacion(
         usuario=form.usuario.data,
@@ -512,11 +513,11 @@ def certificacion_generar() -> str | Response:
         try:
             database.session.add(cert)
             database.session.commit()
-            flash("Certificado generado correctamente.", "success")
+            flash(_("Certificado generado correctamente."), "success")
             return redirect(url_for("certificate.certificaciones"))
 
         except OperationalError:
-            flash("Hubo en error al crear la plantilla.", "warning")
+            flash(_("Hubo en error al crear la plantilla."), "warning")
             return redirect("/instructor")
     else:
         return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)

@@ -142,24 +142,23 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                             <div class="date">
                                                 {% if recurso.fecha %}
                                                 <span> {{ recurso.fecha.strftime('%d') }} </span> {{
-                                                recurso.fecha.strftime('%b') }} {% else %} <span>--</span> Sin fecha {% endif
+                                                recurso.fecha.strftime('%b') }} {% else %} <span>--</span> {{ _('Sin fecha') }} {% endif
                                                 %}
                                             </div>
                                             <div class="time-location">
                                                 <p>
                                                     <span class="ti-time mr-2"></span>
                                                     {% if recurso.hora_inicio and recurso.hora_fin %} {{ recurso.hora_inicio }}
-                                                    - {{ recurso.hora_fin }} {% else %} Sin horario programado {% endif %}
+                                                    - {{ recurso.hora_fin }} {% else %} {{ _('Sin horario programado') }} {% endif %}
                                                 </p>
                                                 <p>
-                                                    <span class="ti-location-pin mr-2"></span>{{ recurso.notes or 'Sin
-                                                    ubicación' }}
+                                                    <span class="ti-location-pin mr-2"></span>{{ recurso.notes or _('Sin ubicación') }}
                                                 </p>
                                             </div>
                                         </div>
                                         <p>{{ recurso.nombre }}</p>
                                         <div class="d-flex gap-2 flex-wrap">
-                                            <a href="{{ recurso.url }}" class="btn btn-primary rounded-0 mt-3">Link al Meet</a>
+                                            <a href="{{ recurso.url }}" class="btn btn-primary rounded-0 mt-3">{{ _('Link al Meet') }}</a>
 
                                             <!-- Calendar dropdown -->
                                             <div class="dropdown mt-3">
@@ -170,16 +169,16 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                                     data-bs-toggle="dropdown"
                                                     aria-expanded="false"
                                                 >
-                                                    <i class="bi bi-calendar-plus"></i> Agregar al Calendario
+                                                    <i class="bi bi-calendar-plus"></i> {{ _('Agregar al Calendario') }}
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="calendarDropdown">
                                                     <li>
                                                         <a
                                                             href="{{ url_for('resources.download_meet_calendar', course_code=curso.codigo, codigo=recurso.id) }}"
                                                             class="dropdown-item"
-                                                            title="Descargar archivo ICS"
+                                                            title="{{ _('Descargar archivo ICS') }}"
                                                         >
-                                                            <i class="bi bi-download"></i> Descargar archivo (.ics)
+                                                            <i class="bi bi-download"></i> {{ _('Descargar archivo (.ics)') }}
                                                         </a>
                                                     </li>
                                                     <li>
@@ -191,7 +190,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                                             target="_blank"
                                                             class="dropdown-item"
                                                         >
-                                                            <i class="bi bi-google"></i> Agregar a Google Calendar
+                                                            <i class="bi bi-google"></i> {{ _('Agregar a Google Calendar') }}
                                                         </a>
                                                     </li>
                                                     <li>
@@ -200,7 +199,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                                             target="_blank"
                                                             class="dropdown-item"
                                                         >
-                                                            <i class="bi bi-microsoft"></i> Agregar a Outlook
+                                                            <i class="bi bi-microsoft"></i> {{ _('Agregar a Outlook') }}
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -213,21 +212,21 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
                         <!-- Meeting Recommendations -->
                         <div class="mt-4 p-4 bg-light rounded">
-                            <h5 class="text-primary mb-3"><i class="bi bi-lightbulb"></i> Recomendaciones para la reunión</h5>
+                            <h5 class="text-primary mb-3"><i class="bi bi-lightbulb"></i> {{ _('Recomendaciones para la reunión') }}</h5>
                             <div class="row">
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
                                             <i class="bi bi-check-circle text-success me-2"></i>
-                                            Revisa tu conexión a internet antes de la reunión
+                                            {{ _('Revisa tu conexión a internet antes de la reunión') }}
                                         </li>
                                         <li class="mb-2">
                                             <i class="bi bi-check-circle text-success me-2"></i>
-                                            Asegúrate de tener cámara y micrófono funcionando
+                                            {{ _('Asegúrate de tener cámara y micrófono funcionando') }}
                                         </li>
                                         <li class="mb-2">
                                             <i class="bi bi-check-circle text-success me-2"></i>
-                                            Únete 5 minutos antes del horario programado
+                                            {{ _('Únete 5 minutos antes del horario programado') }}
                                         </li>
                                     </ul>
                                 </div>
@@ -235,15 +234,15 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
                                             <i class="bi bi-check-circle text-success me-2"></i>
-                                            Busca un lugar tranquilo y bien iluminado
+                                            {{ _('Busca un lugar tranquilo y bien iluminado') }}
                                         </li>
                                         <li class="mb-2">
                                             <i class="bi bi-check-circle text-success me-2"></i>
-                                            Ten preparados tus materiales de estudio
+                                            {{ _('Ten preparados tus materiales de estudio') }}
                                         </li>
                                         <li class="mb-2">
                                             <i class="bi bi-check-circle text-success me-2"></i>
-                                            Mantén silenciado tu micrófono cuando no hables
+                                            {{ _('Mantén silenciado tu micrófono cuando no hables') }}
                                         </li>
                                     </ul>
                                 </div>
@@ -259,7 +258,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
                         %}
                         <div class="mt-4 mb-4" style="text-align: center">
-                            <small class="text-muted">Publicidad</small>
+                            <small class="text-muted">{{ _('Publicidad') }}</small>
                             {{ ad_code | safe }}
                         </div>
                         {% endif %} {% endif %}

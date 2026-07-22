@@ -18,6 +18,7 @@ from sqlalchemy import and_, func
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import CursoSeccion, Evaluation, EvaluationAttempt, database
+from now_lms.i18n import _
 
 
 def check_user_evaluations_completed(course_code: str, user_id: str) -> tuple[bool, int, int]:
@@ -164,7 +165,7 @@ def can_user_receive_certificate(course_code: str, user_id: str) -> tuple[bool, 
     if not all_evaluations_passed:
         return (
             False,
-            f"Debe aprobar todas las evaluaciones. {failed_count} de {total_evaluations} evaluaciones no aprobadas.",
+            f"You must pass all evaluations. {failed_count} of {total_evaluations} evaluations not passed.",
         )
 
     # Check resource completion (existing functionality)
@@ -181,6 +182,6 @@ def can_user_receive_certificate(course_code: str, user_id: str) -> tuple[bool, 
     )
 
     if not avance or not avance.completado:
-        return False, "Debe completar todos los recursos del curso."
+        return False, _("Debe completar todos los recursos del curso.")
 
-    return True, "Cumple todos los requisitos para recibir el certificado."
+    return True, _("Cumple todos los requisitos para recibir el certificado.")

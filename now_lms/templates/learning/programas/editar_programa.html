@@ -20,9 +20,8 @@
             <div class="container px-4 py-5" id="icon-grid">
                 {% if not is_programs_enabled() %}
                 <div class="alert alert-warning" role="alert">
-                    <strong>⚠️ Aviso:</strong> Los programas están deshabilitados en la configuración principal del sitio. Los
-                    usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar {{
-                    _("Programas") }}" en la configuración general.
+                    <strong>{{ _('⚠️ Aviso:') }}</strong> {{ _('Los programas están deshabilitados en la configuración principal del sitio. Los usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar') }} {{
+                    _("Programas") }}{{ _('" en la configuración general.') }}
                 </div>
                 {% endif %}
                 <div class="d-flex justify-content-between border-bottom">
@@ -31,7 +30,7 @@
                     <p>
                         <span class="badge bg-success">
                             <a href="{{ url_for('program.programa_cursos', codigo=programa.codigo) }}" class="link-light"
-                                >Lista de {{ _("Cursos") }}</a
+                                >{{ _('Lista de') }} {{ _("Cursos") }}</a
                             >
                         </span>
                     </p>
@@ -42,14 +41,14 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">{{ _("Programa") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Categoria") }} {{
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Categoria")) }} {{
                             render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-sm-3">
-                            <label for="codigo" class="form-label">Publico</label>
+                            <label for="codigo" class="form-label">{{ _('Publico') }}</label>
                             {{ form.publico(checked=programa.publico) }} {{ render_field_errors(form.publico) }}
-                            <label for="codigo" class="form-label">Promocionado</label>
+                            <label for="codigo" class="form-label">{{ _('Promocionado') }}</label>
                             {{ form.promocionado(checked=programa.promocionado) }} {{ render_field_errors(form.promocionado) }}
                         </div>
 
@@ -61,7 +60,7 @@
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <label for="descripcion" class="form-label">{{ _('Descripcion') }}</label>
                             {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }} {{
                             render_field_errors(form.descripcion) }}
                         </div>
@@ -74,23 +73,23 @@
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="categoria" class="form-label">Categoría</label>
+                            <label for="categoria" class="form-label">{{ _('Categoría') }}</label>
                             {{ form.categoria(class="form-control", id="categoria") }} {{ render_field_errors(form.categoria)
                             }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="etiquetas" class="form-label">Etiquetas</label>
+                            <label for="etiquetas" class="form-label">{{ _('Etiquetas') }}</label>
                             {{ form.etiquetas(class="form-control", id="etiquetas", multiple=True) }} {{
                             render_field_errors(form.etiquetas) }}
                             <div class="form-text">
-                                Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.
+                                {{ _('Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.') }}
                             </div>
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="plantilla_certificado" class="form-label">Plantilla Certificado</label>
+                            <label for="plantilla_certificado" class="form-label">{{ _('Plantilla Certificado') }}</label>
                             {{ form.plantilla_certificado(class="form-control", id="plantilla_certificado") }} {{
                             render_field_errors(form.plantilla_certificado) }}
                         </div>
@@ -101,12 +100,12 @@
                         {% if programa.logo %}
                         <img
                             src="{{ url_for('static', filename='/files/public/images/'+ 'program' + programa.codigo + '/logo.jpg') }}"
-                            alt="Portada del programa"
+                            alt="{{ _('Portada del programa') }}"
                         />
                         <br />
-                        <a href="#">{{ _("Eliminar") }} Portada</a>
+                        <a href="#">{{ _("Eliminar") }} {{ _('Portada') }}</a>
                         {% else %}
-                        <label for="logo" class="form-label">Portada</label>
+                        <label for="logo" class="form-label">{{ _('Portada') }}</label>
                         <input type="file" name="logo" accept="image/jpeg" />
                         {% endif %}
                     </div>

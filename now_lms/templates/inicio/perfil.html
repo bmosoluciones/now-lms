@@ -272,7 +272,7 @@
                                             <h6 class="card-title text-success">{{ curso.nombre }}</h6>
                                             <p class="card-text text-muted small">{{ curso.descripcion_corta }}</p>
                                             <p class="card-text">
-                                                <small class="text-muted">Código: {{ curso.codigo }}</small>
+                                                <small class="text-muted">{{ _('Código:') }} {{ curso.codigo }}</small>
                                             </p>
                                         </div>
                                     </div>
@@ -368,7 +368,7 @@
                                 </div>
                                 <div>
                                     <h4 class="mb-1"><i class="bi bi-mortarboard me-2"></i>{{ _('Mis Cursos Creados') }}</h4>
-                                    <p class="text-muted mb-0">Cursos que has desarrollado y publicas</p>
+                                    <p class="text-muted mb-0">{{ _('Cursos que has desarrollado y publicas') }}</p>
                                 </div>
                             </div>
 
@@ -384,10 +384,10 @@
                                             <h6 class="card-title text-primary">{{ curso.nombre }}</h6>
                                             <p class="card-text text-muted small">{{ curso.descripcion_corta }}</p>
                                             <p class="card-text">
-                                                <small class="text-muted">Código: {{ curso.codigo }}</small>
+                                                <small class="text-muted">{{ _('Código:') }} {{ curso.codigo }}</small>
                                             </p>
                                             <p class="card-text">
-                                                <small class="text-muted">Estado: {{ curso.estado | capitalize }}</small>
+                                                <small class="text-muted">{{ _('Estado:') }} {{ curso.estado | capitalize }}</small>
                                             </p>
                                         </div>
                                     </div>
@@ -397,7 +397,7 @@
                             {% else %}
                             <div class="text-center py-4">
                                 <i class="bi bi-mortarboard text-muted" style="font-size: 3rem"></i>
-                                <p class="text-muted mt-2">No tienes cursos creados actualmente.</p>
+                                <p class="text-muted mt-2">{{ _('No tienes cursos creados actualmente.') }}</p>
                             </div>
                             {% endif %}
                         </div>
@@ -475,7 +475,7 @@
                         <div class="profile-card p-4">
                             <div class="text-center py-4">
                                 <i class="bi bi-person text-muted" style="font-size: 3rem"></i>
-                                <p class="text-muted mt-2">Perfil de usuario estándar.</p>
+                                <p class="text-muted mt-2">{{ _('Perfil de usuario estándar.') }}</p>
                             </div>
                         </div>
                         {% endif %}

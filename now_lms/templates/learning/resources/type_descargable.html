@@ -77,7 +77,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     <div class="col">
                                         <h5 class="card-title mb-1">{{ recurso.nombre }}</h5>
                                         <p class="card-text text-muted mb-2">
-                                            <small>Archivo: {{ recurso.doc }}</small>
+                                            <small>{{ _('Archivo:') }} {{ recurso.doc }}</small>
                                         </p>
                                         <p class="card-text text-muted mb-0">
                                             <small>{{ _("Tipo") }}: {{ file_ext.upper() }}</small>
@@ -97,7 +97,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                 download
                             >
                                 <i class="bi bi-download" aria-hidden="true"></i>
-                                Descargar Archivo
+                                {{ _('Descargar Archivo') }}
                             </a>
                         </div>
 
@@ -113,7 +113,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <!-- Preview for supported file types -->
                         {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'] %}
                         <div class="mb-4">
-                            <h6>Vista previa:</h6>
+                            <h6>{{ _('Vista previa:') }}</h6>
                             <div class="text-center">
                                 <img
                                     src="{{ url_for('resources.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
@@ -125,29 +125,29 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         </div>
                         {% elif file_ext in ['mp3', 'wav', 'ogg'] %}
                         <div class="mb-4">
-                            <h6>Reproductor de audio:</h6>
+                            <h6>{{ _('Reproductor de audio:') }}</h6>
                             <audio controls class="w-100">
                                 <source
                                     src="{{ url_for('resources.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
                                     type="{% if file_ext == 'mp3' %}audio/mpeg{% elif file_ext == 'wav' %}audio/wav{% else %}audio/ogg{% endif %}"
                                 />
-                                Su navegador no soporta el elemento de audio.
+                                {{ _('Su navegador no soporta el elemento de audio.') }}
                             </audio>
                         </div>
                         {% elif file_ext in ['mp4', 'webm'] %}
                         <div class="mb-4">
-                            <h6>Reproductor de video:</h6>
+                            <h6>{{ _('Reproductor de video:') }}</h6>
                             <video controls class="w-100" style="max-height: 400px">
                                 <source
                                     src="{{ url_for('resources.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
                                     type="{% if file_ext == 'mp4' %}video/mp4{% else %}video/webm{% endif %}"
                                 />
-                                Su navegador no soporta el elemento de video.
+                                {{ _('Su navegador no soporta el elemento de video.') }}
                             </video>
                         </div>
                         {% elif file_ext == 'pdf' %}
                         <div class="mb-4">
-                            <h6>Vista previa del PDF:</h6>
+                            <h6>{{ _('Vista previa del PDF:') }}</h6>
                             <div class="text-center">
                                 <iframe
                                     title="{{ recurso.nombre }}"
@@ -164,7 +164,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
                         %}
                         <div class="mt-4 mb-4" style="text-align: center">
-                            <small class="text-muted">Publicidad</small>
+                            <small class="text-muted">{{ _('Publicidad') }}</small>
                             {{ ad_code | safe }}
                         </div>
                         {% endif %} {% endif %}

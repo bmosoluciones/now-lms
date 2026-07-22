@@ -18,27 +18,27 @@ from 'macros/form_buttons.j2' import render_form_buttons %}
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _("Editar") }} documento PDF: {{ recurso.nombre }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar") }} {{ _('documento PDF:') }} {{ recurso.nombre }}</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-12">
-                            <label for="nombre" class="form-label">{{ _("Nombre") }} del Documento</label>
+                            <label for="nombre" class="form-label">{{ _("Nombre") }} {{ _('del Documento') }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Documento")) }} {{
                             render_field_errors(form.nombre) }}
                         </div>
 
                         {% if recurso.doc %}
                         <div class="col-md-12">
-                            <label class="form-label">Documento Actual</label>
+                            <label class="form-label">{{ _('Documento Actual') }}</label>
                             <p class="text-muted">{{ recurso.doc }}</p>
                         </div>
                         {% endif %}
 
                         <div class="col-md-12">
-                            <label for="file" class="form-label">Reemplazar Documento (opcional)</label>
+                            <label for="file" class="form-label">{{ _('Reemplazar Documento (opcional)') }}</label>
                             <input type="file" class="form-control" name="pdf" accept="application/pdf" />
-                            <div class="form-text">Deje vacío para mantener el archivo actual</div>
+                            <div class="form-text">{{ _('Deje vacío para mantener el archivo actual') }}</div>
                         </div>
 
                         <div class="col-sm-6">

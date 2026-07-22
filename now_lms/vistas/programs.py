@@ -445,7 +445,7 @@ def gestionar_cursos_programa(codigo: str) -> str | Response:
                 nuevo_curso = ProgramaCurso(programa=codigo, curso=curso_codigo, creado_por=current_user.usuario)
                 database.session.add(nuevo_curso)
                 database.session.commit()
-                flash(f"Curso {curso_codigo} agregado al programa.", "success")
+                flash(f"Course {curso_codigo} added to the program.", "success")
             else:
                 flash(_("El curso ya está en el programa."), "warning")
 
@@ -459,7 +459,7 @@ def gestionar_cursos_programa(codigo: str) -> str | Response:
             if curso_programa:
                 database.session.delete(curso_programa)
                 database.session.commit()
-                flash(f"Curso {curso_codigo} removido del programa.", "success")
+                flash(f"Course {curso_codigo} removed from the program.", "success")
 
         return redirect(url_for("program.gestionar_cursos_programa", codigo=codigo))
 
@@ -499,7 +499,7 @@ def inscribir_usuario_programa(codigo: str) -> str | Response:
             try:
                 database.session.add(inscripcion)
                 database.session.commit()
-                flash(f"Usuario {usuario.nombre} {usuario.apellido} inscrito exitosamente.", "success")
+                flash(f"User {usuario.nombre} {usuario.apellido} enrolled successfully.", "success")
             except OperationalError:
                 database.session.rollback()
                 flash(_("Error al inscribir usuario."), "error")
@@ -553,7 +553,7 @@ def _verify_student_and_enrollment(student_username: str) -> dict | None:
         database.select(Usuario).filter_by(usuario=student_username)
     ).scalar_one_or_none()
     if not usuario_existe:
-        return {"msg": f"El usuario '{student_username}' no existe en el sistema.", "cat": "error"}
+        return {"msg": f"The user '{student_username}' does not exist in the system.", "cat": "error"}
     return None
 
 
@@ -607,11 +607,11 @@ def _post_enrollment_processing(student_username, enrolled_courses, programa):
         _crear_indice_avance_curso(course_code)
         create_events_for_student_enrollment(student_username, course_code)
 
-    message = f"Estudiante '{student_username}' inscrito exitosamente en el programa '{programa.nombre}'"
+    message = f"Student '{student_username}' enrolled successfully in the program '{programa.nombre}'"
     if enrolled_courses:
-        message += f" y en {len(enrolled_courses)} curso(s)."
+        message += f" and in {len(enrolled_courses)} course(s)."
     else:
-        message += ". El estudiante ya estaba inscrito en todos los cursos del programa."
+        message += ". The student was already enrolled in all courses of the program."
 
     return message
 
@@ -643,7 +643,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
         database.select(ProgramaEstudiante).filter_by(programa=programa.id, usuario=student_username)
     ).scalar_one_or_none()
     if existing_enrollment:
-        flash(f"El estudiante '{student_username}' ya está inscrito en este programa.", "warning")
+        flash(f"The student '{student_username}' is already enrolled in this program.", "warning")
         return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
     try:
@@ -679,7 +679,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
 
     except Exception:
         database.session.rollback()
-        flash("Error al inscribir al estudiante en el programa.", "error")
+        flash(_("Error al inscribir al estudiante en el programa."), "error")
 
     return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
@@ -729,7 +729,7 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
     ).scalar_one_or_none()
 
     if not program_enrollment:
-        flash(f"El estudiante '{student_username}' no está inscrito en este programa.", "error")
+        flash(f"The student '{student_username}' is not enrolled in this program.", "error")
         return redirect(url_for("program.admin_program_enrollments", codigo=codigo))
 
     try:
@@ -756,9 +756,9 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
         database.session.delete(program_enrollment)
         database.session.commit()
 
-        message = f"Estudiante '{student_username}' desinscrito del programa '{programa.nombre}'"
+        message = f"Student '{student_username}' unenrolled from the program '{programa.nombre}'"
         if unenrolled_courses:
-            message += f" y de {len(unenrolled_courses)} curso(s)."
+            message += f" and from {len(unenrolled_courses)} course(s)."
         else:
             message += "."
 
@@ -766,6 +766,6 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
 
     except Exception as e:
         database.session.rollback()
-        flash(f"Error al desinscribir al estudiante del programa: {str(e)}", "error")
+        flash(f"Error unenrolling the student from the program: {str(e)}", "error")
 
     return redirect(url_for("program.admin_program_enrollments", codigo=codigo))

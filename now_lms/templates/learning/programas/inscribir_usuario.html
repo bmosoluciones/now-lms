@@ -22,7 +22,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h3 class="card-title mb-0">
-                                        {{ _("Inscribir") }} {{ _("Usuario") }} al {{ _("Programa") }}
+                                        {{ _("Inscribir") }} {{ _("Usuario") }} {{ _('al') }} {{ _("Programa") }}
                                     </h3>
                                     <p class="text-muted mb-0">{{ programa.nombre }}</p>
                                 </div>
@@ -30,7 +30,7 @@
                                     <form method="post">
                                         <div class="mb-4">
                                             <label for="usuario_email" class="form-label"
-                                                >Correo Electrónico del {{ _("Usuario") }}</label
+                                                >{{ _('Correo Electrónico del') }} {{ _("Usuario") }}</label
                                             >
                                             <input
                                                 type="email"
@@ -41,7 +41,7 @@
                                                 required
                                             />
                                             <div class="form-text">
-                                                Ingrese el correo electrónico del usuario que desea inscribir en este programa.
+                                                {{ _('Ingrese el correo electrónico del usuario que desea inscribir en este programa.') }}
                                             </div>
                                         </div>
 
@@ -56,12 +56,12 @@
 
                             <div class="card mt-4">
                                 <div class="card-header">
-                                    <h5 class="card-title mb-0">{{ _("Información") }} del {{ _("Programa") }}</h5>
+                                    <h5 class="card-title mb-0">{{ _("Información") }} {{ _('del') }} {{ _("Programa") }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <strong>Código:</strong>
+                                            <strong>{{ _('Código:') }}</strong>
                                         </div>
                                         <div class="col-sm-8">{{ programa.codigo }}</div>
                                     </div>
@@ -75,7 +75,7 @@
                                             {% elif programa.estado == "closed" %}
                                             <span class="badge bg-danger">{{ _("Cerrado") }}</span>
                                             {% else %}
-                                            <span class="badge bg-secondary">Borrador</span>
+                                            <span class="badge bg-secondary">{{ _('Borrador') }}</span>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -104,7 +104,7 @@
                                     {{ _("Ver") }} {{ _("Programa") }}
                                 </a>
                                 <a href="{{ url_for('program.programas') }}" class="btn btn-outline-secondary">
-                                    Lista de {{ _("Programas") }}
+                                    {{ _('Lista de') }} {{ _("Programas") }}
                                 </a>
                             </div>
                         </div>

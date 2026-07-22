@@ -39,6 +39,7 @@ from now_lms.db import (
     database,
 )
 from now_lms.forms import EvaluationReopenRequestForm
+from now_lms.i18n import _, _l
 
 # ---------------------------------------------------------------------------------------
 # Blueprint definition
@@ -47,17 +48,17 @@ from now_lms.forms import EvaluationReopenRequestForm
 # <--------------------------------------------------------------------------> #
 # Route constants
 ROUTE_COURSE_TOMAR_CURSO = "course.tomar_curso"
-EVALUATION_CREATED = "Evaluación creada correctamente."
-EVALUATION_UPDATED = "Evaluación actualizada correctamente."
-EVALUATION_DELETED = "Evaluación eliminada correctamente."
+EVALUATION_CREATED = _l("Evaluación creada correctamente.")
+EVALUATION_UPDATED = _l("Evaluación actualizada correctamente.")
+EVALUATION_DELETED = _l("Evaluación eliminada correctamente.")
 QUESTION_ADDED = "Pregunta agregada correctamente."
 QUESTION_UPDATED = "Pregunta actualizada correctamente."
 QUESTION_DELETED = "Pregunta eliminada correctamente."
-EVALUATION_SUBMITTED = "Evaluación enviada correctamente."
-REOPEN_REQUEST_SUBMITTED = "Solicitud de reabrir evaluación enviada."
-REOPEN_REQUEST_APPROVED = "Solicitud aprobada. El estudiante puede realizar un nuevo intento."
+EVALUATION_SUBMITTED = _l("Evaluación enviada correctamente.")
+REOPEN_REQUEST_SUBMITTED = _l("Solicitud de reabrir evaluación enviada.")
+REOPEN_REQUEST_APPROVED = _l("Solicitud aprobada. El estudiante puede realizar un nuevo intento.")
 REOPEN_REQUEST_REJECTED = "Solicitud rechazada."
-NO_AUTHORIZED_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
+NO_AUTHORIZED_MSG = _l("No se encuentra autorizado a acceder al recurso solicitado.")
 
 # <--------------------------------------------------------------------------> #
 # Blueprint for evaluation management
@@ -221,11 +222,11 @@ def take_evaluation(evaluation_id: int) -> str | Response:
         abort(404)
 
     if not can_user_access_evaluation(eval_obj, current_user):
-        flash("No tiene acceso a esta evaluación.", "warning")
+        flash(_("No tiene acceso a esta evaluación."), "warning")
         abort(403)
 
     if not can_user_attempt_evaluation(eval_obj, current_user):
-        flash("No puede realizar más intentos en esta evaluación.", "warning")
+        flash(_("No puede realizar más intentos en esta evaluación."), "warning")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
@@ -286,7 +287,7 @@ def request_reopen(evaluation_id: int) -> str | Response:
     # Check if user has exhausted attempts and not passed
     attempts_count = get_user_attempts_count(evaluation_id, current_user.usuario)
     if not eval_obj.max_attempts or attempts_count < eval_obj.max_attempts:
-        flash("Aún tiene intentos disponibles.", "info")
+        flash(_("Aún tiene intentos disponibles."), "info")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
@@ -302,7 +303,7 @@ def request_reopen(evaluation_id: int) -> str | Response:
     )
 
     if passed_attempt:
-        flash("Ya ha aprobado esta evaluación.", "info")
+        flash(_("Ya ha aprobado esta evaluación."), "info")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
@@ -321,7 +322,7 @@ def request_reopen(evaluation_id: int) -> str | Response:
         )
 
         if existing_request:
-            flash("Ya tiene una solicitud pendiente para esta evaluación.", "warning")
+            flash(_("Ya tiene una solicitud pendiente para esta evaluación."), "warning")
             section = database.session.get(CursoSeccion, eval_obj.section_id)
             return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 

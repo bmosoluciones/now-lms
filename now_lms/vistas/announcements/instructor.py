@@ -20,6 +20,7 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, Curso, DocenteCurso, database
 from now_lms.forms import CourseAnnouncementForm
+from now_lms.i18n import _
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -89,7 +90,7 @@ def new_announcement() -> str | Response:
     form.course_id.choices = [(course.codigo, course.nombre) for course in instructor_courses]
 
     if not instructor_courses:
-        flash("No tienes cursos asignados para crear anuncios.", "warning")
+        flash(_("No tienes cursos asignados para crear anuncios."), "warning")
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
     if form.validate_on_submit():
@@ -98,7 +99,7 @@ def new_announcement() -> str | Response:
             database.session.execute(database.select(Curso).filter_by(codigo=form.course_id.data)).scalars().first()
         )
         if not selected_course or selected_course not in instructor_courses:
-            flash("No tienes permisos para crear anuncios en ese curso.", "error")
+            flash(_("No tienes permisos para crear anuncios en ese curso."), "error")
             return redirect(url_for("instructor_announcements.new_announcement"))
 
         announcement = Announcement(
@@ -113,7 +114,7 @@ def new_announcement() -> str | Response:
         database.session.add(announcement)
         database.session.commit()
 
-        flash("Anuncio de curso creado exitosamente.", "success")
+        flash(_("Anuncio de curso creado exitosamente."), "success")
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
     return render_template("announcements/instructor_form.html", form=form, title="Nuevo Anuncio de Curso")
@@ -126,7 +127,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
     """Formulario para editar un anuncio de curso."""
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is None:
-        flash("Anuncio no encontrado o no es un anuncio de curso.", "error")
+        flash(_("Anuncio no encontrado o no es un anuncio de curso."), "error")
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
     # Verificar que el instructor tenga acceso al curso
@@ -134,7 +135,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
     course_ids = [course.codigo for course in instructor_courses]
 
     if announcement.course_id not in course_ids:
-        flash("No tienes permisos para editar este anuncio.", "error")
+        flash(_("No tienes permisos para editar este anuncio."), "error")
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
     form = CourseAnnouncementForm(obj=announcement)
@@ -143,7 +144,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
     if form.validate_on_submit():
         # Verificar nuevamente el permiso del curso seleccionado
         if form.course_id.data not in course_ids:
-            flash("No tienes permisos para asignar este anuncio a ese curso.", "error")
+            flash(_("No tienes permisos para asignar este anuncio a ese curso."), "error")
             return redirect(url_for("instructor_announcements.edit_announcement", announcement_id=announcement_id))
 
         announcement.title = form.title.data
@@ -154,7 +155,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
 
         database.session.commit()
 
-        flash("Anuncio de curso actualizado exitosamente.", "success")
+        flash(_("Anuncio de curso actualizado exitosamente."), "success")
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
     return render_template(
@@ -169,7 +170,7 @@ def delete_announcement(announcement_id: int) -> Response:
     """Eliminar un anuncio de curso."""
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is None:
-        flash("Anuncio no encontrado o no es un anuncio de curso.", "error")
+        flash(_("Anuncio no encontrado o no es un anuncio de curso."), "error")
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
     # Verificar que el instructor tenga acceso al curso
@@ -177,11 +178,11 @@ def delete_announcement(announcement_id: int) -> Response:
     course_ids = [course.codigo for course in instructor_courses]
 
     if announcement.course_id not in course_ids:
-        flash("No tienes permisos para eliminar este anuncio.", "error")
+        flash(_("No tienes permisos para eliminar este anuncio."), "error")
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
     database.session.delete(announcement)
     database.session.commit()
 
-    flash("Anuncio de curso eliminado exitosamente.", "success")
+    flash(_("Anuncio de curso eliminado exitosamente."), "success")
     return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))

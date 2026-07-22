@@ -65,11 +65,11 @@
                                             {% if master_class.is_ongoing() %}
                                             <span class="badge bg-warning">{{ _('En Vivo Ahora') }}</span>
                                             {% elif master_class.is_finished() %}
-                                            <span class="badge bg-secondary">Finalizada</span>
+                                            <span class="badge bg-secondary">{{ _('Finalizada') }}</span>
                                             {% else %}
                                             <span class="badge bg-success">{{ _('Próxima') }}</span>
                                             {% endif %} {% if enrollment.is_access_granted() %}
-                                            <span class="badge bg-success">Confirmada</span>
+                                            <span class="badge bg-success">{{ _('Confirmada') }}</span>
                                             {% else %}
                                             <span class="badge bg-warning">{{ _('Pendiente') }}</span>
                                             {% endif %}
@@ -89,7 +89,7 @@
                                             class="btn btn-warning w-100"
                                             target="_blank"
                                         >
-                                            <i class="fas fa-external-link-alt"></i> Unirse Ahora
+                                            <i class="fas fa-external-link-alt"></i> {{ _('Unirse Ahora') }}
                                         </a>
                                         {% elif master_class.is_upcoming() %}
                                         <a
@@ -97,7 +97,7 @@
                                             class="btn btn-primary w-100"
                                             target="_blank"
                                         >
-                                            <i class="fas fa-external-link-alt"></i> Acceder a {{ master_class.platform_name }}
+                                            <i class="fas fa-external-link-alt"></i> {{ _('Acceder a') }} {{ master_class.platform_name }}
                                         </a>
                                         {% elif master_class.is_finished() and master_class.video_recording_url %}
                                         <a
@@ -105,21 +105,21 @@
                                             class="btn btn-secondary w-100"
                                             target="_blank"
                                         >
-                                            <i class="fas fa-play"></i> Ver Grabación
+                                            <i class="fas fa-play"></i> {{ _('Ver Grabación') }}
                                         </a>
                                         {% else %}
                                         <a
                                             href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
                                             class="btn btn-outline-primary w-100"
                                         >
-                                            Ver Detalles
+                                            {{ _('Ver Detalles') }}
                                         </a>
                                         {% endif %} {% else %}
                                         <a
                                             href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
                                             class="btn btn-outline-primary w-100"
                                         >
-                                            Ver Detalles
+                                            {{ _('Ver Detalles') }}
                                         </a>
                                         {% endif %}
                                     </div>
@@ -169,10 +169,10 @@
                         {% endif %} {% else %}
                         <div class="text-center py-5">
                             <i class="fas fa-graduation-cap fa-4x text-muted mb-3"></i>
-                            <h3 class="text-muted">No tienes inscripciones</h3>
+                            <h3 class="text-muted">{{ _('No tienes inscripciones') }}</h3>
                             <p class="text-muted">{{ _('Explora nuestras clases magistrales disponibles.') }}</p>
                             <a href="{{ url_for('masterclass.list_public') }}" class="btn btn-primary">
-                                <i class="fas fa-search"></i> Explorar Clases Magistrales
+                                <i class="fas fa-search"></i> {{ _('Explorar Clases Magistrales') }}
                             </a>
                         </div>
                         {% endif %}

@@ -9,17 +9,17 @@ recurso_completado=False) -%}
                     <a
                         href="{{ url_for('resources.pagina_recurso_alternativo', curso_id=indice.prev_resource.curso_id, codigo=indice.prev_resource.codigo, order='desc') }}"
                         class="btn btn-outline-primary d-block"
-                        ><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Recurso Anterior</a
+                        ><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>{{ _('Recurso Anterior') }}</a
                     >
                     {% elif indice.has_prev %}
                     <a
                         href="{{ url_for('resources.pagina_recurso', curso_id=indice.prev_resource.curso_id , resource_type=indice.prev_resource.resource_type, codigo=indice.prev_resource.codigo) }}"
                         class="btn btn-outline-primary d-block"
-                        ><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Recurso Anterior</a
+                        ><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>{{ _('Recurso Anterior') }}</a
                     >
                     {% else %}
                     <button type="button" class="btn btn-outline-secondary d-block" disabled>
-                        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Recurso Anterior
+                        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>{{ _('Recurso Anterior') }}
                     </button>
                     {% endif %}
                 </div>
@@ -29,11 +29,11 @@ recurso_completado=False) -%}
                     <a
                         href="{{ url_for('resources.marcar_recurso_completado', curso_id=curso, resource_type=type, codigo=codigo) }}"
                         class="btn btn-success btn-lg"
-                        ><i class="bi bi-check-circle me-2" aria-hidden="true"></i>Marcar Completado</a
+                        ><i class="bi bi-check-circle me-2" aria-hidden="true"></i>{{ _('Marcar Completado') }}</a
                     >
                     {% else %}
                     <button type="button" class="btn btn-success btn-lg" disabled>
-                        <i class="bi bi-check-circle-fill me-2" aria-hidden="True"></i>Recurso Completado
+                        <i class="bi bi-check-circle-fill me-2" aria-hidden="True"></i>{{ _('Recurso Completado') }}
                     </button>
                     {% endif %}
                 </div>
@@ -43,17 +43,17 @@ recurso_completado=False) -%}
                     <a
                         href="{{ url_for('resources.pagina_recurso_alternativo', curso_id=indice.next_resource.curso_id, codigo=indice.next_resource.codigo, order='asc') }}"
                         class="btn btn-primary d-block"
-                        >Recurso Siguiente<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i
+                        >{{ _('Recurso Siguiente') }}<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i
                     ></a>
                     {% elif indice.has_next %}
                     <a
                         href="{{ url_for('resources.pagina_recurso', curso_id=indice.next_resource.curso_id , resource_type=indice.next_resource.resource_type, codigo=indice.next_resource.codigo) }}"
                         class="btn btn-primary d-block"
-                        >Recurso Siguiente<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i
+                        >{{ _('Recurso Siguiente') }}<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i
                     ></a>
                     {% else %}
                     <button type="button" class="btn btn-outline-secondary d-block" disabled>
-                        Recurso Siguiente<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                        {{ _('Recurso Siguiente') }}<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
                     </button>
                     {% endif %}
                 </div>
@@ -118,12 +118,12 @@ evaluation_attempts=None) %}
                         <div class="w-100">
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-folder2 me-2 text-primary"></i>
-                                <strong>Sección {{ s.indice }}:</strong>
+                                <strong>{{ _('Sección') }} {{ s.indice }}:</strong>
                                 <span class="ms-2">{{ s.nombre }}</span>
                             </div>
                             <div class="text-muted small mt-1">
                                 <i class="bi bi-check-circle-fill text-success me-1"></i>
-                                {{ completed_required | length }} de {{ required_resources | length }} recursos completados
+                                {{ completed_required | length }} de {{ required_resources | length }} {{ _('recursos completados') }}
                             </div>
                         </div>
                         <i class="bi bi-chevron-down"></i>
@@ -152,7 +152,7 @@ evaluation_attempts=None) %}
                             "equalto", s.id) | list %} {% if section_evaluations %}
                             <div class="border-top bg-light p-2">
                                 <div class="small text-muted mb-2">
-                                    <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i> Evaluaciones
+                                    <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i> {{ _('Evaluaciones') }}
                                 </div>
                                 {% for eval in section_evaluations %} {% set eval_attempts = evaluation_attempts.get(eval.id,
                                 []) if evaluation_attempts else [] %} {% set last_attempt = eval_attempts[-1] if eval_attempts
@@ -172,18 +172,18 @@ evaluation_attempts=None) %}
                                     <div class="flex-grow-1">
                                         <div class="fw-medium small">{{ eval.title }}</div>
                                         {% if eval.is_exam %}
-                                        <span class="badge bg-warning rounded-pill small" title="Examen">Examen</span>
+                                        <span class="badge bg-warning rounded-pill small" title="{{ _('Examen') }}">{{ _('Examen') }}</span>
                                         {% else %}
-                                        <span class="badge bg-info rounded-pill small" title="Prueba">Prueba</span>
+                                        <span class="badge bg-info rounded-pill small" title="{{ _('Prueba') }}">{{ _('Prueba') }}</span>
                                         {% endif %}
 
                                         <!-- Información de intentos -->
                                         {% if eval.max_attempts %}
                                         <div class="small text-muted">
-                                            {{ eval_attempts | length }}/{{ eval.max_attempts }} intentos
+                                            {{ eval_attempts | length }}/{{ eval.max_attempts }} {{ _('intentos') }}
                                         </div>
                                         {% elif eval_attempts %}
-                                        <div class="small text-muted">{{ eval_attempts | length }} intentos</div>
+                                        <div class="small text-muted">{{ eval_attempts | length }} {{ _('intentos') }}</div>
                                         {% endif %}
                                     </div>
 
@@ -191,13 +191,13 @@ evaluation_attempts=None) %}
                                         {% if is_completed %}
                                         <i
                                             class="bi bi-check-circle-fill text-success"
-                                            title="Completado"
+                                            title="{{ _('Completado') }}"
                                             aria-hidden="true"
                                         ></i>
                                         {% if last_attempt.score is not none %}
                                         <div class="small text-success">{{ "%.0f"|format(last_attempt.score) }}%</div>
                                         {% endif %} {% else %}
-                                        <i class="bi bi-circle text-muted" title="Pendiente" aria-hidden="true"></i>
+                                        <i class="bi bi-circle text-muted" title="{{ _('Pendiente') }}" aria-hidden="true"></i>
                                         {% endif %}
                                     </div>
                                 </a>

@@ -29,15 +29,15 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="codigo" class="form-label">Codigo</label>
-                            {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo") }} {{
+                            <label for="codigo" class="form-label">{{ _("Codigo") }}</label>
+                            {{ form.codigo(class="form-control", id="codigo", placeholder=_("Codigo")) }} {{
                             render_field_errors(form.codigo) }}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <label for="descripcion" class="form-label">{{ _("Descripcion") }}</label>
                             {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }} {{
                             render_field_errors(form.descripcion) }}
                         </div>
@@ -59,14 +59,14 @@
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <p>Seleccione el archivo que desea compartir.</p>
+                            <p>{{ _("Seleccione el archivo que desea compartir.") }}</p>
                             <label for="descripcion" class="form-label">{{ _("Recurso") }}</label>
                             <input type="file" name="recurso" />
                         </div>
 
                         <div class="col-sm-6">
-                            <p>Seleccione una imagén para usar como portada.</p>
-                            <label for="descripcion" class="form-label">Portada</label>
+                            <p>{{ _("Seleccione una imagén para usar como portada.") }}</p>
+                            <label for="descripcion" class="form-label">{{ _("Portada") }}</label>
                             <input type="file" name="img" accept="image/jpeg" />
                         </div>
                     </div>
