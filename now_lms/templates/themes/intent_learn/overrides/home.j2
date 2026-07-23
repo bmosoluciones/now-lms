@@ -4,7 +4,7 @@
     {% set current_theme = current_theme() %}
     {% set site_config = config() %}
     {% set S = url_for('static', filename='themes/intent_learn') %}
-    {% set access_contact = site_config.contact_email or 'hello@intentsolutions.io' %}
+    {% set access_contact = (site_config.contact_email or 'hello@intentsolutions.io') | urlencode %}
     {% set access_email = 'mailto:' ~ access_contact ~ '?subject=Intent%20Solutions%20Practice%20%E2%80%94%20Access%20Request' %}
     {% set team = [
         {'photo': 'jeremy-longshore.jpeg', 'name': _('Jeremy Longshore'), 'role': _('Founder & CEO')},
@@ -333,10 +333,10 @@
 
             <div class="isl-proof" aria-label="{{ _('Practice principles') }}">
                 <div class="isl-wrap isl-proof-grid">
-                    <div class="isl-proof-item"><span class="n">01 / STACK</span><strong>{{ _('Model-agnostic') }}</strong><span>{{ _('Choose tools for the constraint, not the tribe.') }}</span></div>
-                    <div class="isl-proof-item"><span class="n">02 / METHOD</span><strong>{{ _('One house standard') }}</strong><span>{{ _('Shared ways to frame, build, prove, and operate.') }}</span></div>
-                    <div class="isl-proof-item"><span class="n">03 / WORK</span><strong>{{ _('Production-shaped') }}</strong><span>{{ _('Practice against the failure modes tutorials omit.') }}</span></div>
-                    <div class="isl-proof-item"><span class="n">04 / ACCESS</span><strong>{{ _('Selective by design') }}</strong><span>{{ _('Peer density matters more than member volume.') }}</span></div>
+                    <div class="isl-proof-item"><span class="n">{{ _('01 / STACK') }}</span><strong>{{ _('Model-agnostic') }}</strong><span>{{ _('Choose tools for the constraint, not the tribe.') }}</span></div>
+                    <div class="isl-proof-item"><span class="n">{{ _('02 / METHOD') }}</span><strong>{{ _('One house standard') }}</strong><span>{{ _('Shared ways to frame, build, prove, and operate.') }}</span></div>
+                    <div class="isl-proof-item"><span class="n">{{ _('03 / WORK') }}</span><strong>{{ _('Production-shaped') }}</strong><span>{{ _('Practice against the failure modes tutorials omit.') }}</span></div>
+                    <div class="isl-proof-item"><span class="n">{{ _('04 / ACCESS') }}</span><strong>{{ _('Selective by design') }}</strong><span>{{ _('Peer density matters more than member volume.') }}</span></div>
                 </div>
             </div>
 
@@ -468,7 +468,7 @@
             <div class="isl-wrap">
                 <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> {{ _('Intent Solutions Learn') }}</span>
                 <span class="fc">{{ _('Model-agnostic practice · Production standards') }}</span>
-                <span class="fc"><a href="https://intentsolutions.io" target="_blank" rel="noopener">intentsolutions.io</a></span>
+                <span class="fc"><a href="https://intentsolutions.io" target="_blank" rel="noopener">{{ _('intentsolutions.io') }}</a></span>
             </div>
         </footer>
 
