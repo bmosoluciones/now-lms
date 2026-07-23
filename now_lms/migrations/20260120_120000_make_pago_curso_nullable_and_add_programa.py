@@ -49,9 +49,27 @@ def downgrade():
     if "pago" in existing_tables:
         columns = [col["name"] for col in inspector.get_columns("pago")]
 
-        # Drop index first to prevent "no such column: programa" during batch recreate
+        # Drop index first to prevent "no such column: programa" during batch recreate in SQLite
         try:
             op.drop_index("ix_pago_programa", table_name="pago")
+        except Exception:
+            pass
+
+        # In MySQL or other databases, we must drop any foreign key constraints pointing to/from programa
+        try:
+            fks = inspector.get_foreign_keys("pago")
+            for fk in fks:
+                is_target = False
+                referred = str(fk.get("referred_table") or "").lower()
+                if referred == "programa":
+                    is_target = True
+                elif "programa" in [str(c).lower() for c in fk.get("constrained_columns" or [])]:
+                    is_target = True
+                elif "programa" in [str(c).lower() for c in fk.get("referred_columns" or [])]:
+                    is_target = True
+
+                if is_target and fk.get("name"):
+                    op.drop_constraint(fk["name"], "pago", type_="foreignkey")
         except Exception:
             pass
 
