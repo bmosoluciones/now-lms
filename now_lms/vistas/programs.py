@@ -9,6 +9,7 @@ Gestión de certificados.
 
 from __future__ import annotations
 
+import logging
 from collections import OrderedDict
 
 # ---------------------------------------------------------------------------------------
@@ -66,6 +67,8 @@ from now_lms.themes import get_program_list_template, get_program_view_template
 # Constants
 PROGRAMS_ROUTE = "program.programas"
 ADMIN_PROGRAM_ENROLL_TEMPLATE = "learning/programas/admin_enroll.html"
+
+log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de gestión de programas
@@ -940,6 +943,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
         return redirect(url_for("program.programa_cursos", codigo=codigo))
 
     except Exception:
+        log.exception("Error enrolling student %s in program %s", student_username, codigo)
         database.session.rollback()
         flash("Error al inscribir al estudiante en el programa.", "error")
 
@@ -1026,8 +1030,9 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
 
         flash(message, "success")
 
-    except Exception as e:
+    except Exception:
+        log.exception("Error unenrolling student %s from program %s", student_username, codigo)
         database.session.rollback()
-        flash(f"Error al desinscribir al estudiante del programa: {str(e)}", "error")
+        flash("Error al desinscribir al estudiante del programa.", "error")
 
     return redirect(url_for("program.admin_program_enrollments", codigo=codigo))
