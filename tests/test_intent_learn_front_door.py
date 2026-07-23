@@ -82,6 +82,7 @@ def test_front_door_carries_mobile_overflow_and_accessibility_guards() -> None:
     assert "prefers-reduced-motion: reduce" in template
     assert '<html lang="{{ current_locale() }}">' in template
     assert "site_config.contact_email" in template
+    assert "_('Intent Solutions Practice — Access Request') | urlencode" in template
     assert "| urlencode" in template
     assert 'loading="lazy"' in template
     assert "isl-team-initials" in template
