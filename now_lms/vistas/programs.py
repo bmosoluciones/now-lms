@@ -648,6 +648,9 @@ def gestionar_cursos_programa(codigo: str) -> str | Response:
 
         if action == "add_course":
             curso_codigo = request.form.get("curso_codigo")
+            if not curso_codigo:
+                flash(_("Seleccione un curso."), "warning")
+                return redirect(url_for("program.gestionar_cursos_programa", codigo=codigo))
 
             # Check if already exists
             existente = database.session.execute(
