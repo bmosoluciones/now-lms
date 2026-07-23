@@ -265,3 +265,92 @@ def test_routes_manage_courses_and_admin_enroll(client, db_session, prog_setup):
 
     pe_deleted = db_session.execute(database.select(ProgramaEstudiante).filter_by(programa=prog.id, usuario="stud_p")).scalars().first()
     assert pe_deleted is None
+
+
+def test_course_access_retention_after_program_unenrollment(client, db_session, prog_setup):
+    """Verifica que si un estudiante compró un curso independientemente, no pierda acceso al removerlo del programa o desinscribirlo."""
+    from now_lms.db import Pago, EstudianteCurso, Programa, ProgramaCurso, ProgramaEstudiante
+
+    # 1. Crear un programa con dos cursos C01 y C02
+    prog = Programa(
+        codigo="PROG_RET",
+        nombre="Programa Retention",
+        descripcion="desc",
+        creado_por=prog_setup["instructor"].usuario,
+    )
+    db_session.add(prog)
+    db_session.commit()
+
+    pc1 = ProgramaCurso(programa="PROG_RET", curso="C01", creado_por=prog_setup["instructor"].usuario)
+    pc2 = ProgramaCurso(programa="PROG_RET", curso="C02", creado_por=prog_setup["instructor"].usuario)
+    db_session.add_all([pc1, pc2])
+    db_session.commit()
+
+    # 2. Registrar compra independiente del curso C01 por stud_p
+    pago_ind = Pago(
+        usuario="stud_p",
+        curso="C01",
+        monto=49.99,
+        moneda="USD",
+        estado="completed",
+        metodo="paypal",
+        nombre="Student",
+        apellido="Stud",
+        correo_electronico="stud_p@example.com"
+    )
+    db_session.add(pago_ind)
+    db_session.flush()
+
+    enrollment_c01 = EstudianteCurso(
+        curso="C01",
+        usuario="stud_p",
+        vigente=True,
+        pago=pago_ind.id,
+        creado_por="stud_p"
+    )
+    db_session.add(enrollment_c01)
+    db_session.commit()
+
+    # 3. Inscribir administrativamente en el programa (que asocia C01 y C02)
+    client.post("/user/login", data={"usuario": "admin_p", "acceso": "pass"})
+    response_enroll = client.post(
+        f"/program/PROG_RET/admin/enroll",
+        data={"student_username": "stud_p", "bypass_payment": True, "notes": "Inscripción programa"},
+        follow_redirects=True,
+    )
+    assert response_enroll.status_code == 200
+
+    # Confirm student has active enrollment for both C01 and C02
+    ec1 = db_session.execute(database.select(EstudianteCurso).filter_by(curso="C01", usuario="stud_p")).scalars().first()
+    ec2 = db_session.execute(database.select(EstudianteCurso).filter_by(curso="C02", usuario="stud_p")).scalars().first()
+    assert ec1 is not None and ec1.vigente is True
+    assert ec2 is not None and ec2.vigente is True
+
+    # 4. Remover curso C01 del programa PROG_RET
+    response_remove = client.post(
+        f"/program/PROG_RET/courses/manage",
+        data={"action": "remove_course", "curso_codigo": "C01"},
+        follow_redirects=True,
+    )
+    assert response_remove.status_code == 200
+
+    # Verify student KEEP access to C01 (because of independent Pago)
+    db_session.expire_all()
+    ec1_after_remove = db_session.execute(database.select(EstudianteCurso).filter_by(curso="C01", usuario="stud_p")).scalars().first()
+    assert ec1_after_remove is not None
+    assert ec1_after_remove.vigente is True  # preserved!
+
+    # 5. Desinscribir administrativamente al estudiante del programa
+    response_unenroll = client.post(
+        f"/program/PROG_RET/admin/unenroll/stud_p",
+        follow_redirects=True,
+    )
+    assert response_unenroll.status_code == 200
+
+    # Verify student STILL keeps access to C01, but loses access to C02
+    db_session.expire_all()
+    ec1_final = db_session.execute(database.select(EstudianteCurso).filter_by(curso="C01", usuario="stud_p")).scalars().first()
+    ec2_final = db_session.execute(database.select(EstudianteCurso).filter_by(curso="C02", usuario="stud_p")).scalars().first()
+
+    assert ec1_final is not None and ec1_final.vigente is True
+    assert ec2_final is not None and ec2_final.vigente is False

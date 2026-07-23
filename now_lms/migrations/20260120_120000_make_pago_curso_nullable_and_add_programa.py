@@ -5,7 +5,7 @@ Revises: 1780403775
 Create Date: 2026-01-20 12:00:00
 
 This migration makes the curso column in pago nullable, and adds a programa column
-referencing the programa.id column.
+referencing the programa.id column. It also adds a cursos_snapshot column to certificacion_programa.
 """
 
 from alembic import op
@@ -34,10 +34,16 @@ def upgrade():
                 )
             batch_op.alter_column("curso", existing_type=sa.String(20), nullable=True)
 
-        try:
+        # Explicitly check for index existence in SQLite or other databases before creating it
+        indexes = [idx["name"] for idx in inspector.get_indexes("pago")]
+        if "ix_pago_programa" not in indexes:
             op.create_index("ix_pago_programa", "pago", ["programa"])
-        except Exception:
-            pass
+
+    if "certificacion_programa" in existing_tables:
+        columns = [col["name"] for col in inspector.get_columns("certificacion_programa")]
+        if "cursos_snapshot" not in columns:
+            with op.batch_alter_table("certificacion_programa") as batch_op:
+                batch_op.add_column(sa.Column("cursos_snapshot", sa.Text(), nullable=True))
 
 
 def downgrade():
@@ -46,16 +52,21 @@ def downgrade():
     inspector = sa.inspect(conn)
     existing_tables = inspector.get_table_names()
 
+    # If there are active program payments, we prevent downgrade to avoid losing data integrity
+    if "pago" in existing_tables:
+        res = conn.execute(sa.text("SELECT COUNT(*) FROM pago WHERE programa IS NOT NULL")).scalar()
+        if res and res > 0:
+            raise RuntimeError("Cannot downgrade: there are active program payments in the database.")
+
     if "pago" in existing_tables:
         columns = [col["name"] for col in inspector.get_columns("pago")]
 
-        # Drop index first to prevent "no such column: programa" during batch recreate in SQLite
-        try:
+        # Drop index first to prevent errors
+        indexes = [idx["name"] for idx in inspector.get_indexes("pago")]
+        if "ix_pago_programa" in indexes:
             op.drop_index("ix_pago_programa", table_name="pago")
-        except Exception:
-            pass
 
-        # In MySQL or other databases, we must drop any foreign key constraints pointing to/from programa
+        # Drop any foreign key constraints pointing to programa in MySQL
         try:
             fks = inspector.get_foreign_keys("pago")
             for fk in fks:
@@ -77,3 +88,9 @@ def downgrade():
             if "programa" in columns:
                 batch_op.drop_column("programa")
             batch_op.alter_column("curso", existing_type=sa.String(20), nullable=False)
+
+    if "certificacion_programa" in existing_tables:
+        columns = [col["name"] for col in inspector.get_columns("certificacion_programa")]
+        if "cursos_snapshot" in columns:
+            with op.batch_alter_table("certificacion_programa") as batch_op:
+                batch_op.drop_column("cursos_snapshot")

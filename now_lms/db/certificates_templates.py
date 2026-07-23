@@ -2088,15 +2088,13 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
                 <div class="courses-summary">
                     <div class="courses-header">Including completion of the following courses:</div>
                     <div class="courses-grid">
-                        {% set cursos_completados = certificacion_programa.get_cursos_completados() %}
-                        {% for curso_codigo in cursos_completados[:6] %}
-                            {% set curso = database.session.execute(database.select(Curso).filter_by(codigo=curso_codigo)).scalar_one_or_none() %}
-                            {% if curso %}
-                            <div class="course-item">{{ curso.nombre }}</div>
+                        {% for curso_codigo, curso_nombre in cursos_snapshot.items() %}
+                            {% if loop.index0 < 6 %}
+                            <div class="course-item">{{ curso_nombre }}</div>
                             {% endif %}
                         {% endfor %}
-                        {% if cursos_completados|length > 6 %}
-                        <div class="course-item more-courses">+{{ cursos_completados|length - 6 }} more courses</div>
+                        {% if cursos_snapshot|length > 6 %}
+                        <div class="course-item more-courses">+{{ cursos_snapshot|length - 6 }} more courses</div>
                         {% endif %}
                     </div>
                 </div>
@@ -2105,7 +2103,7 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
                 <div class="metrics-section">
                     <div class="metric-item">
                         <div class="metric-label">Total Credits:</div>
-                        <div class="metric-value">{{ cursos_completados|length * 4.6 }}</div>
+                        <div class="metric-value">{{ cursos_snapshot|length * 4.6 }}</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Certificate ID:</div>
@@ -2576,15 +2574,11 @@ CERTIFICADO_PROGRAMA_HTML = """
                     <div class="courses-section">
                         <p class="courses-header">completando los siguientes cursos:</p>
                         <div class="courses-list">
-                            {% set cursos_completados = certificacion_programa.get_cursos_completados() %}
-                            {% for curso_codigo in cursos_completados %}
-                                {% set curso = database.session.execute(database.select(Curso).filter_by(codigo=curso_codigo)).scalar_one_or_none() %}
-                                {% if curso %}
+                            {% for curso_codigo, curso_nombre in cursos_snapshot.items() %}
                                 <div class="course-item">
                                     <span class="course-bullet">•</span>
-                                    <span class="course-name">{{ curso.nombre }}</span>
+                                    <span class="course-name">{{ curso_nombre }}</span>
                                 </div>
-                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
