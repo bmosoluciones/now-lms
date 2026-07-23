@@ -37,8 +37,8 @@ def test_front_door_renders_through_the_flask_route(client, db_session) -> None:
 
     assert response.status_code == 200
     assert b'<html lang="en">' in response.data
-    assert b"Build with judgment." in response.data
-    assert b"Request access" in response.data
+    assert b'class="isl-hero-copy"' in response.data
+    assert b"mailto:" in response.data
 
 
 def test_front_door_expresses_the_selective_practice_doctrine() -> None:
@@ -81,3 +81,6 @@ def test_front_door_carries_mobile_overflow_and_accessibility_guards() -> None:
     assert ":focus-visible" in template
     assert "prefers-reduced-motion: reduce" in template
     assert '<html lang="{{ current_locale() }}">' in template
+    assert "site_config.contact_email" in template
+    assert 'loading="lazy"' in template
+    assert "isl-team-initials" in template

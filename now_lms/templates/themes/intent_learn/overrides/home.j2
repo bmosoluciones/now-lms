@@ -4,18 +4,19 @@
     {% set current_theme = current_theme() %}
     {% set site_config = config() %}
     {% set S = url_for('static', filename='themes/intent_learn') %}
-    {% set access_email = 'mailto:hello@intentsolutions.io?subject=Intent%20Solutions%20Practice%20%E2%80%94%20Access%20Request' %}
+    {% set access_contact = site_config.contact_email or 'hello@intentsolutions.io' %}
+    {% set access_email = 'mailto:' ~ access_contact ~ '?subject=Intent%20Solutions%20Practice%20%E2%80%94%20Access%20Request' %}
     {% set team = [
-        {'photo': 'jeremy-longshore.jpeg', 'name': 'Jeremy Longshore', 'role': 'Founder & CEO'},
-        {'photo': 'opeyemi-ariyo.jpeg',    'name': 'Opeyemi Ariyo',    'role': 'Co-Founder & Chief Technical Officer'},
-        {'photo': 'pablo-perez.jpeg',      'name': 'Pablo Perez',      'role': 'Co-Founder & Project Manager'},
-        {'photo': 'max-sheahan.jpeg',      'name': 'Max Sheahan',      'role': 'Lead Instructor'},
-        {'photo': 'tim-neunzig.png',       'name': 'Tim Neunzig',      'role': 'Head of German Operations'},
-        {'photo': 'tolulope-ariyo.jpeg',   'name': 'Tolulope Ariyo',   'role': 'Software & Design Engineer'}
+        {'photo': 'jeremy-longshore.jpeg', 'name': _('Jeremy Longshore'), 'role': _('Founder & CEO')},
+        {'photo': 'opeyemi-ariyo.jpeg',    'name': _('Opeyemi Ariyo'),    'role': _('Co-Founder & Chief Technical Officer')},
+        {'photo': 'pablo-perez.jpeg',      'name': _('Pablo Perez'),      'role': _('Co-Founder & Project Manager')},
+        {'photo': 'max-sheahan.jpeg',      'name': _('Max Sheahan'),      'role': _('Lead Instructor')},
+        {'photo': 'tim-neunzig.png',       'name': _('Tim Neunzig'),      'role': _('Head of German Operations')},
+        {'photo': 'tolulope-ariyo.jpeg',   'name': _('Tolulope Ariyo'),   'role': _('Software & Design Engineer')}
     ] %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>{{ site_config.titulo_html or 'Intent Solutions Learn' }}</title>
+        <title>{{ site_config.titulo_html or _('Intent Solutions Learn') }}</title>
 
         <style>
             /* Intent Solutions Learn — selective-practice front door.
@@ -37,6 +38,7 @@
                 width: 100%;
                 max-width: 100%;
                 margin: 0;
+                /* `hidden` is the fallback for browsers without overflow: clip. */
                 overflow-x: hidden;
                 overflow-x: clip;
                 background: rgb(var(--bg));
@@ -194,6 +196,7 @@
             .isl-team-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
             .isl-team-card { display: flex; min-height: 6.25rem; align-items: center; gap: 1rem; border: 1px solid rgb(var(--line)); border-radius: 0.85rem; background: rgba(24,24,27,0.62); padding: 1rem; }
             .isl-team-photo { width: 3.65rem; height: 3.65rem; flex: 0 0 auto; border: 2px solid rgb(var(--bg)); border-radius: 50%; object-fit: cover; filter: grayscale(1); box-shadow: 0 0 0 2px rgba(249,115,22,0.45); }
+            .isl-team-initials { display: grid; width: 3.65rem; height: 3.65rem; flex: 0 0 auto; place-items: center; border: 2px solid rgb(var(--bg)); border-radius: 50%; background: rgb(var(--card)); color: rgb(var(--ember-hi)); font-family: var(--font-display); font-size: 0.8rem; font-weight: 750; box-shadow: 0 0 0 2px rgba(249,115,22,0.45); }
             .isl-team-name { margin: 0 0 0.2rem; color: rgb(var(--ink)); font-family: var(--font-display); font-size: 0.88rem; font-weight: 750; line-height: 1.25; }
             .isl-team-role { margin: 0; color: rgb(var(--ember-hi)); font-size: 0.68rem; line-height: 1.35; }
 
@@ -269,7 +272,7 @@
             <div class="isl-wrap">
                 <a class="isl-brand" href="#top" aria-label="{{ _('Intent Solutions Learn — home') }}">
                     <img src="{{ S }}/logo-mark.png" alt="" width="30" height="30" />
-                    <span class="word">Intent<span class="s">Solutions</span></span>
+                    <span class="word">{{ _('Intent') }}<span class="s">{{ _('Solutions') }}</span></span>
                 </a>
                 <nav class="isl-nav" aria-label="{{ _('Primary navigation') }}">
                     <a class="link" href="#practice">{{ _('The practice') }}</a>
@@ -424,13 +427,17 @@
                 <div class="isl-wrap">
                     <div class="isl-section-head center">
                         <p class="isl-kicker">{{ _('Built by practitioners') }}</p>
-                        <h2 id="team-title">{{ _('The people behind') }} <span class="isl-hl">Intent Solutions</span></h2>
+                        <h2 id="team-title">{{ _('The people behind') }} <span class="isl-hl">{{ _('Intent Solutions') }}</span></h2>
                         <p>{{ _('Operators and builders teaching from systems they actually run.') }}</p>
                     </div>
                     <div class="isl-team-grid">
                         {% for m in team %}
                         <article class="isl-team-card">
-                            <img class="isl-team-photo" src="{{ S }}/team/{{ m.photo }}" alt="{{ m.name }}, {{ m.role }}" width="58" height="58" />
+                            {% if m.photo %}
+                            <img class="isl-team-photo" src="{{ S }}/team/{{ m.photo }}" alt="{{ m.name }}, {{ m.role }}" width="58" height="58" loading="lazy" />
+                            {% else %}
+                            <span class="isl-team-initials" aria-hidden="true">{{ m.name.split()[0][0] }}{{ m.name.split()[-1][0] }}</span>
+                            {% endif %}
                             <div><p class="isl-team-name">{{ m.name }}</p><p class="isl-team-role">{{ m.role }}</p></div>
                         </article>
                         {% endfor %}
@@ -459,7 +466,7 @@
 
         <footer class="isl-footer">
             <div class="isl-wrap">
-                <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> Intent Solutions Learn</span>
+                <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> {{ _('Intent Solutions Learn') }}</span>
                 <span class="fc">{{ _('Model-agnostic practice · Production standards') }}</span>
                 <span class="fc"><a href="https://intentsolutions.io" target="_blank" rel="noopener">intentsolutions.io</a></span>
             </div>
