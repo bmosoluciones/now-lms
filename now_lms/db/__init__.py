@@ -833,6 +833,7 @@ class CertificacionPrograma(database.Model, BaseTabla):
         """Get list of completed courses for this program certificate."""
         if self.cursos_snapshot:
             import json
+
             try:
                 snapshot = json.loads(self.cursos_snapshot)
                 if isinstance(snapshot, dict):
@@ -845,6 +846,7 @@ class CertificacionPrograma(database.Model, BaseTabla):
                 pass
 
         from now_lms.db.tools import obtener_cursos_completados_en_programa_por_id
+
         return obtener_cursos_completados_en_programa_por_id(self.usuario, self.programa)
 
 

@@ -250,16 +250,22 @@ def _check_consecutive_alternatives(recurso_actual: CursoRecurso) -> bool:
     return recurso_siguiente is not None and _is_recurso_alternativo(recurso_siguiente.requerido)
 
 
-def _navigation_resource(recurso_actual: CursoRecurso, seccion: CursoSeccion, direction: str) -> tuple[CursoRecurso | None, bool]:
+def _navigation_resource(
+    recurso_actual: CursoRecurso, seccion: CursoSeccion, direction: str
+) -> tuple[CursoRecurso | None, bool]:
     """Find a resource in the requested direction, crossing sections when needed."""
     offset = -1 if direction == "previous" else 1
     order = CursoRecurso.indice.desc() if direction == "previous" else CursoRecurso.indice
-    resource = database.session.execute(
-        database.select(CursoRecurso).filter(
-            CursoRecurso.seccion == recurso_actual.seccion,
-            CursoRecurso.indice == recurso_actual.indice + offset,
+    resource = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.seccion == recurso_actual.seccion,
+                CursoRecurso.indice == recurso_actual.indice + offset,
+            )
         )
-    ).scalars().first()
+        .scalars()
+        .first()
+    )
     if resource:
         if direction == "previous":
             is_alternative = _is_recurso_alternativo(resource.requerido) and _is_recurso_alternativo(recurso_actual.requerido)
@@ -267,19 +273,25 @@ def _navigation_resource(recurso_actual: CursoRecurso, seccion: CursoSeccion, di
             is_alternative = _check_consecutive_alternatives(resource)
         return resource, is_alternative
 
-    adjacent_section = database.session.execute(
-        database.select(CursoSeccion).filter(
-            CursoSeccion.curso == recurso_actual.curso,
-            CursoSeccion.indice == seccion.indice + offset,
+    adjacent_section = (
+        database.session.execute(
+            database.select(CursoSeccion).filter(
+                CursoSeccion.curso == recurso_actual.curso,
+                CursoSeccion.indice == seccion.indice + offset,
+            )
         )
-    ).scalars().first()
+        .scalars()
+        .first()
+    )
     if not adjacent_section:
         return None, False
-    resource = database.session.execute(
-        database.select(CursoRecurso)
-        .filter(CursoRecurso.seccion == adjacent_section.id)
-        .order_by(order)
-    ).scalars().first()
+    resource = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(CursoRecurso.seccion == adjacent_section.id).order_by(order)
+        )
+        .scalars()
+        .first()
+    )
     if not resource:
         return None, False
     return resource, direction != "previous" and _check_consecutive_alternatives(resource)

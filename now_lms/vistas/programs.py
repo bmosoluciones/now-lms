@@ -84,9 +84,9 @@ def _program_explore_query(tag_param: str | None, category_param: str | None):
                 EtiquetaPrograma.etiqueta == tag.id
             )
     if category_param:
-        category = database.session.execute(
-            database.select(Categoria).filter(Categoria.nombre == category_param)
-        ).scalars().first()
+        category = (
+            database.session.execute(database.select(Categoria).filter(Categoria.nombre == category_param)).scalars().first()
+        )
         if category:
             query = query.join(CategoriaPrograma, Programa.id == CategoriaPrograma.programa).filter(
                 CategoriaPrograma.categoria == category.id
@@ -336,38 +336,60 @@ def lista_programas() -> str:
     )
 
 
-def inscribir_usuario_en_cursos_de_programa(username: str, programa: Programa, pago_id: str | None = None) -> list[str]:
-    """Enroll a user in all courses of a program, linking access to the real program payment id."""
+def inscribir_usuario_en_cursos_de_programa(username: str, programa: Programa) -> list[str]:
+    """Enroll a user in all courses of a program. Returns list of enrolled course codes."""
     from now_lms.calendar_utils import create_events_for_student_enrollment
     from now_lms.vistas.courses import _crear_indice_avance_curso
+    from now_lms.vistas.paypal import get_site_currency
 
-    program_courses = database.session.execute(
-        database.select(ProgramaCurso).filter_by(programa=programa.codigo)
-    ).scalars().all()
+    program_courses = (
+        database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.codigo)).scalars().all()
+    )
 
     enrolled = []
     for pc in program_courses:
-        # Check if a record on EstudianteCurso exists regardless of vigente state
+        # Check if already enrolled in this course
         existing = database.session.execute(
-            database.select(EstudianteCurso).filter_by(curso=pc.curso, usuario=username)
+            database.select(EstudianteCurso).filter_by(curso=pc.curso, usuario=username, vigente=True)
         ).scalar_one_or_none()
-
         if existing:
-            if not existing.vigente:
-                existing.vigente = True
-                if pago_id:
-                    existing.pago = pago_id
-                existing.modificado = datetime.now(timezone.utc).date()
-                existing.modificado_por = current_user.usuario if (current_user and current_user.is_authenticated) else username
-                enrolled.append(pc.curso)
             continue
 
-        # Create new EstudianteCurso linked directly to the program's Pago ID
+        # Create Pago
+        curso = database.session.execute(database.select(Curso).filter_by(codigo=pc.curso)).scalar_one_or_none()
+        if not curso:
+            continue
+
+        pago = Pago()
+        pago.usuario = username
+        pago.curso = pc.curso
+        pago.estado = "completed"
+        pago.metodo = "program_enrollment"
+        pago.monto = 0
+        pago.moneda = get_site_currency()
+        pago.descripcion = f"Inscripción al curso como parte del programa '{programa.nombre}'"
+        pago.audit = False
+        pago.creado = datetime.now(timezone.utc).date()
+        pago.creado_por = current_user.usuario if (current_user and current_user.is_authenticated) else username
+
+        usuario_obj = database.session.execute(database.select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        if usuario_obj:
+            pago.nombre = usuario_obj.nombre or username
+            pago.apellido = usuario_obj.apellido or ""
+            pago.correo_electronico = usuario_obj.correo_electronico or ""
+        else:
+            pago.nombre = username
+            pago.apellido = ""
+            pago.correo_electronico = ""
+
+        database.session.add(pago)
+        database.session.flush()
+
         course_enrollment = EstudianteCurso(
             curso=pc.curso,
             usuario=username,
             vigente=True,
-            pago=pago_id,
+            pago=pago.id,
             creado=datetime.now(timezone.utc).date(),
             creado_por=current_user.usuario if (current_user and current_user.is_authenticated) else username,
         )
@@ -382,32 +404,52 @@ def inscribir_usuario_en_cursos_de_programa(username: str, programa: Programa, p
     return enrolled
 
 
-def inscribir_usuario_en_curso_especifico_de_programa(username: str, course_code: str, programa: Programa, pago_id: str | None = None) -> bool:
-    """Enrolls a single user in a single course of a program, reusing/reactivating existing records."""
+def inscribir_usuario_en_curso_especifico_de_programa(username: str, course_code: str, programa: Programa) -> bool:
+    """Enrolls a single user in a single course of a program."""
     from now_lms.calendar_utils import create_events_for_student_enrollment
     from now_lms.vistas.courses import _crear_indice_avance_curso
+    from now_lms.vistas.paypal import get_site_currency
 
     existing = database.session.execute(
-        database.select(EstudianteCurso).filter_by(curso=course_code, usuario=username)
+        database.select(EstudianteCurso).filter_by(curso=course_code, usuario=username, vigente=True)
     ).scalar_one_or_none()
-
     if existing:
-        if not existing.vigente:
-            existing.vigente = True
-            if pago_id:
-                existing.pago = pago_id
-            existing.modificado = datetime.now(timezone.utc).date()
-            existing.modificado_por = current_user.usuario if (current_user and current_user.is_authenticated) else "system"
-            _crear_indice_avance_curso(course_code)
-            create_events_for_student_enrollment(username, course_code)
-            return True
         return False
+
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not curso:
+        return False
+
+    pago = Pago()
+    pago.usuario = username
+    pago.curso = course_code
+    pago.estado = "completed"
+    pago.metodo = "program_enrollment"
+    pago.monto = 0
+    pago.moneda = get_site_currency()
+    pago.descripcion = f"Inscripción al curso como parte del programa '{programa.nombre}'"
+    pago.audit = False
+    pago.creado = datetime.now(timezone.utc).date()
+    pago.creado_por = current_user.usuario if (current_user and current_user.is_authenticated) else "system"
+
+    usuario_obj = database.session.execute(database.select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+    if usuario_obj:
+        pago.nombre = usuario_obj.nombre or username
+        pago.apellido = usuario_obj.apellido or ""
+        pago.correo_electronico = usuario_obj.correo_electronico or ""
+    else:
+        pago.nombre = username
+        pago.apellido = ""
+        pago.correo_electronico = ""
+
+    database.session.add(pago)
+    database.session.flush()
 
     course_enrollment = EstudianteCurso(
         curso=course_code,
         usuario=username,
         vigente=True,
-        pago=pago_id,
+        pago=pago.id,
         creado=datetime.now(timezone.utc).date(),
         creado_por=current_user.usuario if (current_user and current_user.is_authenticated) else "system",
     )
@@ -422,6 +464,7 @@ def inscribir_usuario_en_curso_especifico_de_programa(username: str, course_code
 @perfil_requerido("student")
 def inscribir_programa(codigo: str) -> str | Response:
     """Inscribir usuario a un programa."""
+    print("DEBUG INSCRIBIR PROGRAMA: method:", request.method, "user:", current_user.usuario if current_user else None)
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
     if not programa:
@@ -435,15 +478,20 @@ def inscribir_programa(codigo: str) -> str | Response:
     if request.method == "POST":
         if programa.precio and programa.precio > 0:
             # Check if already has a pending payment for this program
-            existing_pago = database.session.execute(
-                database.select(Pago).filter_by(usuario=current_user.usuario, programa=programa.id, estado="pending")
-            ).scalars().first()
+            existing_pago = (
+                database.session.execute(
+                    database.select(Pago).filter_by(usuario=current_user.usuario, programa=programa.id, estado="pending")
+                )
+                .scalars()
+                .first()
+            )
 
             if existing_pago:
                 return redirect(url_for("program.program_payment", codigo=codigo, payment_id=existing_pago.id))
 
             # Create a pending payment
             from now_lms.vistas.paypal import get_site_currency
+
             pago = Pago()
             pago.usuario = current_user.usuario
             pago.programa = programa.id
@@ -465,6 +513,9 @@ def inscribir_programa(codigo: str) -> str | Response:
                 database.session.commit()
                 return redirect(url_for("program.program_payment", codigo=codigo, payment_id=pago.id))
             except Exception:
+                import traceback
+
+                traceback.print_exc()
                 database.session.rollback()
                 flash(_("Error al procesar la inscripción al programa."), "error")
                 return redirect(url_for("program.inscribir_programa", codigo=codigo))
@@ -476,6 +527,7 @@ def inscribir_programa(codigo: str) -> str | Response:
             database.session.add(inscripcion)
             inscribir_usuario_en_cursos_de_programa(current_user.usuario, programa)
             database.session.commit()
+            print("PE IN THE VIEW:", database.session.execute(database.select(ProgramaEstudiante)).scalars().all())
             flash(_("Te has inscrito exitosamente al programa."), "success")
             return redirect(url_for("program.tomar_programa", codigo=codigo))
         except OperationalError:
@@ -494,9 +546,7 @@ def program_payment(codigo: str) -> str | Response:
     pago = None
     if payment_id:
         pago = (
-            database.session.execute(
-                database.select(Pago).filter_by(id=payment_id, usuario=current_user.usuario)
-            )
+            database.session.execute(database.select(Pago).filter_by(id=payment_id, usuario=current_user.usuario))
             .scalars()
             .first()
         )
@@ -512,6 +562,7 @@ def program_payment(codigo: str) -> str | Response:
 
     # Check if PayPal is enabled
     from now_lms.vistas.paypal import check_paypal_enabled, get_site_currency
+
     if not check_paypal_enabled():
         flash(_("Los pagos con PayPal no están habilitados."), "error")
         return redirect(url_for("program.tomar_programa", codigo=codigo))
@@ -571,46 +622,6 @@ def tomar_programa(codigo: str) -> str | Response:
     )
 
 
-def usuario_tiene_acceso_independiente_a_curso(username: str, course_code: str, exclude_program_id: str) -> bool:
-    """Checks if a user has access to a course outside of a specific program context (e.g. independent purchase or another program)."""
-    # 1. Check if the user has an independent completed payment for this course code specifically
-    pago_independiente = database.session.execute(
-        database.select(Pago).filter_by(usuario=username, curso=course_code, estado="completed")
-    ).scalars().first()
-    if pago_independiente:
-        return True
-
-    # 2. Check if the current course enrollment's linked payment is NOT associated with the excluded program
-    current_ec = database.session.execute(
-        database.select(EstudianteCurso).filter_by(curso=course_code, usuario=username)
-    ).scalar_one_or_none()
-    if current_ec and current_ec.pago:
-        linked_pago = database.session.execute(
-            database.select(Pago).filter_by(id=current_ec.pago)
-        ).scalar_one_or_none()
-        if linked_pago and linked_pago.programa != exclude_program_id:
-            return True
-
-    # 3. Check if the course is part of another active program the user is enrolled in
-    other_enrollments = database.session.execute(
-        database.select(ProgramaEstudiante).filter(
-            ProgramaEstudiante.usuario == username,
-            ProgramaEstudiante.programa != exclude_program_id
-        )
-    ).scalars().all()
-
-    for ope in other_enrollments:
-        op = database.session.execute(database.select(Programa).filter_by(id=ope.programa)).scalars().first()
-        if op:
-            pc_exists = database.session.execute(
-                database.select(ProgramaCurso).filter_by(programa=op.codigo, curso=course_code)
-            ).scalars().first()
-            if pc_exists:
-                return True
-
-    return False
-
-
 @program.route("/program/<codigo>/courses/manage", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -648,9 +659,11 @@ def gestionar_cursos_programa(codigo: str) -> str | Response:
                 database.session.add(nuevo_curso)
 
                 # Enroll all students currently in the program in this new course
-                estudiantes = database.session.execute(
-                    database.select(ProgramaEstudiante).filter_by(programa=programa.id)
-                ).scalars().all()
+                estudiantes = (
+                    database.session.execute(database.select(ProgramaEstudiante).filter_by(programa=programa.id))
+                    .scalars()
+                    .all()
+                )
                 for est in estudiantes:
                     inscribir_usuario_en_curso_especifico_de_programa(est.usuario, curso_codigo, programa)
 
@@ -668,14 +681,12 @@ def gestionar_cursos_programa(codigo: str) -> str | Response:
 
             if curso_programa:
                 # Unenroll all students currently in the program from this course
-                estudiantes = database.session.execute(
-                    database.select(ProgramaEstudiante).filter_by(programa=programa.id)
-                ).scalars().all()
+                estudiantes = (
+                    database.session.execute(database.select(ProgramaEstudiante).filter_by(programa=programa.id))
+                    .scalars()
+                    .all()
+                )
                 for est in estudiantes:
-                    # Check if student has other valid independent source of access
-                    if usuario_tiene_acceso_independiente_a_curso(est.usuario, curso_codigo, exclude_program_id=programa.id):
-                        continue
-
                     enrollment = database.session.execute(
                         database.select(EstudianteCurso).filter_by(curso=curso_codigo, usuario=est.usuario, vigente=True)
                     ).scalar_one_or_none()
@@ -751,11 +762,12 @@ def _emitir_certificado_programa(codigo_programa: str, usuario: str, plantilla: 
         return
 
     import json
+
     # Generate snapshot of courses currently in the program
     snapshot_dict = {}
-    program_courses = database.session.execute(
-        database.select(ProgramaCurso).filter_by(programa=programa.codigo)
-    ).scalars().all()
+    program_courses = (
+        database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.codigo)).scalars().all()
+    )
     for pc in program_courses:
         c = database.session.execute(database.select(Curso).filter_by(codigo=pc.curso)).scalar_one_or_none()
         if c:
@@ -802,6 +814,47 @@ def _verify_student_and_enrollment(student_username: str) -> dict | None:
     if not usuario_existe:
         return {"msg": f"El usuario '{student_username}' no existe en el sistema.", "cat": "error"}
     return None
+
+
+def _get_or_create_course_enrollment(course_code, student_username, bypass_payment, notes, programa):
+    """Enroll a student into a single course of the program if not already enrolled. Returns course_code if enrolled."""
+    existing_course_enrollment = database.session.execute(
+        database.select(EstudianteCurso).filter_by(curso=course_code, usuario=student_username, vigente=True)
+    ).scalar_one_or_none()
+
+    if existing_course_enrollment:
+        return None
+
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not curso:
+        return None
+
+    pago = Pago()
+    pago.usuario = student_username
+    pago.curso = course_code
+    pago.estado = "completed"
+    pago.metodo = "admin_program_enrollment"
+    pago.monto = 0 if bypass_payment else curso.precio
+    pago.descripcion = f"Inscripción administrativa al programa '{programa.nombre}' por {current_user.usuario}"
+    if notes:
+        pago.descripcion += f" - Notas: {notes}"
+    pago.audit = not bypass_payment and curso.pagado
+    pago.creado = datetime.now(timezone.utc).date()
+    pago.creado_por = current_user.usuario
+    database.session.add(pago)
+    database.session.flush()
+
+    course_enrollment = EstudianteCurso(
+        curso=course_code,
+        usuario=student_username,
+        vigente=True,
+        pago=pago.id,
+        creado=datetime.now(timezone.utc).date(),
+        creado_por=current_user.usuario,
+    )
+    database.session.add(course_enrollment)
+
+    return course_code
 
 
 def _post_enrollment_processing(student_username, enrolled_courses, programa):
@@ -853,29 +906,10 @@ def admin_program_enrollment(codigo: str) -> str | Response:
         return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
     try:
-        # Fetch student details to satisfy NOT NULL constraints on Pago billing fields
-        student_user = database.session.execute(
-            database.select(Usuario).filter_by(usuario=student_username)
-        ).scalar_one_or_none()
-
-        # Create a single real program payment record
-        pago = Pago()
-        pago.usuario = student_username
-        pago.programa = programa.id
-        pago.curso = None
-        pago.estado = "completed"
-        pago.metodo = "admin_program_enrollment"
-        pago.monto = 0.0 if bypass_payment else (programa.precio or 0.0)
-        pago.descripcion = f"Inscripción administrativa al programa '{programa.nombre}' por {current_user.usuario}"
-        if notes:
-            pago.descripcion += f" - Notas: {notes}"
-        pago.nombre = (student_user.nombre if student_user else None) or student_username
-        pago.apellido = (student_user.apellido if student_user else None) or student_username
-        pago.correo_electronico = (student_user.correo_electronico if student_user else None) or f"{student_username}@example.com"
-        pago.creado = datetime.now(timezone.utc).date()
-        pago.creado_por = current_user.usuario
-        database.session.add(pago)
-        database.session.flush()
+        # Get all courses in the program
+        program_courses = (
+            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.id)).scalars().all()
+        )
 
         # Enroll student in program
         program_enrollment = ProgramaEstudiante(
@@ -886,8 +920,15 @@ def admin_program_enrollment(codigo: str) -> str | Response:
         )
         database.session.add(program_enrollment)
 
-        # Enroll student in all courses of the program, passing the program payment id
-        enrolled_courses = inscribir_usuario_en_cursos_de_programa(student_username, programa, pago_id=pago.id)
+        # Enroll student in all courses of the program
+        enrolled_courses = [
+            cid
+            for cid in (
+                _get_or_create_course_enrollment(c.curso, student_username, bypass_payment, notes, programa)
+                for c in program_courses
+            )
+            if cid is not None
+        ]
 
         database.session.commit()
 
@@ -951,20 +992,15 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
         return redirect(url_for("program.admin_program_enrollments", codigo=codigo))
 
     try:
-        # Get all courses in the program by querying ProgramaCurso using program code
+        # Get all courses in the program by querying ProgramaCurso
         program_courses = (
-            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.codigo)).scalars().all()
+            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.id)).scalars().all()
         )
 
         # Unenroll from all courses in the program (mark as inactive)
         unenrolled_courses = []
         for course_data in program_courses:
             course_code = course_data.curso
-
-            # Check if student has other valid independent source of access
-            if usuario_tiene_acceso_independiente_a_curso(student_username, course_code, exclude_program_id=programa.id):
-                continue
-
             course_enrollment = database.session.execute(
                 database.select(EstudianteCurso).filter_by(curso=course_code, usuario=student_username, vigente=True)
             ).scalar_one_or_none()

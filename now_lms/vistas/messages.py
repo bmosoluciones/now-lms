@@ -46,18 +46,14 @@ def _get_course_codes_for_user(user) -> list[str]:
     """Get list of course codes the user has access to."""
     if user.tipo == "student":
         student_courses = (
-            database.session.execute(select(EstudianteCurso).filter_by(usuario=user.usuario, vigente=True))
-            .scalars()
-            .all()
+            database.session.execute(select(EstudianteCurso).filter_by(usuario=user.usuario, vigente=True)).scalars().all()
         )
         return [sc.curso for sc in student_courses]
 
     if user.tipo == "instructor":
         return [
             dc.curso
-            for dc in database.session.execute(
-                select(DocenteCurso).filter_by(usuario=user.usuario, vigente=True)
-            )
+            for dc in database.session.execute(select(DocenteCurso).filter_by(usuario=user.usuario, vigente=True))
             .scalars()
             .all()
         ]
@@ -65,9 +61,7 @@ def _get_course_codes_for_user(user) -> list[str]:
     if user.tipo == "moderator":
         return [
             mc.curso
-            for mc in database.session.execute(
-                select(ModeradorCurso).filter_by(usuario=user.usuario, vigente=True)
-            )
+            for mc in database.session.execute(select(ModeradorCurso).filter_by(usuario=user.usuario, vigente=True))
             .scalars()
             .all()
         ]
@@ -80,11 +74,7 @@ def _get_accessible_messages(course_codes: list[str]) -> list[dict]:
     if not course_codes:
         return []
 
-    threads = (
-        database.session.execute(select(MessageThread).filter(MessageThread.course_id.in_(course_codes)))
-        .scalars()
-        .all()
-    )
+    threads = database.session.execute(select(MessageThread).filter(MessageThread.course_id.in_(course_codes))).scalars().all()
 
     accessible_messages = []
     for thread in threads:

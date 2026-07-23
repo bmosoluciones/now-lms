@@ -30,11 +30,13 @@ def upgrade():
         with op.batch_alter_table("pago") as batch_op:
             if "programa" not in columns:
                 batch_op.add_column(
-                    sa.Column("programa", sa.String(26), sa.ForeignKey("programa.id", name="fk_pago_programa_id"), nullable=True),
+                    sa.Column(
+                        "programa", sa.String(26), sa.ForeignKey("programa.id", name="fk_pago_programa_id"), nullable=True
+                    ),
                 )
             batch_op.alter_column("curso", existing_type=sa.String(20), nullable=True)
 
-        # Explicitly check for index existence in SQLite or other databases before creating it
+        # Explicitly check for index existence before creating it
         indexes = [idx["name"] for idx in inspector.get_indexes("pago")]
         if "ix_pago_programa" not in indexes:
             op.create_index("ix_pago_programa", "pago", ["programa"])
@@ -61,12 +63,8 @@ def downgrade():
     if "pago" in existing_tables:
         columns = [col["name"] for col in inspector.get_columns("pago")]
 
-        # Drop index first to prevent errors
-        indexes = [idx["name"] for idx in inspector.get_indexes("pago")]
-        if "ix_pago_programa" in indexes:
-            op.drop_index("ix_pago_programa", table_name="pago")
-
-        # Drop any foreign key constraints pointing to programa in MySQL
+        # 1. Drop any foreign key constraints pointing to/from programa in MySQL FIRST
+        # If we drop the index before dropping the foreign key, MySQL raises an error.
         try:
             fks = inspector.get_foreign_keys("pago")
             for fk in fks:
@@ -83,6 +81,11 @@ def downgrade():
                     op.drop_constraint(fk["name"], "pago", type_="foreignkey")
         except Exception:
             pass
+
+        # 2. Now drop the index safely
+        indexes = [idx["name"] for idx in inspector.get_indexes("pago")]
+        if "ix_pago_programa" in indexes:
+            op.drop_index("ix_pago_programa", table_name="pago")
 
         with op.batch_alter_table("pago") as batch_op:
             if "programa" in columns:
