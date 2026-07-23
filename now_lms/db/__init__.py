@@ -822,6 +822,7 @@ class CertificacionPrograma(database.Model, BaseTabla):
         database.String(26), database.ForeignKey(LLAVE_FORANEA_CERTIFICADO), nullable=False, index=True
     )
     fecha = database.Column(database.Date, default=date.today, nullable=False)
+    cursos_snapshot = database.Column(database.String(2000), nullable=True)
 
     # Relationships
     relacion_usuario = database.relationship("Usuario", foreign_keys=usuario)
@@ -830,8 +831,20 @@ class CertificacionPrograma(database.Model, BaseTabla):
 
     def get_cursos_completados(self):
         """Get list of completed courses for this program certificate."""
-        from now_lms.db.tools import obtener_cursos_completados_en_programa_por_id
+        if self.cursos_snapshot:
+            import json
+            try:
+                snapshot = json.loads(self.cursos_snapshot)
+                if isinstance(snapshot, dict):
+                    return list(snapshot.keys())
+                elif isinstance(snapshot, list):
+                    if all(isinstance(x, dict) for x in snapshot):
+                        return [x["codigo"] for x in snapshot]
+                    return snapshot
+            except Exception:
+                pass
 
+        from now_lms.db.tools import obtener_cursos_completados_en_programa_por_id
         return obtener_cursos_completados_en_programa_por_id(self.usuario, self.programa)
 
 
@@ -964,7 +977,8 @@ class Pago(database.Model, BaseTabla):
     """Registro de pagos."""
 
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=True, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_PROGRAMA), nullable=True, index=True)
     moneda = database.Column(database.String(5))  # Ejemplo: USD, EUR, CRC
     monto = database.Column(database.Numeric(asdecimal=True))
     fecha = database.Column(database.DateTime, default=utc_now)
