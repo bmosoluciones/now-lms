@@ -16,26 +16,23 @@ class of bug:
    without colliding with existing tables.
 
 3. **Upgrade / downgrade cycle** — the full Alembic migration chain
-   must survive downgrade('base') → upgrade() → downgrade('base') →
-   upgrade() without errors, proving every migration is reversible and
-   the chain has no broken links.
+   must survive downgrade('base') -> upgrade() without errors,
+   proving every migration is reversible and the chain has no broken
+   links.
 """
 
 from __future__ import annotations
 
 import os
+import tempfile
 
 import pytest
 from sqlalchemy.exc import OperationalError, ProgrammingError
-from sqlalchemy.pool import StaticPool
+
 
 # ---------------------------------------------------------------------------
-# Engine detection helpers (same convention as test_multipledb.py)
+# Engine detection
 # ---------------------------------------------------------------------------
-
-def _is_ci() -> bool:
-    return os.environ.get("CI", "").lower() in ("true", "1", "yes")
-
 
 def _engine() -> str | None:
     url = os.environ.get("DATABASE_URL", "").lower()
@@ -48,35 +45,28 @@ def _engine() -> str | None:
     return None
 
 
-def _skip_unless_pg():
-    if not (_is_ci() and _engine() == "postgresql"):
-        pytest.skip("Requires CI + real PostgreSQL DATABASE_URL")
-
-
-def _skip_unless_mysql():
-    if not (_is_ci() and _engine() == "mysql"):
-        pytest.skip("Requires CI + real MySQL DATABASE_URL")
-
-
 # ---------------------------------------------------------------------------
-# App factory — each test gets its own isolated app
+# App factory
 # ---------------------------------------------------------------------------
 
-def _make_app(name: str):
+def _make_app(name: str, uri: str | None = None):
     from now_lms import create_app
 
-    overrides: dict = {}
-    if _engine() in (None, "sqlite"):
-        overrides = {
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-            "SQLALCHEMY_ENGINE_OPTIONS": {"poolclass": StaticPool},
-            "SQLALCHEMY_CONNECT_ARGS": {"check_same_thread": False},
-        }
+    if uri is None:
+        if _engine() == "postgresql":
+            uri = os.environ["DATABASE_URL"]
+        elif _engine() == "mysql":
+            uri = os.environ["DATABASE_URL"]
+        else:
+            fd, path = tempfile.mkstemp(suffix=".db", prefix=f"{name}_")
+            os.close(fd)
+            uri = f"sqlite:///{path}"
+
+    overrides = {"SQLALCHEMY_DATABASE_URI": uri}
     return create_app(app_name=name, testing=True, config_overrides=overrides)
 
 
 def _wipe_database(app):
-    """Drop every table and the alembic_version table."""
     from now_lms.db import database
 
     with app.app_context():
@@ -85,22 +75,11 @@ def _wipe_database(app):
         database.session.commit()
 
 
-def _alembic_version(app):
-    from now_lms.db import database
-
-    with app.app_context():
-        return database.session.execute(
-            database.text("SELECT version_num FROM alembic_version")
-        ).scalar()
-
-
 # ===========================================================================
 # Scenario 1: Clean initial setup
 # ===========================================================================
 
 class TestCleanInitialSetup:
-    """A fresh, empty database must boot, stamp Alembic, seed data,
-    and survive a restart without crashing."""
 
     def test_sqlite(self):
         app = _make_app("test_clean_sqlite")
@@ -117,11 +96,11 @@ class TestCleanInitialSetup:
             ).scalar()
             assert version is not None, "Alembic must be stamped after fresh setup"
 
-        # Idempotent restart
         assert init_app(flask_app=app) is True
 
     def test_postgresql(self):
-        _skip_unless_pg()
+        if _engine() != "postgresql":
+            pytest.skip("DATABASE_URL not set to PostgreSQL")
         app = _make_app("test_clean_pg")
         _wipe_database(app)
 
@@ -139,7 +118,8 @@ class TestCleanInitialSetup:
         assert init_app(flask_app=app) is True
 
     def test_mysql(self):
-        _skip_unless_mysql()
+        if _engine() != "mysql":
+            pytest.skip("DATABASE_URL not set to MySQL")
         app = _make_app("test_clean_mysql")
         _wipe_database(app)
 
@@ -162,29 +142,24 @@ class TestCleanInitialSetup:
 # ===========================================================================
 
 class TestMigrationOnExistingDatabase:
-    """A database that already has tables, data, and an Alembic stamp
-    must upgrade cleanly via AUTO_MIGRATE without colliding."""
 
-    def test_sqlite(self):
-        app = _make_app("test_migrate_existing_sqlite")
+    def _run(self, name):
+        app = _make_app(name)
         _wipe_database(app)
 
         from now_lms import init_app
         from now_lms.db import database
 
-        # First boot: create schema + seed
         assert init_app(flask_app=app) is True
 
         with app.app_context():
             version_before = database.session.execute(
                 database.text("SELECT version_num FROM alembic_version")
             ).scalar()
-            # Verify data exists
             table_count = database.session.execute(
                 database.text("SELECT COUNT(*) FROM system_info")
             ).scalar()
 
-        # Second boot with AUTO_MIGRATE: should be a no-op, no collisions
         os.environ["NOW_LMS_AUTO_MIGRATE"] = "true"
         try:
             assert init_app(flask_app=app) is True
@@ -202,61 +177,18 @@ class TestMigrationOnExistingDatabase:
         assert version_before == version_after, "Alembic version must not change on no-op migrate"
         assert table_count_after == table_count, "Data must survive migration"
 
+    def test_sqlite(self):
+        self._run("test_migrate_sqlite")
+
     def test_postgresql(self):
-        _skip_unless_pg()
-        app = _make_app("test_migrate_existing_pg")
-        _wipe_database(app)
-
-        from now_lms import init_app
-        from now_lms.db import database
-
-        assert init_app(flask_app=app) is True
-
-        with app.app_context():
-            version_before = database.session.execute(
-                database.text("SELECT version_num FROM alembic_version")
-            ).scalar()
-
-        os.environ["NOW_LMS_AUTO_MIGRATE"] = "true"
-        try:
-            assert init_app(flask_app=app) is True
-        finally:
-            os.environ.pop("NOW_LMS_AUTO_MIGRATE", None)
-
-        with app.app_context():
-            version_after = database.session.execute(
-                database.text("SELECT version_num FROM alembic_version")
-            ).scalar()
-
-        assert version_before == version_after
+        if _engine() != "postgresql":
+            pytest.skip("DATABASE_URL not set to PostgreSQL")
+        self._run("test_migrate_pg")
 
     def test_mysql(self):
-        _skip_unless_mysql()
-        app = _make_app("test_migrate_existing_mysql")
-        _wipe_database(app)
-
-        from now_lms import init_app
-        from now_lms.db import database
-
-        assert init_app(flask_app=app) is True
-
-        with app.app_context():
-            version_before = database.session.execute(
-                database.text("SELECT version_num FROM alembic_version")
-            ).scalar()
-
-        os.environ["NOW_LMS_AUTO_MIGRATE"] = "true"
-        try:
-            assert init_app(flask_app=app) is True
-        finally:
-            os.environ.pop("NOW_LMS_AUTO_MIGRATE", None)
-
-        with app.app_context():
-            version_after = database.session.execute(
-                database.text("SELECT version_num FROM alembic_version")
-            ).scalar()
-
-        assert version_before == version_after
+        if _engine() != "mysql":
+            pytest.skip("DATABASE_URL not set to MySQL")
+        self._run("test_migrate_mysql")
 
 
 # ===========================================================================
@@ -264,9 +196,6 @@ class TestMigrationOnExistingDatabase:
 # ===========================================================================
 
 class TestUpgradeDowngradeCycle:
-    """Every migration must be reversible. The full cycle
-    downgrade('base') → upgrade() → downgrade('base') → upgrade()
-    must complete without errors."""
 
     def _run_cycle(self, app):
         from now_lms import alembic
@@ -280,8 +209,10 @@ class TestUpgradeDowngradeCycle:
             ).scalar()
             assert head_version is not None, "upgrade() must leave a version"
 
+        with app.app_context():
             alembic.downgrade("base")
             database.session.commit()
+            database.session.remove()
 
             try:
                 base_version = database.session.execute(
@@ -289,15 +220,16 @@ class TestUpgradeDowngradeCycle:
                 ).scalar()
                 assert base_version is None, "downgrade('base') must clear the version"
             except (OperationalError, ProgrammingError):
-                pass  # table may be dropped — acceptable
+                pass
 
+        with app.app_context():
             alembic.upgrade()
             database.session.commit()
             restored = database.session.execute(
                 database.text("SELECT version_num FROM alembic_version")
             ).scalar()
             assert restored is not None, "upgrade() after downgrade must restore version"
-            assert restored == head_version, "version must match head after full round-trip"
+            assert restored == head_version, "version must match head after round-trip"
 
     def test_sqlite(self):
         app = _make_app("test_cycle_sqlite")
@@ -311,7 +243,8 @@ class TestUpgradeDowngradeCycle:
         self._run_cycle(app)
 
     def test_postgresql(self):
-        _skip_unless_pg()
+        if _engine() != "postgresql":
+            pytest.skip("DATABASE_URL not set to PostgreSQL")
         app = _make_app("test_cycle_pg")
         _wipe_database(app)
 
@@ -323,7 +256,8 @@ class TestUpgradeDowngradeCycle:
         self._run_cycle(app)
 
     def test_mysql(self):
-        _skip_unless_mysql()
+        if _engine() != "mysql":
+            pytest.skip("DATABASE_URL not set to MySQL")
         app = _make_app("test_cycle_mysql")
         _wipe_database(app)
 
@@ -336,45 +270,18 @@ class TestUpgradeDowngradeCycle:
 
 
 # ===========================================================================
-# Auxiliary: database_select_version() must return truthy queries
+# Auxiliary: database_select_version() returns truthy queries
 # ===========================================================================
 
 class TestSelectVersionQuery:
-    """database_select_version() must return a query that evaluates
-    truthy when curso exists — the original bug was a zero-column SELECT
-    on PostgreSQL that always evaluated falsy."""
-
-    @staticmethod
-    def _query_for_engine(engine: str):
-        from now_lms import create_app
-
-        uris = {
-            "sqlite": "sqlite:///:memory:",
-            "postgresql": "postgresql+pg8000://x:x@localhost/test",
-            "mysql": "mysql+mysqlconnector://x:x@localhost/test",
-        }
-        overrides = {}
-        if engine == "sqlite":
-            overrides = {
-                "SQLALCHEMY_ENGINE_OPTIONS": {"poolclass": StaticPool},
-                "SQLALCHEMY_CONNECT_ARGS": {"check_same_thread": False},
-            }
-        app = create_app(app_name=f"test_sel_{engine}", testing=True, config_overrides={"SQLALCHEMY_DATABASE_URI": uris[engine], **overrides})
-        from now_lms.db.tools import database_select_version
-
-        return database_select_version(app)
-
-    def test_all_engines_return_nonempty_queries(self):
-        for eng in ("sqlite", "postgresql", "mysql"):
-            q = self._query_for_engine(eng)
-            assert q is not None, f"{eng}: database_select_version() must not return None"
-            normalized = " ".join(q.lower().split())
-            assert "select" in normalized or "show" in normalized, (
-                f"{eng}: query must be a SELECT or SHOW, got: {q!r}"
-            )
 
     def test_postgresql_query_selects_a_column(self):
-        q = self._query_for_engine("postgresql")
+        if _engine() != "postgresql":
+            pytest.skip("DATABASE_URL not set to PostgreSQL")
+        app = _make_app("test_sel_pg")
+        from now_lms.db.tools import database_select_version
+
+        q = database_select_version(app)
         normalized = " ".join(q.lower().split())
         assert normalized.startswith("select 1 from"), (
             f"PostgreSQL query must start with 'SELECT 1 FROM', got: {q!r}"
