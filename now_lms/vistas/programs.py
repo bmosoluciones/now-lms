@@ -201,18 +201,18 @@ def programas() -> str:
     return render_template("learning/programas/lista_programas.html", consulta=consulta)
 
 
-@program.route("/program/<ulid>/delete", methods=["GET"])
+@program.route("/program/<ulid>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
 def delete_program(ulid: str) -> Response:
     """Elimina programa."""
-    database.session.execute(delete(Programa).where(Programa.id == ulid))
+    if current_user.tipo != "admin":
+        abort(403)
 
-    if current_user.tipo == "admin":
-        database.session.commit()
-        cache.delete("view/" + url_for(PROGRAMS_ROUTE))
-        return redirect(url_for(PROGRAMS_ROUTE))
-    return abort(403)
+    database.session.execute(delete(Programa).where(Programa.id == ulid))
+    database.session.commit()
+    cache.delete("view/" + url_for(PROGRAMS_ROUTE))
+    return redirect(url_for(PROGRAMS_ROUTE))
 
 
 @program.route("/program/<ulid>/edit", methods=["GET", "POST"])
