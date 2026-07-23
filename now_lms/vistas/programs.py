@@ -911,7 +911,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
     try:
         # Get all courses in the program
         program_courses = (
-            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.id)).scalars().all()
+            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.codigo)).scalars().all()
         )
 
         # Enroll student in program
@@ -997,7 +997,7 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
     try:
         # Get all courses in the program by querying ProgramaCurso
         program_courses = (
-            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.id)).scalars().all()
+            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.codigo)).scalars().all()
         )
 
         # Unenroll from all courses in the program (mark as inactive)
