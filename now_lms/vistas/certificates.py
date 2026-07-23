@@ -551,6 +551,7 @@ class FakeCurso:
         self.codigo = codigo
         self.nombre = nombre
 
+
 class ExecuteResultWrapper:
     def __init__(self, fake_obj):
         self.fake_obj = fake_obj
@@ -563,6 +564,7 @@ class ExecuteResultWrapper:
 
     def scalars(self):
         return self
+
 
 class SelectWrapper:
     def __init__(self, model, real_database):
@@ -577,6 +579,7 @@ class SelectWrapper:
     def filter(self, *args, **kwargs):
         return self
 
+
 class SessionWrapper:
     def __init__(self, real_session, snapshot_dict):
         self.real_session = real_session
@@ -590,6 +593,7 @@ class SessionWrapper:
             return self.real_session.execute(query_wrapper)
         except Exception:
             return ExecuteResultWrapper(None)
+
 
 class DatabaseSnapshotWrapper:
     def __init__(self, real_database, snapshot_dict):

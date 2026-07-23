@@ -507,7 +507,7 @@ def inscribir_programa(codigo: str) -> str | Response:
                 database.session.add(pago)
                 database.session.commit()
                 return redirect(url_for("program.program_payment", codigo=codigo, payment_id=pago.id))
-            except Exception as e:
+            except Exception:
                 import traceback
                 traceback.print_exc()
                 database.session.rollback()
