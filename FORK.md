@@ -92,6 +92,11 @@ noted — when upstream accepts it, we drop the fork-local copy and let `main` c
 Fork-relevant, most recent first. (Upstream feature history lives in the root `CHANGELOG.md`; this
 section records only what is Intent-Solutions-fork-specific.)
 
+- **2026-07-23** — Rebuilt the `intent_learn` homepage around the Selective Implementation Practice
+  doctrine: model-agnostic practitioner positioning, one house method, optional role-shaped proof
+  paths, and an invitation-only deeper arena. Replaced the generic course-led acquisition copy and
+  mutable vanity-stat strip. Added fork-local front-door contract tests and verified 375/390/768/
+  1024/1440px layouts with zero horizontal overflow and 44px minimum interactive targets.
 - **2026-07-21** — Full English conversion of the platform (catalog + templates + form labels +
   view messages) landed on `deploy`; offered upstream via #181. Branded course-detail page
   (`intent_learn/overrides/course_view.j2`). Healthcheck `X-Forwarded-Proto` fix. Fork governance
