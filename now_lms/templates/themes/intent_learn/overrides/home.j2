@@ -5,7 +5,8 @@
     {% set site_config = config() %}
     {% set S = url_for('static', filename='themes/intent_learn') %}
     {% set access_contact = (site_config.contact_email or 'hello@intentsolutions.io') | urlencode %}
-    {% set access_email = 'mailto:' ~ access_contact ~ '?subject=Intent%20Solutions%20Practice%20%E2%80%94%20Access%20Request' %}
+    {% set access_subject = _('Intent Solutions Practice — Access Request') | urlencode %}
+    {% set access_email = 'mailto:' ~ access_contact ~ '?subject=' ~ access_subject %}
     {% set team = [
         {'photo': 'jeremy-longshore.jpeg', 'name': _('Jeremy Longshore'), 'role': _('Founder & CEO')},
         {'photo': 'opeyemi-ariyo.jpeg',    'name': _('Opeyemi Ariyo'),    'role': _('Co-Founder & Chief Technical Officer')},
