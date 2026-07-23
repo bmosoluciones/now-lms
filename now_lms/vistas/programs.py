@@ -847,6 +847,17 @@ def _get_or_create_course_enrollment(course_code, student_username, bypass_payme
     pago.audit = not bypass_payment and curso.pagado
     pago.creado = datetime.now(timezone.utc).date()
     pago.creado_por = current_user.usuario
+
+    usuario_obj = database.session.execute(database.select(Usuario).filter_by(usuario=student_username)).scalar_one_or_none()
+    if usuario_obj:
+        pago.nombre = usuario_obj.nombre or student_username
+        pago.apellido = usuario_obj.apellido or ""
+        pago.correo_electronico = usuario_obj.correo_electronico or ""
+    else:
+        pago.nombre = student_username
+        pago.apellido = ""
+        pago.correo_electronico = ""
+
     database.session.add(pago)
     database.session.flush()
 
