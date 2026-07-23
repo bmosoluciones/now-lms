@@ -30,17 +30,12 @@ def app():
     os.environ["SECRET_KEY"] = "test-secret-key"
     os.environ["LOG_LEVEL"] = "ERROR"
 
-    # Force file-based SQLite for testing to ensure perfect transaction isolation and database sharing
+    # Forzar SQLite en memoria a menos que DATABASE_URL esté configurada
     if "DATABASE_URL" not in os.environ:
-        os.environ["DATABASE_URL"] = "sqlite:///test_now_lms.db"
+        os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 
     # Importar y obtener la aplicación
     import now_lms
-    from sqlalchemy.pool import StaticPool
-    now_lms.lms_app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-        "poolclass": StaticPool,
-        "echo": True,
-    }
     from now_lms import init_app
     from now_lms.db import database
 
@@ -48,10 +43,6 @@ def app():
     # La aplicación Flask real está en now_lms.lms_app
     init_app()
     app = now_lms.lms_app
-
-    import logging
-    logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
     app.config["TESTING"] = True
     app.config["WTF_CSRF_ENABLED"] = False
@@ -94,4 +85,3 @@ def db_session(app):
         yield database.session
         database.session.rollback()
         database.session.remove()
-        database.drop_all()

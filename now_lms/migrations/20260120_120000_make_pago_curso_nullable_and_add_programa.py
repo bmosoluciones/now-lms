@@ -27,18 +27,15 @@ def upgrade():
     if "pago" in existing_tables:
         columns = [col["name"] for col in inspector.get_columns("pago")]
 
-        if "programa" not in columns:
-            op.add_column(
-                "pago",
-                sa.Column("programa", sa.String(26), sa.ForeignKey("programa.id"), nullable=True),
-            )
+        with op.batch_alter_table("pago") as batch_op:
+            if "programa" not in columns:
+                batch_op.add_column(
+                    sa.Column("programa", sa.String(26), sa.ForeignKey("programa.id", name="fk_pago_programa_id"), nullable=True),
+                )
+            batch_op.alter_column("curso", existing_type=sa.String(20), nullable=True)
 
-        # Alter curso to make it nullable
-        # Note: some databases/backends handle nullable alteration differently.
-        # SQLite doesn't fully support alter column without copy, so we wrap it safely.
         try:
-            with op.batch_alter_table("pago") as batch_op:
-                batch_op.alter_column("curso", existing_type=sa.String(20), nullable=True)
+            op.create_index("ix_pago_programa", "pago", ["programa"])
         except Exception:
             pass
 
@@ -52,11 +49,13 @@ def downgrade():
     if "pago" in existing_tables:
         columns = [col["name"] for col in inspector.get_columns("pago")]
 
-        if "programa" in columns:
-            op.drop_column("pago", "programa")
-
+        # Drop index first to prevent "no such column: programa" during batch recreate
         try:
-            with op.batch_alter_table("pago") as batch_op:
-                batch_op.alter_column("curso", existing_type=sa.String(20), nullable=False)
+            op.drop_index("ix_pago_programa", table_name="pago")
         except Exception:
             pass
+
+        with op.batch_alter_table("pago") as batch_op:
+            if "programa" in columns:
+                batch_op.drop_column("programa")
+            batch_op.alter_column("curso", existing_type=sa.String(20), nullable=False)

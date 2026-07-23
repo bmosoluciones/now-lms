@@ -195,7 +195,7 @@ def _crear_indice_avance_curso(course_code: str) -> None:
                 requerido=recurso.requerido,
             )
             database.session.add(avance)
-        database.session.flush()
+            database.session.commit()
 
 
 def _emitir_certificado(curso_id: str, usuario: str, plantilla: str) -> None:

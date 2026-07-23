@@ -383,7 +383,7 @@ def inscribir_usuario_en_cursos_de_programa(username: str, programa: Programa) -
             pago.correo_electronico = ""
 
         database.session.add(pago)
-        database.session.commit()
+        database.session.flush()
 
         course_enrollment = EstudianteCurso(
             curso=pc.curso,
@@ -394,20 +394,12 @@ def inscribir_usuario_en_cursos_de_programa(username: str, programa: Programa) -
             creado_por=current_user.usuario if (current_user and current_user.is_authenticated) else username,
         )
         database.session.add(course_enrollment)
-        database.session.commit()
         enrolled.append(pc.curso)
 
     if enrolled:
         for course_code in enrolled:
-            try:
-                _crear_indice_avance_curso(course_code)
-                create_events_for_student_enrollment(username, course_code)
-                database.session.commit()
-            except Exception as e:
-                import traceback
-                print("DEBUG EXCEPTION IN HELPER:", e)
-                traceback.print_exc()
-                pass
+            _crear_indice_avance_curso(course_code)
+            create_events_for_student_enrollment(username, course_code)
 
     return enrolled
 
@@ -472,6 +464,7 @@ def inscribir_usuario_en_curso_especifico_de_programa(username: str, course_code
 @perfil_requerido("student")
 def inscribir_programa(codigo: str) -> str | Response:
     """Inscribir usuario a un programa."""
+    print("DEBUG INSCRIBIR PROGRAMA: method:", request.method, "user:", current_user.usuario if current_user else None)
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
     if not programa:
@@ -528,13 +521,12 @@ def inscribir_programa(codigo: str) -> str | Response:
             database.session.add(inscripcion)
             inscribir_usuario_en_cursos_de_programa(current_user.usuario, programa)
             database.session.commit()
+            print("PE IN THE VIEW:", database.session.execute(database.select(ProgramaEstudiante)).scalars().all())
             flash(_("Te has inscrito exitosamente al programa."), "success")
             return redirect(url_for("program.tomar_programa", codigo=codigo))
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
+        except OperationalError:
             database.session.rollback()
-            raise e
+            flash(_("Hubo un error al inscribirte al programa."), "error")
 
     return render_template("learning/programas/inscribir_programa.html", programa=programa)
 
@@ -602,14 +594,9 @@ def tomar_programa(codigo: str) -> str | Response:
     progreso = obtener_progreso_programa(current_user.usuario, codigo)
 
     # Get courses in program
-    program_courses = (
+    cursos_programa = (
         database.session.execute(database.select(ProgramaCurso).filter(ProgramaCurso.programa == codigo)).scalars().all()
     )
-    cursos_programa = []
-    for pc in program_courses:
-        c = database.session.execute(database.select(Curso).filter_by(codigo=pc.curso)).scalar_one_or_none()
-        if c:
-            cursos_programa.append(c)
 
     # Check if program is complete and issue certificate if needed
     if verificar_programa_completo(current_user.usuario, codigo) and programa.certificado:
@@ -759,7 +746,10 @@ def _emitir_certificado_programa(codigo_programa: str, usuario: str, plantilla: 
     ).scalar_one_or_none()
 
     if not programa:
-        flash(_("Programa no encontrado."), "error")
+        try:
+            flash(_("Programa no encontrado."), "error")
+        except RuntimeError:
+            pass
         return
 
     import json
@@ -785,7 +775,10 @@ def _emitir_certificado_programa(codigo_programa: str, usuario: str, plantilla: 
     certificado.creado_por = current_user.usuario if (current_user and current_user.is_authenticated) else usuario
     database.session.add(certificado)
     database.session.commit()
-    flash(_("Certificado de programa emitido por completar todos los cursos."), "success")
+    try:
+        flash(_("Certificado de programa emitido por completar todos los cursos."), "success")
+    except RuntimeError:
+        pass
 
 
 # ---------------------------------------------------------------------------------------

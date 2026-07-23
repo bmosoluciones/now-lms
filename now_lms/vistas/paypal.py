@@ -42,51 +42,30 @@ paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, ur
 @cache.cached(timeout=50)
 def check_paypal_enabled() -> bool:
     """Check if PayPal payments are enabled."""
-    from flask import has_app_context
-    if has_app_context():
+    with current_app.app_context():
         try:
             row = database.session.execute(database.select(PaypalConfig)).first()
             if row is None:
                 return False
             q = row[0]
-            return q.enable
+            enabled = q.enable
+            return enabled
         except OperationalError:
             return False
-    else:
-        with current_app.app_context():
-            try:
-                row = database.session.execute(database.select(PaypalConfig)).first()
-                if row is None:
-                    return False
-                q = row[0]
-                return q.enable
-            except OperationalError:
-                return False
 
 
 @cache.cached(timeout=50)
 def get_site_currency() -> str:
     """Get the site's default currency from configuration."""
-    from flask import has_app_context
-    if has_app_context():
+    with current_app.app_context():
         try:
             row = database.session.execute(database.select(Configuracion)).first()
             if row is None:
                 return "USD"
             config = row[0]
-            return config.moneda or "USD"
+            return config.moneda or "USD"  # Default to USD if not configured
         except OperationalError:
             return "USD"
-    else:
-        with current_app.app_context():
-            try:
-                row = database.session.execute(database.select(Configuracion)).first()
-                if row is None:
-                    return "USD"
-                config = row[0]
-                return config.moneda or "USD"
-            except OperationalError:
-                return "USD"
 
 
 def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: bool = False) -> dict[str, object]:
@@ -262,7 +241,6 @@ def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[Fl
         pending_payment = database.session.execute(
             database.select(Pago).filter_by(usuario=current_user.usuario, programa=programa.id, estado="pending")
         ).scalars().first()
-        print("CONFIRM_PAYMENT: PROGRAM FOUND:", programa.codigo, "PENDING PAYMENT FOUND:", pending_payment)
         expected_amount = float(pending_payment.monto if pending_payment else programa.precio)
     else:
         course = database.session.execute(
@@ -341,7 +319,6 @@ def _payment_record(payment_data: dict[str, object]) -> tuple[Any, tuple[FlaskRe
         pago.moneda = payment_data["verified_currency"]
         pago.metodo = "paypal"
         pago.estado = "completed"
-        print("INSIDE _PAYMENT_RECORD (PROGRAM PATH): SETTING ESTADO TO completed. CURRENT:", pago.estado)
         return pago, None
     else:
         existing_payment = (
@@ -382,9 +359,7 @@ def _save_payment_enrollment(pago: Any, course_code: str) -> None:
 
     if pago not in database.session:
         database.session.add(pago)
-
-    # Permanently write and commit the payment completion to the DB first!
-    database.session.commit()
+    database.session.flush()
 
     if pago.programa:
         # It's a program payment!
@@ -397,7 +372,6 @@ def _save_payment_enrollment(pago: Any, course_code: str) -> None:
         )
         if not enrollment:
             database.session.add(ProgramaEstudiante(usuario=pago.usuario, programa=pago.programa))
-            database.session.commit()
 
         # Automatically enroll the user in all courses of this program!
         programa = database.session.execute(
@@ -418,7 +392,7 @@ def _save_payment_enrollment(pago: Any, course_code: str) -> None:
             enrollment.pago = pago.id
         else:
             database.session.add(EstudianteCurso(curso=pago.curso, usuario=pago.usuario, vigente=True, pago=pago.id))
-        database.session.commit()
+    database.session.commit()
 
 
 def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:

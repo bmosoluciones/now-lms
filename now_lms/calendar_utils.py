@@ -105,7 +105,7 @@ def create_events_for_student_enrollment(user_id: str, course_id: str) -> None:
                 database.session.add(event)
                 events_created += 1
 
-        database.session.flush()
+        database.session.commit()
         log.info(f"Created {events_created} calendar events for user {user_id} in course {course_id}")
 
     except Exception as e:
