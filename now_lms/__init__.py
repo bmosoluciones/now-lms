@@ -665,6 +665,46 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
                 raise RuntimeError(f"Required session table '{session_table}' is missing.")
             log.info(f"Verified that session table '{session_table}' exists in database schema.")
 
+        # create_all() above builds the full current-model schema (the migration "head").
+        # Stamp Alembic to head so this fresh database is recorded as already at the latest
+        # revision. Without this, a later boot would see a populated database, run
+        # alembic.upgrade() from base, and collide with the schema create_all() already made
+        # (e.g. an unguarded "CREATE TABLE external_api_keys" that already exists). Stamping
+        # keeps subsequent AUTO_MIGRATE upgrades incremental — only genuinely new migrations run.
+        #
+        # Stamp with a short-lived, explicitly-scoped connection rather than Alembic.stamp()
+        # (Flask-Alembic's wrapper). Flask-Alembic caches the connection it stamps with in a
+        # per-app cache and registers a teardown_appcontext callback that *invalidates* that
+        # connection when the app context ends. For a SQLite ":memory:" database (SQLAlchemy
+        # uses StaticPool for it -- a single physical connection for the engine's whole
+        # lifetime), invalidating that one connection destroys the only connection to the
+        # database, silently wiping every table create_all() just created the moment any code
+        # later opens a *new* app context for this app -- exactly what the standard pytest
+        # fixtures do right after init_app() returns. A connection opened and closed normally
+        # via `with database.engine.connect()` returns to the pool without being invalidated.
+        #
+        # Only stamp when this Flask app is actually registered with the Alembic
+        # extension (app.extensions["alembic"], set by alembic.init_app() during
+        # inicializa_extenciones_terceros() -- every real app built via create_app()
+        # has this). A caller that constructs a bare Flask() and calls
+        # initial_setup(flask_app=...) directly, bypassing create_app() entirely
+        # (existing white-box unit tests do this to exercise this function in
+        # isolation), never registered with the extension; accessing any of its
+        # per-app-cached properties for such an app raises KeyError. Skip stamping
+        # gracefully in that case -- there is no Alembic-tracked revision to stamp
+        # for an app the extension doesn't know about.
+        if "alembic" in app_to_use.extensions:
+            from alembic.runtime.migration import MigrationContext
+
+            heads = alembic.script_directory.get_heads()
+            with database.engine.connect() as connection:
+                context = MigrationContext.configure(connection)
+                context.stamp(alembic.script_directory, heads)
+                connection.commit()
+            log.info("Alembic stamped to head for the freshly created schema.")
+        else:
+            log.trace("Skipping Alembic stamp: this Flask app is not registered with the Alembic extension.")
+
         system_info(app_to_use)
         log.debug("Database schema created successfully.")
         log.debug("Loading sample data.")
