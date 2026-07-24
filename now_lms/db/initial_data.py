@@ -254,7 +254,7 @@ def crear_curso_demo() -> None:
         hora_fin=time(hour=15, minute=00),
         notes="Google Meet",
         publico=True,  # Make it public for easier testing
-        requerido=2,
+        requerido="optional",
     )
     nuevo_recurso3.tipo = "meet"
     database.session.add(nuevo_recurso3)
@@ -268,7 +268,7 @@ def crear_curso_demo() -> None:
         descripcion="A image file.",
         indice=4,
         publico=True,
-        requerido=3,
+        requerido="substitute",
         base_doc_url="images",
         doc="resources/logo_large.png",
     )
@@ -283,7 +283,7 @@ def crear_curso_demo() -> None:
         descripcion="A text in markdown.",
         indice=5,
         publico=False,
-        requerido=3,
+        requerido="substitute",
         text="# NOW - Learning Management System.",
     )
     nuevo_recurso5.tipo = "text"
@@ -324,7 +324,7 @@ def crear_curso_demo() -> None:
         url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
         indice=9,
         publico=False,
-        requerido=2,
+        requerido="optional",
     )
     nuevo_recurso9.tipo = "youtube"
     database.session.add(nuevo_recurso9)
