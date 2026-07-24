@@ -1245,7 +1245,7 @@ def test_ver_biblioteca_curso_instructor_asignado(app, db_session):
 def test_ver_biblioteca_curso_estudiante_no_permitido(app, db_session):
     """Un estudiante no puede acceder a la biblioteca (requiere perfil instructor)."""
     estudiante = crear_usuario(db_session, "student", "alumno11")
-    curso = crear_curso(db_session, "curso_bib_estud")
+    curso = crear_curso(db_session, "bib_est_no_perm")
     inscribir_estudiante(db_session, curso, estudiante)
 
     client = app.test_client()
@@ -1260,7 +1260,7 @@ def test_ver_biblioteca_curso_estudiante_no_permitido(app, db_session):
 def test_ver_biblioteca_curso_no_inscrito(app, db_session):
     """Un usuario no inscrito no puede ver la biblioteca privada."""
     crear_usuario(db_session, "student", "alumno12")
-    curso = crear_curso(db_session, "curso_bib_priv")
+    curso = crear_curso(db_session, "curso_bib_privada")
 
     client = app.test_client()
     login_usuario(client, "alumno12")
