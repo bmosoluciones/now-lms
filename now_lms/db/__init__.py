@@ -1122,9 +1122,12 @@ class Coupon(database.Model, BaseTabla):
 
     def is_valid(self):
         """Check if coupon is valid (not expired and under usage limit)."""
-        # Check expiration
-        if self.expires_at and utc_now() > self.expires_at:
-            return False, "Cupón expirado"
+        # Check expiration - strip timezone for SQLite compatibility
+        if self.expires_at:
+            now = utc_now().replace(tzinfo=None)
+            expires = self.expires_at.replace(tzinfo=None) if self.expires_at.tzinfo else self.expires_at
+            if now > expires:
+                return False, "Cupón expirado"
 
         # Check usage limit
         current_uses = self.current_uses or 0
@@ -1207,7 +1210,10 @@ class Announcement(database.Model, BaseTabla):
         if self.expires_at is None:
             return True
 
-        return utc_now() <= self.expires_at
+        # Strip timezone for SQLite compatibility
+        now = utc_now().replace(tzinfo=None)
+        expires = self.expires_at.replace(tzinfo=None) if self.expires_at.tzinfo else self.expires_at
+        return now <= expires
 
     def __repr__(self):
         return f"<Announcement {self.title}>"
