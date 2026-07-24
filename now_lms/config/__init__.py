@@ -13,7 +13,7 @@ import sys
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
 from typing import TYPE_CHECKING
-from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -179,7 +179,7 @@ else:
 # < --------------------------------------------------------------------------------------------- >
 # Configuración de la aplicación:
 # Se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen del entorno.
-CONFIGURACION: dict[str, str | bool | Path] = {}
+CONFIGURACION: dict[str, str | bool | Path | dict] = {}
 CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY") or "dev"  # nosec
 
 # Warn if using default SECRET_KEY in production
@@ -190,6 +190,9 @@ if not DESARROLLO and CONFIGURACION["SECRET_KEY"] == "dev":
     )
 
 CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL") or SQLITE  # nosec
+CONFIGURACION["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+}
 # Opciones comunes de configuración.
 CONFIGURACION["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
 # Carga de Archivos: https://flask-reuploaded.readthedocs.io/en/latest/configuration/
@@ -207,34 +210,32 @@ if DESARROLLO:
 # < --------------------------------------------------------------------------------------------- >
 # Corrige la URI de conexión a la base de datos si el usuario omite el driver apropiado.
 
-if DATABASE_URL_BASE := CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
 
-    DATABASE_URL_CORREGIDA = DATABASE_URL_BASE
+def corregir_url_base_datos(url: str) -> str:
+    """Corrige la URI de conexión a la base de datos si el usuario omite el driver apropiado."""
+    prefix = url.split(":", 1)[0]
 
-    prefix = DATABASE_URL_BASE.split(":", 1)[0]  # Extraer prefijo: "postgres", "mysql", etc.
-
-    # Caso especial: Heroku + PostgreSQL
-    if environ.get("DYNO") and prefix in ("postgres", "postgresql"):  # type: ignore[operator]
-        parsed = urlparse(DATABASE_URL_BASE)  # type: ignore[arg-type]
+    if environ.get("DYNO") and prefix in ("postgres", "postgresql"):
+        parsed = urlparse(url)
         query = parse_qs(parsed.query)
         query["sslmode"] = ["require"]
-        DATABASE_URL_CORREGIDA = urlunparse(parsed._replace(scheme="postgresql", query=urlencode(query, doseq=True)))
+        return urlunparse(parsed._replace(scheme="postgresql", query=urlencode(query, doseq=True)))
 
-    else:
-        # Corrige el esquema según el prefijo detectado
-        match prefix:
-            case "postgresql":
-                DATABASE_URL_CORREGIDA = "postgresql+pg8000" + DATABASE_URL_BASE[10:]  # type: ignore[index]
-            case "postgres":
-                DATABASE_URL_CORREGIDA = "postgresql+pg8000" + DATABASE_URL_BASE[8:]  # type: ignore[index]
-            case "mysql":
-                DATABASE_URL_CORREGIDA = "mysql+pymysql" + DATABASE_URL_BASE[5:]  # type: ignore[index]
-            case "mariadb":  # Not tested, but should work.
-                DATABASE_URL_CORREGIDA = "mariadb+mariadbconnector" + DATABASE_URL_BASE[7:]  # type: ignore[index]
-            case _:
-                pass  # Prefijo desconocido o ya corregido
+    match prefix:
+        case "postgresql":
+            return "postgresql+pg8000" + url[10:]
+        case "postgres":
+            return "postgresql+pg8000" + url[8:]
+        case "mysql":
+            return "mysql+mysqlconnector" + url[5:]
+        case "mariadb":
+            return "mariadb+mariadbconnector" + url[7:]
+        case _:
+            return url
 
-    # Actualizar configuración si hubo cambio
+
+if DATABASE_URL_BASE := CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
+    DATABASE_URL_CORREGIDA = corregir_url_base_datos(str(DATABASE_URL_BASE))
     if DATABASE_URL_BASE != DATABASE_URL_CORREGIDA:
         log.info(f"Database URI corrected: {DATABASE_URL_BASE} → {DATABASE_URL_CORREGIDA}")
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL_CORREGIDA
@@ -287,7 +288,7 @@ def log_system_info():
     log.trace(f"Process arguments: {sys.argv}")
 
 
-def log_messages(_app: "Flask"):
+def log_messages(_app: Flask):
     """Emit mensajes de log útiles para debugging luego de haber cargado la configuración."""
     import logging
 
