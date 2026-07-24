@@ -35,12 +35,12 @@
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <caption class="ms-3 mt-2">
-                                    Lista de etiquetas disponibles en el sistema.
+                                    {{ _('Lista de etiquetas disponibles en el sistema.') }}
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Etiqueta</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-palette me-1"></i>Color</th>
+                                        <th scope="col" class="fw-semibold"><i class="bi bi-bookmark me-1"></i>{{ _('Etiqueta') }}</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-palette me-1"></i>{{ _('Color') }}</th>
                                         <th class="fw-semibold text-center">
                                             <i class="bi bi-book me-1"></i>{{ _("Cursos") }}
                                         </th>
@@ -105,10 +105,10 @@
                 <div class="card shadow-sm">
                     <div class="card-body text-center py-5">
                         <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
-                        <h5 class="text-muted mt-3">No hay etiquetas disponibles</h5>
-                        <p class="text-muted">Usted no ha creado ninguna etiqueta todavía.</p>
+                        <h5 class="text-muted mt-3">{{ _('No hay etiquetas disponibles') }}</h5>
+                        <p class="text-muted">{{ _('Usted no ha creado ninguna etiqueta todavía.') }}</p>
                         <a href="{{ url_for('tag.new_tag') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear") }} Primera Etiqueta
+                            <i class="bi bi-plus-lg me-2"></i>{{ _('Crear Primera Etiqueta') }}
                         </a>
                     </div>
                 </div>

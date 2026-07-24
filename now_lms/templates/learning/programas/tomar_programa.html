@@ -50,7 +50,7 @@
                                                         <small>{{ curso.duracion }} horas</small>
                                                     </div>
                                                     <p class="mb-1">{{ curso.descripcion_corta }}</p>
-                                                    <small>Nivel: {{ curso.nivel }}</small>
+                                                    <small>{{ _('Nivel:') }} {{ curso.nivel }}</small>
                                                 </div>
                                                 {% endfor %}
                                             </div>
@@ -62,7 +62,7 @@
                                 <div class="col-md-4">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">Progreso</h5>
+                                            <h5 class="card-title mb-0">{{ _('Progreso') }}</h5>
                                         </div>
                                         <div class="card-body">
                                             {% if progreso and progreso.porcentaje is defined %}
@@ -99,7 +99,7 @@
                                                     >{{ _("Programa") }} {{ _("Completado") }}</span
                                                 >
                                                 {% else %}
-                                                <span class="badge bg-primary fs-6">En Progreso</span>
+                                                <span class="badge bg-primary fs-6">{{ _('En Progreso') }}</span>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -108,22 +108,22 @@
                                     {% if programa.certificado %}
                                     <div class="card mt-3">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">Certificación</h5>
+                                            <h5 class="card-title mb-0">{{ _('Certificación') }}</h5>
                                         </div>
                                         <div class="card-body">
                                             {% if progreso and progreso.porcentaje >= 100 %}
                                             <p class="text-success">
                                                 <i class="fas fa-check-circle"></i>
-                                                ¡Certificado disponible!
+                                                {{ _('¡Certificado disponible!') }}
                                             </p>
                                             <a
                                                 href="{{ url_for('program.programa_certificado', codigo=programa.codigo) }}"
                                                 class="btn btn-success btn-sm"
                                             >
-                                                {{ _("Ver") }} Certificado
+                                                {{ _('Ver Certificado') }}
                                             </a>
                                             {% else %}
-                                            <p class="text-muted">Completa todos los cursos para obtener tu certificado.</p>
+                                            <p class="text-muted">{{ _('Completa todos los cursos para obtener tu certificado.') }}</p>
                                             {% endif %}
                                         </div>
                                     </div>

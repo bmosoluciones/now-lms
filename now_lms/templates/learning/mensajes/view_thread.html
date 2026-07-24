@@ -39,7 +39,7 @@
                                         {{ _("Mensajes") }}
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active">Conversación</li>
+                                <li class="breadcrumb-item active">{{ _('Conversación') }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -51,23 +51,23 @@
                             href="{{ url_for('msg.change_thread_status', thread_id=thread.id, new_status='fixed') }}"
                             class="btn btn-sm btn-warning"
                         >
-                            <i class="bi bi-check-circle"></i> Marcar como Resuelto
+                            <i class="bi bi-check-circle"></i> {{ _('Marcar como Resuelto') }}
                         </a>
                         {% endif %} {% if current_user.tipo in ["instructor", "moderator", "admin"] %}
                         <a
                             href="{{ url_for('msg.change_thread_status', thread_id=thread.id, new_status='closed') }}"
                             class="btn btn-sm btn-secondary"
                         >
-                            <i class="bi bi-x-circle"></i> Cerrar Hilo
+                            <i class="bi bi-x-circle"></i> {{ _('Cerrar Hilo') }}
                         </a>
                         {% endif %} {% elif thread.status == "fixed" %}
-                        <span class="badge bg-warning fs-6">Resuelto</span>
+                        <span class="badge bg-warning fs-6">{{ _('Resuelto') }}</span>
                         {% if current_user.tipo in ["instructor", "moderator", "admin"] %}
                         <a
                             href="{{ url_for('msg.change_thread_status', thread_id=thread.id, new_status='closed') }}"
                             class="btn btn-sm btn-secondary"
                         >
-                            <i class="bi bi-x-circle"></i> Cerrar Hilo
+                            <i class="bi bi-x-circle"></i> {{ _('Cerrar Hilo') }}
                         </a>
                         {% endif %} {% elif thread.status == "closed" %}
                         <span class="badge bg-secondary fs-6">{{ _("Cerrado") }}</span>
@@ -116,10 +116,10 @@
                                             >
                                             {% if message.read_at %}
                                             <br /><small class="text-success"
-                                                >Leído: {{ message.read_at.strftime('%d/%m/%Y %H:%M') }}</small
+                                                >{{ _('Leído:') }} {{ message.read_at.strftime('%d/%m/%Y %H:%M') }}</small
                                             >
                                             {% endif %} {% if message.is_reported %}
-                                            <br /><span class="badge bg-danger">Reportado</span>
+                                            <br /><span class="badge bg-danger">{{ _('Reportado') }}</span>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -134,7 +134,7 @@
                                             data-bs-toggle="modal"
                                             data-bs-target="#reportModal{{ message.id }}"
                                         >
-                                            <i class="bi bi-flag"></i> Reportar
+                                            <i class="bi bi-flag"></i> {{ _('Reportar') }}
                                         </button>
                                     </div>
                                     {% endif %}
@@ -152,13 +152,13 @@
                                         >
                                             {{ report_form.csrf_token }}
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Reportar {{ _("Mensaje") }}</h5>
+                                                <h5 class="modal-title">{{ _('Reportar Mensaje') }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="mb-3">
                                                     <label for="reason{{ message.id }}" class="form-label"
-                                                        >Motivo del reporte</label
+                                                        >{{ _('Motivo del reporte') }}</label
                                                     >
                                                     <textarea
                                                         class="form-control"
@@ -173,7 +173,7 @@
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                     {{ _("Cancelar") }}
                                                 </button>
-                                                <button type="submit" class="btn btn-danger">Reportar</button>
+                                                <button type="submit" class="btn btn-danger">{{ _('Reportar') }}</button>
                                             </div>
                                         </form>
                                     </div>
@@ -187,7 +187,7 @@
                         current_user.usuario == thread.student_id) %}
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="mb-0">Responder</h6>
+                                <h6 class="mb-0">{{ _('Responder') }}</h6>
                             </div>
                             <div class="card-body">
                                 <form action="{{ url_for('msg.reply_to_thread', thread_id=thread.id) }}" method="post">
@@ -206,14 +206,14 @@
                                     {{ mde.preview }} {{ mde.js }}
 
                                     <button class="btn btn-primary" type="submit">
-                                        <i class="bi bi-reply"></i> Responder
+                                        <i class="bi bi-reply"></i> {{ _('Responder') }}
                                     </button>
                                 </form>
                             </div>
                         </div>
                         {% elif thread.status == "closed" %}
                         <div class="alert alert-secondary">
-                            <i class="bi bi-info-circle"></i> Este hilo ha sido cerrado y no se pueden agregar más respuestas.
+                            <i class="bi bi-info-circle"></i> {{ _('Este hilo ha sido cerrado y no se pueden agregar más respuestas.') }}
                         </div>
                         {% endif %}
                     </div>
@@ -222,7 +222,7 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="mb-0">{{ _("Información") }} del Hilo</h6>
+                                <h6 class="mb-0">{{ _('Información del Hilo') }}</h6>
                             </div>
                             <div class="card-body">
                                 <p><strong>{{ _("Curso") }}:</strong><br />{{ thread.course.nombre }}</p>
@@ -231,12 +231,12 @@
                                     {% if thread.status == "open" %}
                                     <span class="text-success">{{ _("Abierto") }}</span>
                                     {% elif thread.status == "fixed" %}
-                                    <span class="text-warning">Resuelto</span>
+                                    <span class="text-warning">{{ _('Resuelto') }}</span>
                                     {% elif thread.status == "closed" %}
                                     <span class="text-secondary">{{ _("Cerrado") }}</span>
                                     {% endif %}
                                 </p>
-                                <p><strong>Creado:</strong><br />{{ thread.timestamp.strftime('%d/%m/%Y %H:%M') }}</p>
+                                <p><strong>{{ _('Creado:') }}</strong><br />{{ thread.timestamp.strftime('%d/%m/%Y %H:%M') }}</p>
                                 {% if thread.closed_at %}
                                 <p>
                                     <strong>{{ _("Cerrado") }}:</strong><br />{{ thread.closed_at.strftime('%d/%m/%Y %H:%M') }}
@@ -251,7 +251,7 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#reportThreadModal"
                                 >
-                                    <i class="bi bi-flag"></i> Reportar Hilo
+                                    <i class="bi bi-flag"></i> {{ _('Reportar Hilo') }}
                                 </button>
                             </div>
                         </div>
@@ -266,7 +266,7 @@
                         <form action="{{ url_for('msg.report_message', message_id='') }}" method="post">
                             {{ report_form.csrf_token }} {{ report_form.thread_id }}
                             <div class="modal-header">
-                                <h5 class="modal-title">Reportar Hilo</h5>
+                                <h5 class="modal-title">{{ _('Reportar Hilo') }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
@@ -279,7 +279,7 @@
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     {{ _("Cancelar") }}
                                 </button>
-                                <button type="submit" class="btn btn-danger">Reportar</button>
+                                <button type="submit" class="btn btn-danger">{{ _('Reportar') }}</button>
                             </div>
                         </form>
                     </div>
