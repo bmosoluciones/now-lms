@@ -13,6 +13,7 @@ from now_lms.vistas.courses.resources import (
     _generate_meet_ics_content,
 )
 
+
 @pytest.fixture
 def test_setup(app, db_session):
     admin = Usuario(
@@ -54,6 +55,7 @@ def login(client, user):
 # Unit Tests for Helper Functions
 # ==============================================================================
 
+
 def test_generate_meet_ics_content():
     """Test generating ICS calendar invite content."""
     res = mock.MagicMock()
@@ -73,6 +75,7 @@ def test_generate_meet_ics_content():
 # ==============================================================================
 # Endpoint Tests
 # ==============================================================================
+
 
 def test_download_meet_calendar(client, test_setup, db_session):
     login(client, test_setup["admin"])

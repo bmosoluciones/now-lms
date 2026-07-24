@@ -135,9 +135,7 @@ def test_get_user_resource_progress(db_session):
     db_session.add(recurso)
     db_session.commit()
 
-    avance = CursoRecursoAvance(
-        curso="curso1", recurso=recurso.id, usuario="user1", completado=True, requerido="required"
-    )
+    avance = CursoRecursoAvance(curso="curso1", recurso=recurso.id, usuario="user1", completado=True, requerido="required")
     db_session.add(avance)
     db_session.commit()
 
