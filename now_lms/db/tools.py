@@ -716,22 +716,10 @@ def database_is_populated(app):
         from sqlalchemy.sql import text
 
         try:
-            QUERY = database_select_version(app)
-            if QUERY:
-                version = database.session.execute(text(QUERY)).first()
-                if version:
-                    log.debug("Database connection verified.")
-                    log.trace("Checking if database is populated.")
-                    check = True
-                else:
-                    check = False
-                if check:
-                    log.trace("Database populated.")
-                    return check
-                log.trace("Database not populated.")
-                log.info("Database not populated, creating default configuration.")
-                return check
-            return False
+            result = database.session.execute(
+                text("SELECT 1 FROM system_info WHERE param = 'version'")
+            ).first()
+            return result is not None
         except (AttributeError, OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, ResourceClosedError):
             return False
 
