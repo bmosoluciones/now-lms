@@ -636,7 +636,7 @@ def certificacion_programa(ulid: str) -> str:
 
     template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado_obj))  # type: ignore
 
-    db_ctx = database
+    db_ctx: Any = database
     if certificacion_programa_obj.cursos_snapshot:
         import json
 
@@ -697,7 +697,7 @@ def certificate_programa_serve_pdf(ulid: str) -> Any:
 
     template = Environment(loader=BaseLoader, autoescape=True).from_string(certificado_obj.html)  # type: ignore
 
-    db_ctx = database
+    db_ctx: Any = database
     if certificacion_programa_obj.cursos_snapshot:
         import json
 
