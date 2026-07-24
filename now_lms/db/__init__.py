@@ -689,7 +689,7 @@ class Programa(database.Model, BaseTabla):
     descripcion = database.Column(database.String(200))
     texto = database.Column(database.String(1500))
     pagado = database.Column(database.Boolean())
-    precio = database.Column(database.Float())
+    precio = database.Column(database.Numeric(10, 2))
     publico = database.Column(database.Boolean())
     # draft, open, closed
     estado = database.Column(database.String(20))
@@ -746,7 +746,7 @@ class Recurso(database.Model, BaseTabla):
     codigo = database.Column(database.String(10), nullable=False, index=True, unique=True)
     tipo = database.Column(database.String(15))
     descripcion = database.Column(database.String(500))
-    precio = database.Column(database.Float())
+    precio = database.Column(database.Numeric(10, 2))
     publico = database.Column(database.Boolean())
     logo = database.Column(database.Boolean(), default=False)
     file_name = database.Column(database.String(200))
@@ -1107,7 +1107,7 @@ class Coupon(database.Model, BaseTabla):
     course_id = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     code = database.Column(database.String(50), nullable=False, index=True)
     discount_type = database.Column(database.String(20), nullable=False)  # 'percentage' or 'fixed'
-    discount_value = database.Column(database.Float(), nullable=False)
+    discount_value = database.Column(database.Numeric(10, 2), nullable=False)
     max_uses = database.Column(database.Integer(), nullable=True)  # null means unlimited
     expires_at = database.Column(database.DateTime(), nullable=True)  # null means no expiration
     current_uses = database.Column(database.Integer(), nullable=False, default=0)
