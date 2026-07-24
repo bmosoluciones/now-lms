@@ -136,7 +136,7 @@ def certificate_new() -> str | Response:
             descripcion=form.descripcion.data,
             habilitado=False,
             publico=False,
-            usuario=current_user.id,
+            usuario=current_user.usuario,
             html=form.html.data,
             css=form.css.data,
             tipo=form.tipo.data,
