@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>Conversación - {{ thread.course.nombre }}</title>
+                                        <title>{{ _("Conversación") }} - {{ thread.course.nombre }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -271,8 +271,8 @@
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3">
-                                    {{ report_form.reason(class="form-control", rows="3", placeholder="Describe el motivo del
-                                    reporte...") }}
+                                    {{ report_form.reason(class="form-control", rows="3", placeholder=_("Describe el motivo del
+                                    reporte...")) }}
                                 </div>
                             </div>
                             <div class="modal-footer">

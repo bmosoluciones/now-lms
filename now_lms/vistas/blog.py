@@ -143,7 +143,7 @@ def count_view(post_id: int) -> tuple[Response, int]:
 
     post = database.session.get(BlogPost, post_id)
     if not post or post.status != "published":
-        return jsonify({"status": "error", "message": "Post not found"}), 404
+        return jsonify({"status": "error", "message": gettext("Post not found")}), 404
 
     # Increment view count
     post.view_count = (post.view_count or 0) + 1
@@ -348,7 +348,7 @@ def admin_create_post() -> str | Response:
         flash(gettext("Entrada de blog creada exitosamente."), "success")
         return _redirect_after_post_save()
 
-    return render_template("blog/post_form.html", form=form, title="Nueva Entrada", edit=False)
+    return render_template("blog/post_form.html", form=form, title=gettext("Nueva Entrada"), edit=False)
 
 
 @blog.route("/admin/blog/posts/<post_id>/edit", methods=["GET", "POST"])
@@ -360,7 +360,7 @@ def admin_edit_post(post_id: int) -> str | Response:
     if not post:
         abort(404)
 
-    title = "Editar entrada - " + post.slug[:10]
+    title = gettext("Editar entrada - ") + post.slug[:10]
 
     if current_user.tipo != "admin" and post.author_id != current_user.usuario:
         abort(403)
@@ -412,7 +412,7 @@ def approve_post(post_id: int) -> Response:
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_INDEX))
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post.slug))
 
-    flash(f"Entrada '{post.title}' aprobada y publicada.", "success")
+    flash(gettext("Entrada '%(title)s' aprobada y publicada.") % {"title": post.title}, "success")
     return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
 
 
@@ -432,7 +432,7 @@ def ban_post(post_id: int) -> Response:
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_INDEX))
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post.slug))
 
-    flash(f"Entrada '{post.title}' ha sido baneada.", "warning")
+    flash(gettext("Entrada '%(title)s' ha sido baneada.") % {"title": post.title}, "warning")
     return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
 
 
@@ -496,7 +496,7 @@ def delete_tag(tag_id: str) -> Response:
     database.session.delete(tag)
     database.session.commit()
 
-    flash(f"Etiqueta '{tag.name}' eliminada.", "info")
+    flash(gettext("Etiqueta '%(name)s' eliminada.") % {"name": tag.name}, "info")
     return redirect(url_for("blog.admin_tags"))
 
 

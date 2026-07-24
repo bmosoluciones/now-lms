@@ -20,6 +20,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, database
+from now_lms.i18n import _
 from now_lms.forms import GlobalAnnouncementForm
 from now_lms.logs import log
 
@@ -75,7 +76,7 @@ def new_announcement() -> str | Response:
         flash(gettext("Anuncio global creado exitosamente."), "success")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
-    return render_template("announcements/admin_form.html", form=form, title="Nuevo Anuncio Global")
+    return render_template("announcements/admin_form.html", form=form, title=_("Nuevo Anuncio Global"))
 
 
 @admin_announcements.route("/admin/announcements/<announcement_id>/edit", methods=["GET", "POST"])
@@ -103,7 +104,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     return render_template(
-        "announcements/admin_form.html", form=form, title="Editar Anuncio Global", announcement=announcement
+        "announcements/admin_form.html", form=form, title=_("Editar Anuncio Global"), announcement=announcement
     )
 
 

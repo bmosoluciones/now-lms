@@ -77,7 +77,7 @@
                                         <div class="mb-3">
                                             {% if master_class.is_paid %} {% set effective_price =
                                             master_class.get_effective_price() %} {% if effective_price < master_class.price %}
-                                            <span class="badge bg-danger">Oferta</span>
+                                             <span class="badge bg-danger">{{ _('Oferta') }}</span>
                                             <span class="text-decoration-line-through text-muted"
                                                 >${{ "%.2f"|format(master_class.price) }}</span
                                             >
@@ -91,11 +91,11 @@
 
                                         {% if master_class.is_ongoing() %}
                                         <div class="alert alert-warning mb-2">
-                                            <i class="fas fa-play-circle"></i> ¡En vivo ahora!
+                                             <i class="fas fa-play-circle"></i> {{ _('¡En vivo ahora!') }}
                                         </div>
                                         {% elif master_class.is_finished() %}
                                         <div class="alert alert-secondary mb-2">
-                                            <i class="fas fa-check-circle"></i> Finalizada
+                                             <i class="fas fa-check-circle"></i> {{ _('Finalizada') }}
                                         </div>
                                         {% endif %}
                                     </div>
@@ -105,7 +105,7 @@
                                             href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
                                             class="btn btn-primary w-100"
                                         >
-                                            Ver Detalles
+                                             {{ _('Ver Detalles') }}
                                         </a>
                                     </div>
                                 </div>

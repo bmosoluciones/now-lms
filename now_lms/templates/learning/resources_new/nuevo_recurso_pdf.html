@@ -18,18 +18,18 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Agregar un nuevo documento en PDF.</h4>
+                <h4 class="pb-2 border-bottom">{{ _('Agregar un nuevo documento en PDF.') }}</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-12">
-                            <label for="nombre" class="form-label">{{ _("Nombre") }} del Documento</label>
+                            <label for="nombre" class="form-label">{{ _("Nombre") }} {{ _('del Documento') }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Documento")) }} {{
                             render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-md-12">
-                            <label for="file" class="form-label">Documento</label>
+                            <label for="file" class="form-label">{{ _('Documento') }}</label>
                             <input type="file" name="pdf" accept="application/pdf" class="form-control" />
                         </div>
 

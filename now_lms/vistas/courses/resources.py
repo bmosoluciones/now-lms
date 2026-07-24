@@ -110,9 +110,9 @@ resources = Blueprint("resources", __name__, template_folder=DIRECTORIO_PLANTILL
 # Reused literals
 PAGINA_RECURSO_ENDPOINT = ".pagina_recurso"
 COURSE_LIBRARY_ENDPOINT = ".course_library"
-MSG_RECURSO_NO_ENCONTRADO = "Recurso no encontrado."
-MSG_RECURSO_ACTUALIZADO = "Recurso actualizado correctamente."
-MSG_RECURSO_ERROR_ACTUALIZAR = "Hubo un error al actualizar el recurso."
+MSG_RECURSO_NO_ENCONTRADO = _("Recurso no encontrado.")
+MSG_RECURSO_ACTUALIZADO = _("Recurso actualizado correctamente.")
+MSG_RECURSO_ERROR_ACTUALIZAR = _("Hubo un error al actualizar el recurso.")
 TEMPLATE_LIBRARY_UPLOAD = "learning/curso/library_upload.html"
 ICS_DATETIME_FORMAT = "%Y%m%dT%H%M%S"
 

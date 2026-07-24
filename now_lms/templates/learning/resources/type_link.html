@@ -46,7 +46,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                             <div class="card-header bg-warning bg-opacity-10 border-warning">
                                 <h5 class="card-title mb-0">
                                     <i class="bi bi-exclamation-triangle text-warning me-2"></i>
-                                    Enlace externo
+                                    {{ _('Enlace externo') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -54,7 +54,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     <div class="col-md-8">
                                         <h6 class="mb-2">{{ recurso.nombre }}</h6>
                                         <p class="text-muted mb-3">
-                                            Estás a punto de salir de la plataforma. El enlace se abrirá en una nueva pestaña.
+                                            {{ _('Estás a punto de salir de la plataforma. El enlace se abrirá en una nueva pestaña.') }}
                                         </p>
                                         <div class="d-flex gap-2">
                                             <a
@@ -64,7 +64,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                                 class="btn btn-primary"
                                             >
                                                 <i class="bi bi-box-arrow-up-right me-2"></i>
-                                                Abrir enlace
+                                                 {{ _('Abrir enlace') }}
                                             </a>
                                             <button
                                                 type="button"
@@ -72,7 +72,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                                 onclick="copyToClipboard('{{ recurso.url }}')"
                                             >
                                                 <i class="bi bi-clipboard me-2"></i>
-                                                Copiar URL
+                                                 {{ _('Copiar URL') }}
                                             </button>
                                         </div>
                                     </div>
@@ -91,7 +91,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
                         %}
                         <div class="mt-4 mb-4" style="text-align: center">
-                            <small class="text-muted">Publicidad</small>
+                            <small class="text-muted">{{ _('Publicidad') }}</small>
                             {{ ad_code | safe }}
                         </div>
                         {% endif %} {% endif %}

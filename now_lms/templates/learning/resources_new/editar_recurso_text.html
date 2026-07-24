@@ -18,13 +18,13 @@ from 'macros/form_buttons.j2' import render_form_buttons %}
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _("Editar") }} documento: {{ recurso.nombre }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar") }} {{ _('documento') }}: {{ recurso.nombre }}</h4>
                 <form method="post">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Titulo del Documento</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Documento") }} {{
+                            <label for="nombre" class="form-label">{{ _('Titulo del Documento') }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Documento")) }} {{
                             render_field_errors(form.nombre) }}
                         </div>
 

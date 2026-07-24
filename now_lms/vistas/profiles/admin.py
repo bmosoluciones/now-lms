@@ -28,6 +28,7 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Curso, EstudianteCurso, Usuario, database
 from now_lms.db import Pago
+from now_lms.i18n import _
 
 # Constants
 ADMIN_USERS_ROUTE = "admin_profile.usuarios"
@@ -220,10 +221,10 @@ def verificar_email_usuario(user_id: str) -> Response:
 
     try:
         database.session.commit()
-        flash(f"Correo electrónico de {perfil_usuario.usuario} verificado exitosamente.", "success")
+        flash(_("Correo electrónico de %(user)s verificado exitosamente.") % {"user": perfil_usuario.usuario}, "success")
     except Exception as e:
         database.session.rollback()
-        flash(f"Error al verificar el correo electrónico: {str(e)}", "error")
+        flash(_("Error al verificar el correo electrónico: %(error)s") % {"error": str(e)}, "error")
 
     # Clear cache
     cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
@@ -255,10 +256,10 @@ def rechazar_usuario_sin_verificar(user_id: str) -> Response:
 
     try:
         database.session.commit()
-        flash(f"Usuario {perfil_usuario.usuario} rechazado e inactivado.", "info")
+        flash(_("Usuario %(user)s rechazado e inactivado.") % {"user": perfil_usuario.usuario}, "info")
     except Exception as e:
         database.session.rollback()
-        flash(f"Error al rechazar el usuario: {str(e)}", "error")
+        flash(_("Error al rechazar el usuario: %(error)s") % {"error": str(e)}, "error")
 
     # Clear cache
     cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_UNVERIFIED_USERS_ROUTE))

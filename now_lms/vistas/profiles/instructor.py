@@ -6,6 +6,8 @@
 from __future__ import annotations
 from flask_babel import gettext
 
+from now_lms.i18n import _
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -51,8 +53,8 @@ ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA = "instructor_profile.evaluaciones_l
 ROUTE_INSTRUCTOR_EDIT_EVALUATION = "instructor_profile.edit_evaluation"
 
 # Message constants
-MESSAGE_EVALUACION_NO_ENCONTRADA = "Evaluación no encontrada."
-MESSAGE_PREGUNTA_NO_ENCONTRADA = "Pregunta no encontrada."
+MESSAGE_EVALUACION_NO_ENCONTRADA = _("Evaluación no encontrada.")
+MESSAGE_PREGUNTA_NO_ENCONTRADA = _("Pregunta no encontrada.")
 
 instructor_profile = Blueprint("instructor_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
