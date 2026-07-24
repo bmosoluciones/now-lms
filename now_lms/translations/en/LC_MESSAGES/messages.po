@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version:  0.0.1-rc1\n"
+"Project-Id-Version: 0.0.1-rc1\n"
 "Report-Msgid-Bugs-To: development@bmogroup.solutions\n"
 "POT-Creation-Date: 2026-07-24 14:57+0000\n"
 "PO-Revision-Date: 2025-09-14 07:39-0600\n"
@@ -6906,114 +6906,94 @@ msgid "Ingrese un código único para el cupón (ej: DESCUENTO50)"
 msgstr "Enter a unique code for the coupon (e.g.: DISCOUNT50)"
 
 #: now_lms/templates/learning/curso/coupons/create.html:66
-#, fuzzy
 msgid "Ingrese el valor del descuento"
-msgstr "Discount Value"
+msgstr "Enter the discount value"
 
 #: now_lms/templates/learning/curso/coupons/create.html:80
-#, fuzzy
 msgid "Dejar vacío para usos ilimitados"
-msgstr "Leave empty for unlimited"
+msgstr "Leave empty for unlimited uses"
 
 #: now_lms/templates/learning/curso/coupons/create.html:107
 #: now_lms/templates/learning/curso/coupons/edit.html:140
-#, fuzzy
 msgid "Precio actual:"
-msgstr "Price:"
+msgstr "Current price:"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:6
 #: now_lms/templates/learning/curso/coupons/edit.html:16
-#, fuzzy
 msgid "Editar Cupón"
-msgstr "Create Coupon"
+msgstr "Edit Coupon"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:35
-#, fuzzy
 msgid "Estado Actual del Cupón"
-msgstr "Error updating coupon"
+msgstr "Current Coupon Status"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:38
-#, fuzzy
 msgid "Usos actuales:"
-msgstr "Total Courses"
+msgstr "Current uses:"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:42
-#, fuzzy
 msgid "(ilimitado)"
-msgstr "Limited"
+msgstr "(unlimited)"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:68
-#, fuzzy
 msgid "Código único para el cupón"
-msgstr "Coupon Code"
+msgstr "Unique coupon code"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:94
-#, fuzzy
 msgid "Valor del descuento"
-msgstr "Discount Value"
+msgstr "Discount value"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:109
 msgid "Mínimo:"
 msgstr "Minimum:"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:109
-#, fuzzy
 msgid "(usos actuales)"
-msgstr "Total Courses"
+msgstr "(current uses)"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:111
-#, fuzzy
 msgid "Actualmente: Ilimitado"
-msgstr "Unlimited attempts"
+msgstr "Currently: Unlimited"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:154
-#, fuzzy
 msgid "Actualizar Cupón"
-msgstr "Update Section"
+msgstr "Update Coupon"
 
 #: now_lms/templates/learning/curso/coupons/list.html:7
-#, fuzzy
 msgid "Cupones"
-msgstr "Quotas:"
+msgstr "Coupons"
 
 #: now_lms/templates/learning/curso/coupons/list.html:17
-#, fuzzy
 msgid "Cupones del Curso"
-msgstr "Course actions"
+msgstr "Course Coupons"
 
 #: now_lms/templates/learning/curso/coupons/list.html:42
-#, fuzzy
 msgid "Usos"
-msgstr "Courses"
+msgstr "Uses"
 
 #: now_lms/templates/learning/curso/coupons/list.html:43
-#, fuzzy
 msgid "Expira"
-msgstr "Expires:"
+msgstr "Expires"
 
 #: now_lms/templates/learning/curso/coupons/list.html:56
 msgid "Fijo"
 msgstr "Fixed"
 
 #: now_lms/templates/learning/curso/coupons/list.html:69
-#, fuzzy
 msgid "Sin expiración"
-msgstr "Expiration:"
+msgstr "No expiration"
 
 #: now_lms/templates/learning/curso/coupons/list.html:108
-#, fuzzy
 msgid "No hay cupones creados"
-msgstr "There are no courses created yet"
+msgstr "No coupons created yet"
 
 #: now_lms/templates/learning/curso/coupons/list.html:109
-#, fuzzy
 msgid "Cree el primer cupón de descuento para este curso."
-msgstr "The forum is disabled for this course."
+msgstr "Create the first discount coupon for this course."
 
 #: now_lms/templates/learning/curso/coupons/list.html:111
-#, fuzzy
 msgid "Crear Primer Cupón"
-msgstr "Create First Course"
+msgstr "Create First Coupon"
 
 #: now_lms/templates/learning/etiquetas/editar_etiqueta.html:7
 #: now_lms/templates/learning/etiquetas/editar_etiqueta.html:39
@@ -7057,9 +7037,8 @@ msgid "Nueva Etiqueta"
 msgstr "New Label"
 
 #: now_lms/templates/learning/etiquetas/lista_etiquetas.html:38
-#, fuzzy
 msgid "Lista de etiquetas disponibles en el sistema."
-msgstr "List of certificates available in the system."
+msgstr "List of tags available in the system."
 
 #: now_lms/templates/learning/etiquetas/lista_etiquetas.html:76
 msgid "Acciones de la etiqueta"
@@ -7070,19 +7049,16 @@ msgid "Eliminar etiqueta"
 msgstr "Delete tag"
 
 #: now_lms/templates/learning/etiquetas/lista_etiquetas.html:108
-#, fuzzy
 msgid "No hay etiquetas disponibles"
-msgstr "No certificates available"
+msgstr "No tags available"
 
 #: now_lms/templates/learning/etiquetas/lista_etiquetas.html:109
-#, fuzzy
 msgid "Usted no ha creado ninguna etiqueta todavía."
-msgstr "You have not created any categories yet."
+msgstr "You have not created any tags yet."
 
 #: now_lms/templates/learning/etiquetas/lista_etiquetas.html:111
-#, fuzzy
 msgid "Crear Primera Etiqueta"
-msgstr "Create new Tag"
+msgstr "Create First Tag"
 
 #: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:21
 msgid "Crear nueva Etiqueta"
@@ -7110,67 +7086,55 @@ msgid "Nuevo Recurso - Documento"
 msgstr "New Resource - Document"
 
 #: now_lms/templates/learning/mensajes/user_messages.html:59
-#, fuzzy
 msgid "Por:"
-msgstr "By"
+msgstr "By:"
 
 #: now_lms/templates/learning/mensajes/user_messages.html:83
-#, fuzzy
 msgid "No hay mensajes"
-msgstr "There are no messages on the forum"
+msgstr "There are no messages"
 
 #: now_lms/templates/learning/mensajes/user_messages.html:85
-#, fuzzy
 msgid "No has enviado ningún mensaje aún."
-msgstr "You have not created any resources yet."
+msgstr "You have not sent any messages yet."
 
 #: now_lms/templates/learning/mensajes/user_messages.html:87
-#, fuzzy
 msgid "No hay mensajes de estudiantes en tus cursos."
-msgstr "There are no students enrolled"
+msgstr "There are no messages from students in your courses."
 
 #: now_lms/templates/learning/mensajes/view_thread.html:42
-#, fuzzy
 msgid "Conversación"
-msgstr "Version"
+msgstr "Conversation"
 
 #: now_lms/templates/learning/mensajes/view_thread.html:54
-#, fuzzy
 msgid "Marcar como Resuelto"
-msgstr "Mark as Reviewed"
+msgstr "Mark as Resolved"
 
 #: now_lms/templates/learning/mensajes/view_thread.html:119
-#, fuzzy
 msgid "Leído:"
-msgstr "State:"
+msgstr "Read:"
 
 #: now_lms/templates/learning/mensajes/view_thread.html:137
 #: now_lms/templates/learning/mensajes/view_thread.html:176
 #: now_lms/templates/learning/mensajes/view_thread.html:282
-#, fuzzy
 msgid "Reportar"
-msgstr "Reported"
+msgstr "Report"
 
 #: now_lms/templates/learning/mensajes/view_thread.html:155
-#, fuzzy
 msgid "Reportar Mensaje"
-msgstr "Reply Message"
+msgstr "Report Message"
 
 #: now_lms/templates/learning/mensajes/view_thread.html:216
-#, fuzzy
 msgid "Este hilo ha sido cerrado y no se pueden agregar más respuestas."
-msgstr "This thread is closed and no new replies are allowed."
+msgstr "This thread has been closed and no more replies can be added."
 
 #: now_lms/templates/learning/mensajes/view_thread.html:225
-#, fuzzy
 msgid "Información del Hilo"
-msgstr "Course Information"
+msgstr "Thread Information"
 
 #: now_lms/templates/learning/mensajes/view_thread.html:254
 #: now_lms/templates/learning/mensajes/view_thread.html:269
-#, fuzzy
 msgid "Reportar Hilo"
-msgstr "Close Thread"
+msgstr "Report Thread"
 
 #: now_lms/templates/learning/programas/admin_enroll.html:8
 #: now_lms/templates/learning/programas/admin_enroll.html:25
@@ -7212,28 +7176,24 @@ msgid "Programa"
 msgstr "Program"
 
 #: now_lms/templates/learning/programas/admin_enrollments.html:25
-#, fuzzy
 msgid "Inscripciones del Programa"
-msgstr "Course Registration"
+msgstr "Program Enrollments"
 
 #: now_lms/templates/learning/programas/admin_enrollments.html:39
-#, fuzzy
 msgid "Volver al Programa"
-msgstr "See program"
+msgstr "Back to Program"
 
 #: now_lms/templates/learning/programas/admin_enrollments.html:83
 msgid "Desinscribir del programa"
 msgstr "Unsubscribe from the program"
 
 #: now_lms/templates/learning/programas/admin_enrollments.html:98
-#, fuzzy
 msgid "Aún no hay estudiantes inscritos en este programa."
-msgstr "There are no students enrolled in this course yet."
+msgstr "There are no students enrolled in this program yet."
 
 #: now_lms/templates/learning/programas/editar_programa.html:52
-#, fuzzy
 msgid "Promocionado"
-msgstr "Private"
+msgstr "Promoted"
 
 #: now_lms/templates/learning/programas/editar_programa.html:93
 #: now_lms/templates/learning/programas/nuevo_programa.html:76
@@ -7241,49 +7201,42 @@ msgid "Plantilla Certificado"
 msgstr "Certificate Template"
 
 #: now_lms/templates/learning/programas/editar_programa.html:104
-#, fuzzy
 msgid "Portada del programa"
-msgstr "Course cover"
+msgstr "Program cover"
 
 #: now_lms/templates/learning/programas/editar_programa.html:107
-#, fuzzy
 msgid "Eliminar Portada"
-msgstr "Delete program"
+msgstr "Delete Cover"
 
 #: now_lms/templates/learning/programas/editar_programa.html:116
 msgid "Actualizar Programa"
 msgstr "Update Program"
 
 #: now_lms/templates/learning/programas/inscribir_programa.html:23
-#, fuzzy
 msgid "Complete la inscripción para acceder al programa."
-msgstr "There was an error when registering for the program."
+msgstr "Complete the enrollment to access the program."
 
 #: now_lms/templates/learning/programas/inscribir_programa.html:68
-#, fuzzy
 msgid "Inscribirse al programa"
-msgstr "Unsubscribe from the program"
+msgstr "Enroll in the program"
 
 #: now_lms/templates/learning/programas/inscribir_programa.html:74
 msgid "Al inscribirse, acepta los términos y condiciones del programa."
 msgstr "By enrolling, you accept the program terms and conditions."
 
 #: now_lms/templates/learning/programas/inscribir_usuario.html:33
-#, fuzzy
 msgid "Correo Electrónico del Usuario"
-msgstr "Email"
+msgstr "User Email Address"
 
 #: now_lms/templates/learning/programas/inscribir_usuario.html:44
-#, fuzzy
 msgid ""
 "Ingrese el correo electrónico del usuario que desea inscribir en este "
 "programa."
-msgstr "The user is already enrolled in this program."
+msgstr "Enter the email address of the user you want to enroll in this program."
 
 #: now_lms/templates/learning/programas/inscribir_usuario.html:107
-#, fuzzy
 msgid "Lista de Programas"
-msgstr "Enable Programs"
+msgstr "Program List"
 
 #: now_lms/templates/learning/programas/lista_programas.html:21
 #: now_lms/templates/learning/recursos/lista_recursos.html:21
@@ -7370,24 +7323,20 @@ msgid "Crear Programa"
 msgstr "Create Program"
 
 #: now_lms/templates/learning/programas/program_payment.html:99
-#, fuzzy
 msgid "Logo del Programa"
-msgstr "See program"
+msgstr "Program Logo"
 
 #: now_lms/templates/learning/programas/tomar_programa.html:65
-#, fuzzy
 msgid "Progreso"
-msgstr "Programs"
+msgstr "Progress"
 
 #: now_lms/templates/learning/programas/tomar_programa.html:102
-#, fuzzy
 msgid "En Progreso"
-msgstr "Programs"
+msgstr "In Progress"
 
 #: now_lms/templates/learning/programas/tomar_programa.html:117
-#, fuzzy
 msgid "¡Certificado disponible!"
-msgstr "No certificates available"
+msgstr "Certificate available!"
 
 #: now_lms/templates/learning/programas/tomar_programa.html:126
 msgid "Completa todos los cursos para obtener tu certificado."
@@ -8189,9 +8138,8 @@ msgid "Resumen de Compra"
 msgstr "Purchase Summary"
 
 #: now_lms/templates/payments/receipt_email.html:52
-#, fuzzy
 msgid "Programa de Estudio"
-msgstr "Programs"
+msgstr "Study Program"
 
 #: now_lms/templates/payments/receipt_email.html:55
 #: now_lms/templates/payments/receipt_pdf.html:147
@@ -8204,12 +8152,12 @@ msgid "Total Pagado"
 msgstr "Total Paid"
 
 #: now_lms/templates/payments/receipt_email.html:72
-#, fuzzy
 msgid ""
 "Ya tienes acceso completo al programa. Haz clic en el siguiente enlace para "
 "comenzar tu aprendizaje:"
 msgstr ""
-"You now have full access to the course. Click the following link to start "
+"You now have full access to the program. Click the following link to start "
+"your learning:"
 "your learning:"
 
 #: now_lms/templates/payments/receipt_email.html:74
@@ -8221,9 +8169,8 @@ msgstr ""
 "your learning:"
 
 #: now_lms/templates/payments/receipt_email.html:84
-#, fuzzy
 msgid "Comenzar Programa"
-msgstr "Create Program"
+msgstr "Start Program"
 
 #: now_lms/templates/payments/receipt_email.html:88
 msgid "Comenzar Curso"
@@ -9500,9 +9447,8 @@ msgid "Ya estás inscrito en este programa."
 msgstr "You are already enrolled in this program."
 
 #: now_lms/vistas/programs.py:521
-#, fuzzy
 msgid "Error al procesar la inscripción al programa."
-msgstr "There was an error when registering for the program."
+msgstr "Error processing the enrollment in the program."
 
 #: now_lms/vistas/programs.py:532
 msgid "Te has inscrito exitosamente al programa."
@@ -9517,18 +9463,16 @@ msgid "Programa no encontrado."
 msgstr "Program not found."
 
 #: now_lms/vistas/programs.py:561
-#, fuzzy
 msgid "Este programa es gratuito."
-msgstr "This course is free."
+msgstr "This program is free."
 
 #: now_lms/vistas/programs.py:596
 msgid "Debes inscribirte al programa primero."
 msgstr "You must enroll in the program first."
 
 #: now_lms/vistas/programs.py:653
-#, fuzzy
 msgid "Código de curso requerido."
-msgstr "Course Code"
+msgstr "Course code required."
 
 #: now_lms/vistas/programs.py:677
 msgid "El curso ya está en el programa."
