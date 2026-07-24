@@ -159,7 +159,7 @@ def nuevo_mensaje(course_code: str) -> str | Response:
     if not curso or not curso.foro_habilitado:
         abort(404)
 
-    tiene_acceso, _ = verificar_acceso_curso(course_code, current_user.usuario)
+    tiene_acceso, _none = verificar_acceso_curso(course_code, current_user.usuario)
     if not tiene_acceso:
         abort(403)
 
@@ -245,7 +245,7 @@ def responder_mensaje(course_code: str, message_id: str) -> str | Response:
     if not curso or not mensaje or not curso.foro_habilitado:
         abort(404)
 
-    tiene_acceso, _ = verificar_acceso_curso(course_code, current_user.usuario)
+    tiene_acceso, _none = verificar_acceso_curso(course_code, current_user.usuario)
     if not tiene_acceso:
         abort(403)
 
