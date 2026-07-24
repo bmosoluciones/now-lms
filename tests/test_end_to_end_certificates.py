@@ -151,7 +151,7 @@ def test_e2e_certificate_emission(app, db_session):
 
     # 2) Inscribir estudiante y marcar como completado
     inscripcion = EstudianteCurso(
-        usuario=estudiante.id,
+        usuario=estudiante.usuario,
         curso=curso.codigo,
         vigente=True,
     )

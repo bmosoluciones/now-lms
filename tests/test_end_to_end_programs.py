@@ -161,7 +161,7 @@ def test_e2e_program_enrollment(app, db_session):
 
     # 4) Verificar inscripción en la base de datos (puede requerir confirmación adicional)
     inscripcion = (  # noqa: F841
-        db_session.execute(database.select(ProgramaEstudiante).filter_by(usuario=estudiante.id, programa=programa.codigo))
+        db_session.execute(database.select(ProgramaEstudiante).filter_by(usuario=estudiante.usuario, programa=programa.codigo))
         .scalars()
         .first()
     )
@@ -188,7 +188,7 @@ def test_e2e_program_view(app, db_session):
     client_public = app.test_client()
     resp_view = client_public.get(f"/program/{programa.codigo}")
     assert resp_view.status_code == 200
-    assert "Programa Público".encode("utf-8") in resp_view.data or b"prog-public" in resp_view.data
+    assert "Programa Público".encode() in resp_view.data or b"prog-public" in resp_view.data
 
 
 def test_e2e_program_list(app, db_session):
