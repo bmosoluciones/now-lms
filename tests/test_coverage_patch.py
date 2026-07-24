@@ -213,9 +213,18 @@ def test_messages_uncovered_paths(client, patch_users, db_session):
     assert "Mensaje no encontrado." in resp_no_msg.text
 
     # 3. Standalone report with message having non-existent thread
+    # On databases with enforced FK constraints (PostgreSQL, MySQL), this insert
+    # will fail with an IntegrityError.  Only run the check on databases that
+    # allow orphan rows (e.g. SQLite without FK enforcement).
+    from sqlalchemy.exc import IntegrityError
+
     msg = Message(thread_id="9999", sender_id="patch_admin", content="spam content")
     db_session.add(msg)
-    db_session.commit()
+    try:
+        db_session.commit()
+    except IntegrityError:
+        db_session.rollback()
+        return
 
     resp_no_thread = client.post("/message/report/", data={"message_id": msg.id, "reason": "offensive"}, follow_redirects=True)
     assert resp_no_thread.status_code == 200

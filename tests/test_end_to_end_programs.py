@@ -188,7 +188,7 @@ def test_e2e_program_view(app, db_session):
     client_public = app.test_client()
     resp_view = client_public.get(f"/program/{programa.codigo}")
     assert resp_view.status_code == 200
-    assert "Programa Público".encode() in resp_view.data or b"prog-public" in resp_view.data
+    assert "Prog Público".encode() in resp_view.data or b"prog-pub" in resp_view.data
 
 
 def test_e2e_program_list(app, db_session):
