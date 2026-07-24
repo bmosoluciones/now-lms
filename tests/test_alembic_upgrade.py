@@ -6,6 +6,79 @@ from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.pool import StaticPool
 
 
+# ---------------------------------------------------------------------------
+# Critical columns that MUST exist after a full downgrade → upgrade cycle.
+# Each entry maps a table name to the set of columns that every migration
+# chain must recreate.  This list is intentionally conservative – it covers
+# columns that were added or renamed by migrations and would cause runtime
+# failures if missing.
+# ---------------------------------------------------------------------------
+CRITICAL_SCHEMA = {
+    "configuracion": {
+        "titulo",
+        "descripcion",
+        "moneda",
+        "lang",
+        "time_zone",
+        "csrf_seed",
+        "allow_unverified_email_login",
+        "show_latest_blog_posts_on_home",
+        "enable_contact",
+        "enable_file_uploads",
+        "enable_footer",
+        "enable_html_preformatted_descriptions",
+        "max_file_size",
+        "social_facebook",
+        "social_twitter",
+        "social_linkedin",
+        "social_youtube",
+        "social_instagram",
+        "social_github",
+        "contact_address",
+        "contact_email",
+        "contact_phone",
+        "contact_mobile",
+        "contact_whatsapp",
+    },
+    "pago": {
+        "monto",
+    },
+    "programa": {
+        "nombre",
+    },
+    "style": {
+        "theme",
+    },
+}
+
+
+def _get_table_columns(inspector, table_name: str) -> set[str]:
+    """Return the set of column names for *table_name*, or empty set."""
+    if table_name not in inspector.get_table_names():
+        return set()
+    return {col["name"] for col in inspector.get_columns(table_name)}
+
+
+def _assert_schema_matches_models(db, label: str = ""):
+    """Inspect the live database and assert every critical column exists.
+
+    This catches missing migrations: columns defined in the model but not
+    covered by any Alembic migration script.
+    """
+    from sqlalchemy import inspect as sa_inspect
+
+    inspector = sa_inspect(db.engine)
+    suffix = f" ({label})" if label else ""
+
+    for table_name, required_columns in CRITICAL_SCHEMA.items():
+        actual = _get_table_columns(inspector, table_name)
+        missing = required_columns - actual
+        assert not missing, (
+            f"Tabla '{table_name}' le faltan columnas{suffix}: {sorted(missing)}. "
+            f"Existe una columna en el modelo sin migración correspondiente."
+        )
+
+
 def test_alembic_upgrade_app_context(monkeypatch):
     """
     Test robusto y destructivo de migraciones Alembic.
@@ -17,7 +90,10 @@ def test_alembic_upgrade_app_context(monkeypatch):
     4. downgrade('base') - Baja hasta la migración cero
     5. upgrade() - Sube de nuevo hasta head
 
-    Todo el recorrido debe ejecutarse sin errores.
+    Después del downgrade → upgrade completo se verifica que el esquema
+    resultante contiene TODAS las columnas críticas definidas en los modelos.
+    Esto detecta migraciones faltantes (columnas añadidas o renombradas en el
+    modelo sin una migración Alembic equivalente).
     """
     # Respetar DATABASE_URL o usar SQLite en memoria
     if not os.environ.get("DATABASE_URL"):
@@ -69,12 +145,10 @@ def test_alembic_upgrade_app_context(monkeypatch):
         db.session.commit()
 
         # Verificar que no hay versión en alembic_version o la tabla fue eliminada
-        # (dependiendo de la implementación de las migraciones)
         try:
             version_after_downgrade = db.session.execute(db.text("SELECT version_num FROM alembic_version")).scalar()
             assert version_after_downgrade is None, "Después de downgrade('base'), no debe haber versión"
         except (OperationalError, ProgrammingError):
-            # La tabla alembic_version no existe después del downgrade, lo cual es válido
             pass
 
         # Paso 5: Hacer upgrade de nuevo hasta head
@@ -85,22 +159,23 @@ def test_alembic_upgrade_app_context(monkeypatch):
         version_after_final_upgrade = db.session.execute(db.text("SELECT version_num FROM alembic_version")).scalar()
         assert version_after_final_upgrade is not None, "Después de upgrade(), debe haber una versión válida"
 
+        # ------------------------------------------------------------------
+        # CRÍTICO: Verificar que el esquema resultante contiene todas las
+        # columnas definidas en los modelos.  Si una columna fue añadida o
+        # renombrada en el modelo sin una migración, este assertion falla.
+        # ------------------------------------------------------------------
+        _assert_schema_matches_models(db, label="post-downgrade-upgrade")
+
         # Verificar que el ciclo completo funcionó correctamente
-        # La versión final debe ser igual a la inicial si no se agregaron migraciones durante el test
-        # Nota: En producción/desarrollo, la versión puede cambiar si se agregan nuevas migraciones
-        # pero dentro del contexto de este test, debe ser consistente
         if version_after_final_upgrade != version_after_stamp:
-            # Si las versiones son diferentes, al menos debemos verificar que ambas son válidas
             print(
                 f"Advertencia: Las versiones difieren. Inicial: {version_after_stamp}, "
                 f"Final: {version_after_final_upgrade}. Esto puede indicar que se agregaron migraciones."
             )
         else:
-            # Idealmente, deberían ser iguales en un entorno de test aislado
             assert version_after_final_upgrade == version_after_stamp, (
                 "En un entorno de test aislado, la versión debe ser consistente. "
                 f"Esperado: {version_after_stamp}, Obtenido: {version_after_final_upgrade}"
             )
 
-        # Cerrar sesión de forma explícita
         db.session.close()
