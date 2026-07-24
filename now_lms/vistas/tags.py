@@ -100,7 +100,11 @@ def delete_tag(ulid: str) -> Response:
 @perfil_requerido("instructor")
 def edit_tag(ulid: str) -> str | Response:
     """Edita una etiqueta."""
+    from flask import abort
+
     etiqueta = database.session.execute(database.select(Etiqueta).filter(Etiqueta.id == ulid)).scalar_one_or_none()
+    if not etiqueta:
+        abort(404)
     form = EtiquetaForm(color=etiqueta.color, nombre=etiqueta.nombre)
     if form.validate_on_submit() or request.method == "POST":
         etiqueta.nombre = form.nombre.data

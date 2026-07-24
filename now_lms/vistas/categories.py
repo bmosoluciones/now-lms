@@ -99,7 +99,11 @@ def delete_category(ulid: str) -> Response:
 @perfil_requerido("instructor")
 def edit_category(ulid: str) -> str | Response:
     """Editar categoria."""
+    from flask import abort
+
     categoria = database.session.execute(database.select(Categoria).filter(Categoria.id == ulid)).scalar_one_or_none()
+    if not categoria:
+        abort(404)
     form = CategoriaForm(nombre=categoria.nombre, descripcion=categoria.descripcion)
     if form.validate_on_submit() or request.method == "POST":
         categoria.nombre = form.nombre.data

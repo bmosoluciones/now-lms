@@ -1155,7 +1155,9 @@ def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str)
         flash("La subida de archivos descargables no está habilitada por el administrador.", "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
-    recurso = database.session.execute(select(CursoRecurso).filter_by(id=resource_id)).scalar_one()
+    recurso = database.session.execute(select(CursoRecurso).filter_by(id=resource_id)).scalar_one_or_none()
+    if not recurso:
+        abort(404)
     form = CursoRecursoArchivoDescargable()
 
     if form.validate_on_submit() or request.method == "POST":

@@ -178,8 +178,12 @@ def cambia_tipo_de_usuario_por_id(id_usuario: str | None, /, nuevo_tipo: str | N
 
     Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
     """
+    from flask import abort
+
     log.trace("Assigning user {id_usuario} the profile: {nuevo_tipo}")
     USUARIO = database.session.execute(database.select(Usuario).filter_by(usuario=id_usuario)).scalar_one_or_none()
+    if not USUARIO:
+        abort(404)
     USUARIO.tipo = nuevo_tipo
     USUARIO.modificado_por = usuario
     database.session.commit()
