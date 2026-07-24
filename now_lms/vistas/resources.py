@@ -8,6 +8,7 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
+from flask_babel import gettext
 
 from collections import OrderedDict
 
@@ -91,9 +92,9 @@ def new_resource() -> str | Response:
         database.session.add(recurso)
         try:
             database.session.commit()
-            flash("Nuevo Recurso creado correctamente.", "success")
+            flash(gettext("Nuevo Recurso creado correctamente."), "success")
         except OperationalError:
-            flash("Hubo un error al crear el recurso.", "warning")
+            flash(gettext("Hubo un error al crear el recurso."), "warning")
         return redirect(url_for("resource.lista_de_recursos"))
 
     return render_template("learning/recursos/nuevo_recurso.html", form=form)
@@ -179,9 +180,9 @@ def edit_resource(ulid: str) -> str | Response:
 
         try:
             database.session.commit()
-            flash("Recurso actualizado correctamente.", "success")
+            flash(gettext("Recurso actualizado correctamente."), "success")
         except OperationalError:
-            flash("Error al editar el recurso.", "warning")
+            flash(gettext("Error al editar el recurso."), "warning")
         return redirect(url_for("resource.vista_recurso", resource_code=recurso.codigo))
 
     return render_template("learning/recursos/editar_recurso.html", form=form, recurso=recurso)

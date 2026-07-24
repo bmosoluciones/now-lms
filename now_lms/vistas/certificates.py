@@ -8,6 +8,7 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -144,10 +145,10 @@ def certificate_new() -> str | Response:
         database.session.add(certificado_obj)
         try:
             database.session.commit()
-            flash("Nuevo certificado creado correctamente.", "success")
+            flash(gettext("Nuevo certificado creado correctamente."), "success")
         except OperationalError:
             database.session.rollback()
-            flash("Hubo un error al crear el certificado.", "warning")
+            flash(gettext("Hubo un error al crear el certificado."), "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
 
     return render_template("learning/certificados/nuevo_certificado.html", form=form)
@@ -182,9 +183,9 @@ def certificate_edit(ulid: str) -> str | Response:
         try:
             database.session.add(certificado_obj)
             database.session.commit()
-            flash("Certificado editado correctamente.", "success")
+            flash(gettext("Certificado editado correctamente."), "success")
         except OperationalError:
-            flash("No se puedo editar el certificado.", "warning")
+            flash(gettext("No se puedo editar el certificado."), "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
 
     return render_template("learning/certificados/editar_certificado.html", form=form)
@@ -445,7 +446,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
     """Validate certificate prerequisites and build the pending model."""
     if form.content_type.data == "course":
         if not form.curso.data:
-            flash("Por favor selecciona un curso.", "warning")
+            flash(gettext("Por favor selecciona un curso."), "warning")
             return None
         from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 
@@ -466,7 +467,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
         )
 
     if not form.master_class.data:
-        flash("Por favor selecciona una clase magistral.", "warning")
+        flash(gettext("Por favor selecciona una clase magistral."), "warning")
         return None
     enrollment = database.session.execute(
         database.select(MasterClassEnrollment).filter_by(
@@ -474,7 +475,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
         )
     ).first()
     if not enrollment or not enrollment[0].is_confirmed:
-        flash("El usuario debe estar inscrito y confirmado en la clase magistral.", "warning")
+        flash(gettext("El usuario debe estar inscrito y confirmado en la clase magistral."), "warning")
         return None
     return Certificacion(
         usuario=form.usuario.data,
@@ -512,11 +513,11 @@ def certificacion_generar() -> str | Response:
         try:
             database.session.add(cert)
             database.session.commit()
-            flash("Certificado generado correctamente.", "success")
+            flash(gettext("Certificado generado correctamente."), "success")
             return redirect(url_for("certificate.certificaciones"))
 
         except OperationalError:
-            flash("Hubo en error al crear la plantilla.", "warning")
+            flash(gettext("Hubo en error al crear la plantilla."), "warning")
             return redirect("/instructor")
     else:
         return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)

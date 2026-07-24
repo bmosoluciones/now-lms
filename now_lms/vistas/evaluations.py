@@ -8,6 +8,7 @@ Evaluations management.
 """
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -221,11 +222,11 @@ def take_evaluation(evaluation_id: int) -> str | Response:
         abort(404)
 
     if not can_user_access_evaluation(eval_obj, current_user):
-        flash("No tiene acceso a esta evaluación.", "warning")
+        flash(gettext("No tiene acceso a esta evaluación."), "warning")
         abort(403)
 
     if not can_user_attempt_evaluation(eval_obj, current_user):
-        flash("No puede realizar más intentos en esta evaluación.", "warning")
+        flash(gettext("No puede realizar más intentos en esta evaluación."), "warning")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
@@ -286,7 +287,7 @@ def request_reopen(evaluation_id: int) -> str | Response:
     # Check if user has exhausted attempts and not passed
     attempts_count = get_user_attempts_count(evaluation_id, current_user.usuario)
     if not eval_obj.max_attempts or attempts_count < eval_obj.max_attempts:
-        flash("Aún tiene intentos disponibles.", "info")
+        flash(gettext("Aún tiene intentos disponibles."), "info")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
@@ -302,7 +303,7 @@ def request_reopen(evaluation_id: int) -> str | Response:
     )
 
     if passed_attempt:
-        flash("Ya ha aprobado esta evaluación.", "info")
+        flash(gettext("Ya ha aprobado esta evaluación."), "info")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
@@ -321,7 +322,7 @@ def request_reopen(evaluation_id: int) -> str | Response:
         )
 
         if existing_request:
-            flash("Ya tiene una solicitud pendiente para esta evaluación.", "warning")
+            flash(gettext("Ya tiene una solicitud pendiente para esta evaluación."), "warning")
             section = database.session.get(CursoSeccion, eval_obj.section_id)
             return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 

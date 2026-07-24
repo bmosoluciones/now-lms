@@ -4,6 +4,7 @@
 """Vistas para la funcionalidad del foro."""
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -124,7 +125,7 @@ def ver_foro(course_code: str) -> str | Response:
         abort(404)
 
     if not curso.foro_habilitado:
-        flash("El foro no está habilitado para este curso.", "warning")
+        flash(gettext("El foro no está habilitado para este curso."), "warning")
         return redirect(url_for("course.tomar_curso", course_code=course_code))
 
     # Verificar acceso del usuario al curso
@@ -165,7 +166,7 @@ def nuevo_mensaje(course_code: str) -> str | Response:
 
     # Verificar que el curso no esté finalizado
     if curso.estado == "finalizado":
-        flash("No se pueden crear mensajes en cursos finalizados.", "error")
+        flash(gettext("No se pueden crear mensajes en cursos finalizados."), "error")
         return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
     form = ForoMensajeForm()
@@ -179,7 +180,7 @@ def nuevo_mensaje(course_code: str) -> str | Response:
         database.session.add(mensaje)
         database.session.commit()
 
-        flash("Mensaje creado exitosamente.", "success")
+        flash(gettext("Mensaje creado exitosamente."), "success")
         return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
     return render_template("forum/new_message.html", curso=curso, form=form)
@@ -251,7 +252,7 @@ def responder_mensaje(course_code: str, message_id: str) -> str | Response:
 
     # Verificar que se puede responder
     if not mensaje.can_reply():
-        flash("No se puede responder a este mensaje.", "error")
+        flash(gettext("No se puede responder a este mensaje."), "error")
         return redirect(url_for("forum.ver_mensaje", course_code=course_code, message_id=message_id))
 
     form = ForoMensajeRespuestaForm()
@@ -272,7 +273,7 @@ def responder_mensaje(course_code: str, message_id: str) -> str | Response:
         database.session.add(respuesta)
         database.session.commit()
 
-        flash("Respuesta enviada exitosamente.", "success")
+        flash(gettext("Respuesta enviada exitosamente."), "success")
         return redirect(url_for("forum.ver_mensaje", course_code=course_code, message_id=mensaje_raiz.id))
 
     # Procesar contenido del mensaje original para display
@@ -305,7 +306,7 @@ def cerrar_mensaje(course_code: str, message_id: str) -> Response:
     mensaje.estado = "cerrado"
     database.session.commit()
 
-    flash("Mensaje cerrado exitosamente.", "success")
+    flash(gettext("Mensaje cerrado exitosamente."), "success")
 
     # Redireccionar según el tipo de solicitud (AJAX vs form)
     if request.headers.get("Content-Type") == "application/json":
@@ -331,14 +332,14 @@ def abrir_mensaje(course_code: str, message_id: str) -> Response:
 
     # Verificar que el curso no esté finalizado
     if curso.estado == "finalizado":
-        flash("No se pueden abrir mensajes en cursos finalizados.", "error")
+        flash(gettext("No se pueden abrir mensajes en cursos finalizados."), "error")
         return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
     # Abrir el mensaje (permite nuevas respuestas)
     mensaje.estado = "abierto"
     database.session.commit()
 
-    flash("Mensaje abierto exitosamente.", "success")
+    flash(gettext("Mensaje abierto exitosamente."), "success")
 
     # Redireccionar según el tipo de solicitud (AJAX vs form)
     if request.headers.get("Content-Type") == "application/json":

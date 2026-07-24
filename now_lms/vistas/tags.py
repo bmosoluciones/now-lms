@@ -8,6 +8,7 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -55,10 +56,10 @@ def new_tag() -> str | Response:
         database.session.add(etiqueta)
         try:
             database.session.commit()
-            flash("Nueva etiqueta creada.", "successs")
+            flash(gettext("Nueva etiqueta creada."), "successs")
         except OperationalError:
             database.session.rollback()
-            flash("Hubo un error al crear la etiqueta.", "warning")
+            flash(gettext("Hubo un error al crear la etiqueta."), "warning")
         return redirect(url_for(TAG_TAGS_ROUTE))
 
     return render_template("learning/etiquetas/nueva_etiqueta.html", form=form)
@@ -108,10 +109,10 @@ def edit_tag(ulid: str) -> str | Response:
         try:
             database.session.add(etiqueta)
             database.session.commit()
-            flash("Etiqueta editada correctamente.", "success")
+            flash(gettext("Etiqueta editada correctamente."), "success")
         except OperationalError:
             database.session.rollback()
-            flash("No se puedo editar la etiqueta.", "warning")
+            flash(gettext("No se puedo editar la etiqueta."), "warning")
         return redirect(url_for(TAG_TAGS_ROUTE))
 
     return render_template("learning/etiquetas/editar_etiqueta.html", form=form)

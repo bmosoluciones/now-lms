@@ -8,6 +8,7 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -55,9 +56,9 @@ def new_category() -> str | Response:
         database.session.add(categoria)
         try:
             database.session.commit()
-            flash("Nueva categoria creada.", "success")
+            flash(gettext("Nueva categoria creada."), "success")
         except OperationalError:
-            flash("Hubo un error al crear la categoria.", "warning")
+            flash(gettext("Hubo un error al crear la categoria."), "warning")
         return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
     return render_template("learning/categorias/nueva_categoria.html", form=form)
@@ -107,9 +108,9 @@ def edit_category(ulid: str) -> str | Response:
         try:
             database.session.add(categoria)
             database.session.commit()
-            flash("Categoria editada correctamente.", "success")
+            flash(gettext("Categoria editada correctamente."), "success")
         except OperationalError:
-            flash("No se puedo editar la categoria.", "warning")
+            flash(gettext("No se puedo editar la categoria."), "warning")
         return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
     return render_template("learning/categorias/editar_categoria.html", form=form)

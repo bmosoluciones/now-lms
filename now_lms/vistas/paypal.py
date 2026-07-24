@@ -4,6 +4,7 @@
 """PayPal Payments."""
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -455,7 +456,7 @@ def resume_payment(payment_id: str) -> Response:
         )
 
         if not pago:
-            flash("Pago no encontrado o ya procesado.", "error")
+            flash(gettext("Pago no encontrado o ya procesado."), "error")
             return redirect(url_for(HOME_PAGE_ROUTE))
 
         # Redirect to the payment page for this course
@@ -463,7 +464,7 @@ def resume_payment(payment_id: str) -> Response:
 
     except Exception:
         logging.exception("Error resuming payment")
-        flash("Error al reanudar el pago.", "error")
+        flash(gettext("Error al reanudar el pago."), "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
 
@@ -485,16 +486,16 @@ def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]
 
     curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
-        flash("Curso no encontrado.", "error")
+        flash(gettext("Curso no encontrado."), "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
     if not curso.pagado:
-        flash("Este curso es gratuito.", "info")
+        flash(gettext("Este curso es gratuito."), "info")
         return redirect(url_for("course.curso", course_code=course_code))
 
     # Check if PayPal is enabled
     if not check_paypal_enabled():
-        flash("Los pagos con PayPal no están habilitados.", "error")
+        flash(gettext("Los pagos con PayPal no están habilitados."), "error")
         return redirect(url_for("course.curso", course_code=course_code))
 
     # Get site currency

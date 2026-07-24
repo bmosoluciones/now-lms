@@ -4,6 +4,7 @@
 """Funciones auxiliares para vistas de cursos."""
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -209,7 +210,7 @@ def _emitir_certificado(curso_id: str, usuario: str, plantilla: str) -> None:
     certificado.creado_por = current_user.usuario if current_user.is_authenticated else "system"
     database.session.add(certificado)
     database.session.commit()
-    flash("Certificado de finalización emitido.", "success")
+    flash(gettext("Certificado de finalización emitido."), "success")
 
 
 def _actualizar_avance_curso(curso_id: str, usuario: str) -> None:
@@ -251,7 +252,7 @@ def _actualizar_avance_curso(curso_id: str, usuario: str) -> None:
     _avance.avance = ((_recursos_completados or 0) / (_recursos_requeridos or 1)) * 100
     if _avance.avance >= 100:
         _avance.completado = True
-        flash("Curso completado", "success")
+        flash(gettext("Curso completado"), "success")
         _curso = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
         log.warning(_curso)
         if _curso and _curso.certificado:

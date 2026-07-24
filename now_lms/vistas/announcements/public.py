@@ -4,6 +4,7 @@
 """Public announcements views."""
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -61,7 +62,7 @@ def course_announcements(course_id: str) -> str | Response:
     # Verificar que el curso existe
     course = database.session.get(Curso, course_id)
     if not course:
-        flash("Curso no encontrado.", "error")
+        flash(gettext("Curso no encontrado."), "error")
         return redirect(url_for("public_announcements.global_announcements"))
 
     # Verificar que el usuario está inscrito en el curso
@@ -75,7 +76,7 @@ def course_announcements(course_id: str) -> str | Response:
         ).scalar_one_or_none()
 
         if not enrollment:
-            flash("No tienes acceso a los anuncios de este curso.", "error")
+            flash(gettext("No tienes acceso a los anuncios de este curso."), "error")
             return redirect(url_for("public_announcements.global_announcements"))
 
     # Obtener anuncios del curso

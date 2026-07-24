@@ -4,6 +4,7 @@
 """Admin announcements views."""
 
 from __future__ import annotations
+from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -71,7 +72,7 @@ def new_announcement() -> str | Response:
         database.session.add(announcement)
         database.session.commit()
 
-        flash("Anuncio global creado exitosamente.", "success")
+        flash(gettext("Anuncio global creado exitosamente."), "success")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     return render_template("announcements/admin_form.html", form=form, title="Nuevo Anuncio Global")
@@ -84,7 +85,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
     """Formulario para editar un anuncio global."""
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
-        flash("Anuncio no encontrado o no es un anuncio global.", "error")
+        flash(gettext("Anuncio no encontrado o no es un anuncio global."), "error")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     form = GlobalAnnouncementForm(obj=announcement)
@@ -98,7 +99,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
 
         database.session.commit()
 
-        flash("Anuncio global actualizado exitosamente.", "success")
+        flash(gettext("Anuncio global actualizado exitosamente."), "success")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     return render_template(
@@ -114,11 +115,11 @@ def delete_announcement(announcement_id: int) -> Response:
     announcement = database.session.get(Announcement, announcement_id)
     log.debug(f"Deleting announcement: {announcement_id}")
     if not announcement:
-        flash("Anuncio no encontrado o no es un anuncio global.", "error")
+        flash(gettext("Anuncio no encontrado o no es un anuncio global."), "error")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     database.session.delete(announcement)
     database.session.commit()
 
-    flash("Anuncio global eliminado exitosamente.", "success")
+    flash(gettext("Anuncio global eliminado exitosamente."), "success")
     return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))

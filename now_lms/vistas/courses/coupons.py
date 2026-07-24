@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2025 - 2026 BMO Soluciones, S.A.
 
 from __future__ import annotations
+from flask_babel import gettext
 
 from flask import flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
@@ -147,12 +148,12 @@ def create_coupon(course_code: str) -> str | Response:
         try:
             _save_coupon(form, course_code, current_user.usuario)
 
-            flash("Cupón creado exitosamente", "success")
+            flash(gettext("Cupón creado exitosamente"), "success")
             return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
-            flash("Error al crear el cupón", "danger")
+            flash(gettext("Error al crear el cupón"), "danger")
             log.error(f"Error creating coupon: {e}")
 
     return render_template(TEMPLATE_COUPON_CREATE, curso=course_obj, form=form)
@@ -170,7 +171,7 @@ def edit_coupon(course_code: str, coupon_id: int) -> str | Response:
 
     coupon = database.session.execute(select(Coupon).filter_by(id=coupon_id, course_id=course_code)).scalars().first()
     if not coupon:
-        flash("Cupón no encontrado", "warning")
+        flash(gettext("Cupón no encontrado"), "warning")
         return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
 
     form = CouponForm(obj=coupon)
@@ -194,12 +195,12 @@ def edit_coupon(course_code: str, coupon_id: int) -> str | Response:
         try:
             _save_coupon(form, course_code, current_user.usuario, coupon)
 
-            flash("Cupón actualizado exitosamente", "success")
+            flash(gettext("Cupón actualizado exitosamente"), "success")
             return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
-            flash("Error al actualizar el cupón", "danger")
+            flash(gettext("Error al actualizar el cupón"), "danger")
             log.error(f"Error updating coupon: {e}")
 
     return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
@@ -217,16 +218,16 @@ def delete_coupon(course_code: str, coupon_id: int) -> Response:
 
     coupon = database.session.execute(select(Coupon).filter_by(id=coupon_id, course_id=course_code)).scalars().first()
     if not coupon:
-        flash("Cupón no encontrado", "warning")
+        flash(gettext("Cupón no encontrado"), "warning")
         return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
 
     try:
         database.session.delete(coupon)
         database.session.commit()
-        flash("Cupón eliminado exitosamente", "success")
+        flash(gettext("Cupón eliminado exitosamente"), "success")
     except Exception as e:
         database.session.rollback()
-        flash("Error al eliminar el cupón", "danger")
+        flash(gettext("Error al eliminar el cupón"), "danger")
         log.error(f"Error deleting coupon: {e}")
 
     return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))

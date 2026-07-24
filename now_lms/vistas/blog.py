@@ -4,6 +4,7 @@
 """Blog views."""
 
 from __future__ import annotations
+from flask_babel import gettext
 
 import re
 
@@ -162,7 +163,7 @@ def add_comment(slug: str) -> Response:
         abort(404)
 
     if not post.allow_comments:
-        flash("Los comentarios están deshabilitados para esta entrada.", "warning")
+        flash(gettext("Los comentarios están deshabilitados para esta entrada."), "warning")
         return redirect(url_for(ROUTE_BLOG_POST, slug=slug))
 
     form = BlogCommentForm()
@@ -183,9 +184,9 @@ def add_comment(slug: str) -> Response:
         # Invalidate cache for this blog post
         cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=slug))
 
-        flash("Comentario agregado exitosamente.", "success")
+        flash(gettext("Comentario agregado exitosamente."), "success")
     else:
-        flash("Error al agregar el comentario.", "error")
+        flash(gettext("Error al agregar el comentario."), "error")
 
     return redirect(url_for(ROUTE_BLOG_POST, slug=slug))
 
@@ -204,7 +205,7 @@ def flag_comment(comment_id: int) -> Response:
     # Invalidate cache for this blog post
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
-    flash("Comentario marcado como inapropiado.", "info")
+    flash(gettext("Comentario marcado como inapropiado."), "info")
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
 
@@ -258,7 +259,7 @@ def _handle_cover_image_upload(form: BlogPostForm, post: BlogPost) -> None:
             log.warning("Blog post cover image not saved")
     except UploadNotAllowed:
         log.warning("Could not save blog post cover image - file type not allowed")
-        flash("Tipo de archivo no permitido para la imagen de portada.", "warning")
+        flash(gettext("Tipo de archivo no permitido para la imagen de portada."), "warning")
 
 
 def _process_post_tags(form: BlogPostForm, post: BlogPost, *, clear_existing: bool = False) -> None:
@@ -344,7 +345,7 @@ def admin_create_post() -> str | Response:
 
         database.session.commit()
         log.info(f"Blog post created: {post.title} by {current_user.usuario}")
-        flash("Entrada de blog creada exitosamente.", "success")
+        flash(gettext("Entrada de blog creada exitosamente."), "success")
         return _redirect_after_post_save()
 
     return render_template("blog/post_form.html", form=form, title="Nueva Entrada", edit=False)
@@ -388,7 +389,7 @@ def admin_edit_post(post_id: int) -> str | Response:
         log.info(f"Blog post updated: {post.title} by {current_user.usuario}")
 
         _invalidate_post_caches(post.slug, old_slug)
-        flash("Entrada de blog actualizada exitosamente.", "success")
+        flash(gettext("Entrada de blog actualizada exitosamente."), "success")
         return _redirect_after_post_save()
 
     return render_template("blog/post_form.html", form=form, title=title, post=post, edit=True)
@@ -473,12 +474,12 @@ def create_tag() -> str | Response:
         )
 
         if existing_tag:
-            flash("Una etiqueta con ese nombre ya existe.", "error")
+            flash(gettext("Una etiqueta con ese nombre ya existe."), "error")
         else:
             tag = BlogTag(name=form.name.data, slug=slug)
             database.session.add(tag)
             database.session.commit()
-            flash("Etiqueta creada exitosamente.", "success")
+            flash(gettext("Etiqueta creada exitosamente."), "success")
 
     return redirect(url_for("blog.admin_tags"))
 
@@ -527,7 +528,7 @@ def ban_comment(comment_id: str) -> str | Response:
     # Invalidate cache for this blog post
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
-    flash("Comentario baneado.", "warning")
+    flash(gettext("Comentario baneado."), "warning")
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
 
@@ -558,7 +559,7 @@ def delete_comment(comment_id: str) -> str | Response:
     # Invalidate cache for this blog post
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post_slug))
 
-    flash("Comentario eliminado.", "info")
+    flash(gettext("Comentario eliminado."), "info")
     return redirect(url_for(ROUTE_BLOG_POST, slug=post_slug))
 
 

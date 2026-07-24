@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2025 - 2026 BMO Soluciones, S.A.
 
 from __future__ import annotations
+from flask_babel import gettext
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -133,7 +134,7 @@ def _finalize_completed_enrollment(
         return redirect(url_for("course.tomar_curso", course_code=course_code))
     except OperationalError:
         database.session.rollback()
-        flash("Hubo en error al crear el registro de pago.", "warning")
+        flash(gettext("Hubo en error al crear el registro de pago."), "warning")
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
@@ -153,7 +154,7 @@ def _process_paid_enrollment(pago: Pago, course_code: str) -> Response:
         return redirect(url_for("paypal.payment_page", course_code=course_code, payment_id=pago.id))
     except OperationalError:
         database.session.rollback()
-        flash("Error al procesar el pago", "warning")
+        flash(gettext("Error al procesar el pago"), "warning")
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
