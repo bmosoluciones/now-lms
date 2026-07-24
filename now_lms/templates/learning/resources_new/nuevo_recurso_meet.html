@@ -24,13 +24,13 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">{{ _('Titulo del Meet') }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Meet") }} {{
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Meet")) }} {{
                             render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="url" class="form-label">{{ _('URL del Meet') }}</label>
-                            {{ form.url(class="form-control", id="url", placeholder=_("URL del Meet") }} {{
+                            {{ form.url(class="form-control", id="url", placeholder=_("URL del Meet")) }} {{
                             render_field_errors(form.url) }}
                         </div>
 
@@ -54,7 +54,7 @@
 
                         <div class="col-sm-6">
                             <label for="plataforma" class="form-label">{{ _('Plataforma') }}</label>
-                            {{ form.notes(class="form-control", id="plataforma", placeholder=_("Plataforma") }} {{
+                            {{ form.notes(class="form-control", id="plataforma", placeholder=_("Plataforma")) }} {{
                             render_field_errors(form.notes) }}
                         </div>
 

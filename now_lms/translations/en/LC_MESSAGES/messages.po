@@ -6903,7 +6903,7 @@ msgstr "Course:"
 
 #: now_lms/templates/learning/curso/coupons/create.html:40
 msgid "Ingrese un código único para el cupón (ej: DESCUENTO50)"
-msgstr ""
+msgstr "Enter a unique code for the coupon (e.g.: DISCOUNT50)"
 
 #: now_lms/templates/learning/curso/coupons/create.html:66
 #, fuzzy
@@ -6954,7 +6954,7 @@ msgstr "Discount Value"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:109
 msgid "Mínimo:"
-msgstr ""
+msgstr "Minimum:"
 
 #: now_lms/templates/learning/curso/coupons/edit.html:109
 #, fuzzy
@@ -6993,7 +6993,7 @@ msgstr "Expires:"
 
 #: now_lms/templates/learning/curso/coupons/list.html:56
 msgid "Fijo"
-msgstr ""
+msgstr "Fixed"
 
 #: now_lms/templates/learning/curso/coupons/list.html:69
 #, fuzzy
@@ -7266,7 +7266,7 @@ msgstr "Unsubscribe from the program"
 
 #: now_lms/templates/learning/programas/inscribir_programa.html:74
 msgid "Al inscribirse, acepta los términos y condiciones del programa."
-msgstr ""
+msgstr "By enrolling, you accept the program terms and conditions."
 
 #: now_lms/templates/learning/programas/inscribir_usuario.html:33
 #, fuzzy
@@ -7391,7 +7391,7 @@ msgstr "No certificates available"
 
 #: now_lms/templates/learning/programas/tomar_programa.html:126
 msgid "Completa todos los cursos para obtener tu certificado."
-msgstr ""
+msgstr "Complete all courses to get your certificate."
 
 #: now_lms/templates/learning/recursos/lista_recursos.html:24
 msgid "Gestiona y administra tus recursos de aprendizaje"
