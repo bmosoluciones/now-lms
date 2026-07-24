@@ -23,7 +23,6 @@ SAFE_FILE_EXTENSIONS = {
     ".png",
     ".gif",
     ".bmp",
-    ".svg",
     ".webp",
     ".mp3",
     ".wav",
@@ -34,13 +33,7 @@ SAFE_FILE_EXTENSIONS = {
     ".wmv",
     ".flv",
     ".webm",
-    ".json",
-    ".xml",
-    ".yaml",
-    ".yml",
     ".md",
-    ".html",
-    ".css",
     ".prn",
 }
 
