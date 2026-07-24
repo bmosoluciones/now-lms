@@ -214,15 +214,15 @@ def test_messages_uncovered_paths(client, patch_users, db_session):
 
     # 3. Standalone report with message having non-existent thread
     # On databases with enforced FK constraints (PostgreSQL, MySQL), this insert
-    # will fail with an IntegrityError.  Only run the check on databases that
-    # allow orphan rows (e.g. SQLite without FK enforcement).
-    from sqlalchemy.exc import IntegrityError
+    # will fail with an IntegrityError or ProgrammingError.  Only run the check
+    # on databases that allow orphan rows (e.g. SQLite without FK enforcement).
+    from sqlalchemy.exc import IntegrityError, ProgrammingError
 
     msg = Message(thread_id="9999", sender_id="patch_admin", content="spam content")
     db_session.add(msg)
     try:
         db_session.commit()
-    except IntegrityError:
+    except (IntegrityError, ProgrammingError):
         db_session.rollback()
         return
 
