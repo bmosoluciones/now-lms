@@ -1,7 +1,7 @@
 name: Publish to PyPi
 on:
   workflow_run:
-    workflows: ["Release Validation"]
+    workflows: ["CI"]
     types:
       - completed
     branches:
