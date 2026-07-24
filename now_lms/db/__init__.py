@@ -209,7 +209,7 @@ class UsuarioGrupo(database.Model, BaseTabla):
     activo = database.Column(database.Boolean(), index=True)
     nombre = database.Column(database.String(50), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
-    tutor = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
+    tutor = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
 class UsuarioGrupoMiembro(database.Model, BaseTabla):
@@ -494,7 +494,7 @@ class CursoRecursoSlideShow(database.Model, BaseTabla):
     codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
 
 
 class CursoRecursoSlides(database.Model, BaseTabla):
@@ -752,7 +752,7 @@ class Recurso(database.Model, BaseTabla):
     file_name = database.Column(database.String(200))
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO))
     pagado = database.Column(database.Boolean())
     descripcion_html_preformateado = database.Column(database.Boolean(), default=False, nullable=False)
 
@@ -768,13 +768,13 @@ class Certificado(database.Model, BaseTabla):
     tipo = database.Column(database.String(7))  # program or course
     habilitado = database.Column(database.Boolean())
     publico = database.Column(database.Boolean())
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
 class Certificacion(database.Model, BaseTabla):
     """Una certificación generada a un estudiante."""
 
-    usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=True, index=True)
     master_class_id = database.Column(database.String(26), database.ForeignKey("master_classes.id"), nullable=True, index=True)
     certificado = database.Column(
@@ -816,7 +816,7 @@ class Certificacion(database.Model, BaseTabla):
 class CertificacionPrograma(database.Model, BaseTabla):
     """Una certificación generada a un estudiante por completar un programa."""
 
-    usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     programa = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_PROGRAMA), nullable=False, index=True)
     certificado = database.Column(
         database.String(26), database.ForeignKey(LLAVE_FORANEA_CERTIFICADO), nullable=False, index=True
