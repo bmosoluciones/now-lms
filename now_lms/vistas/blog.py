@@ -30,7 +30,6 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, BlogComment, BlogPost, BlogTag, database, select
 from now_lms.forms import BlogCommentForm, BlogPostForm, BlogTagForm
-from now_lms.i18n import _
 from now_lms.logs import log
 
 # Route constants
@@ -143,7 +142,7 @@ def count_view(post_id: int) -> tuple[Response, int]:
 
     post = database.session.get(BlogPost, post_id)
     if not post or post.status != "published":
-        return jsonify({"status": "error", "message": _("Post not found")}), 404
+        return jsonify({"status": "error", "message": "Post not found"}), 404
 
     # Increment view count
     post.view_count = (post.view_count or 0) + 1
@@ -163,7 +162,7 @@ def add_comment(slug: str) -> Response:
         abort(404)
 
     if not post.allow_comments:
-        flash(_("Los comentarios están deshabilitados para esta entrada."), "warning")
+        flash("Los comentarios están deshabilitados para esta entrada.", "warning")
         return redirect(url_for(ROUTE_BLOG_POST, slug=slug))
 
     form = BlogCommentForm()
@@ -184,9 +183,9 @@ def add_comment(slug: str) -> Response:
         # Invalidate cache for this blog post
         cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=slug))
 
-        flash(_("Comentario agregado exitosamente."), "success")
+        flash("Comentario agregado exitosamente.", "success")
     else:
-        flash(_("Error al agregar el comentario."), "error")
+        flash("Error al agregar el comentario.", "error")
 
     return redirect(url_for(ROUTE_BLOG_POST, slug=slug))
 
@@ -205,7 +204,7 @@ def flag_comment(comment_id: int) -> Response:
     # Invalidate cache for this blog post
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
-    flash(_("Comentario marcado como inapropiado."), "info")
+    flash("Comentario marcado como inapropiado.", "info")
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
 
@@ -259,7 +258,7 @@ def _handle_cover_image_upload(form: BlogPostForm, post: BlogPost) -> None:
             log.warning("Blog post cover image not saved")
     except UploadNotAllowed:
         log.warning("Could not save blog post cover image - file type not allowed")
-        flash(_("Tipo de archivo no permitido para la imagen de portada."), "warning")
+        flash("Tipo de archivo no permitido para la imagen de portada.", "warning")
 
 
 def _process_post_tags(form: BlogPostForm, post: BlogPost, *, clear_existing: bool = False) -> None:
@@ -345,10 +344,10 @@ def admin_create_post() -> str | Response:
 
         database.session.commit()
         log.info(f"Blog post created: {post.title} by {current_user.usuario}")
-        flash(_("Entrada de blog creada exitosamente."), "success")
+        flash("Entrada de blog creada exitosamente.", "success")
         return _redirect_after_post_save()
 
-    return render_template("blog/post_form.html", form=form, title=_("Nueva Entrada"), edit=False)
+    return render_template("blog/post_form.html", form=form, title="Nueva Entrada", edit=False)
 
 
 @blog.route("/admin/blog/posts/<post_id>/edit", methods=["GET", "POST"])
@@ -360,7 +359,7 @@ def admin_edit_post(post_id: int) -> str | Response:
     if not post:
         abort(404)
 
-    title = _("Editar entrada - ") + post.slug[:10]
+    title = "Editar entrada - " + post.slug[:10]
 
     if current_user.tipo != "admin" and post.author_id != current_user.usuario:
         abort(403)
@@ -389,7 +388,7 @@ def admin_edit_post(post_id: int) -> str | Response:
         log.info(f"Blog post updated: {post.title} by {current_user.usuario}")
 
         _invalidate_post_caches(post.slug, old_slug)
-        flash(_("Entrada de blog actualizada exitosamente."), "success")
+        flash("Entrada de blog actualizada exitosamente.", "success")
         return _redirect_after_post_save()
 
     return render_template("blog/post_form.html", form=form, title=title, post=post, edit=True)
@@ -412,7 +411,7 @@ def approve_post(post_id: int) -> Response:
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_INDEX))
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post.slug))
 
-    flash(_("Entrada '%(title)s' aprobada y publicada.") % {"title": post.title}, "success")
+    flash(f"Entrada '{post.title}' aprobada y publicada.", "success")
     return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
 
 
@@ -432,7 +431,7 @@ def ban_post(post_id: int) -> Response:
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_INDEX))
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post.slug))
 
-    flash(_("Entrada '%(title)s' ha sido baneada.") % {"title": post.title}, "warning")
+    flash(f"Entrada '{post.title}' ha sido baneada.", "warning")
     return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
 
 
@@ -474,12 +473,12 @@ def create_tag() -> str | Response:
         )
 
         if existing_tag:
-            flash(_("Una etiqueta con ese nombre ya existe."), "error")
+            flash("Una etiqueta con ese nombre ya existe.", "error")
         else:
             tag = BlogTag(name=form.name.data, slug=slug)
             database.session.add(tag)
             database.session.commit()
-            flash(_("Etiqueta creada exitosamente."), "success")
+            flash("Etiqueta creada exitosamente.", "success")
 
     return redirect(url_for("blog.admin_tags"))
 
@@ -496,7 +495,7 @@ def delete_tag(tag_id: str) -> Response:
     database.session.delete(tag)
     database.session.commit()
 
-    flash(_("Etiqueta '%(name)s' eliminada.") % {"name": tag.name}, "info")
+    flash(f"Etiqueta '{tag.name}' eliminada.", "info")
     return redirect(url_for("blog.admin_tags"))
 
 
@@ -528,7 +527,7 @@ def ban_comment(comment_id: str) -> str | Response:
     # Invalidate cache for this blog post
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
-    flash(_("Comentario baneado."), "warning")
+    flash("Comentario baneado.", "warning")
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
 
@@ -559,7 +558,7 @@ def delete_comment(comment_id: str) -> str | Response:
     # Invalidate cache for this blog post
     cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post_slug))
 
-    flash(_("Comentario eliminado."), "info")
+    flash("Comentario eliminado.", "info")
     return redirect(url_for(ROUTE_BLOG_POST, slug=post_slug))
 
 

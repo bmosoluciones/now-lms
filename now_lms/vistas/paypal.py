@@ -28,7 +28,6 @@ from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, Curso, Pago, PaypalConfig, database
-from now_lms.i18n import _
 
 # Constants for PayPal API URLs
 PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
@@ -423,7 +422,9 @@ def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
         coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
         coupon = (
             database.session.execute(
-                database.select(Coupon).filter_by(course_id=course_code, code=coupon_code).with_for_update()
+                database.select(Coupon)
+                .filter_by(course_id=course_code, code=coupon_code)
+                .with_for_update()
             )
             .scalars()
             .first()
@@ -442,6 +443,7 @@ def enviar_recibo_pago(pago: Pago) -> None:
     from flask_mail import Message
     from flask import render_template
     from now_lms.db import Curso, Programa
+    from now_lms.i18n import _
 
     recipient = pago.correo_electronico
     if not recipient:
@@ -454,7 +456,7 @@ def enviar_recibo_pago(pago: Pago) -> None:
     try:
         mail_config = _config()
         if not mail_config.mail_configured:
-            logging.info("Email is not configured. Receipt will not be sent by email.")
+            logging.info("El correo electrónico no está configurado. No se enviará recibo por correo.")
             return
 
         curso = None
@@ -562,7 +564,7 @@ def resume_payment(payment_id: str) -> Response:
         )
 
         if not pago:
-            flash(_("Pago no encontrado o ya procesado."), "error")
+            flash("Pago no encontrado o ya procesado.", "error")
             return redirect(url_for(HOME_PAGE_ROUTE))
 
         if pago.programa:
@@ -577,7 +579,7 @@ def resume_payment(payment_id: str) -> Response:
 
     except Exception:
         logging.exception("Error resuming payment")
-        flash(_("Error al reanudar el pago."), "error")
+        flash("Error al reanudar el pago.", "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
 
@@ -599,16 +601,16 @@ def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]
 
     curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
-        flash(_("Curso no encontrado."), "error")
+        flash("Curso no encontrado.", "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
     if not curso.pagado:
-        flash(_("Este curso es gratuito."), "info")
+        flash("Este curso es gratuito.", "info")
         return redirect(url_for("course.curso", course_code=course_code))
 
     # Check if PayPal is enabled
     if not check_paypal_enabled():
-        flash(_("Los pagos con PayPal no están habilitados."), "error")
+        flash("Los pagos con PayPal no están habilitados.", "error")
         return redirect(url_for("course.curso", course_code=course_code))
 
     # Get site currency

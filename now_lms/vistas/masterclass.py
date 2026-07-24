@@ -23,7 +23,6 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import MasterClass, MasterClassEnrollment, Usuario, database, select
-from now_lms.i18n import _
 from now_lms.forms.masterclass import MasterClassEnrollmentForm, MasterClassForm
 
 # ---------------------------------------------------------------------------------------
@@ -53,7 +52,7 @@ def list_public() -> str:
         error_out=False,
     )
 
-    return render_template("masterclass/list_public.html", master_classes=master_classes, title=_("Clases Magistrales"))
+    return render_template("masterclass/list_public.html", master_classes=master_classes, title="Clases Magistrales")
 
 
 @masterclass.route("/<slug>", methods=["GET"])
@@ -97,7 +96,7 @@ def enroll(slug: str) -> str | Response:
     )
 
     if existing_enrollment:
-        flash(_("Ya estás inscrito en esta clase magistral."), "info")
+        flash("Ya estás inscrito en esta clase magistral.", "info")
         return redirect(url_for("masterclass.detail_public", slug=slug))
 
     form = MasterClassEnrollmentForm()
@@ -114,14 +113,11 @@ def enroll(slug: str) -> str | Response:
         database.session.add(enrollment)
         database.session.commit()
 
-        flash(_("Te has inscrito exitosamente en la clase magistral."), "success")
+        flash("Te has inscrito exitosamente en la clase magistral.", "success")
         return redirect(url_for("masterclass.detail_public", slug=slug))
 
     return render_template(
-        "masterclass/enroll.html",
-        master_class=master_class,
-        form=form,
-        title=_("Inscribirse en %(title)s") % {"title": master_class.title},
+        "masterclass/enroll.html", master_class=master_class, form=form, title=f"Inscribirse en {master_class.title}"
     )
 
 
@@ -147,9 +143,7 @@ def instructor_list() -> str:
         error_out=False,
     )
 
-    return render_template(
-        "masterclass/instructor_list.html", master_classes=master_classes, title=_("Mis Clases Magistrales")
-    )
+    return render_template("masterclass/instructor_list.html", master_classes=master_classes, title="Mis Clases Magistrales")
 
 
 @masterclass.route("/instructor/create", methods=["GET", "POST"])
@@ -195,10 +189,10 @@ def instructor_create() -> str | Response:
         database.session.add(master_class)
         database.session.commit()
 
-        flash(_("Clase magistral creada exitosamente."), "success")
+        flash("Clase magistral creada exitosamente.", "success")
         return redirect(url_for("masterclass.instructor_list"))
 
-    return render_template("masterclass/instructor_create.html", form=form, title=_("Crear Clase Magistral"))
+    return render_template("masterclass/instructor_create.html", form=form, title="Crear Clase Magistral")
 
 
 @masterclass.route("/instructor/<master_class_id>/edit", methods=["GET", "POST"])
@@ -260,11 +254,11 @@ def instructor_edit(master_class_id: int) -> str | Response:
 
         database.session.commit()
 
-        flash(_("Clase magistral actualizada exitosamente."), "success")
+        flash("Clase magistral actualizada exitosamente.", "success")
         return redirect(url_for("masterclass.instructor_list"))
 
     return render_template(
-        "masterclass/instructor_edit.html", form=form, master_class=master_class, title=_("Editar Clase Magistral")
+        "masterclass/instructor_edit.html", form=form, master_class=master_class, title="Editar Clase Magistral"
     )
 
 
@@ -301,7 +295,7 @@ def instructor_students(master_class_id: int) -> str:
         "masterclass/instructor_students.html",
         master_class=master_class,
         enrollments=enrollments,
-        title=_("Estudiantes - %(title)s") % {"title": master_class.title},
+        title=f"Estudiantes - {master_class.title}",
     )
 
 
@@ -328,7 +322,7 @@ def my_enrollments() -> str:
         error_out=False,
     )
 
-    return render_template("masterclass/my_enrollments.html", enrollments=enrollments, title=_("Mis Clases Magistrales"))
+    return render_template("masterclass/my_enrollments.html", enrollments=enrollments, title="Mis Clases Magistrales")
 
 
 # ---------------------------------------------------------------------------------------
@@ -355,5 +349,5 @@ def admin_list() -> str:
     )
 
     return render_template(
-        "masterclass/admin_list.html", master_classes=master_classes, title=_("Administrar Clases Magistrales")
+        "masterclass/admin_list.html", master_classes=master_classes, title="Administrar Clases Magistrales"
     )

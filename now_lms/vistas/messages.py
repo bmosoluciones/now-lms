@@ -9,8 +9,6 @@ Gestión del sistema de mensajería.
 
 from __future__ import annotations
 
-from now_lms.i18n import _
-
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -270,7 +268,7 @@ def new_thread(course_code: str) -> str | Response:
         database.session.add(message)
         database.session.commit()
 
-        flash(_("Mensaje enviado correctamente."), "success")
+        flash("Mensaje enviado correctamente.", "success")
         return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread.id))
 
     return render_template("learning/mensajes/new_thread.html", form=form, course=course)
@@ -332,7 +330,7 @@ def reply_to_thread(thread_id: int) -> str | Response:
 
     # Check if thread is closed
     if thread.status == "closed":
-        flash(_("No se puede responder a un hilo cerrado."), "error")
+        flash("No se puede responder a un hilo cerrado.", "error")
         return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
     form = MessageReplyForm()
@@ -347,7 +345,7 @@ def reply_to_thread(thread_id: int) -> str | Response:
         database.session.add(message)
         database.session.commit()
 
-        flash(_("Respuesta enviada correctamente."), "success")
+        flash("Respuesta enviada correctamente.", "success")
 
     return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
@@ -374,7 +372,7 @@ def change_thread_status(thread_id: int, new_status: str) -> Response:
     valid_transitions = {"open": ["fixed", "closed"], "fixed": ["closed"], "closed": []}
 
     if new_status not in valid_transitions.get(thread.status, []):
-        flash(_("Transición de estado no válida."), "error")
+        flash("Transición de estado no válida.", "error")
         return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
     thread.status = new_status
@@ -383,7 +381,7 @@ def change_thread_status(thread_id: int, new_status: str) -> Response:
 
     database.session.commit()
 
-    flash(_("Estado del hilo cambiado a %(status)s.") % {"status": new_status}, "success")
+    flash(f"Estado del hilo cambiado a {new_status}.", "success")
     return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
 
@@ -415,7 +413,7 @@ def report_message(message_id: int) -> Response:
 
         database.session.commit()
 
-        flash(_("Mensaje reportado correctamente."), "success")
+        flash("Mensaje reportado correctamente.", "success")
 
     return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=message.thread_id))
 
@@ -444,13 +442,13 @@ def resolve_report(message_id: int) -> Response:
 
     message = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
     if not message:
-        return jsonify({"success": False, "message": _("Mensaje no encontrado")})
+        return jsonify({"success": False, "message": "Mensaje no encontrado"})
 
     message.is_reported = False
     message.reported_reason = None
     database.session.commit()
 
-    return jsonify({"success": True, "message": _("Reporte resuelto")})
+    return jsonify({"success": True, "message": "Reporte resuelto"})
 
 
 @msg.route("/message/report/", methods=["GET", "POST"])
@@ -469,17 +467,17 @@ def standalone_report_message() -> str | Response:
     reason = request.form.get("reason")
 
     if not message_id or not reason:
-        flash(_("Debe seleccionar un mensaje y proporcionar un motivo."), "error")
+        flash("Debe seleccionar un mensaje y proporcionar un motivo.", "error")
         return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
     message = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
     if not message:
-        flash(_("Mensaje no encontrado."), "error")
+        flash("Mensaje no encontrado.", "error")
         return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
     thread = database.session.execute(select(MessageThread).filter_by(id=message.thread_id)).scalars().first()
     if not thread:
-        flash(_("Hilo de conversación no encontrado."), "error")
+        flash("Hilo de conversación no encontrado.", "error")
         return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
     has_access = (
@@ -494,5 +492,5 @@ def standalone_report_message() -> str | Response:
     message.reported_reason = reason
     database.session.commit()
 
-    flash(_("Mensaje reportado correctamente. El administrador será notificado."), "success")
+    flash("Mensaje reportado correctamente. El administrador será notificado.", "success")
     return redirect(url_for("home.panel"))

@@ -19,7 +19,6 @@ from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, database
-from now_lms.i18n import _
 from now_lms.forms import GlobalAnnouncementForm
 from now_lms.logs import log
 
@@ -72,10 +71,10 @@ def new_announcement() -> str | Response:
         database.session.add(announcement)
         database.session.commit()
 
-        flash(_("Anuncio global creado exitosamente."), "success")
+        flash("Anuncio global creado exitosamente.", "success")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
-    return render_template("announcements/admin_form.html", form=form, title=_("Nuevo Anuncio Global"))
+    return render_template("announcements/admin_form.html", form=form, title="Nuevo Anuncio Global")
 
 
 @admin_announcements.route("/admin/announcements/<announcement_id>/edit", methods=["GET", "POST"])
@@ -85,7 +84,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
     """Formulario para editar un anuncio global."""
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
-        flash(_("Anuncio no encontrado o no es un anuncio global."), "error")
+        flash("Anuncio no encontrado o no es un anuncio global.", "error")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     form = GlobalAnnouncementForm(obj=announcement)
@@ -99,11 +98,11 @@ def edit_announcement(announcement_id: int) -> str | Response:
 
         database.session.commit()
 
-        flash(_("Anuncio global actualizado exitosamente."), "success")
+        flash("Anuncio global actualizado exitosamente.", "success")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     return render_template(
-        "announcements/admin_form.html", form=form, title=_("Editar Anuncio Global"), announcement=announcement
+        "announcements/admin_form.html", form=form, title="Editar Anuncio Global", announcement=announcement
     )
 
 
@@ -115,11 +114,11 @@ def delete_announcement(announcement_id: int) -> Response:
     announcement = database.session.get(Announcement, announcement_id)
     log.debug(f"Deleting announcement: {announcement_id}")
     if not announcement:
-        flash(_("Anuncio no encontrado o no es un anuncio global."), "error")
+        flash("Anuncio no encontrado o no es un anuncio global.", "error")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     database.session.delete(announcement)
     database.session.commit()
 
-    flash(_("Anuncio global eliminado exitosamente."), "success")
+    flash("Anuncio global eliminado exitosamente.", "success")
     return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))

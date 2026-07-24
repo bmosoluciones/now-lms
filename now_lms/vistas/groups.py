@@ -19,7 +19,6 @@ from werkzeug.wrappers import Response
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import UsuarioGrupo, database
-from now_lms.i18n import _
 from now_lms.forms import GrupoForm
 
 # ---------------------------------------------------------------------------------------
@@ -46,11 +45,11 @@ def nuevo_grupo() -> str | Response:
             database.session.add(grupo_)
             database.session.commit()
             # cache.delete("view/" + url_for("lista_grupos"))
-            flash(_("Grupo creado correctamente"), "success")
+            flash("Grupo creado correctamente", "success")
             return redirect("/admin/panel")
         except OperationalError:
             database.session.rollback()
-            flash(_("Error al crear el nuevo grupo."), "warning")
+            flash("Error al crear el nuevo grupo.", "warning")
             return redirect("/new_group")
     else:
         return render_template("admin/grupos/nuevo.html", form=form)
