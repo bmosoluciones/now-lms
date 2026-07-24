@@ -3,15 +3,16 @@
 
 """Unit and integration tests to maximize patch coverage of translated views."""
 
-import pytest
-from datetime import datetime, timedelta
 from unittest import mock
+
+import pytest
 from sqlalchemy.exc import OperationalError
 
 from now_lms.auth import proteger_passwd
-from now_lms.db import Usuario, Categoria, Etiqueta, Message, database
+from now_lms.db import Categoria, Etiqueta, Message, Usuario
 
 VALID_ULID = "01GDHJB3GKW022S729SJV0DCE0"
+
 
 @pytest.fixture
 def patch_users(app, db_session):
@@ -61,6 +62,7 @@ def login_student(client):
 # 1. Announcements Uncovered Paths Tests
 # ==============================================================================
 
+
 def test_admin_announcements_not_found(client, patch_users):
     login_admin(client)
     # Non-existent announcement for edit
@@ -91,6 +93,7 @@ def test_instructor_announcements_not_found(client, patch_users):
 # 2. Categories Operational Error Tests
 # ==============================================================================
 
+
 def test_categories_create_operational_error(client, patch_users, db_session):
     login_instructor(client)
     with mock.patch("now_lms.db.database.session.commit") as mock_commit:
@@ -119,6 +122,7 @@ def test_categories_edit_operational_error(client, patch_users, db_session):
 # 3. Tags Operational Error Tests
 # ==============================================================================
 
+
 def test_tags_create_operational_error(client, patch_users, db_session):
     login_instructor(client)
     with mock.patch("now_lms.db.database.session.commit") as mock_commit:
@@ -146,6 +150,7 @@ def test_tags_edit_operational_error(client, patch_users, db_session):
 # ==============================================================================
 # 4. Instructor Profiles Non-Existent Entities Tests
 # ==============================================================================
+
 
 def test_instructor_evaluation_entities_not_found(client, patch_users):
     login_instructor(client)
@@ -188,6 +193,7 @@ def test_instructor_evaluation_entities_not_found(client, patch_users):
 # 5. PayPal Checkout Non-Existent Resumption Tests
 # ==============================================================================
 
+
 def test_paypal_resume_payment_not_found(client, patch_users):
     login_student(client)
     resp = client.get(f"/paypal_checkout/resume_payment/{VALID_ULID}", follow_redirects=True)
@@ -198,6 +204,7 @@ def test_paypal_resume_payment_not_found(client, patch_users):
 # ==============================================================================
 # 6. Messages Non-Existent Standalone Report Tests
 # ==============================================================================
+
 
 def test_messages_uncovered_paths(client, patch_users, db_session):
     login_instructor(client)
@@ -216,13 +223,13 @@ def test_messages_uncovered_paths(client, patch_users, db_session):
     # On databases with enforced FK constraints (PostgreSQL, MySQL), this insert
     # will fail with an IntegrityError.  Only run the check on databases that
     # allow orphan rows (e.g. SQLite without FK enforcement).
-    from sqlalchemy.exc import IntegrityError
+    from sqlalchemy.exc import IntegrityError, ProgrammingError
 
     msg = Message(thread_id="9999", sender_id="patch_admin", content="spam content")
     db_session.add(msg)
     try:
         db_session.commit()
-    except IntegrityError:
+    except (IntegrityError, ProgrammingError):
         db_session.rollback()
         return
 
