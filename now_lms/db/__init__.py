@@ -745,7 +745,7 @@ class Programa(database.Model, BaseTabla):
     """Un programa agrupa una serie de cursos."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="codigo_programa_unico"),)
-    nombre = database.Column(database.String(20), nullable=False)
+    nombre = database.Column(database.String(150), nullable=False)
     codigo = database.Column(database.String(10), nullable=False, unique=True)
     descripcion = database.Column(database.String(200))
     texto = database.Column(database.String(1500))
