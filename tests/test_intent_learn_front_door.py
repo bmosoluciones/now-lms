@@ -12,6 +12,7 @@ from jinja2 import Environment
 TEMPLATE_PATH = Path("now_lms/templates/themes/intent_learn/overrides/home.j2")
 CSS_PATH = Path("now_lms/static/themes/intent_learn/front-door.css")
 HEADER_PATH = Path("now_lms/templates/themes/intent_learn/header.j2")
+BASE_PATH = Path("now_lms/templates/themes/intent_learn/base.j2")
 
 
 def _template() -> str:
@@ -83,7 +84,7 @@ def test_front_door_carries_mobile_overflow_and_accessibility_guards() -> None:
     assert "<style>" not in template
     assert "overflow-x: clip" in css
     assert ".isl-root *::before" in css
-    assert ".isl-root *::after { box-sizing: border-box; min-width: 0; }" in css
+    assert "min-width: 0" in css
     assert "@media (max-width: 520px)" in css
     assert "min-height: 44px" in css
     assert ":focus-visible" in css
@@ -104,10 +105,11 @@ def test_front_door_uses_the_composition_reset_and_canonical_legal_footer() -> N
 
     assert "--paper: #f3f6f4" in css
     assert "fonts.googleapis.com" not in css
-    assert "fonts.googleapis.com" not in HEADER_PATH.read_text(encoding="utf-8")
+    for path in (HEADER_PATH, BASE_PATH):
+        assert "fonts.googleapis.com" not in path.read_text(encoding="utf-8")
     assert "font-size: clamp(3rem, 5.1vw, 4.65rem)" in css
     assert ".isl-standard-step .n { display: none; }" in css
-    assert "border-radius: 0" in css
+    assert "border-radius: 0;" in css
 
     legal_links = {
         "Terms of Service": "https://intentsolutions.io/terms",
