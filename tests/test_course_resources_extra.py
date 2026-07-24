@@ -77,10 +77,17 @@ def test_generate_meet_ics_content():
 def test_download_meet_calendar(client, test_setup, db_session):
     login(client, test_setup["admin"])
 
+    # Create the course section referenced by the resource
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion(curso="RES101", nombre="Seccion 1", descripcion="seccion", indice=1)
+    db_session.add(seccion)
+    db_session.commit()
+
     # Create a meet resource
     res = CursoRecurso(
         curso="RES101",
-        seccion="sec_id",
+        seccion=seccion.id,
         nombre="Meet Session A",
         descripcion="Live class session",
         tipo="meet",
