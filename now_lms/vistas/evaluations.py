@@ -243,7 +243,7 @@ def take_evaluation(evaluation_id: int) -> str | Response:
             section = database.session.get(CursoSeccion, eval_obj.section_id)
             _try_issue_certificate(section)
 
-        flash(EVALUATION_SUBMITTED, "success")
+        flash(gettext(EVALUATION_SUBMITTED), "success")
         return redirect(url_for("evaluation.evaluation_result", attempt_id=attempt.id))
 
     return render_template("evaluations/take_evaluation.html", evaluation=eval_obj)
@@ -327,7 +327,7 @@ def request_reopen(evaluation_id: int) -> str | Response:
         database.session.add(reopen_request)
         database.session.commit()
 
-        flash(REOPEN_REQUEST_SUBMITTED, "success")
+        flash(gettext(REOPEN_REQUEST_SUBMITTED), "success")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 

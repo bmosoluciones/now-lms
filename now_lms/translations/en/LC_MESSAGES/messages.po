@@ -7903,9 +7903,8 @@ msgstr ""
 "you soon."
 
 #: now_lms/templates/page_info/contact.html:18
-#, fuzzy
 msgid "Envíenos un mensaje"
-msgstr "View Messages"
+msgstr "Send us a message"
 
 #: now_lms/templates/page_info/contact.html:29
 msgid "Su nombre completo"
@@ -9372,9 +9371,8 @@ msgid "No se pueden abrir mensajes en cursos finalizados."
 msgstr "Messages cannot be opened in completed courses."
 
 #: now_lms/vistas/forum.py:342
-#, fuzzy
 msgid "Mensaje abierto exitosamente."
-msgstr "Pending contact messages"
+msgstr "Message opened successfully."
 
 #: now_lms/vistas/groups.py:49
 msgid "Grupo creado correctamente"

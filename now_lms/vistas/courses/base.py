@@ -171,7 +171,7 @@ def _save_course_logo(curso_) -> None:
             database.session.commit()
             log.warning("Course Logo not saved")
     except (UploadNotAllowed, AttributeError):
-        log.warning(COULD_NOT_UPDATE_PROFILE_PHOTO)
+        log.warning(gettext(COULD_NOT_UPDATE_PROFILE_PHOTO))
         database.session.rollback()
 
 
@@ -667,21 +667,21 @@ def admin_course_enrollment(course_code: str) -> str | Response:
         notes = form.notes.data.strip() if form.notes.data else ""
         usuario_existe, existing_enrollment = _enrollment_student(course_code, student_username)
         if not usuario_existe:
-            flash(f"El usuario '{student_username}' no existe en el sistema.", "error")
+            flash(gettext("El usuario '%(username)s' no existe en el sistema.") % {"username": student_username}, "error")
             return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
         if existing_enrollment:
-            flash(f"El estudiante '{student_username}' ya está inscrito en este curso.", "warning")
+            flash(gettext("El estudiante '%(username)s' ya está inscrito en este curso.") % {"username": student_username}, "warning")
             return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
         try:
             _persist_admin_enrollment(course_code, _curso, usuario_existe, bypass_payment, notes)
 
-            flash(f"Estudiante '{student_username}' inscrito exitosamente en el curso '{_curso.nombre}'.", "success")
+            flash(gettext("Estudiante '%(username)s' inscrito exitosamente en el curso '%(course_name)s'.") % {"username": student_username, "course_name": _curso.nombre}, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
-            flash(f"Error al inscribir al estudiante: {str(e)}", "error")
+            flash(gettext("Error al inscribir al estudiante: %(error)s") % {"error": str(e)}, "error")
 
     return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
@@ -742,7 +742,7 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
     ).scalar_one_or_none()
 
     if not enrollment:
-        flash(f"El estudiante '{student_username}' no está inscrito en este curso.", "error")
+        flash(gettext("El estudiante '%(username)s' no está inscrito en este curso.") % {"username": student_username}, "error")
         return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
 
     try:
@@ -752,11 +752,11 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
         enrollment.modificado_por = current_user.usuario
         database.session.commit()
 
-        flash(f"Estudiante '{student_username}' desinscrito del curso exitosamente.", "success")
+        flash(gettext("Estudiante '%(username)s' desinscrito del curso exitosamente.") % {"username": student_username}, "success")
 
     except Exception as e:
         database.session.rollback()
-        flash(f"Error al desinscribir al estudiante: {str(e)}", "error")
+        flash(gettext("Error al desinscribir al estudiante: %(error)s") % {"error": str(e)}, "error")
 
     return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
 

@@ -82,8 +82,7 @@
                                             {{ form.hero(class="form-control", id="hero", value=config.hero) }} {{
                                             render_field_errors(form.hero) }}
                                             <div class="form-text">
-                                                {{_("El hero es el elemento que se muestra debajo de la barra de
-                                                navegación.")}}.
+                                                {{_("El hero es el elemento que se muestra debajo de la barra de\nnavegación.")}}.
                                             </div>
                                         </div>
                                     </div>
@@ -97,9 +96,7 @@
                                                 </label>
                                             </div>
                                             <div class="form-text">
-                                                {{_("Muestra un pie de página con enlaces a páginas estáticas (Sobre Nosotros,
-                                                Política de Privacidad, Contacto) en páginas públicas. Recomendado para cumplir
-                                                con requisitos de Google AdSense.")}}.
+                                                {{_("Muestra un pie de página con enlaces a páginas estáticas (Sobre Nosotros,\nPolítica de Privacidad, Contacto) en páginas públicas. Recomendado para cumplir\ncon requisitos de Google AdSense.")}}.
                                             </div>
                                         </div>
                                     </div>
@@ -134,8 +131,7 @@
                                             {{ form.moneda(class="form-control form-select", id="moneda", value=config.moneda)
                                             }} {{ render_field_errors(form.moneda) }}
                                             <div class="form-text">
-                                                {{_("Seleccione la moneda predeterminada para procesar pagos y mostrar
-                                                precios")}}.
+                                                {{_("Seleccione la moneda predeterminada para procesar pagos y mostrar\nprecios")}}.
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -183,8 +179,7 @@
                             >
                                 <div class="accordion-body">
                                     <p class="text-muted">
-                                        {{_("Configure el contenido y las características que se mostrarán en la página
-                                        principal del sitio")}}.
+{{_("Configure el contenido y las características que se mostrarán en la página\nprincipal del sitio")}}.
                                     </p>
                                     <div class="row mb-3">
                                         <div class="col-sm-12">
@@ -207,8 +202,7 @@
                                             value=config.custom_feature_section, rows="10") }} {{
                                             render_field_errors(form.custom_feature_section) }}
                                             <div class="form-text">
-                                                {{_("Debe ser un segmento de HTML valido que se integre en su plantilla
-                                                actual.")}}.
+                                                {{_("Debe ser un segmento de HTML valido que se integre en su plantilla\nactual.")}}.
                                             </div>
                                         </div>
                                     </div>
@@ -217,8 +211,7 @@
                                         <div class="col-sm-12">
                                             <h6>{{_("Información adicional")}}</h6>
                                             <p class="text-muted">
-                                                {{_("Puede agregar información adicional para que los diseñadores de plantillas
-                                                puedan incluirlo en el sitio web")}}.
+                                                {{_("Puede agregar información adicional para que los diseñadores de plantillas\npuedan incluirlo en el sitio web")}}.
                                             </p>
                                         </div>
                                     </div>
@@ -292,8 +285,7 @@
                             >
                                 <div class="accordion-body">
                                     <p class="text-muted">
-                                        {{_("Configure qué elementos del menú de navegación estarán visibles para los
-                                        usuarios")}}.
+{{_("Configure qué elementos del menú de navegación estarán visibles para los\nusuarios")}}.
                                     </p>
                                     <div class="row mb-3">
                                         <div class="col-sm-6">
@@ -319,8 +311,7 @@
                                                 </label>
                                             </div>
                                             <div class="form-text">
-                                                {{_("Los usuarios verán la opción Clases Magistrales en el menú de
-                                                navegación")}}.
+                                                {{_("Los usuarios verán la opción Clases Magistrales en el menú de\nnavegación")}}.
                                             </div>
                                         </div>
                                     </div>
@@ -378,8 +369,7 @@
                                                 </label>
                                             </div>
                                             <div class="form-text">
-                                                {{_("Mostrar las últimas entradas del blog en la página principal del
-                                                sitio")}}.
+                                                {{_("Mostrar las últimas entradas del blog en la página principal del\nsitio")}}.
                                             </div>
                                         </div>
                                     </div>
@@ -419,8 +409,7 @@
                                                 </label>
                                             </div>
                                             <div class="form-text">
-                                                {{_("Permite a los instructores subir archivos descargables como recursos del
-                                                curso")}}.
+                                                {{_("Permite a los instructores subir archivos descargables como recursos del\ncurso")}}.
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -474,9 +463,7 @@
                                             <div class="alert alert-warning mt-3" role="alert">
                                                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                                 <strong>{{_("ADVERTENCIA")}}: </strong>
-                                                {{_("El uso de HTML preformateado puede presentar riesgos de seguridad. Solo
-                                                habilite esta opción si confía en todos los instructores que pueden crear
-                                                recursos.")}}.
+                                                {{_("El uso de HTML preformateado puede presentar riesgos de seguridad. Solo\nhabilite esta opción si confía en todos los instructores que pueden crear\nrecursos.")}}.
                                             </div>
                                         </div>
                                     </div>
@@ -509,13 +496,11 @@
                                         <div class="col-sm-12">
                                             {% if config.email_verificado %}
                                             <div class="alert alert-success" role="alert">
-                                                <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i> {{_("La
-                                                configuración de correo electrónico ha sido verificada correctamente.")}}
+                                                <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i> {{_("La\nconfiguración de correo electrónico ha sido verificada correctamente.")}}
                                             </div>
                                             {% else %}
                                             <div class="alert alert-warning" role="alert">
-                                                <i class="bi bi-dash-circle-dotted me-2" aria-hidden="true"></i> {{_("La
-                                                configuración de correo electrónico no ha sido verificada.")}}
+                                                <i class="bi bi-dash-circle-dotted me-2" aria-hidden="true"></i> {{_("La\nconfiguración de correo electrónico no ha sido verificada.")}}
                                             </div>
                                             {% endif %}
                                         </div>
@@ -537,8 +522,7 @@
                                         <div class="col-sm-12">
                                             <h6>{{_("Acceso con correo electrónico no verificado")}}</h6>
                                             <p class="text-muted">
-                                                {{_("Configure el acceso para usuarios que aún no han verificado su correo
-                                                electrónico")}}.
+                                                {{_("Configure el acceso para usuarios que aún no han verificado su correo\nelectrónico")}}.
                                             </p>
                                         </div>
                                     </div>
@@ -553,16 +537,12 @@
                                                 </label>
                                             </div>
                                             <div class="form-text mb-3">
-                                                {{_("Permite que los usuarios inicien sesión aunque no hayan verificado su
-                                                correo electrónico.")}}.
+                                                {{_("Permite que los usuarios inicien sesión aunque no hayan verificado su\ncorreo electrónico.")}}.
                                             </div>
                                             <div class="alert alert-warning" role="alert">
                                                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                                 <strong>{{_("Advertencia")}}: </strong>
-                                                {{_("Habilitar usuarios sin haber verificado su correo electrónico solo permite
-                                                el acceso a un conjunto limitado de opciones del sistema. El administrador debe
-                                                verificar periódicamente estos registros para mantener la seguridad e
-                                                integridad de la plataforma")}}.
+                                                {{_("Habilitar usuarios sin haber verificado su correo electrónico solo permite\nel acceso a un conjunto limitado de opciones del sistema. El administrador debe\nverificar periódicamente estos registros para mantener la seguridad e\nintegridad de la plataforma")}}.
                                             </div>
                                         </div>
                                     </div>
@@ -640,8 +620,7 @@
                             >
                                 <div class="accordion-body">
                                     <p class="text-muted">
-                                        {{_("Configure los enlaces a las redes sociales de su organización. Estos enlaces se
-                                        mostrarán en el pie de página del sitio web.")}}.
+{{_("Configure los enlaces a las redes sociales de su organización. Estos enlaces se\nmostrarán en el pie de página del sitio web.")}}.
                                     </p>
                                     <div class="row mb-3">
                                         <div class="col-sm-6">
@@ -734,8 +713,7 @@
                             >
                                 <div class="accordion-body">
                                     <p class="text-muted">
-                                        {{_("Configure la información de contacto del negocio que se mostrará en la página de
-                                        contacto")}}.
+{{_("Configure la información de contacto del negocio que se mostrará en la página de\ncontacto")}}.
                                     </p>
                                     <div class="row mb-3">
                                         <div class="col-sm-12">
@@ -822,9 +800,7 @@
                                         <div class="col-12">
                                             <h6>{{_("Sección 'Acerca de'")}}</h6>
                                             <p class="text-muted">
-                                                {{_("Configure qué páginas estáticas se mostrarán en la sección 'Acerca de' del
-                                                footer")}}. {{_("Edite cada página y active la opción 'Mostrar en el
-                                                footer'.")}}.
+                                                {{_("Configure qué páginas estáticas se mostrarán en la sección 'Acerca de' del\nfooter")}}. {{_("Edite cada página y active la opción 'Mostrar en el\nfooter'.")}}.
                                             </p>
                                             <a href="{{ url_for('static_pages.list_pages') }}" class="btn btn-outline-primary">
                                                 <i class="bi bi-file-text"></i> {{_("Gestionar Páginas Estáticas")}}
@@ -836,8 +812,7 @@
                                         <div class="col-12">
                                             <h6>{{_("Sección 'Enlaces Útiles'")}}</h6>
                                             <p class="text-muted">
-                                                {{_("Agregue enlaces personalizados que se mostrarán en la sección 'Enlaces
-                                                Útiles' del footer")}}.
+                                                {{_("Agregue enlaces personalizados que se mostrarán en la sección 'Enlaces\nÚtiles' del footer")}}.
                                             </p>
                                             <a
                                                 href="{{ url_for('static_pages.list_enlaces_utiles') }}"

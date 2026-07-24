@@ -426,7 +426,7 @@ def certificacion_crear(course_id: str, user: str, template: str) -> Response:
 
     can_receive, reason = can_user_receive_certificate(course_id, user)
     if not can_receive:
-        flash(f"No se puede emitir el certificado: {reason}", "warning")
+        flash(gettext("No se puede emitir el certificado: %(reason)s") % {"reason": reason}, "warning")
         return redirect(url_for("certificate.certificaciones"))
 
     # Calculate expiration date if required
@@ -452,7 +452,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
 
         can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
         if not can_receive:
-            flash(f"No se puede emitir el certificado: {reason}", "warning")
+            flash(gettext("No se puede emitir el certificado: %(reason)s") % {"reason": reason}, "warning")
             return None
         curso_obj = database.session.execute(database.select(Curso).filter_by(codigo=form.curso.data)).scalar_one_or_none()
         return Certificacion(
