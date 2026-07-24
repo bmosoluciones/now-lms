@@ -13,6 +13,15 @@ All notable changes to this project will be documented in this file.
  - Payment receipt generation: automatically sends a beautiful HTML receipt via email when PayPal payments are completed (if SMTP is configured).
  - Student payment history: a new `/payments` dashboard where students can view their transaction history, and download a simple PDF copy of their receipt using Weasyprint.
 
+### Changed:
+ - `mysql-connector-python` is now the recommended driver for MySQL/MariaDB connections (`DATABASE_URL` with `mysql://` is corrected to `mysql+mysqlconnector://`). It is already included as a first-level dependency and in the Docker image.
+ - Test suite: the pytest fixtures now create an isolated Flask application per test, which stabilizes the test run across SQLite, MySQL and PostgreSQL. When `DATABASE_URL` is not defined, tests always use an in-memory SQLite database.
+
+### Fixed:
+ - Apply the database URL driver correction also when `DATABASE_URL` is overridden via environment variable in the application factory.
+ - Fixed foreign key violation when creating certificate templates: the `usuario` field now correctly stores the username instead of the user ULID. This bug went unnoticed with SQLite (which does not enforce foreign keys by default) but failed on MySQL and PostgreSQL.
+ - Fixed several tests that assigned the user ULID to foreign keys that reference `usuario.usuario` (username).
+
 ## [1.2.4] - 2026-05-12
 
 ### Changed:
