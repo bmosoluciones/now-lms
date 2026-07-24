@@ -10,7 +10,7 @@ from os import environ
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms import lms_app, init_app
+from now_lms import lms_app, init_app, alembic
 from now_lms.logs import log
 from now_lms.session_config import ensure_session_storage
 from now_lms.worker_config import get_worker_config_from_env
@@ -24,16 +24,11 @@ if WSGI_SERVER not in {"gunicorn", "waitress"}:
     raise SystemExit(f"Unsupported WSGI_SERVER={WSGI_SERVER!r}; expected 'gunicorn' or 'waitress'")
 
 # ---------------------------------------------------------------------------------------
-# Initialize the database schema.
-#
-# init_app() is the single owner of schema management and does the right thing per DB
-# state: on a fresh database it runs initial_setup() (create_all() + alembic.stamp(head));
-# on an already-populated database it runs alembic.upgrade() (when NOW_LMS_AUTO_MIGRATE is
-# set). Calling alembic.upgrade() here unconditionally — before init_app() — broke fresh
-# deployments: on an empty database the migration chain runs from base and fails (e.g. a
-# migration creates course_library with a FK to the not-yet-created curso table), and after
-# a create_all() it collides with unguarded CREATE TABLE migrations. Let init_app() decide.
+# Update the database schema
 # ---------------------------------------------------------------------------------------
+with lms_app.app_context():
+    alembic.upgrade()
+
 if init_app():
     log.info("Iniciando NOW Learning Management System")
 

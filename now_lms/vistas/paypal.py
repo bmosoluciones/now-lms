@@ -203,10 +203,11 @@ def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[Fl
         "payerID": data.get("payerID"),
         "courseCode": data.get("courseCode"),
         "amount": data.get("amount"),
+        "itemType": data.get("itemType", "course"),
     }
     logging.info(
         f"Payment confirmation attempt for user {current_user.usuario}, "
-        f"course {fields['courseCode']}, order {fields['orderID']}"
+        f"type {fields['itemType']}, code {fields['courseCode']}, order {fields['orderID']}"
     )
     missing_fields = [name for name, value in fields.items() if not value]
     if missing_fields:
@@ -234,9 +235,10 @@ def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[Fl
 
     from now_lms.db import Programa
 
-    programa = database.session.execute(database.select(Programa).filter_by(codigo=fields["courseCode"])).scalars().first()
-
-    if programa:
+    if fields["itemType"] == "program":
+        programa = database.session.execute(database.select(Programa).filter_by(codigo=fields["courseCode"])).scalars().first()
+        if not programa:
+            return None, (jsonify({"success": False, "error": "Program not found"}), 404)
         pending_payment = (
             database.session.execute(
                 database.select(Pago).filter_by(usuario=current_user.usuario, programa=programa.id, estado="pending")
@@ -288,6 +290,7 @@ def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[Fl
     return {
         "order_id": fields["orderID"],
         "course_code": fields["courseCode"],
+        "item_type": fields["itemType"],
         "pending_payment": pending_payment,
         "verified_amount": verified_amount,
         "verified_currency": verified_currency,
@@ -298,12 +301,14 @@ def _payment_record(payment_data: dict[str, object]) -> tuple[Any, tuple[FlaskRe
     """Find or create the local payment record for a verified order."""
     order_id = payment_data["order_id"]
     course_code = payment_data["course_code"]
+    item_type = payment_data.get("item_type", "course")
 
     from now_lms.db import Programa
 
-    programa = database.session.execute(database.select(Programa).filter_by(codigo=course_code)).scalars().first()
-
-    if programa:
+    if item_type == "program":
+        programa = database.session.execute(database.select(Programa).filter_by(codigo=course_code)).scalars().first()
+        if not programa:
+            return None, (jsonify({"success": False, "error": "Program not found"}), 404)
         existing_payment = (
             database.session.execute(database.select(Pago).filter_by(referencia=order_id, programa=programa.id))
             .scalars()

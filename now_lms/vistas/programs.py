@@ -9,7 +9,6 @@ Gestión de certificados.
 
 from __future__ import annotations
 
-import logging
 from collections import OrderedDict
 
 # ---------------------------------------------------------------------------------------
@@ -67,8 +66,6 @@ from now_lms.themes import get_program_list_template, get_program_view_template
 # Constants
 PROGRAMS_ROUTE = "program.programas"
 ADMIN_PROGRAM_ENROLL_TEMPLATE = "learning/programas/admin_enroll.html"
-
-log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de gestión de programas
@@ -204,18 +201,18 @@ def programas() -> str:
     return render_template("learning/programas/lista_programas.html", consulta=consulta)
 
 
-@program.route("/program/<ulid>/delete", methods=["POST"])
+@program.route("/program/<ulid>/delete", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def delete_program(ulid: str) -> Response:
     """Elimina programa."""
-    if current_user.tipo != "admin":
-        abort(403)
-
     database.session.execute(delete(Programa).where(Programa.id == ulid))
-    database.session.commit()
-    cache.delete("view/" + url_for(PROGRAMS_ROUTE))
-    return redirect(url_for(PROGRAMS_ROUTE))
+
+    if current_user.tipo == "admin":
+        database.session.commit()
+        cache.delete("view/" + url_for(PROGRAMS_ROUTE))
+        return redirect(url_for(PROGRAMS_ROUTE))
+    return abort(403)
 
 
 @program.route("/program/<ulid>/edit", methods=["GET", "POST"])
@@ -651,9 +648,6 @@ def gestionar_cursos_programa(codigo: str) -> str | Response:
 
         if action == "add_course":
             curso_codigo = request.form.get("curso_codigo")
-            if not curso_codigo:
-                flash(_("Seleccione un curso."), "warning")
-                return redirect(url_for("program.gestionar_cursos_programa", codigo=codigo))
 
             # Check if already exists
             existente = database.session.execute(
@@ -847,17 +841,6 @@ def _get_or_create_course_enrollment(course_code, student_username, bypass_payme
     pago.audit = not bypass_payment and curso.pagado
     pago.creado = datetime.now(timezone.utc).date()
     pago.creado_por = current_user.usuario
-
-    usuario_obj = database.session.execute(database.select(Usuario).filter_by(usuario=student_username)).scalar_one_or_none()
-    if usuario_obj:
-        pago.nombre = usuario_obj.nombre or student_username
-        pago.apellido = usuario_obj.apellido or ""
-        pago.correo_electronico = usuario_obj.correo_electronico or ""
-    else:
-        pago.nombre = student_username
-        pago.apellido = ""
-        pago.correo_electronico = ""
-
     database.session.add(pago)
     database.session.flush()
 
@@ -925,7 +908,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
     try:
         # Get all courses in the program
         program_courses = (
-            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.codigo)).scalars().all()
+            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.id)).scalars().all()
         )
 
         # Enroll student in program
@@ -954,7 +937,6 @@ def admin_program_enrollment(codigo: str) -> str | Response:
         return redirect(url_for("program.programa_cursos", codigo=codigo))
 
     except Exception:
-        log.exception("Error enrolling student %s in program %s", student_username, codigo)
         database.session.rollback()
         flash("Error al inscribir al estudiante en el programa.", "error")
 
@@ -1012,7 +994,7 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
     try:
         # Get all courses in the program by querying ProgramaCurso
         program_courses = (
-            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.codigo)).scalars().all()
+            database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.id)).scalars().all()
         )
 
         # Unenroll from all courses in the program (mark as inactive)
@@ -1041,9 +1023,8 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
 
         flash(message, "success")
 
-    except Exception:
-        log.exception("Error unenrolling student %s from program %s", student_username, codigo)
+    except Exception as e:
         database.session.rollback()
-        flash("Error al desinscribir al estudiante del programa.", "error")
+        flash(f"Error al desinscribir al estudiante del programa: {str(e)}", "error")
 
     return redirect(url_for("program.admin_program_enrollments", codigo=codigo))

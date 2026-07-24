@@ -685,11 +685,7 @@ def get_ad_billboard():
 def database_select_version(app):
     """Return SQL select query."""
     if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
-        # Must SELECT a value: "SELECT FROM ..." yields a zero-column row that evaluates
-        # falsy, so database_is_populated() always returned False on PostgreSQL and re-ran
-        # initial_setup() on every boot (duplicate-key crash on restart). SELECT 1 returns a
-        # truthy row only when the curso table exists.
-        return "SELECT 1 FROM pg_tables WHERE tablename = 'curso';"
+        return "SELECT FROM pg_tables WHERE tablename  = 'curso';"
 
     if "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SHOW TABLES LIKE 'curso';"
