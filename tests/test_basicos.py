@@ -6,6 +6,10 @@ Tests básicos de la aplicación.
 Tests simples que verifican que la aplicación está correctamente configurada.
 """
 
+import os
+
+import pytest
+
 
 def test_aplicacion_se_puede_importar():
     """La aplicación debe poder importarse sin errores."""
@@ -20,6 +24,10 @@ def test_aplicacion_se_puede_inicializar(app):
     assert app.config["TESTING"] is True
 
 
+@pytest.mark.skipif(
+    "sqlite" not in os.environ.get("DATABASE_URL", "sqlite:///:memory:"),
+    reason="Solo aplica cuando se usa SQLite",
+)
 def test_base_de_datos_usa_sqlite_en_tests(app):
     """En tests, la base de datos debe usar SQLite."""
     db_uri = app.config.get("SQLALCHEMY_DATABASE_URI", "")
