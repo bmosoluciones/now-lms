@@ -266,6 +266,7 @@
                 .isl-root * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
             }
         </style>
+        <link rel="stylesheet" href="{{ S }}/front-door.css" />
     </head>
 
     <body class="isl-root" id="top">
@@ -314,7 +315,7 @@
                     </div>
 
                     <aside class="isl-standard" aria-label="{{ _('The practice standard') }}">
-                        <p class="isl-standard-label">{{ _('The practice standard') }}</p>
+                        <p class="isl-standard-label">{{ _('Inside the practice') }}</p>
                         <div class="isl-standard-step">
                             <span class="n">01</span>
                             <div><h2>{{ _('House method') }}</h2><p>{{ _('Shared systems, review habits, and delivery discipline before tool loyalty.') }}</p></div>
@@ -462,14 +463,26 @@
                 </div>
             </section>
 
-            {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, 'rgb(9 9 11)') }} {% endif %}
+            {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, 'rgb(243 246 244)') }} {% endif %}
         </main>
 
         <footer class="isl-footer">
             <div class="isl-wrap">
-                <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> {{ _('Intent Solutions Learn') }}</span>
-                <span class="fc">{{ _('Model-agnostic practice · Production standards') }}</span>
-                <span class="fc"><a href="https://intentsolutions.io" target="_blank" rel="noopener">{{ _('intentsolutions.io') }}</a></span>
+                <div class="isl-footer-main">
+                    <div>
+                        <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> {{ _('Intent Solutions Learn') }}</span>
+                        <p class="isl-footer-note">{{ _('A model-agnostic implementation practice built around judgment, evidence, and production standards.') }}</p>
+                    </div>
+                    <nav class="isl-legal" aria-label="{{ _('Legal') }}">
+                        <a href="https://intentsolutions.io/terms">{{ _('Terms of Service') }}</a>
+                        <a href="https://intentsolutions.io/privacy">{{ _('Privacy Policy') }}</a>
+                        <a href="https://intentsolutions.io/acceptable-use">{{ _('Acceptable Use') }}</a>
+                    </nav>
+                </div>
+                <div class="isl-footer-bottom">
+                    <span>{{ _('© 2026 Intent Solutions. All rights reserved.') }}</span>
+                    <a href="https://intentsolutions.io">{{ _('intentsolutions.io') }}</a>
+                </div>
             </div>
         </footer>
 
