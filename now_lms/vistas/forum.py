@@ -6,8 +6,6 @@
 from __future__ import annotations
 from flask_babel import gettext
 
-from now_lms.i18n import _
-
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
