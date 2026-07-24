@@ -1055,7 +1055,7 @@ class Pago(database.Model, BaseTabla):
     )
     programa = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_PROGRAMA), nullable=True, index=True)
     moneda = database.Column(database.String(5))  # Ejemplo: USD, EUR, CRC
-    monto = database.Column(database.Numeric(asdecimal=True))
+    monto = database.Column(database.Numeric(10, 2, asdecimal=True))
     fecha = database.Column(database.DateTime, default=utc_now)
     estado = database.Column(database.String(20), default="pending", index=True)  # pending, completed, failed
     metodo = database.Column(database.String(20))  # paypal, stripe, bank_transfer
