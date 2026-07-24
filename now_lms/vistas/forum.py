@@ -6,6 +6,8 @@
 from __future__ import annotations
 from flask_babel import gettext
 
+from now_lms.i18n import _
+
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
@@ -310,7 +312,7 @@ def cerrar_mensaje(course_code: str, message_id: str) -> Response:
 
     # Redireccionar según el tipo de solicitud (AJAX vs form)
     if request.headers.get("Content-Type") == "application/json":
-        return jsonify({"status": "success", "message": "Mensaje cerrado exitosamente"})
+        return jsonify({"status": "success", "message": gettext("Mensaje cerrado exitosamente")})
 
     return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
@@ -343,6 +345,6 @@ def abrir_mensaje(course_code: str, message_id: str) -> Response:
 
     # Redireccionar según el tipo de solicitud (AJAX vs form)
     if request.headers.get("Content-Type") == "application/json":
-        return jsonify({"status": "success", "message": "Mensaje abierto exitosamente"})
+        return jsonify({"status": "success", "message": gettext("Mensaje abierto exitosamente")})
 
     return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))

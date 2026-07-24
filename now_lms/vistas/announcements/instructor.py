@@ -20,6 +20,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, Curso, DocenteCurso, database
+from now_lms.i18n import _
 from now_lms.forms import CourseAnnouncementForm
 
 # ---------------------------------------------------------------------------------------
@@ -117,7 +118,7 @@ def new_announcement() -> str | Response:
         flash(gettext("Anuncio de curso creado exitosamente."), "success")
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
-    return render_template("announcements/instructor_form.html", form=form, title="Nuevo Anuncio de Curso")
+    return render_template("announcements/instructor_form.html", form=form, title=_("Nuevo Anuncio de Curso"))
 
 
 @instructor_announcements.route("/instructor/announcements/<announcement_id>/edit", methods=["GET", "POST"])
@@ -159,7 +160,7 @@ def edit_announcement(announcement_id: int) -> str | Response:
         return redirect(url_for(ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST))
 
     return render_template(
-        "announcements/instructor_form.html", form=form, title="Editar Anuncio de Curso", announcement=announcement
+        "announcements/instructor_form.html", form=form, title=_("Editar Anuncio de Curso"), announcement=announcement
     )
 
 

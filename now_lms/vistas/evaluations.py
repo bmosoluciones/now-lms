@@ -10,6 +10,8 @@ Evaluations management.
 from __future__ import annotations
 from flask_babel import gettext
 
+from now_lms.i18n import _
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -48,17 +50,17 @@ from now_lms.forms import EvaluationReopenRequestForm
 # <--------------------------------------------------------------------------> #
 # Route constants
 ROUTE_COURSE_TOMAR_CURSO = "course.tomar_curso"
-EVALUATION_CREATED = "Evaluación creada correctamente."
-EVALUATION_UPDATED = "Evaluación actualizada correctamente."
-EVALUATION_DELETED = "Evaluación eliminada correctamente."
-QUESTION_ADDED = "Pregunta agregada correctamente."
-QUESTION_UPDATED = "Pregunta actualizada correctamente."
-QUESTION_DELETED = "Pregunta eliminada correctamente."
-EVALUATION_SUBMITTED = "Evaluación enviada correctamente."
-REOPEN_REQUEST_SUBMITTED = "Solicitud de reabrir evaluación enviada."
-REOPEN_REQUEST_APPROVED = "Solicitud aprobada. El estudiante puede realizar un nuevo intento."
-REOPEN_REQUEST_REJECTED = "Solicitud rechazada."
-NO_AUTHORIZED_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
+EVALUATION_CREATED = _("Evaluación creada correctamente.")
+EVALUATION_UPDATED = _("Evaluación actualizada correctamente.")
+EVALUATION_DELETED = _("Evaluación eliminada correctamente.")
+QUESTION_ADDED = _("Pregunta agregada correctamente.")
+QUESTION_UPDATED = _("Pregunta actualizada correctamente.")
+QUESTION_DELETED = _("Pregunta eliminada correctamente.")
+EVALUATION_SUBMITTED = _("Evaluación enviada correctamente.")
+REOPEN_REQUEST_SUBMITTED = _("Solicitud de reabrir evaluación enviada.")
+REOPEN_REQUEST_APPROVED = _("Solicitud aprobada. El estudiante puede realizar un nuevo intento.")
+REOPEN_REQUEST_REJECTED = _("Solicitud rechazada.")
+NO_AUTHORIZED_MSG = _("No se encuentra autorizado a acceder al recurso solicitado.")
 
 # <--------------------------------------------------------------------------> #
 # Blueprint for evaluation management

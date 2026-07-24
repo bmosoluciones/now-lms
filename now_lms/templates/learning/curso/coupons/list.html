@@ -87,7 +87,7 @@
                                                     method="post"
                                                     action="{{ url_for('course.delete_coupon', course_code=curso.codigo, coupon_id=coupon.id) }}"
                                                     style="display: inline"
-                                                    onsubmit="return confirm('¿Está seguro de que desea eliminar este cupón?')"
+                                                    onsubmit="return confirm('{{ _('¿Está seguro de que desea eliminar este cupón?') }}')"
                                                 >
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                                         <i class="bi bi-trash"></i> {{ _("Eliminar") }}

@@ -34,7 +34,7 @@
                                         href="{{ url_for('program.admin_program_enrollments', codigo=programa.codigo) }}"
                                         class="btn btn-sm btn-outline-info"
                                     >
-                                        <i class="bi bi-people" aria-hidden="true"></i> {{ _("Ver") }} Inscripciones
+                                         <i class="bi bi-people" aria-hidden="true"></i> {{ _("Ver") }} {{ _('Inscripciones') }}
                                     </a>
                                     {% endif %}
                                 </div>
@@ -70,20 +70,20 @@
                                                         <button
                                                             type="submit"
                                                             class="btn btn-sm btn-outline-danger"
-                                                            onclick="
-                                                                return confirm(
-                                                                    '¿Está seguro de remover este curso del programa?'
-                                                                )
-                                                            "
-                                                        >
-                                                            Remover
+                                                             onclick="
+                                                                 return confirm(
+                                                                     '{{ _('¿Está seguro de remover este curso del programa?') }}'
+                                                                 )
+                                                             "
+                                                         >
+                                                             {{ _('Remover') }}
                                                         </button>
                                                     </form>
                                                 </div>
                                                 {% endfor %}
                                             </div>
                                             {% else %}
-                                            <p class="text-muted">No hay cursos en este programa.</p>
+                                             <p class="text-muted">{{ _('No hay cursos en este programa.') }}</p>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -92,17 +92,17 @@
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">Agregar {{ _("Curso") }}</h5>
+                                             <h5 class="card-title mb-0">{{ _('Agregar') }} {{ _("Curso") }}</h5>
                                         </div>
                                         <div class="card-body">
                                             <form method="post">
                                                 <input type="hidden" name="action" value="add_course" />
                                                 <div class="mb-3">
-                                                    <label for="curso_codigo" class="form-label"
-                                                        >Seleccionar {{ _("Curso") }}</label
+                                                     <label for="curso_codigo" class="form-label"
+                                                         >{{ _('Seleccionar') }} {{ _("Curso") }}</label
                                                     >
                                                     <select class="form-select" id="curso_codigo" name="curso_codigo" required>
-                                                        <option value="">Seleccione un curso...</option>
+                                                         <option value="">{{ _('Seleccione un curso...') }}</option>
                                                         {% for curso in todos_cursos %}
                                                         <option value="{{ curso.codigo }}">
                                                             {{ curso.nombre }} ({{ curso.codigo }})
@@ -110,7 +110,7 @@
                                                         {% endfor %}
                                                     </select>
                                                 </div>
-                                                <button type="submit" class="btn btn-primary">Agregar {{ _("Curso") }}</button>
+                                                 <button type="submit" class="btn btn-primary">{{ _('Agregar') }} {{ _("Curso") }}</button>
                                             </form>
                                         </div>
                                     </div>
@@ -124,10 +124,10 @@
                                             href="{{ url_for('program.pagina_programa', codigo=programa.codigo) }}"
                                             class="btn btn-secondary me-2"
                                         >
-                                            Volver al {{ _("Programa") }}
+                                             {{ _('Volver al') }} {{ _("Programa") }}
                                         </a>
-                                        <a href="{{ url_for('program.programas') }}" class="btn btn-outline-secondary">
-                                            Lista de {{ _("Programas") }}
+                                         <a href="{{ url_for('program.programas') }}" class="btn btn-outline-secondary">
+                                             {{ _('Lista de') }} {{ _("Programas") }}
                                         </a>
                                     </div>
                                 </div>

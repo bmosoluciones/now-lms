@@ -198,10 +198,10 @@
                     finalPrice = Math.max(0, finalPrice);
                     
                     previewElement.innerHTML = `
-                        <strong>Vista previa:</strong> 
-                        Descuento: $${discountAmount.toFixed(2)} USD | 
-                        {{ _("Precio") }} final: $${finalPrice.toFixed(2)} USD
-                        ${finalPrice === 0 ? '<span class="badge bg-success ms-2">¡GRATIS!</span>' : ''}
+                        <strong>{{ _("Vista previa:") }}</strong> 
+                        {{ _("Descuento:") }} $${discountAmount.toFixed(2)} USD | 
+                        {{ _("Precio") }} {{ _("final:") }} $${finalPrice.toFixed(2)} USD
+                        ${finalPrice === 0 ? '<span class="badge bg-success ms-2">{{ _("¡GRATIS!") }}</span>' : ''}
                     `;
                 } else {
                     previewElement.innerHTML = '';

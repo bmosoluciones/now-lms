@@ -68,14 +68,14 @@ set config = config() %}
                                                     }}
                                                 </td>
                                                 <td>
-                                                    <small class="text-muted">{{ enrollment.creado_por or 'Sistema' }}</small>
+                                                    <small class="text-muted">{{ enrollment.creado_por or _('Sistema') }}</small>
                                                 </td>
                                                 <td>
                                                     <form
                                                         method="POST"
                                                         action="{{ url_for('program.admin_program_unenrollment', codigo=programa.codigo, student_username=usuario.usuario) }}"
                                                         style="display: inline"
-                                                        onsubmit="return confirm('¿Estás seguro de que deseas desinscribir a {{ usuario.nombre }} {{ usuario.apellido }} del programa y todos sus cursos?');"
+                                                        onsubmit="return confirm('{{ _('¿Estás seguro de que deseas desinscribir a') }} {{ usuario.nombre }} {{ usuario.apellido }} {{ _('del programa y todos sus cursos?') }}');"
                                                     >
                                                         <button
                                                             type="submit"

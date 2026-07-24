@@ -423,9 +423,7 @@ def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
         coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
         coupon = (
             database.session.execute(
-                database.select(Coupon)
-                .filter_by(course_id=course_code, code=coupon_code)
-                .with_for_update()
+                database.select(Coupon).filter_by(course_id=course_code, code=coupon_code).with_for_update()
             )
             .scalars()
             .first()
@@ -457,7 +455,7 @@ def enviar_recibo_pago(pago: Pago) -> None:
     try:
         mail_config = _config()
         if not mail_config.mail_configured:
-            logging.info("El correo electrónico no está configurado. No se enviará recibo por correo.")
+            logging.info("Email is not configured. Receipt will not be sent by email.")
             return
 
         curso = None

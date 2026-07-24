@@ -80,7 +80,7 @@ def _restaurar_postgresql(backup_sql_file):
 
     os.environ["PGPASSWORD"] = DBPASS
 
-    print(f"Ejecutando: {' '.join(comando)}")
+    print(f"Running: {' '.join(comando)}")
 
     resultado = subprocess.run(  # nosec B603 - Legitimate database restore operation
         comando,
@@ -102,7 +102,7 @@ def _restaurar_mysql(backup_sql_file):
         DBNAME,
     ]
 
-    print(f"Ejecutando: {' '.join(comando[:-1])} [password oculto] {comando[-1]}")
+    print(f"Running: {' '.join(comando[:-1])} [password hidden] {comando[-1]}")
 
     with open(backup_sql_file, "rb") as sql_file:
         resultado = subprocess.run(comando, stdin=sql_file)  # nosec B603 - Legitimate database restore operation

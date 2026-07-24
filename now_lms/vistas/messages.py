@@ -10,6 +10,8 @@ Gestión del sistema de mensajería.
 from __future__ import annotations
 from flask_babel import gettext
 
+from now_lms.i18n import _
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -382,7 +384,7 @@ def change_thread_status(thread_id: int, new_status: str) -> Response:
 
     database.session.commit()
 
-    flash(f"Estado del hilo cambiado a {new_status}.", "success")
+    flash(_("Estado del hilo cambiado a %(status)s.") % {"status": new_status}, "success")
     return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
 
@@ -443,13 +445,13 @@ def resolve_report(message_id: int) -> Response:
 
     message = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
     if not message:
-        return jsonify({"success": False, "message": "Mensaje no encontrado"})
+        return jsonify({"success": False, "message": gettext("Mensaje no encontrado")})
 
     message.is_reported = False
     message.reported_reason = None
     database.session.commit()
 
-    return jsonify({"success": True, "message": "Reporte resuelto"})
+    return jsonify({"success": True, "message": gettext("Reporte resuelto")})
 
 
 @msg.route("/message/report/", methods=["GET", "POST"])

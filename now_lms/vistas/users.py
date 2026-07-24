@@ -35,8 +35,8 @@ from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
 
 
 # Constants
-USER_ALREADY_LOGGED_IN_MSG = "Su usuario ya tiene una sesión iniciada."
-ACCOUNT_CREATION_ERROR_MSG = "Error al crear la cuenta."
+USER_ALREADY_LOGGED_IN_MSG = gettext("Su usuario ya tiene una sesión iniciada.")
+ACCOUNT_CREATION_ERROR_MSG = gettext("Error al crear la cuenta.")
 USER_LOGIN_ROUTE = "user.inicio_sesion"
 
 # ---------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ def inicio_sesion() -> str | Response:
     # Rate limiting: 5 login attempts per minute per IP
     rate_limit_key = f"rate_limit_login_{request.remote_addr}"
     if request.method == "POST" and not _check_rate_limit(rate_limit_key, 5):
-        flash("Demasiados intentos de inicio de sesión. Intente nuevamente en un minuto.", "error")
+        flash(gettext("Demasiados intentos de inicio de sesión. Intente nuevamente en un minuto."), "error")
         return INICIO_SESION
 
     form = LoginForm()
@@ -102,8 +102,10 @@ def inicio_sesion() -> str | Response:
                         database.session.commit()
                         login_user(identidad)
                         flash(
-                            "Su correo electrónico no ha sido verificado. Su acceso a la plataforma está limitado. "
-                            "Por favor, verifique su correo electrónico para acceder a todas las funcionalidades.",
+                            gettext(
+                                "Su correo electrónico no ha sido verificado. Su acceso a la plataforma está limitado. "
+                                "Por favor, verifique su correo electrónico para acceder a todas las funcionalidades."
+                            ),
                             "warning",
                         )
                         return PANEL_DE_USUARIO
@@ -116,7 +118,9 @@ def inicio_sesion() -> str | Response:
                 # Show warning if email is not verified
                 if not identidad.correo_electronico_verificado and config and config.verify_user_by_email:
                     flash(
-                        "Su correo electrónico no ha sido verificado. Su acceso a algunas funcionalidades está limitado.",
+                        gettext(
+                            "Su correo electrónico no ha sido verificado. Su acceso a algunas funcionalidades está limitado."
+                        ),
                         "warning",
                     )
 
@@ -125,7 +129,7 @@ def inicio_sesion() -> str | Response:
         flash(gettext("Inicio de Sesion Incorrecto."), "warning")
         return INICIO_SESION
     return render_template(
-        "auth/login.html", form=form, titulo="Inicio de Sesion - NOW LMS", show_forgot_password=show_forgot_password
+        "auth/login.html", form=form, titulo=gettext("Inicio de Sesion - NOW LMS"), show_forgot_password=show_forgot_password
     )
 
 
@@ -187,7 +191,7 @@ def crear_cuenta() -> str | Response:
         except PendingRollbackError:
             flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
             return redirect("/")
-    return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
+    return render_template("auth/logon.html", form=form, titulo=gettext("Crear cuenta - NOW LMS"))
 
 
 @user.route("/user/new_user", methods=["GET", "POST"])
@@ -263,7 +267,7 @@ def forgot_password() -> str | Response:
     # Rate limiting: 3 forgot-password attempts per minute per IP
     rate_limit_key = f"rate_limit_forgot_pwd_{request.remote_addr}"
     if request.method == "POST" and not _check_rate_limit(rate_limit_key, 3):
-        flash("Demasiadas solicitudes de recuperación de contraseña. Intente nuevamente en un minuto.", "error")
+        flash(gettext("Demasiadas solicitudes de recuperación de contraseña. Intente nuevamente en un minuto."), "error")
         return INICIO_SESION
 
     form = ForgotPasswordForm()
@@ -276,7 +280,7 @@ def forgot_password() -> str | Response:
 
         return redirect(url_for(USER_LOGIN_ROUTE))
 
-    return render_template("auth/forgot_password.html", form=form, titulo="Recuperar Contraseña - NOW LMS")
+    return render_template("auth/forgot_password.html", form=form, titulo=gettext("Recuperar Contraseña - NOW LMS"))
 
 
 @user.route("/user/reset_password/<token>", methods=["GET", "POST"])
@@ -302,7 +306,7 @@ def reset_password(token: str) -> str | Response:
     if form.validate_on_submit():
         if form.new_password.data != form.confirm_password.data:
             flash(gettext("Las nuevas contraseñas no coinciden."), "error")
-            return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")
+            return render_template("auth/reset_password.html", form=form, titulo=gettext("Restablecer Contraseña - NOW LMS"))
 
         # Update password
         usuario.acceso = proteger_passwd(form.new_password.data)
@@ -312,4 +316,4 @@ def reset_password(token: str) -> str | Response:
         log.info(f"Password reset for user {usuario.usuario}")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
-    return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")
+    return render_template("auth/reset_password.html", form=form, titulo=gettext("Restablecer Contraseña - NOW LMS"))

@@ -18,12 +18,12 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Agregar un recurso externo a su curso.</h4>
+                <h4 class="pb-2 border-bottom">{{ _('Agregar un recurso externo a su curso.') }}</h4>
                 <form method="post">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Titulo del {{ _("Recurso") }}</label>
+                            <label for="nombre" class="form-label">{{ _('Titulo del') }} {{ _("Recurso") }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Recurso")) }} {{
                             render_field_errors(form.nombre) }}
                         </div>

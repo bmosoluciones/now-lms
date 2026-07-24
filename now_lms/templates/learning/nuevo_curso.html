@@ -139,7 +139,7 @@
                                 width="400"
                             />
                         </div>
-                        <a href="{{url_for('course.elimina_logo', course_code=curso.codigo)}}">{{ _("Eliminar") }} Portada</a>
+                        <a href="{{url_for('course.elimina_logo', course_code=curso.codigo)}}">{{ _("Eliminar") }} {{ _("Portada") }}</a>
                         {% else %}
                         <div class="col-md-4">
                             <label for="logo" class="form-label">{{ _('Portada') }}</label>
@@ -177,7 +177,7 @@
                             <label for="descripcion" class="form-label">{{ _("Descripción") }} del {{ _("Curso") }}:</label>
                             {{form.descripcion}} {{ render_field_errors(form.descripcion) }}
                             <br />
-                            <h6>Vista previa de la descripción:</h6>
+                            <h6>{{ _('Vista previa de la descripción:') }}</h6>
                             {{mde.preview}} {{mde.js}}
                             <br />
                             <br />
