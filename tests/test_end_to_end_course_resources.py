@@ -151,12 +151,13 @@ def test_e2e_curso_seccion_y_recursos(app, db_session, tipos):
     resp_get_new_section = client.get(f"/course/{curso_code}/new_seccion", follow_redirects=False)
     assert resp_get_new_section.status_code in {200, *REDIRECT_STATUS_CODES}
 
-    # Habilitar carga de archivos para recursos descargables en este entorno de prueba
-    with app.app_context():
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        if config:
-            config.enable_file_uploads = True
-            database.session.commit()
+    # Habilitar carga de archivos para recursos descargables en este entorno de prueba.
+    # Se usa db_session (la misma sesión) para que el cambio sea visible al releer:
+    # con MySQL (REPEATABLE READ) otra sesión no vería el commit dentro de esta transacción.
+    config = db_session.execute(database.select(Configuracion)).scalars().first()
+    if config:
+        config.enable_file_uploads = True
+        db_session.commit()
     db_session.expire_all()
     config_refreshed = db_session.execute(database.select(Configuracion)).scalars().first()
     assert config_refreshed and config_refreshed.enable_file_uploads is True
