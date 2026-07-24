@@ -1136,9 +1136,9 @@ class Coupon(database.Model, BaseTabla):
     def calculate_discount(self, original_price):
         """Calculate the discount amount for a given price."""
         if self.discount_type == "percentage":
-            discount = float(original_price) * (self.discount_value / 100)
+            discount = float(original_price) * (float(self.discount_value) / 100)
         else:  # fixed
-            discount = min(self.discount_value, float(original_price))
+            discount = min(float(self.discount_value), float(original_price))
 
         return min(discount, float(original_price))  # Cannot discount more than original price
 
