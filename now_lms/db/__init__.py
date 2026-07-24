@@ -128,6 +128,9 @@ class BaseTabla:
     modificado = database.Column(database.DateTime, onupdate=utc_now, nullable=True)
     modificado_por = database.Column(database.String(150), nullable=True)
 
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {getattr(self, 'id', 'no-id')}>"
+
     def validate_user_references(self):
         """Validate that audit fields reference existing users or set them to None."""
         # Use no_autoflush to prevent recursive flush during validation
@@ -198,6 +201,9 @@ class Usuario(UserMixin, database.Model, BaseTabla):
     github = database.Column(database.String(500))
     youtube = database.Column(database.String(500))
     # Relaciones
+    blog_posts = database.relationship("BlogPost", back_populates="author")
+    blog_comments = database.relationship("BlogComment", back_populates="user")
+    calendar_events = database.relationship("UserEvent", back_populates="user")
     relacion_grupo = database.relationship("UsuarioGrupoMiembro")
     # Imagen de perfil
     portada = database.Column(database.Boolean())
@@ -217,10 +223,6 @@ class UsuarioGrupoMiembro(database.Model, BaseTabla):
 
     grupo = database.Column(database.String(26), database.ForeignKey("usuario_grupo.id", ondelete="CASCADE"))
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO))
-
-
-class UsuarioGrupoTutor(UsuarioGrupoMiembro):
-    """Asigna un usuario como tutor de un curso."""
 
 
 class Curso(database.Model, BaseTabla):
@@ -262,6 +264,11 @@ class Curso(database.Model, BaseTabla):
     )
     recertification_required = database.Column(database.Boolean(), default=False)
     recertification_period_years = database.Column(database.Integer(), nullable=True)
+
+    secciones = database.relationship("CursoSeccion", lazy="dynamic")
+    recursos = database.relationship("CursoRecurso", lazy="dynamic")
+    inscripciones = database.relationship("EstudianteCurso", lazy="dynamic")
+    user_events = database.relationship("UserEvent", back_populates="course")
 
     def validar_foro_habilitado(self):
         """Valida que el foro solo pueda habilitarse en cursos no self-paced."""
@@ -333,6 +340,7 @@ class CursoSeccion(database.Model, BaseTabla):
     indice = database.Column(database.Integer(), index=True)
     # 0: Borrador, 1: Publico
     estado = database.Column(database.Boolean())
+    user_events = database.relationship("UserEvent", back_populates="section")
 
 
 class CursoRecurso(database.Model, BaseTabla):
@@ -342,6 +350,7 @@ class CursoRecurso(database.Model, BaseTabla):
     seccion = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_SECCION, ondelete="CASCADE"), nullable=False, index=True)
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True)
     rel_curso = database.relationship("Curso")
+    user_events = database.relationship("UserEvent", back_populates="resource")
     nombre = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.Text(), nullable=False)
     # Uno de: mp3, pdf, meet, img, text, html, link, slides, youtube
@@ -447,9 +456,9 @@ class CursoRecursoPreguntaRespuesta(database.Model, BaseTabla):
 class CursoRecursoConsulta(database.Model, BaseTabla):
     """Un usuario debe poder hacer consultas a su tutor/moderador."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False)
-    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO, ondelete="CASCADE"), nullable=False)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
+    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True)
+    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO, ondelete="CASCADE"), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     pregunta = database.Column(database.String(500))
     respuesta = database.Column(database.String(500))
 
@@ -624,7 +633,7 @@ class Configuracion(database.Model, BaseTabla):
     contact_mobile = database.Column(database.String(50), nullable=True)
     contact_whatsapp = database.Column(database.String(50), nullable=True)
 
-    r = database.Column(database.LargeBinary())
+    csrf_seed = database.Column(database.LargeBinary())
 
 
 class Style(database.Model, BaseTabla):
@@ -876,7 +885,7 @@ class MessageThread(database.Model, BaseTabla):
     # Relationships
     course = database.relationship("Curso", foreign_keys=[course_id])
     student = database.relationship("Usuario", foreign_keys=[student_id])
-    messages = database.relationship("Message", backref="thread", lazy="dynamic", cascade=CASCADE_ALL_DELETE_ORPHAN)
+    messages = database.relationship("Message", back_populates="thread", lazy="dynamic", cascade=CASCADE_ALL_DELETE_ORPHAN)
 
 
 class Message(database.Model, BaseTabla):
@@ -890,6 +899,7 @@ class Message(database.Model, BaseTabla):
     reported_reason = database.Column(database.Text, nullable=True)
 
     # Relationships
+    thread = database.relationship("MessageThread", back_populates="messages")
     sender = database.relationship("Usuario", foreign_keys=[sender_id])
 
 
@@ -907,7 +917,8 @@ class ForoMensaje(database.Model, BaseTabla):
     # Relationships
     curso = database.relationship("Curso", foreign_keys=[curso_id])
     usuario = database.relationship("Usuario", foreign_keys=[usuario_id])
-    parent = database.relationship("ForoMensaje", remote_side="ForoMensaje.id", backref="replies")
+    parent = database.relationship("ForoMensaje", remote_side="ForoMensaje.id", back_populates="replies")
+    replies = database.relationship("ForoMensaje", back_populates="parent")
 
     def is_thread_open(self):
         """Retorna True si el hilo está abierto para nuevas respuestas."""
@@ -938,12 +949,6 @@ class ForoMensaje(database.Model, BaseTabla):
         for mensaje in mensajes:
             mensaje.estado = "cerrado"
         database.session.commit()
-
-
-class PagosConfig(database.Model, BaseTabla):
-    """Configuración de pagos."""
-
-    # Additional config fields can be added here
 
 
 class AdSense(database.Model, BaseTabla):
@@ -986,7 +991,7 @@ class Pago(database.Model, BaseTabla):
     moneda = database.Column(database.String(5))  # Ejemplo: USD, EUR, CRC
     monto = database.Column(database.Numeric(asdecimal=True))
     fecha = database.Column(database.DateTime, default=utc_now)
-    estado = database.Column(database.String(20), default="pending")  # pending, completed, failed
+    estado = database.Column(database.String(20), default="pending", index=True)  # pending, completed, failed
     metodo = database.Column(database.String(20))  # paypal, stripe, bank_transfer
     referencia = database.Column(database.String(100), nullable=True)  # Referencia de pago
     descripcion = database.Column(database.String(500), nullable=True)  # Descripción del pago
@@ -1027,6 +1032,7 @@ class Evaluation(database.Model, BaseTabla):
     section = database.relationship("CursoSeccion", foreign_keys=[section_id])
     questions = database.relationship("Question", back_populates="evaluation", cascade=CASCADE_ALL_DELETE_ORPHAN)
     attempts = database.relationship("EvaluationAttempt", back_populates="evaluation", cascade=CASCADE_ALL_DELETE_ORPHAN)
+    user_events = database.relationship("UserEvent", back_populates="evaluation")
 
 
 class Question(database.Model, BaseTabla):
@@ -1355,9 +1361,9 @@ class BlogPost(database.Model, BaseTabla):
     cover_image_ext = database.Column(database.String(5))
 
     # Relationships
-    author = database.relationship("Usuario", backref="blog_posts")
-    tags = database.relationship("BlogTag", secondary=blog_post_tags, backref="posts")
-    comments = database.relationship("BlogComment", backref="post", cascade=CASCADE_ALL_DELETE_ORPHAN)
+    author = database.relationship("Usuario", back_populates="blog_posts")
+    tags = database.relationship("BlogTag", secondary=blog_post_tags, back_populates="posts")
+    comments = database.relationship("BlogComment", back_populates="post", cascade=CASCADE_ALL_DELETE_ORPHAN)
 
 
 class BlogTag(database.Model, BaseTabla):
@@ -1367,6 +1373,7 @@ class BlogTag(database.Model, BaseTabla):
 
     name = database.Column(database.String(50), unique=True, nullable=False, index=True)
     slug = database.Column(database.String(60), unique=True, nullable=False, index=True)
+    posts = database.relationship("BlogPost", secondary=blog_post_tags, back_populates="tags")
 
 
 class BlogComment(database.Model, BaseTabla):
@@ -1380,7 +1387,8 @@ class BlogComment(database.Model, BaseTabla):
     status = database.Column(database.String(20), default="visible", nullable=False, index=True)  # visible, flagged, banned
 
     # Relationships
-    user = database.relationship("Usuario", backref="blog_comments")
+    post = database.relationship("BlogPost", back_populates="comments")
+    user = database.relationship("Usuario", back_populates="blog_comments")
 
 
 class UserEvent(database.Model, BaseTabla):
@@ -1404,11 +1412,11 @@ class UserEvent(database.Model, BaseTabla):
     status = database.Column(database.String(20), default="pending", nullable=False, index=True)  # pending, ongoing, completed
 
     # Relationships
-    user = database.relationship("Usuario", backref="calendar_events")
-    course = database.relationship("Curso", backref="user_events")
-    section = database.relationship("CursoSeccion", backref="user_events")
-    resource = database.relationship("CursoRecurso", backref="user_events")
-    evaluation = database.relationship("Evaluation", backref="user_events")
+    user = database.relationship("Usuario", back_populates="calendar_events")
+    course = database.relationship("Curso", back_populates="user_events")
+    section = database.relationship("CursoSeccion", back_populates="user_events")
+    resource = database.relationship("CursoRecurso", back_populates="user_events")
+    evaluation = database.relationship("Evaluation", back_populates="user_events")
 
 
 class StaticPage(database.Model, BaseTabla):
