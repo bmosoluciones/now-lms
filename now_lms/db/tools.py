@@ -126,7 +126,7 @@ def crear_configuracion_predeterminada() -> None:
     config.titulo = "NOW LMS"
     config.descripcion = _("Sistema de aprendizaje en linea.")
     config.moneda = default_currency
-    config.r = urandom(16)
+    config.csrf_seed = urandom(16)
     config.enable_programs = False
     config.enable_masterclass = False
     config.enable_resources = False
