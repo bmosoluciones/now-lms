@@ -355,7 +355,7 @@ class CursoRecurso(database.Model, BaseTabla):
     publico = database.Column(database.Boolean())
     base_doc_url = database.Column(database.String(50), unique=False)
     doc = database.Column(database.String(50), unique=False)
-    ext = database.Column(database.String(5), unique=True)
+    ext = database.Column(database.String(5), unique=False)
     text = database.Column(database.Text())
     external_code = database.Column(database.Text())
     notes = database.Column(database.String(20))
