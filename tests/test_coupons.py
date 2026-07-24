@@ -4,7 +4,7 @@
 Tests unitarios y de integración para la gestión de cupones de descuento.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pytest
 from flask_login import login_user, logout_user
 from now_lms.db import database, Usuario, Curso, DocenteCurso, Coupon, EstudianteCurso, Configuracion
@@ -57,6 +57,7 @@ def test_courses(app, db_session):
         estado="open",
         pagado=True,
         precio=100.0,
+        plantilla_certificado=None,
     )
     free_course = Curso(
         codigo="FREE01",
@@ -65,6 +66,7 @@ def test_courses(app, db_session):
         descripcion="free",
         estado="open",
         pagado=False,
+        plantilla_certificado=None,
     )
     db_session.add_all([paid_course, free_course])
     db_session.commit()
@@ -146,13 +148,13 @@ def test_validate_coupon_for_enrollment_already_enrolled(app, db_session, test_u
 
 def test_validate_coupon_for_enrollment_validation_errors(app, db_session, test_users, test_courses):
     """Prueba diferentes estados inválidos del cupón."""
-    # Expirado
+    # Expirado - usar datetime naive para compatibilidad con SQLite
     expired_coupon = Coupon(
         course_id="PAID01",
         code="EXPIRED",
         discount_type="percentage",
         discount_value=10.0,
-        expires_at=datetime.now() - timedelta(days=1),
+        expires_at=datetime.utcnow() - timedelta(days=1),
         created_by="inst_coupon",
     )
     # Límite de usos alcanzado

@@ -46,7 +46,6 @@ from now_lms.logs import log
 from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 from .data import SAFE_FILE_EXTENSIONS, DANGEROUS_FILE_EXTENSIONS
 
-
 _COURSE_CODE_RE = re.compile(r"^[a-zA-Z0-9_.-]+$")
 
 
@@ -188,6 +187,13 @@ def _crear_indice_avance_curso(course_code: str) -> None:
 
     if recursos:
         for recurso in recursos:
+            existing = database.session.execute(
+                database.select(CursoRecursoAvance).filter_by(
+                    usuario=usuario, curso=course_code, recurso=recurso.id
+                )
+            ).scalar_one_or_none()
+            if existing:
+                continue
             avance = CursoRecursoAvance(
                 usuario=usuario,
                 curso=course_code,
@@ -196,7 +202,7 @@ def _crear_indice_avance_curso(course_code: str) -> None:
                 requerido=recurso.requerido,
             )
             database.session.add(avance)
-            database.session.commit()
+        database.session.commit()
 
 
 def _emitir_certificado(curso_id: str, usuario: str, plantilla: str) -> None:

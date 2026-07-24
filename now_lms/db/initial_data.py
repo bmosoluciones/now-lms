@@ -66,12 +66,22 @@ if TYPE_CHECKING:
 def system_info(app: "Flask") -> None:
     """Información básica de la instalación."""
     with app.app_context():
-        version_sistema = SystemInfo(param="version", val=VERSION)
-        version_sistema_mayor = SystemInfo(param="version_mayor", val=str(MAYOR))
-        version_sistema_menor = SystemInfo(param="version_menor", val=str(MENOR))
-
-        for i in version_sistema, version_sistema_mayor, version_sistema_menor:
-            database.session.add(i)
+        try:
+            existing = {
+                row.param
+                for row in database.session.query(SystemInfo.param).all()
+            }
+        except Exception:
+            existing = set()
+        entries = []
+        if "version" not in existing:
+            entries.append(SystemInfo(param="version", val=VERSION))
+        if "version_mayor" not in existing:
+            entries.append(SystemInfo(param="version_mayor", val=str(MAYOR)))
+        if "version_menor" not in existing:
+            entries.append(SystemInfo(param="version_menor", val=str(MENOR)))
+        for entry in entries:
+            database.session.add(entry)
         database.session.commit()
 
 
@@ -254,7 +264,7 @@ def crear_curso_demo() -> None:
         hora_fin=time(hour=15, minute=00),
         notes="Google Meet",
         publico=True,  # Make it public for easier testing
-        requerido=2,
+        requerido="optional",
     )
     nuevo_recurso3.tipo = "meet"
     database.session.add(nuevo_recurso3)
@@ -268,7 +278,7 @@ def crear_curso_demo() -> None:
         descripcion="A image file.",
         indice=4,
         publico=True,
-        requerido=3,
+        requerido="substitute",
         base_doc_url="images",
         doc="resources/logo_large.png",
     )
@@ -283,7 +293,7 @@ def crear_curso_demo() -> None:
         descripcion="A text in markdown.",
         indice=5,
         publico=False,
-        requerido=3,
+        requerido="substitute",
         text="# NOW - Learning Management System.",
     )
     nuevo_recurso5.tipo = "text"
@@ -324,7 +334,7 @@ def crear_curso_demo() -> None:
         url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
         indice=9,
         publico=False,
-        requerido=2,
+        requerido="optional",
     )
     nuevo_recurso9.tipo = "youtube"
     database.session.add(nuevo_recurso9)

@@ -166,9 +166,7 @@ def _resolve_option_ids(question, selected_values: list[str]) -> list[str]:
             option_ids.append(value)
             continue
         option = (
-            database.session.execute(
-                database.select(QuestionOption).filter_by(question_id=question.id, text=value)
-            )
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=question.id, text=value))
             .scalars()
             .first()
         )
@@ -203,11 +201,7 @@ def _try_issue_certificate(section) -> None:
     can_receive, _ = can_user_receive_certificate(section.curso, current_user.usuario)
     if not can_receive:
         return
-    curso = (
-        database.session.execute(database.select(Curso).filter(Curso.codigo == section.curso))
-        .scalars()
-        .first()
-    )
+    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == section.curso)).scalars().first()
     if curso and curso.certificado and curso.plantilla_certificado:
         _emitir_certificado(section.curso, current_user.usuario, curso.plantilla_certificado)
 
@@ -231,9 +225,7 @@ def take_evaluation(evaluation_id: int) -> str | Response:
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
     if request.method == "POST":
-        attempt = EvaluationAttempt(
-            evaluation_id=evaluation_id, user_id=current_user.usuario, started_at=datetime.now()
-        )
+        attempt = EvaluationAttempt(evaluation_id=evaluation_id, user_id=current_user.usuario, started_at=datetime.now())
         database.session.add(attempt)
         database.session.flush()
 

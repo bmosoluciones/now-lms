@@ -31,11 +31,11 @@ def _get_or_create_config(db_session):
         config = Configuracion(
             titulo="Test LMS",
             verify_user_by_email=False,
-            r=b"some-random-salt-16bytes-long!"[:16]
+            csrf_seed=b"some-random-salt-16bytes-long!"[:16]
         )
         db_session.add(config)
     else:
-        config.r = b"some-random-salt-16bytes-long!"[:16]
+        config.csrf_seed = b"some-random-salt-16bytes-long!"[:16]
     db_session.commit()
     return config
 

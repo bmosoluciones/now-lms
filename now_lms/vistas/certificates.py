@@ -454,9 +454,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
         if not can_receive:
             flash(f"No se puede emitir el certificado: {reason}", "warning")
             return None
-        curso_obj = database.session.execute(
-            database.select(Curso).filter_by(codigo=form.curso.data)
-        ).scalar_one_or_none()
+        curso_obj = database.session.execute(database.select(Curso).filter_by(codigo=form.curso.data)).scalar_one_or_none()
         return Certificacion(
             usuario=form.usuario.data,
             curso=form.curso.data,
@@ -470,9 +468,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
         flash(gettext("Por favor selecciona una clase magistral."), "warning")
         return None
     enrollment = database.session.execute(
-        database.select(MasterClassEnrollment).filter_by(
-            master_class_id=form.master_class.data, user_id=form.usuario.data
-        )
+        database.select(MasterClassEnrollment).filter_by(master_class_id=form.master_class.data, user_id=form.usuario.data)
     ).first()
     if not enrollment or not enrollment[0].is_confirmed:
         flash(gettext("El usuario debe estar inscrito y confirmado en la clase magistral."), "warning")
@@ -547,6 +543,65 @@ def certificacion_programa_qr(certificate_id: str) -> Response:
     return response
 
 
+class FakeCurso:
+    def __init__(self, codigo, nombre):
+        self.codigo = codigo
+        self.nombre = nombre
+
+
+class ExecuteResultWrapper:
+    def __init__(self, fake_obj):
+        self.fake_obj = fake_obj
+
+    def scalar_one_or_none(self):
+        return self.fake_obj
+
+    def first(self):
+        return self.fake_obj
+
+    def scalars(self):
+        return self
+
+
+class SelectWrapper:
+    def __init__(self, model, real_database):
+        self.model = model
+        self.real_database = real_database
+        self.target_code = None
+
+    def filter_by(self, **kwargs):
+        self.target_code = kwargs.get("codigo")
+        return self
+
+    def filter(self, *args, **kwargs):
+        return self
+
+
+class SessionWrapper:
+    def __init__(self, real_session, snapshot_dict):
+        self.real_session = real_session
+        self.snapshot_dict = snapshot_dict
+
+    def execute(self, query_wrapper):
+        if hasattr(query_wrapper, "target_code") and query_wrapper.target_code in self.snapshot_dict:
+            course_name = self.snapshot_dict[query_wrapper.target_code]
+            return ExecuteResultWrapper(FakeCurso(query_wrapper.target_code, course_name))
+        try:
+            return self.real_session.execute(query_wrapper)
+        except Exception:
+            return ExecuteResultWrapper(None)
+
+
+class DatabaseSnapshotWrapper:
+    def __init__(self, real_database, snapshot_dict):
+        self.real_database = real_database
+        self.snapshot_dict = snapshot_dict
+        self.session = SessionWrapper(real_database.session, snapshot_dict)
+
+    def select(self, model):
+        return SelectWrapper(model, self.real_database)
+
+
 @certificate.route("/certificate/program/view/<ulid>/", methods=["GET"])
 def certificacion_programa(ulid: str) -> str:
     """View program certificate."""
@@ -582,6 +637,17 @@ def certificacion_programa(ulid: str) -> str:
 
     template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado_obj))  # type: ignore
 
+    db_ctx: Any = database
+    if certificacion_programa_obj.cursos_snapshot:
+        import json
+
+        try:
+            snapshot_dict = json.loads(certificacion_programa_obj.cursos_snapshot)
+            if isinstance(snapshot_dict, dict):
+                db_ctx = DatabaseSnapshotWrapper(database, snapshot_dict)
+        except Exception:
+            pass
+
     context = {
         "usuario": usuario,
         "certificacion_programa": certificacion_programa_obj,
@@ -589,7 +655,7 @@ def certificacion_programa(ulid: str) -> str:
         "programa": programa,
         "id": ulid,  # Keep backward compatibility for templates using id
         "url_for": url_for,
-        "database": database,  # For accessing Curso model in template
+        "database": db_ctx,  # For accessing Curso model in template
     }
 
     return template.render(**context)
@@ -632,13 +698,24 @@ def certificate_programa_serve_pdf(ulid: str) -> Any:
 
     template = Environment(loader=BaseLoader, autoescape=True).from_string(certificado_obj.html)  # type: ignore
 
+    db_ctx: Any = database
+    if certificacion_programa_obj.cursos_snapshot:
+        import json
+
+        try:
+            snapshot_dict = json.loads(certificacion_programa_obj.cursos_snapshot)
+            if isinstance(snapshot_dict, dict):
+                db_ctx = DatabaseSnapshotWrapper(database, snapshot_dict)
+        except Exception:
+            pass
+
     context = {
         "usuario": usuario,
         "certificacion_programa": certificacion_programa_obj,
         "certificado": certificado_obj,
         "programa": programa,
         "url_for": url_for,
-        "database": database,  # For accessing Curso model in template
+        "database": db_ctx,  # For accessing Curso model in template
     }
 
     return render_pdf(

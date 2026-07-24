@@ -66,6 +66,7 @@ def test_e2e_user_registration(app, db_session):
     resp_register = client.post(
         "/user/logon",
         data={
+            "usuario": "newuser@example.com",
             "nombre": "New",
             "apellido": "User",
             "correo_electronico": "newuser@example.com",

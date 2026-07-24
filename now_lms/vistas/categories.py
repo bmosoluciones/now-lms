@@ -26,6 +26,7 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, database
 from now_lms.db.tools import cursos_por_categoria, programas_por_categoria
 from now_lms.forms import CategoriaForm
+from now_lms.vistas._helpers import safe_commit
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -91,7 +92,7 @@ def delete_category(ulid: str) -> Response:
     from sqlalchemy import delete
 
     database.session.execute(delete(Categoria).where(Categoria.id == ulid))
-    database.session.commit()
+    safe_commit()
     return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
 
@@ -100,7 +101,11 @@ def delete_category(ulid: str) -> Response:
 @perfil_requerido("instructor")
 def edit_category(ulid: str) -> str | Response:
     """Editar categoria."""
+    from flask import abort
+
     categoria = database.session.execute(database.select(Categoria).filter(Categoria.id == ulid)).scalar_one_or_none()
+    if not categoria:
+        abort(404)
     form = CategoriaForm(nombre=categoria.nombre, descripcion=categoria.descripcion)
     if form.validate_on_submit() or request.method == "POST":
         categoria.nombre = form.nombre.data

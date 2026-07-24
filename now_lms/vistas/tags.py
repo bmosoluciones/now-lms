@@ -26,6 +26,7 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Etiqueta, database
 from now_lms.db.tools import cursos_por_etiqueta, programas_por_etiqueta
 from now_lms.forms import EtiquetaForm
+from now_lms.vistas._helpers import safe_commit
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -92,7 +93,7 @@ def delete_tag(ulid: str) -> Response:
     from sqlalchemy import delete
 
     database.session.execute(delete(Etiqueta).where(Etiqueta.id == ulid))
-    database.session.commit()
+    safe_commit()
     return redirect(url_for(TAG_TAGS_ROUTE))
 
 
@@ -101,7 +102,11 @@ def delete_tag(ulid: str) -> Response:
 @perfil_requerido("instructor")
 def edit_tag(ulid: str) -> str | Response:
     """Edita una etiqueta."""
+    from flask import abort
+
     etiqueta = database.session.execute(database.select(Etiqueta).filter(Etiqueta.id == ulid)).scalar_one_or_none()
+    if not etiqueta:
+        abort(404)
     form = EtiquetaForm(color=etiqueta.color, nombre=etiqueta.nombre)
     if form.validate_on_submit() or request.method == "POST":
         etiqueta.nombre = form.nombre.data

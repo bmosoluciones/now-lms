@@ -28,6 +28,8 @@ health_bp = Blueprint("health", __name__)
 @health_bp.route("/health", methods=["GET"])
 def health() -> tuple[Response, int]:
     """Health check endpoint for application status monitoring."""
+    from flask import current_app
+
     # Default response
     status = {"status": "ok", "database": "ok", "version": VERSION, "code_name": CODE_NAME}
 
@@ -35,7 +37,8 @@ def health() -> tuple[Response, int]:
         # Simple DB check (lightweight)
         database.session.execute(text("SELECT 1"))
     except Exception as e:
+        current_app.logger.error(f"Database health check failed: {e}")
         status["status"] = "error"
-        status["database"] = f"error: {str(e)}"
+        status["database"] = "error: database unavailable"
 
     return jsonify(status), 200 if status["status"] == "ok" else 503

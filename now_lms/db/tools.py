@@ -126,7 +126,7 @@ def crear_configuracion_predeterminada() -> None:
     config.titulo = "NOW LMS"
     config.descripcion = _("Sistema de aprendizaje en linea.")
     config.moneda = default_currency
-    config.r = urandom(16)
+    config.csrf_seed = urandom(16)
     config.enable_programs = False
     config.enable_masterclass = False
     config.enable_resources = False
@@ -250,16 +250,22 @@ def _check_consecutive_alternatives(recurso_actual: CursoRecurso) -> bool:
     return recurso_siguiente is not None and _is_recurso_alternativo(recurso_siguiente.requerido)
 
 
-def _navigation_resource(recurso_actual: CursoRecurso, seccion: CursoSeccion, direction: str) -> tuple[CursoRecurso | None, bool]:
+def _navigation_resource(
+    recurso_actual: CursoRecurso, seccion: CursoSeccion, direction: str
+) -> tuple[CursoRecurso | None, bool]:
     """Find a resource in the requested direction, crossing sections when needed."""
     offset = -1 if direction == "previous" else 1
     order = CursoRecurso.indice.desc() if direction == "previous" else CursoRecurso.indice
-    resource = database.session.execute(
-        database.select(CursoRecurso).filter(
-            CursoRecurso.seccion == recurso_actual.seccion,
-            CursoRecurso.indice == recurso_actual.indice + offset,
+    resource = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.seccion == recurso_actual.seccion,
+                CursoRecurso.indice == recurso_actual.indice + offset,
+            )
         )
-    ).scalars().first()
+        .scalars()
+        .first()
+    )
     if resource:
         if direction == "previous":
             is_alternative = _is_recurso_alternativo(resource.requerido) and _is_recurso_alternativo(recurso_actual.requerido)
@@ -267,19 +273,25 @@ def _navigation_resource(recurso_actual: CursoRecurso, seccion: CursoSeccion, di
             is_alternative = _check_consecutive_alternatives(resource)
         return resource, is_alternative
 
-    adjacent_section = database.session.execute(
-        database.select(CursoSeccion).filter(
-            CursoSeccion.curso == recurso_actual.curso,
-            CursoSeccion.indice == seccion.indice + offset,
+    adjacent_section = (
+        database.session.execute(
+            database.select(CursoSeccion).filter(
+                CursoSeccion.curso == recurso_actual.curso,
+                CursoSeccion.indice == seccion.indice + offset,
+            )
         )
-    ).scalars().first()
+        .scalars()
+        .first()
+    )
     if not adjacent_section:
         return None, False
-    resource = database.session.execute(
-        database.select(CursoRecurso)
-        .filter(CursoRecurso.seccion == adjacent_section.id)
-        .order_by(order)
-    ).scalars().first()
+    resource = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(CursoRecurso.seccion == adjacent_section.id).order_by(order)
+        )
+        .scalars()
+        .first()
+    )
     if not resource:
         return None, False
     return resource, direction != "previous" and _check_consecutive_alternatives(resource)
@@ -673,11 +685,7 @@ def get_ad_billboard():
 def database_select_version(app):
     """Return SQL select query."""
     if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
-        # Must SELECT a value: "SELECT FROM ..." yields a zero-column row that evaluates
-        # falsy, so database_is_populated() always returned False on PostgreSQL and re-ran
-        # initial_setup() on every boot (duplicate-key crash on restart). SELECT 1 returns a
-        # truthy row only when the curso table exists.
-        return "SELECT 1 FROM pg_tables WHERE tablename = 'curso';"
+        return "SELECT FROM pg_tables WHERE tablename  = 'curso';"
 
     if "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SHOW TABLES LIKE 'curso';"
@@ -708,22 +716,10 @@ def database_is_populated(app):
         from sqlalchemy.sql import text
 
         try:
-            QUERY = database_select_version(app)
-            if QUERY:
-                version = database.session.execute(text(QUERY)).first()
-                if version:
-                    log.debug("Database connection verified.")
-                    log.trace("Checking if database is populated.")
-                    check = True
-                else:
-                    check = False
-                if check:
-                    log.trace("Database populated.")
-                    return check
-                log.trace("Database not populated.")
-                log.info("Database not populated, creating default configuration.")
-                return check
-            return False
+            result = database.session.execute(
+                text("SELECT 1 FROM system_info WHERE param = 'version'")
+            ).first()
+            return result is not None
         except (AttributeError, OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, ResourceClosedError):
             return False
 

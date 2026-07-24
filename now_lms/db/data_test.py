@@ -237,7 +237,7 @@ One day we'll reveal the truth"""
         hora_fin=time(hour=15, minute=00),
         notes="Google Meet",
         publico=False,
-        requerido=2,
+        requerido="optional",
     )
     database.session.add(nuevo_recurso3)
     database.session.commit()
@@ -252,7 +252,7 @@ One day we'll reveal the truth"""
         descripcion="A image file.",
         indice=4,
         publico=False,
-        requerido=3,
+        requerido="substitute",
         base_doc_url="images",
         doc="resources/logo_large.png",
     )
@@ -268,7 +268,7 @@ One day we'll reveal the truth"""
         descripcion="A text in markdown.",
         indice=5,
         publico=False,
-        requerido=3,
+        requerido="substitute",
         text="# NOW - Learning Management System.",
     )
     database.session.add(nuevo_recurso5)
@@ -325,7 +325,7 @@ One day we'll reveal the truth"""
         url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
         indice=9,
         publico=False,
-        requerido=2,
+        requerido="optional",
     )
     database.session.add(nuevo_recurso9)
     database.session.commit()

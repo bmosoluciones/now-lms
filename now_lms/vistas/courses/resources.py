@@ -171,11 +171,13 @@ def _resource_completion(course_id: str, resource_id: str) -> bool:
     """Return completion status for the current user and resource."""
     if not current_user.is_authenticated:
         return False
-    progress = database.session.execute(
-        database.select(CursoRecursoAvance).filter_by(
-            usuario=current_user.usuario, curso=course_id, recurso=resource_id
+    progress = (
+        database.session.execute(
+            database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=course_id, recurso=resource_id)
         )
-    ).scalars().first()
+        .scalars()
+        .first()
+    )
     return bool(progress and progress.completado)
 
 
@@ -241,17 +243,17 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
         flash(NO_AUTORIZADO_MSG, "warning")
         return abort(403)
 
-    avance = database.session.execute(
-        select(CursoRecursoAvance).filter_by(
-            usuario=current_user.usuario, curso=curso_id, recurso=codigo
+    avance = (
+        database.session.execute(
+            select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
         )
-    ).scalars().first()
+        .scalars()
+        .first()
+    )
     if avance:
         avance.completado = True
     else:
-        database.session.add(CursoRecursoAvance(
-            usuario=current_user.usuario, curso=curso_id, recurso=codigo, completado=True
-        ))
+        database.session.add(CursoRecursoAvance(usuario=current_user.usuario, curso=curso_id, recurso=codigo, completado=True))
     database.session.commit()
     flash(gettext("Recurso marcado como completado."), "success")
     _actualizar_avance_curso(curso_id, current_user.usuario)
@@ -260,14 +262,22 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
     if not indice.next_resource:
         return redirect(url_for(PAGINA_RECURSO_ENDPOINT, curso_id=curso_id, resource_type=resource_type, codigo=codigo))
     if indice.next_is_alternative:
-        return redirect(url_for(
-            ".pagina_recurso_alternativo", curso_id=indice.next_resource.curso_id,
-            codigo=indice.next_resource.codigo, order="asc"
-        ))
-    return redirect(url_for(
-        ".pagina_recurso", curso_id=indice.next_resource.curso_id,
-        resource_type=indice.next_resource.resource_type, codigo=indice.next_resource.codigo
-    ))
+        return redirect(
+            url_for(
+                ".pagina_recurso_alternativo",
+                curso_id=indice.next_resource.curso_id,
+                codigo=indice.next_resource.codigo,
+                order="asc",
+            )
+        )
+    return redirect(
+        url_for(
+            ".pagina_recurso",
+            curso_id=indice.next_resource.curso_id,
+            resource_type=indice.next_resource.resource_type,
+            codigo=indice.next_resource.codigo,
+        )
+    )
 
 
 @resources.route("/course/<curso_id>/alternative/<codigo>/<order>", methods=["GET"])
@@ -1146,7 +1156,9 @@ def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str)
         flash(gettext("La subida de archivos descargables no está habilitada por el administrador."), "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
-    recurso = database.session.execute(select(CursoRecurso).filter_by(id=resource_id)).scalar_one()
+    recurso = database.session.execute(select(CursoRecurso).filter_by(id=resource_id)).scalar_one_or_none()
+    if not recurso:
+        abort(404)
     form = CursoRecursoArchivoDescargable()
 
     if form.validate_on_submit() or request.method == "POST":
@@ -1727,11 +1739,15 @@ def _generate_meet_ics_content(recurso: Any) -> str:
 
 def _meet_resource_context(course_code: str, codigo: str):
     """Load and authorize a meeting resource and its course."""
-    recurso = database.session.execute(
-        database.select(CursoRecurso).filter(
-            CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+    recurso = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+            )
         )
-    ).scalars().first()
+        .scalars()
+        .first()
+    )
     course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
     if not recurso or not course_obj:
         abort(404)
@@ -1775,6 +1791,7 @@ def download_meet_calendar(course_code: str, codigo: str) -> Response:
 @login_required
 def google_calendar_link(course_code: str, codigo: str) -> Response:
     from urllib.parse import quote
+
     recurso, course_obj = _meet_resource_context(course_code, codigo)
     details = _meet_calendar_details(recurso, course_obj)
     if details:
@@ -1796,6 +1813,7 @@ def google_calendar_link(course_code: str, codigo: str) -> Response:
 @login_required
 def outlook_calendar_link(course_code: str, codigo: str) -> str | Response:
     from urllib.parse import quote
+
     recurso, course_obj = _meet_resource_context(course_code, codigo)
     details = _meet_calendar_details(recurso, course_obj)
     if details:

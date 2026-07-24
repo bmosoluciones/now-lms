@@ -7,7 +7,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import redirect, request, url_for
+from flask import flash, redirect, request, url_for
 from flask_login import login_required
 from sqlalchemy import delete
 from werkzeug.wrappers import Response
@@ -26,6 +26,7 @@ from now_lms.bi import (
     reorganiza_indice_seccion,
 )
 from now_lms.db import CursoRecurso, CursoSeccion, database
+from now_lms.vistas._helpers import safe_commit
 from now_lms.vistas.courses.base import course, VISTA_ADMINISTRAR_CURSO, VISTA_CURSOS
 
 
@@ -34,9 +35,14 @@ from now_lms.vistas.courses.base import course, VISTA_ADMINISTRAR_CURSO, VISTA_C
 @perfil_requerido("instructor")
 def incrementar_indice_seccion(course_code: str, indice: str) -> Response:
     """Actualiza indice de secciones."""
+    try:
+        indice_int = int(indice)
+    except (ValueError, TypeError):
+        flash("Índice inválido.", "danger")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     modificar_indice_curso(
         codigo_curso=course_code,
-        indice=int(indice),
+        indice=indice_int,
         task="increment",
     )
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
@@ -47,9 +53,14 @@ def incrementar_indice_seccion(course_code: str, indice: str) -> Response:
 @perfil_requerido("instructor")
 def reducir_indice_seccion(course_code: str, indice: str) -> Response:
     """Actualiza indice de secciones."""
+    try:
+        indice_int = int(indice)
+    except (ValueError, TypeError):
+        flash("Índice inválido.", "danger")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     modificar_indice_curso(
         codigo_curso=course_code,
-        indice=int(indice),
+        indice=indice_int,
         task="decrement",
     )
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
@@ -60,9 +71,14 @@ def reducir_indice_seccion(course_code: str, indice: str) -> Response:
 @perfil_requerido("instructor")
 def modificar_orden_recurso(cource_code: str, seccion_id: str, resource_index: str, task: str) -> Response:
     """Actualiza indice de recursos."""
+    try:
+        indice_int = int(resource_index)
+    except (ValueError, TypeError):
+        flash("Índice inválido.", "danger")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=cource_code))
     modificar_indice_seccion(
         seccion_id=seccion_id,
-        indice=int(resource_index),
+        indice=indice_int,
         task=task,
     )
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=cource_code))
@@ -74,7 +90,7 @@ def modificar_orden_recurso(cource_code: str, seccion_id: str, resource_index: s
 def eliminar_recurso(curso_code: str, seccion: str, id_: str) -> Response:
     """Elimina un recurso del curso y reorganiza índices."""
     database.session.execute(delete(CursoRecurso).where(CursoRecurso.id == id_))
-    database.session.commit()
+    safe_commit()
     reorganiza_indice_seccion(seccion=seccion)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curso_code))
 
@@ -85,7 +101,7 @@ def eliminar_recurso(curso_code: str, seccion: str, id_: str) -> Response:
 def eliminar_seccion(curso_id: str, id_: str) -> Response:
     """Elimina una sección del curso y reorganiza índices."""
     database.session.execute(delete(CursoSeccion).where(CursoSeccion.id == id_))
-    database.session.commit()
+    safe_commit()
     reorganiza_indice_curso(codigo_curso=curso_id)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curso_id))
 

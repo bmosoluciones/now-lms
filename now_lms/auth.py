@@ -188,7 +188,7 @@ def proteger_secreto(password: str) -> bytes:
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
-            salt=config.r,
+            salt=config.csrf_seed,
             iterations=480_000,  # Python 3.6+ - Numeric literal underscores for readability
         )
         key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
@@ -207,7 +207,7 @@ def descifrar_secreto(hash_value: bytes) -> str | None:
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
-            salt=config.r,
+            salt=config.csrf_seed,
             iterations=480_000,  # Python 3.6+ - Numeric literal underscores for readability
         )
         key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))

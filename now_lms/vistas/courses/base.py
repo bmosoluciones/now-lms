@@ -125,19 +125,25 @@ def _check_course_access(_curso, course_code: str) -> tuple[bool, bool]:
     if current_user.is_authenticated and request.args.get("inspect"):
         if current_user.tipo == "admin":
             return True, True
-        docente = database.session.execute(
-            database.select(DocenteCurso).filter(
-                DocenteCurso.curso == course_code, DocenteCurso.usuario == current_user.usuario
+        docente = (
+            database.session.execute(
+                database.select(DocenteCurso).filter(
+                    DocenteCurso.curso == course_code, DocenteCurso.usuario == current_user.usuario
+                )
             )
-        ).scalars().first()
+            .scalars()
+            .first()
+        )
         return bool(docente), bool(docente)
 
     if current_user.is_authenticated:
-        enrollment = database.session.execute(
-            database.select(EstudianteCurso).filter_by(
-                curso=course_code, usuario=current_user.usuario, vigente=True
+        enrollment = (
+            database.session.execute(
+                database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
             )
-        ).scalars().first()
+            .scalars()
+            .first()
+        )
         if enrollment:
             return True, False
         return (True, False) if enrollment else _public_course_access(_curso)
@@ -213,9 +219,7 @@ def _update_course_fields(curso_a_editar, form) -> None:
     curso_a_editar.duracion = form.duracion.data
     curso_a_editar.publico = form.publico.data
     curso_a_editar.modalidad = form.modalidad.data
-    curso_a_editar.foro_habilitado = (
-        False if form.modalidad.data == "self_paced" else form.foro_habilitado.data
-    )
+    curso_a_editar.foro_habilitado = False if form.modalidad.data == "self_paced" else form.foro_habilitado.data
     curso_a_editar.limitado = form.limitado.data
     curso_a_editar.capacidad = form.capacidad.data
     curso_a_editar.fecha_inicio = form.fecha_inicio.data

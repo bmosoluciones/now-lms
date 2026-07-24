@@ -270,13 +270,8 @@ def download_receipt(payment_id: str) -> Response:
     if not pago:
         abort(404)
 
-    curso = database.session.execute(
-        database.select(Curso).filter_by(codigo=pago.curso)
-    ).scalar_one_or_none()
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=pago.curso)).scalar_one_or_none()
 
     html_content = render_template("payments/receipt_pdf.html", pago=pago, curso=curso)
 
-    return render_pdf(
-        HTML(string=html_content),
-        download_filename=f"receipt_{pago.referencia or pago.id}.pdf"
-    )
+    return render_pdf(HTML(string=html_content), download_filename=f"receipt_{pago.referencia or pago.id}.pdf")

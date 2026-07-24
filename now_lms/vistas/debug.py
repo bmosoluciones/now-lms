@@ -84,7 +84,9 @@ def _debug_warnings(config_info: dict[str, Any], env_checks: dict[str, Any]) -> 
     if multiple_workers and config_info["session_type"] == "default":
         warnings.append("Using default session with multiple workers - sessions may not persist. Use Redis or CacheLib.")
     if multiple_workers and config_info["session_type"] == "cachelib":
-        warnings.append("Using CacheLib with multiple workers - ensure shared filesystem. Redis is recommended for multi-worker.")
+        warnings.append(
+            "Using CacheLib with multiple workers - ensure shared filesystem. Redis is recommended for multi-worker."
+        )
     return warnings
 
 
