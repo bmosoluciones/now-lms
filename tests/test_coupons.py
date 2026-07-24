@@ -146,13 +146,13 @@ def test_validate_coupon_for_enrollment_already_enrolled(app, db_session, test_u
 
 def test_validate_coupon_for_enrollment_validation_errors(app, db_session, test_users, test_courses):
     """Prueba diferentes estados inválidos del cupón."""
-    # Expirado
+    # Expirado - usar datetime naive para compatibilidad con SQLite
     expired_coupon = Coupon(
         course_id="PAID01",
         code="EXPIRED",
         discount_type="percentage",
         discount_value=10.0,
-        expires_at=datetime.now(timezone.utc) - timedelta(days=1),
+        expires_at=datetime.utcnow() - timedelta(days=1),
         created_by="inst_coupon",
     )
     # Límite de usos alcanzado
