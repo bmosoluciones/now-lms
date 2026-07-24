@@ -47,8 +47,13 @@
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px;">
                     <tr>
                         <td style="padding: 10px 0;">
+                            {% if programa %}
+                            <strong>{{ programa.nombre }}</strong><br>
+                            <span style="font-size: 12px; color: #718096;">{{ _('Programa de Estudio') }}</span>
+                            {% else %}
                             <strong>{{ curso.nombre if curso else pago.curso }}</strong><br>
                             <span style="font-size: 12px; color: #718096;">{{ _('Curso en Línea') }}</span>
+                            {% endif %}
                         </td>
                         <td style="text-align: right; padding: 10px 0; font-weight: bold; font-size: 16px;">
                             {{ pago.monto }} {{ pago.moneda }}
@@ -63,16 +68,26 @@
                 </table>
 
                 <p style="font-size: 14px; line-height: 1.6; color: #4a5568; margin-top: 30px;">
+                    {% if programa %}
+                    {{ _('Ya tienes acceso completo al programa. Haz clic en el siguiente enlace para comenzar tu aprendizaje:') }}
+                    {% else %}
                     {{ _('Ya tienes acceso completo al curso. Haz clic en el siguiente enlace para comenzar tu aprendizaje:') }}
+                    {% endif %}
                 </p>
 
                 <!-- Call to Action -->
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 20px 0 30px 0; text-align: center;">
                     <tr>
                         <td>
+                            {% if programa %}
+                            <a href="{{ url_for('program.tomar_programa', codigo=programa.codigo, _external=True) }}" style="background-color: #667eea; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">
+                                {{ _('Comenzar Programa') }}
+                            </a>
+                            {% else %}
                             <a href="{{ url_for('course.tomar_curso', course_code=pago.curso, _external=True) }}" style="background-color: #667eea; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">
                                 {{ _('Comenzar Curso') }}
                             </a>
+                            {% endif %}
                         </td>
                     </tr>
                 </table>

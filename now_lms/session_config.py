@@ -131,9 +131,7 @@ def _initialize_session_backend(app: Flask, session_config: dict) -> None:
     app.config.update(session_config)
     Session(app)
     if not isinstance(app.session_interface, ServerSideSessionInterface):
-        raise RuntimeError(
-            f"Flask-Session did not install a server-side interface for {session_config.get('SESSION_TYPE')}"
-        )
+        raise RuntimeError(f"Flask-Session did not install a server-side interface for {session_config.get('SESSION_TYPE')}")
 
 
 def _log_session_backend(session_config: dict) -> None:
@@ -155,7 +153,9 @@ def _log_session_backend(session_config: dict) -> None:
         log.info("Using SQLAlchemy database for session storage - works with multi-worker/multi-threaded WSGI servers")
         log.info(f"Session table: {session_config.get('SESSION_SQLALCHEMY_TABLE', 'flask_sessions')}")
         if num_workers > 1:
-            log.warning(f"Running with {num_workers} workers using database backend. Redis is recommended for better performance.")
+            log.warning(
+                f"Running with {num_workers} workers using database backend. Redis is recommended for better performance."
+            )
     else:
         log.warning(f"Unknown session type: {session_type}")
         if num_workers > 1:
@@ -229,9 +229,7 @@ def _ensure_sqlalchemy_session_storage(app: Flask) -> None:
             app.__dict__.pop("_session_initialized", None)
             init_session(app)
         if table_name not in inspect(database.engine).get_table_names():
-            raise RuntimeError(
-                f"Failed to create session table '{table_name}'. Check database permissions and configuration."
-            )
+            raise RuntimeError(f"Failed to create session table '{table_name}'. Check database permissions and configuration.")
     log.info(f"Session table '{table_name}' verified — sqlalchemy backend ready")
 
 

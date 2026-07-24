@@ -203,10 +203,11 @@ def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[Fl
         "payerID": data.get("payerID"),
         "courseCode": data.get("courseCode"),
         "amount": data.get("amount"),
+        "itemType": data.get("itemType", "course"),
     }
     logging.info(
         f"Payment confirmation attempt for user {current_user.usuario}, "
-        f"course {fields['courseCode']}, order {fields['orderID']}"
+        f"type {fields['itemType']}, code {fields['courseCode']}, order {fields['orderID']}"
     )
     missing_fields = [name for name, value in fields.items() if not value]
     if missing_fields:
@@ -232,35 +233,64 @@ def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[Fl
     if verification.get("status") != "COMPLETED":
         return None, (jsonify({"success": False, "error": "Payment is not completed"}), 400)
 
-    course = database.session.execute(
-        database.select(Curso).filter_by(codigo=fields["courseCode"])
-    ).scalars().first()
-    if not course:
-        return None, (jsonify({"success": False, "error": "Course not found"}), 404)
-    pending_payment = database.session.execute(
-        database.select(Pago).filter_by(usuario=current_user.usuario, curso=fields["courseCode"], estado="pending")
-    ).scalars().first()
-    expected_amount = float(pending_payment.monto if pending_payment else course.precio)
+    from now_lms.db import Programa
+
+    if fields["itemType"] == "program":
+        programa = database.session.execute(database.select(Programa).filter_by(codigo=fields["courseCode"])).scalars().first()
+        if not programa:
+            return None, (jsonify({"success": False, "error": "Program not found"}), 404)
+        pending_payment = (
+            database.session.execute(
+                database.select(Pago).filter_by(usuario=current_user.usuario, programa=programa.id, estado="pending")
+            )
+            .scalars()
+            .first()
+        )
+        expected_amount = float(pending_payment.monto if pending_payment else programa.precio)
+    else:
+        course = database.session.execute(database.select(Curso).filter_by(codigo=fields["courseCode"])).scalars().first()
+        if not course:
+            return None, (jsonify({"success": False, "error": "Course not found"}), 404)
+        pending_payment = (
+            database.session.execute(
+                database.select(Pago).filter_by(usuario=current_user.usuario, curso=fields["courseCode"], estado="pending")
+            )
+            .scalars()
+            .first()
+        )
+        expected_amount = float(pending_payment.monto if pending_payment else course.precio)
+
     try:
         verified_amount = float(str(verification.get("amount")))
     except (ValueError, TypeError):
         verified_amount = 0.0
     if abs(verified_amount - expected_amount) > 0.01:
-        return None, (jsonify({
-            "success": False,
-            "error": f"Payment amount mismatch: expected {expected_amount}, received {verified_amount}",
-        }), 400)
+        return None, (
+            jsonify(
+                {
+                    "success": False,
+                    "error": f"Payment amount mismatch: expected {expected_amount}, received {verified_amount}",
+                }
+            ),
+            400,
+        )
 
     verified_currency = verification.get("currency")
     expected_currency = get_site_currency()
     if verified_currency != expected_currency:
-        return None, (jsonify({
-            "success": False,
-            "error": f"Payment currency mismatch: expected {expected_currency}, received {verified_currency}",
-        }), 400)
+        return None, (
+            jsonify(
+                {
+                    "success": False,
+                    "error": f"Payment currency mismatch: expected {expected_currency}, received {verified_currency}",
+                }
+            ),
+            400,
+        )
     return {
         "order_id": fields["orderID"],
         "course_code": fields["courseCode"],
+        "item_type": fields["itemType"],
         "pending_payment": pending_payment,
         "verified_amount": verified_amount,
         "verified_currency": verified_currency,
@@ -271,56 +301,114 @@ def _payment_record(payment_data: dict[str, object]) -> tuple[Any, tuple[FlaskRe
     """Find or create the local payment record for a verified order."""
     order_id = payment_data["order_id"]
     course_code = payment_data["course_code"]
-    existing_payment = (
-        database.session.execute(database.select(Pago).filter_by(referencia=order_id, curso=course_code)).scalars().first()
-    )
-    if existing_payment and existing_payment.estado == "completed":
-        logging.info(f"Payment {order_id} already completed for user {current_user.usuario}")
-        return existing_payment, (
-            jsonify(
-                {
-                    "success": True,
-                    "message": "Pago ya procesado anteriormente",
-                    "redirect_url": url_for("course.tomar_curso", course_code=course_code),
-                }
-            ),
-            200,
-        )
+    item_type = payment_data.get("item_type", "course")
 
-    pago = existing_payment or payment_data["pending_payment"] or Pago()
-    if not existing_payment and not payment_data["pending_payment"]:
-        pago.usuario = current_user.usuario
-        pago.curso = course_code
-        pago.nombre = current_user.nombre
-        pago.apellido = current_user.apellido
-        pago.correo_electronico = current_user.correo_electronico
-    pago.referencia = order_id
-    pago.monto = payment_data["verified_amount"]
-    pago.moneda = payment_data["verified_currency"]
-    pago.metodo = "paypal"
-    pago.estado = "completed"
-    return pago, None
+    from now_lms.db import Programa
+
+    if item_type == "program":
+        programa = database.session.execute(database.select(Programa).filter_by(codigo=course_code)).scalars().first()
+        if not programa:
+            return None, (jsonify({"success": False, "error": "Program not found"}), 404)
+        existing_payment = (
+            database.session.execute(database.select(Pago).filter_by(referencia=order_id, programa=programa.id))
+            .scalars()
+            .first()
+        )
+        if existing_payment and existing_payment.estado == "completed":
+            logging.info(f"Payment {order_id} already completed for user {current_user.usuario}")
+            return existing_payment, (
+                jsonify(
+                    {
+                        "success": True,
+                        "message": "Pago ya procesado anteriormente",
+                        "redirect_url": url_for("program.tomar_programa", codigo=course_code),
+                    }
+                ),
+                200,
+            )
+
+        pago = existing_payment or payment_data["pending_payment"] or Pago()
+        if not existing_payment and not payment_data["pending_payment"]:
+            pago.usuario = current_user.usuario
+            pago.programa = programa.id
+            pago.curso = None
+            pago.nombre = current_user.nombre
+            pago.apellido = current_user.apellido
+            pago.correo_electronico = current_user.correo_electronico
+        pago.referencia = order_id
+        pago.monto = payment_data["verified_amount"]
+        pago.moneda = payment_data["verified_currency"]
+        pago.metodo = "paypal"
+        pago.estado = "completed"
+        return pago, None
+    else:
+        existing_payment = (
+            database.session.execute(database.select(Pago).filter_by(referencia=order_id, curso=course_code)).scalars().first()
+        )
+        if existing_payment and existing_payment.estado == "completed":
+            logging.info(f"Payment {order_id} already completed for user {current_user.usuario}")
+            return existing_payment, (
+                jsonify(
+                    {
+                        "success": True,
+                        "message": "Pago ya procesado anteriormente",
+                        "redirect_url": url_for("course.tomar_curso", course_code=course_code),
+                    }
+                ),
+                200,
+            )
+
+        pago = existing_payment or payment_data["pending_payment"] or Pago()
+        if not existing_payment and not payment_data["pending_payment"]:
+            pago.usuario = current_user.usuario
+            pago.curso = course_code
+            pago.nombre = current_user.nombre
+            pago.apellido = current_user.apellido
+            pago.correo_electronico = current_user.correo_electronico
+        pago.referencia = order_id
+        pago.monto = payment_data["verified_amount"]
+        pago.moneda = payment_data["verified_currency"]
+        pago.metodo = "paypal"
+        pago.estado = "completed"
+        return pago, None
 
 
 def _save_payment_enrollment(pago: Any, course_code: str) -> None:
-    """Persist payment and activate the student's course enrollment."""
-    from now_lms.db import EstudianteCurso
+    """Persist payment and activate the student's course enrollment or program enrollment."""
+    from now_lms.db import EstudianteCurso, ProgramaEstudiante, Programa
+    from now_lms.vistas.programs import inscribir_usuario_en_cursos_de_programa
 
     if pago not in database.session:
         database.session.add(pago)
     database.session.flush()
-    enrollment = (
-        database.session.execute(
-            database.select(EstudianteCurso).filter_by(usuario=current_user.usuario, curso=course_code)
+
+    if pago.programa:
+        # It's a program payment!
+        enrollment = (
+            database.session.execute(
+                database.select(ProgramaEstudiante).filter_by(usuario=pago.usuario, programa=pago.programa)
+            )
+            .scalars()
+            .first()
         )
-        .scalars()
-        .first()
-    )
-    if enrollment:
-        enrollment.vigente = True
-        enrollment.pago = pago.id
+        if not enrollment:
+            database.session.add(ProgramaEstudiante(usuario=pago.usuario, programa=pago.programa))
+
+        # Automatically enroll the user in all courses of this program!
+        programa = database.session.execute(database.select(Programa).filter_by(id=pago.programa)).scalars().first()
+        if programa:
+            inscribir_usuario_en_cursos_de_programa(pago.usuario, programa)
     else:
-        database.session.add(EstudianteCurso(curso=pago.curso, usuario=pago.usuario, vigente=True, pago=pago.id))
+        enrollment = (
+            database.session.execute(database.select(EstudianteCurso).filter_by(usuario=pago.usuario, curso=course_code))
+            .scalars()
+            .first()
+        )
+        if enrollment:
+            enrollment.vigente = True
+            enrollment.pago = pago.id
+        else:
+            database.session.add(EstudianteCurso(curso=pago.curso, usuario=pago.usuario, vigente=True, pago=pago.id))
     database.session.commit()
 
 
@@ -332,9 +420,11 @@ def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
         from now_lms.db import Coupon
 
         coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
-        coupon = database.session.execute(
-            database.select(Coupon).filter_by(course_id=course_code, code=coupon_code)
-        ).scalars().first()
+        coupon = (
+            database.session.execute(database.select(Coupon).filter_by(course_id=course_code, code=coupon_code))
+            .scalars()
+            .first()
+        )
         if not coupon:
             return
         coupon.current_uses += 1
@@ -349,7 +439,7 @@ def enviar_recibo_pago(pago: Pago) -> None:
     from now_lms.mail import send_mail, _config
     from flask_mail import Message
     from flask import render_template
-    from now_lms.db import Curso
+    from now_lms.db import Curso, Programa
     from now_lms.i18n import _
 
     recipient = pago.correo_electronico
@@ -366,23 +456,28 @@ def enviar_recibo_pago(pago: Pago) -> None:
             logging.info("El correo electrónico no está configurado. No se enviará recibo por correo.")
             return
 
-        curso = database.session.execute(
-            database.select(Curso).filter_by(codigo=pago.curso)
-        ).scalars().first()
+        curso = None
+        programa = None
+        subject_name = ""
 
-        html_body = render_template("payments/receipt_email.html", pago=pago, curso=curso)
+        if pago.programa:
+            programa = database.session.execute(database.select(Programa).filter_by(id=pago.programa)).scalars().first()
+            subject_name = programa.nombre if programa else pago.programa
+        else:
+            curso = database.session.execute(database.select(Curso).filter_by(codigo=pago.curso)).scalars().first()
+            subject_name = curso.nombre if curso else pago.curso
+
+        html_body = render_template("payments/receipt_email.html", pago=pago, curso=curso, programa=programa)
 
         msg = Message(
-            subject=_("Recibo de Pago - %(curso_nombre)s") % {"curso_nombre": curso.nombre if curso else pago.curso},
+            subject=_("Recibo de Pago - %(curso_nombre)s") % {"curso_nombre": subject_name},
             recipients=[recipient],
             sender=((mail_config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), mail_config.MAIL_DEFAULT_SENDER),
         )
         msg.html = html_body
 
         send_mail(
-            msg,
-            background=True,
-            _log=f"Recibo de pago {pago.referencia} enviado por correo electrónico a {msg.recipients}."
+            msg, background=True, _log=f"Recibo de pago {pago.referencia} enviado por correo electrónico a {msg.recipients}."
         )
     except Exception:
         logging.exception(
@@ -406,19 +501,30 @@ def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskRe
         return jsonify({"success": False, "error": "Error en la base de datos. Por favor contacte soporte."}), 500
 
     _update_coupon_usage(pago, course_code, order_id)
-    from now_lms.vistas.courses import _crear_indice_avance_curso
 
-    _crear_indice_avance_curso(course_code)
-    logging.info(f"Payment {order_id} successfully processed for user {current_user.usuario}, course {course_code}")
+    if pago.programa:
+        logging.info(f"Payment {order_id} successfully processed for user {current_user.usuario}, program {course_code}")
+        redirect_url = url_for("program.tomar_programa", codigo=course_code)
+    else:
+        from now_lms.vistas.courses import _crear_indice_avance_curso
+
+        _crear_indice_avance_curso(course_code)
+        logging.info(f"Payment {order_id} successfully processed for user {current_user.usuario}, course {course_code}")
+        redirect_url = url_for("course.tomar_curso", course_code=course_code)
 
     # Enviar recibo de pago
     enviar_recibo_pago(pago)
 
-    return jsonify({
-        "success": True,
-        "message": "Pago completado exitosamente",
-        "redirect_url": url_for("course.tomar_curso", course_code=course_code),
-    }), 200
+    return (
+        jsonify(
+            {
+                "success": True,
+                "message": "Pago completado exitosamente",
+                "redirect_url": redirect_url,
+            }
+        ),
+        200,
+    )
 
 
 @paypal.route("/confirm_payment", methods=["POST"])
@@ -457,6 +563,13 @@ def resume_payment(payment_id: str) -> Response:
         if not pago:
             flash("Pago no encontrado o ya procesado.", "error")
             return redirect(url_for(HOME_PAGE_ROUTE))
+
+        if pago.programa:
+            from now_lms.db import Programa
+
+            programa = database.session.execute(database.select(Programa).filter_by(id=pago.programa)).scalars().first()
+            if programa:
+                return redirect(url_for("program.program_payment", codigo=programa.codigo, payment_id=pago.id))
 
         # Redirect to the payment page for this course
         return redirect(url_for("paypal.payment_page", course_code=pago.curso))

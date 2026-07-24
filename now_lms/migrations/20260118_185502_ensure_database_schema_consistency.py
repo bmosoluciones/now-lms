@@ -43,24 +43,53 @@ def _add_missing_columns(inspector, table_name: str, definitions: list[tuple[str
 def upgrade():
     """Ensure all expected columns exist in the database."""
     inspector = sa.inspect(op.get_bind())
-    _add_missing_columns(inspector, "configuracion", [
-        ("allow_unverified_email_login", sa.Column("allow_unverified_email_login", sa.Boolean(), nullable=False, server_default=sa.false())),
-        ("show_latest_blog_posts_on_home", sa.Column("show_latest_blog_posts_on_home", sa.Boolean(), nullable=False, server_default=sa.false())),
-        *[(field, sa.Column(field, sa.String(200), nullable=True)) for field in (
-            "social_facebook", "social_twitter", "social_linkedin", "social_youtube", "social_instagram", "social_github"
-        )],
-        ("enable_file_uploads", sa.Column("enable_file_uploads", sa.Boolean(), nullable=False, server_default=sa.false())),
-        ("max_file_size", sa.Column("max_file_size", sa.Integer(), nullable=False, server_default=sa.text("1"))),
-        ("enable_html_preformatted_descriptions", sa.Column("enable_html_preformatted_descriptions", sa.Boolean(), nullable=False, server_default=sa.false())),
-        ("enable_footer", sa.Column("enable_footer", sa.Boolean(), nullable=False, server_default=sa.true())),
-    ])
-    _add_missing_columns(inspector, "blog_post", [
-        ("cover_image", sa.Column("cover_image", sa.Boolean(), nullable=False, server_default=sa.false())),
-        ("cover_image_ext", sa.Column("cover_image_ext", sa.String(5), nullable=True)),
-    ])
-    _add_missing_columns(inspector, "static_pages", [
-        ("mostrar_en_footer", sa.Column("mostrar_en_footer", sa.Boolean(), nullable=False, server_default="0")),
-    ])
+    _add_missing_columns(
+        inspector,
+        "configuracion",
+        [
+            (
+                "allow_unverified_email_login",
+                sa.Column("allow_unverified_email_login", sa.Boolean(), nullable=False, server_default=sa.false()),
+            ),
+            (
+                "show_latest_blog_posts_on_home",
+                sa.Column("show_latest_blog_posts_on_home", sa.Boolean(), nullable=False, server_default=sa.false()),
+            ),
+            *[
+                (field, sa.Column(field, sa.String(200), nullable=True))
+                for field in (
+                    "social_facebook",
+                    "social_twitter",
+                    "social_linkedin",
+                    "social_youtube",
+                    "social_instagram",
+                    "social_github",
+                )
+            ],
+            ("enable_file_uploads", sa.Column("enable_file_uploads", sa.Boolean(), nullable=False, server_default=sa.false())),
+            ("max_file_size", sa.Column("max_file_size", sa.Integer(), nullable=False, server_default=sa.text("1"))),
+            (
+                "enable_html_preformatted_descriptions",
+                sa.Column("enable_html_preformatted_descriptions", sa.Boolean(), nullable=False, server_default=sa.false()),
+            ),
+            ("enable_footer", sa.Column("enable_footer", sa.Boolean(), nullable=False, server_default=sa.true())),
+        ],
+    )
+    _add_missing_columns(
+        inspector,
+        "blog_post",
+        [
+            ("cover_image", sa.Column("cover_image", sa.Boolean(), nullable=False, server_default=sa.false())),
+            ("cover_image_ext", sa.Column("cover_image_ext", sa.String(5), nullable=True)),
+        ],
+    )
+    _add_missing_columns(
+        inspector,
+        "static_pages",
+        [
+            ("mostrar_en_footer", sa.Column("mostrar_en_footer", sa.Boolean(), nullable=False, server_default="0")),
+        ],
+    )
 
 
 def downgrade():

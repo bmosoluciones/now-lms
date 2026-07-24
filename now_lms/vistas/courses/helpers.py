@@ -45,7 +45,6 @@ from now_lms.logs import log
 from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 from .data import SAFE_FILE_EXTENSIONS, DANGEROUS_FILE_EXTENSIONS
 
-
 _COURSE_CODE_RE = re.compile(r"^[a-zA-Z0-9_.-]+$")
 
 
