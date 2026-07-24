@@ -29,7 +29,7 @@ public_announcements = Blueprint("public_announcements", __name__, template_fold
 
 @public_announcements.route("/dashboard/announcements", methods=["GET"])
 @login_required
-@cache.cached(timeout=60, key_prefix=lambda: f"global_announcements_{current_user.id}")
+@cache.cached(timeout=60, key_prefix=lambda: f"global_announcements_{current_user.id}")  # type: ignore[arg-type]
 def global_announcements() -> str:
     """Ver anuncios globales para todos los usuarios autenticados."""
     # Filtrar anuncios globales activos (no expirados)
@@ -55,7 +55,7 @@ def global_announcements() -> str:
 
 @public_announcements.route("/course/<course_id>/announcements", methods=["GET"])
 @login_required
-@cache.cached(timeout=60, key_prefix=lambda course_id: f"course_announcements_{course_id}_{current_user.id}")
+@cache.cached(timeout=60, key_prefix=lambda course_id: f"course_announcements_{course_id}_{current_user.id}")  # type: ignore[arg-type]
 def course_announcements(course_id: str) -> str | Response:
     """Ver anuncios específicos de un curso."""
     # Verificar que el curso existe
