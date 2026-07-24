@@ -65,7 +65,7 @@ def test_e2e_program_creation(app, db_session):
     resp_new = client.post(
         "/program/new",
         data={
-            "nombre": "Programa Python Avanzado",
+            "nombre": "Python Avanzado",
             "descripcion": "Programa completo de Python",
             "codigo": "python-adv",
             "publico": "y",
@@ -78,7 +78,7 @@ def test_e2e_program_creation(app, db_session):
     # 3) Verificar que el programa existe en la base de datos
     programa = db_session.execute(database.select(Programa).filter_by(codigo="python-adv")).scalars().first()
     assert programa is not None
-    assert programa.nombre == "Programa Python Avanzado"
+    assert programa.nombre == "Python Avanzado"
     assert programa.descripcion == "Programa completo de Python"
 
 
@@ -141,8 +141,8 @@ def test_e2e_program_enrollment(app, db_session):
     instructor = _crear_instructor(db_session)  # noqa: F841
     estudiante = _crear_estudiante(db_session)
     programa = Programa(
-        nombre="Programa de Inscripción",
-        codigo="prog-inscr",
+        nombre="Prog Inscripción",
+        codigo="prog-insc",
         descripcion="Programa para prueba de inscripción",
         texto="Texto del programa",
         publico=True,
@@ -173,8 +173,8 @@ def test_e2e_program_view(app, db_session):
     # 1) Crear instructor y programa público
     instructor = _crear_instructor(db_session)  # noqa: F841
     programa = Programa(
-        nombre="Programa Público",
-        codigo="prog-public",
+        nombre="Prog Público",
+        codigo="prog-pub",
         descripcion="Programa de acceso público",
         texto="Contenido del programa público",
         publico=True,
@@ -188,7 +188,7 @@ def test_e2e_program_view(app, db_session):
     client_public = app.test_client()
     resp_view = client_public.get(f"/program/{programa.codigo}")
     assert resp_view.status_code == 200
-    assert "Programa Público".encode("utf-8") in resp_view.data or b"prog-public" in resp_view.data
+    assert "Prog Público".encode("utf-8") in resp_view.data or b"prog-pub" in resp_view.data
 
 
 def test_e2e_program_list(app, db_session):
@@ -221,8 +221,8 @@ def test_e2e_program_add_course(app, db_session):
     # 1) Crear instructor, programa y curso
     instructor = _crear_instructor(db_session)  # noqa: F841
     programa = Programa(
-        nombre="Programa con Cursos",
-        codigo="prog-cursos",
+        nombre="Prog Cursos",
+        codigo="prog-cur",
         descripcion="Programa para agregar cursos",
         texto="Contenido del programa",
         publico=True,
@@ -274,7 +274,7 @@ def test_e2e_program_with_category(app, db_session):
     resp_new = client.post(
         "/program/new",
         data={
-            "nombre": "Programa con Categoría",
+            "nombre": "Prog Categoría",
             "descripcion": "Programa categorizado",
             "codigo": "prog-cat",
             "publico": "y",

@@ -61,7 +61,7 @@ def cert_setup(app, db_session):
         tipo="course",
         habilitado=True,
         publico=True,
-        usuario=admin.id,
+        usuario=admin.usuario,
     )
     db_session.add(template)
     db_session.commit()

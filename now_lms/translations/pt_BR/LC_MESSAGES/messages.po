@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-07-24 02:04+0000\n"
+"POT-Creation-Date: 2026-07-24 06:17+0000\n"
 "PO-Revision-Date: 2025-09-10 03:36+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: pt_BR <LL@li.org>\n"
@@ -4665,7 +4665,7 @@ msgstr "Cursos ativos"
 #: now_lms/templates/inicio/panel_user.html:168
 #: now_lms/templates/perfiles/estudiante.html:72
 #: now_lms/templates/perfiles/instructor.html:309
-#: now_lms/vistas/courses/base.py:517 now_lms/vistas/courses/base.py:540
+#: now_lms/vistas/courses/base.py:518 now_lms/vistas/courses/base.py:541
 msgid "Mis Cursos"
 msgstr "Meus cursos"
 
@@ -6655,7 +6655,7 @@ msgid "Tamaño"
 msgstr "Tamanho"
 
 #: now_lms/templates/learning/curso/library.html:100
-#: now_lms/vistas/courses/resources.py:1515
+#: now_lms/vistas/courses/resources.py:1516
 msgid "Archivo subido manualmente"
 msgstr "Arquivo enviado manualmente"
 
@@ -9034,49 +9034,49 @@ msgstr "Tópico de conversa não encontrado."
 msgid "Mensaje reportado correctamente. El administrador será notificado."
 msgstr "Mensagem reportada corretamente. O administrador será notificado."
 
-#: now_lms/vistas/paypal.py:376
+#: now_lms/vistas/paypal.py:377
 #, python-format
 msgid "Recibo de Pago - %(curso_nombre)s"
 msgstr "Recibo de pagamento - %(curso_nombre)s"
 
-#: now_lms/vistas/paypal.py:458
+#: now_lms/vistas/paypal.py:459
 msgid "Pago no encontrado o ya procesado."
 msgstr "Pagamento não encontrado ou já processado."
 
-#: now_lms/vistas/paypal.py:466
+#: now_lms/vistas/paypal.py:467
 msgid "Error al reanudar el pago."
 msgstr "Erro ao retomar o pagamento."
 
-#: now_lms/vistas/announcements/public.py:65 now_lms/vistas/paypal.py:488
+#: now_lms/vistas/announcements/public.py:65 now_lms/vistas/paypal.py:489
 #: now_lms/vistas/profiles/instructor.py:249
 msgid "Curso no encontrado."
 msgstr "Curso não encontrado."
 
-#: now_lms/vistas/paypal.py:492
+#: now_lms/vistas/paypal.py:493
 msgid "Este curso es gratuito."
 msgstr "Este curso é gratuito."
 
-#: now_lms/vistas/paypal.py:497
+#: now_lms/vistas/paypal.py:498
 msgid "Los pagos con PayPal no están habilitados."
 msgstr "Os pagamentos via PayPal não estão habilitados."
 
-#: now_lms/vistas/programs.py:127
+#: now_lms/vistas/programs.py:128
 msgid "Portada del curso actualizada correctamente"
 msgstr "Capa do curso atualizada corretamente"
 
-#: now_lms/vistas/programs.py:130
+#: now_lms/vistas/programs.py:131
 msgid "No se pudo actualizar la portada del curso."
 msgstr "Não foi possível atualizar a capa do curso."
 
-#: now_lms/vistas/programs.py:170
+#: now_lms/vistas/programs.py:171
 msgid "Nuevo Programa creado."
 msgstr "Novo programa criado."
 
-#: now_lms/vistas/programs.py:174
+#: now_lms/vistas/programs.py:175
 msgid "Hubo un error al crear el programa."
 msgstr "Ocorreu um erro ao criar o programa."
 
-#: now_lms/vistas/programs.py:263
+#: now_lms/vistas/programs.py:264
 msgid ""
 "No se puede cambiar estatus de programa a publico porque no tiene cursos "
 "añadidos"
@@ -9084,62 +9084,62 @@ msgstr ""
 "Você não pode alterar o status do programa para público porque não há cursos"
 " adicionados"
 
-#: now_lms/vistas/programs.py:267
+#: now_lms/vistas/programs.py:268
 msgid "No se puede cambiar programa a abierto porque no tiene cursos añadidos"
 msgstr ""
 "Você não pode alterar o programa para abrir porque não possui cursos "
 "adicionados"
 
-#: now_lms/vistas/programs.py:278
+#: now_lms/vistas/programs.py:279
 msgid "Programa editado correctamente."
 msgstr "Programa editado corretamente."
 
-#: now_lms/vistas/programs.py:281
+#: now_lms/vistas/programs.py:282
 msgid "No se puedo editar el programa."
 msgstr "Não consigo editar o programa."
 
-#: now_lms/vistas/programs.py:351
+#: now_lms/vistas/programs.py:352
 msgid "Ya estás inscrito en este programa."
 msgstr "Você já está inscrito neste programa."
 
-#: now_lms/vistas/programs.py:361
+#: now_lms/vistas/programs.py:362
 msgid "Te has inscrito exitosamente al programa."
 msgstr "Você se inscreveu com sucesso no programa."
 
-#: now_lms/vistas/programs.py:365
+#: now_lms/vistas/programs.py:366
 msgid "Hubo un error al inscribirte al programa."
 msgstr "Ocorreu um erro ao registrar-se no programa."
 
-#: now_lms/vistas/programs.py:382
+#: now_lms/vistas/programs.py:383
 msgid "Debes inscribirte al programa primero."
 msgstr "Você deve se inscrever no programa primeiro."
 
-#: now_lms/vistas/programs.py:450
+#: now_lms/vistas/programs.py:451
 msgid "El curso ya está en el programa."
 msgstr "O curso já está na programação."
 
 #: now_lms/vistas/profiles/admin.py:211 now_lms/vistas/profiles/admin.py:247
-#: now_lms/vistas/programs.py:493 now_lms/vistas/users.py:272
+#: now_lms/vistas/programs.py:494 now_lms/vistas/users.py:272
 msgid "Usuario no encontrado."
 msgstr "Usuário não encontrado."
 
-#: now_lms/vistas/programs.py:495
+#: now_lms/vistas/programs.py:496
 msgid "El usuario ya está inscrito en este programa."
 msgstr "O usuário já está inscrito neste programa."
 
-#: now_lms/vistas/programs.py:505
+#: now_lms/vistas/programs.py:506
 msgid "Error al inscribir usuario."
 msgstr "Erro ao registrar usuário."
 
-#: now_lms/vistas/programs.py:520
+#: now_lms/vistas/programs.py:521
 msgid "Programa no encontrado."
 msgstr "Programa não encontrado."
 
-#: now_lms/vistas/programs.py:532
+#: now_lms/vistas/programs.py:533
 msgid "Certificado de programa emitido por completar todos los cursos."
 msgstr "Certificado do programa emitido para conclusão de todos os cursos."
 
-#: now_lms/vistas/programs.py:682
+#: now_lms/vistas/programs.py:683
 msgid "Error al inscribir al estudiante en el programa."
 msgstr "Erro ao inscrever o aluno no programa."
 
@@ -9278,13 +9278,6 @@ msgstr "Não é possível editar o rótulo."
 msgid "Su cuenta esta inactiva."
 msgstr "Sua conta está inativa."
 
-#: now_lms/vistas/users.py:99
-msgid ""
-"Su correo electrónico no ha sido verificado. Su acceso a algunas "
-"funcionalidades está limitado."
-msgstr ""
-"Seu e-mail não foi verificado. Seu acesso a alguns recursos é limitado."
-
 #: now_lms/vistas/users.py:105
 msgid "Inicio de Sesion Incorrecto."
 msgstr "Login incorreto."
@@ -9391,43 +9384,43 @@ msgstr "Anúncio do curso removido com sucesso."
 msgid "No tienes acceso a los anuncios de este curso."
 msgstr "Você não tem acesso aos anúncios deste curso."
 
-#: now_lms/vistas/courses/base.py:396
+#: now_lms/vistas/courses/base.py:397
 msgid "Curso creado exitosamente."
 msgstr "Curso criado com sucesso."
 
-#: now_lms/vistas/courses/base.py:399
+#: now_lms/vistas/courses/base.py:400
 msgid "Hubo en error al crear su curso."
 msgstr "Ocorreu um erro ao criar seu curso."
 
-#: now_lms/vistas/courses/base.py:425
+#: now_lms/vistas/courses/base.py:426
 msgid "Curso actualizado exitosamente."
 msgstr "Curso atualizado com sucesso."
 
-#: now_lms/vistas/courses/base.py:428
+#: now_lms/vistas/courses/base.py:429
 msgid "Hubo en error al actualizar el curso."
 msgstr "Ocorreu um erro ao atualizar o curso."
 
-#: now_lms/vistas/courses/base.py:431
+#: now_lms/vistas/courses/base.py:432
 msgid "El formulario tiene errores. Revisa los campos marcados."
 msgstr "O formulário contém erros. Revise os campos marcados."
 
-#: now_lms/vistas/courses/base.py:462
+#: now_lms/vistas/courses/base.py:463
 msgid "Sección agregada correctamente al curso."
 msgstr "Seção adicionada com sucesso ao curso."
 
-#: now_lms/vistas/courses/base.py:465
+#: now_lms/vistas/courses/base.py:466
 msgid "Hubo en error al crear la seccion."
 msgstr "Ocorreu um erro ao criar a seção."
 
-#: now_lms/vistas/courses/base.py:489
+#: now_lms/vistas/courses/base.py:490
 msgid "Sección modificada correctamente."
 msgstr "Seção modificada corretamente."
 
-#: now_lms/vistas/courses/base.py:492
+#: now_lms/vistas/courses/base.py:493
 msgid "Hubo en error al actualizar la seccion."
 msgstr "Ocorreu um erro ao atualizar a seção."
 
-#: now_lms/vistas/courses/base.py:544
+#: now_lms/vistas/courses/base.py:545
 msgid "Tipo de usuario no autorizado para esta página."
 msgstr "Tipo de usuário não autorizado para esta página."
 
@@ -9475,52 +9468,52 @@ msgstr "Certificado de conclusão emitido."
 msgid "Curso completado"
 msgstr "Curso concluído"
 
-#: now_lms/vistas/courses/resources.py:255
+#: now_lms/vistas/courses/resources.py:256
 msgid "Recurso marcado como completado."
 msgstr "Recurso marcado como concluído."
 
-#: now_lms/vistas/courses/resources.py:706
-#: now_lms/vistas/courses/resources.py:798
-#: now_lms/vistas/courses/resources.py:901
-#: now_lms/vistas/courses/resources.py:1001
+#: now_lms/vistas/courses/resources.py:707
+#: now_lms/vistas/courses/resources.py:799
+#: now_lms/vistas/courses/resources.py:902
+#: now_lms/vistas/courses/resources.py:1002
 msgid "RECURSO_AGREGADO"
 msgstr "AGGREGATE_RESOURCE"
 
-#: now_lms/vistas/courses/resources.py:1069
-#: now_lms/vistas/courses/resources.py:1145
+#: now_lms/vistas/courses/resources.py:1070
+#: now_lms/vistas/courses/resources.py:1146
 msgid ""
 "La subida de archivos descargables no está habilitada por el administrador."
 msgstr ""
 "O upload de arquivos para download não é habilitado pelo administrador."
 
-#: now_lms/vistas/courses/resources.py:1112
-#: now_lms/vistas/courses/resources.py:1172
+#: now_lms/vistas/courses/resources.py:1113
+#: now_lms/vistas/courses/resources.py:1173
 msgid "Tipo de archivo no permitido."
 msgstr "Tipo de arquivo não permitido."
 
-#: now_lms/vistas/courses/resources.py:1288
-#: now_lms/vistas/courses/resources.py:1456
+#: now_lms/vistas/courses/resources.py:1289
+#: now_lms/vistas/courses/resources.py:1457
 msgid "Presentación no encontrada."
 msgstr "Apresentação não encontrada."
 
-#: now_lms/vistas/courses/resources.py:1298
+#: now_lms/vistas/courses/resources.py:1299
 msgid "Presentación actualizada correctamente."
 msgstr "Apresentação atualizada corretamente."
 
-#: now_lms/vistas/courses/resources.py:1571
+#: now_lms/vistas/courses/resources.py:1572
 msgid "La subida de archivos no está habilitada por el administrador."
 msgstr "O upload de arquivo não foi habilitado pelo administrador."
 
-#: now_lms/vistas/courses/resources.py:1667
+#: now_lms/vistas/courses/resources.py:1668
 msgid "Archivo no encontrado en la biblioteca."
 msgstr "Arquivo não encontrado na biblioteca."
 
-#: now_lms/vistas/courses/resources.py:1682
+#: now_lms/vistas/courses/resources.py:1683
 msgid "Archivo eliminado exitosamente de la biblioteca."
 msgstr "Arquivo removido da biblioteca com sucesso."
 
-#: now_lms/vistas/courses/resources.py:1790
-#: now_lms/vistas/courses/resources.py:1812
+#: now_lms/vistas/courses/resources.py:1791
+#: now_lms/vistas/courses/resources.py:1813
 msgid "No se puede crear el evento: faltan datos de fecha/hora"
 msgstr "Não é possível criar evento: dados de data/hora ausentes"
 
