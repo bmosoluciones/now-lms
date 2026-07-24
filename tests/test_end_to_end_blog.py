@@ -90,7 +90,7 @@ def test_e2e_blog_post_editing(app, db_session):
         content="Contenido original",
         status="published",
         slug="post-original",
-        author_id=admin.id,
+        author_id=admin.usuario,
     )
     db_session.add(post)
     db_session.commit()
@@ -124,7 +124,7 @@ def test_e2e_blog_comments(app, db_session):
         content="Contenido del post",
         status="published",
         slug="post-con-comentarios",
-        author_id=admin.id,
+        author_id=admin.usuario,
     )
     db_session.add(post)
     db_session.commit()
@@ -272,7 +272,7 @@ def test_e2e_blog_comment_deletion_and_banning(app, db_session):
         content="Contenido",
         status="published",
         slug="post-comentarios",
-        author_id=admin.id,
+        author_id=admin.usuario,
     )
     db_session.add(post)
     db_session.commit()

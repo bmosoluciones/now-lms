@@ -5,10 +5,11 @@ Tests unitarios y de integración para la gestión de certificados.
 """
 
 import pytest
-from flask_login import login_user, logout_user
-from now_lms.db import database, Usuario, Certificado, Certificacion, Curso, CertificacionPrograma, Programa
+
 from now_lms.auth import proteger_passwd
+from now_lms.db import Certificacion, CertificacionPrograma, Certificado, Curso, Programa, Usuario, database
 from now_lms.vistas.certificates import insert_style_in_html
+
 
 @pytest.fixture
 def cert_setup(app, db_session):
@@ -61,7 +62,7 @@ def cert_setup(app, db_session):
         tipo="course",
         habilitado=True,
         publico=True,
-        usuario=admin.id,
+        usuario=admin.usuario,
     )
     db_session.add(template)
     db_session.commit()
@@ -74,12 +75,14 @@ def cert_setup(app, db_session):
         "template": template,
     }
 
+
 def test_insert_style_in_html(app, db_session, cert_setup):
     """Verifica que el CSS se inyecte en el HTML."""
     template = cert_setup["template"]
     result = insert_style_in_html(template)
     assert "<style>h1 { color: blue; }</style>" in result
     assert "<h1>Certificado de {{ usuario.nombre }}</h1>" in result
+
 
 def test_routes_admin_manage_certificates(client, db_session, cert_setup):
     """Prueba acciones de habilitar, deshabilitar, publicar, despublicar de admin."""
@@ -111,6 +114,7 @@ def test_routes_admin_manage_certificates(client, db_session, cert_setup):
     assert response.status_code == 200
     db_session.refresh(template)
     assert template.publico is True
+
 
 def test_routes_create_and_edit_certificate(client, db_session, cert_setup):
     """Prueba rutas para crear y editar plantillas de certificados."""
@@ -156,6 +160,7 @@ def test_routes_create_and_edit_certificate(client, db_session, cert_setup):
     db_session.refresh(new_cert)
     assert new_cert.titulo == "New Template Updated"
 
+
 def test_routes_emit_and_view_certificate(client, db_session, cert_setup):
     """Prueba emisión y visualización de certificaciones."""
     student = cert_setup["student"]
@@ -188,6 +193,7 @@ def test_routes_emit_and_view_certificate(client, db_session, cert_setup):
     client.post("/user/login", data={"usuario": "stud_cert", "acceso": "pass"})
     response_list = client.get("/certificate/issued/list")
     assert response_list.status_code == 200
+
 
 def test_routes_program_certificate(client, db_session, cert_setup):
     """Prueba certificados para programas."""
