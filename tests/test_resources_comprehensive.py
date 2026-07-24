@@ -1245,7 +1245,7 @@ def test_ver_biblioteca_curso_instructor_asignado(app, db_session):
 def test_ver_biblioteca_curso_estudiante_no_permitido(app, db_session):
     """Un estudiante no puede acceder a la biblioteca (requiere perfil instructor)."""
     estudiante = crear_usuario(db_session, "student", "alumno11")
-    curso = crear_curso(db_session, "curso_biblioteca_estudiante")
+    curso = crear_curso(db_session, "bib_est_no_perm")
     inscribir_estudiante(db_session, curso, estudiante)
 
     client = app.test_client()
