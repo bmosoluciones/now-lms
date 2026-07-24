@@ -92,6 +92,12 @@ noted — when upstream accepts it, we drop the fork-local copy and let `main` c
 Fork-relevant, most recent first. (Upstream feature history lives in the root `CHANGELOG.md`; this
 section records only what is Intent-Solutions-fork-specific.)
 
+- **2026-07-23** — Reset the `intent_learn` front-door composition after real iPad review: replaced
+  the oversized black/orange poster treatment with a bright working-studio system, restrained the
+  type scale, removed decorative numbering/card shells, restored continuous reading flow, and
+  added breakpoint-specific phone/tablet layouts. Aligned the footer with the Intent Solutions
+  estate using the canonical GetTerms-backed Terms of Service, Privacy Policy, and Acceptable Use
+  destinations.
 - **2026-07-23** — Rebuilt the `intent_learn` homepage around the Selective Implementation Practice
   doctrine: model-agnostic practitioner positioning, one house method, optional role-shaped proof
   paths, and an invitation-only deeper arena. Replaced the generic course-led acquisition copy and

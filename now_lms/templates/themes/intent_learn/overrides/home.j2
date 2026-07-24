@@ -19,253 +19,7 @@
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>{{ site_config.titulo_html or _('Intent Solutions Learn') }}</title>
 
-        <style>
-            /* Intent Solutions Learn — selective-practice front door.
-               Fork-local branding in NOW-LMS's native theme layer. */
-            .isl-root {
-                --bg: 9 9 11;
-                --bg-raised: 17 16 19;
-                --card: 24 24 27;
-                --ink: 250 250 250;
-                --ink-dim: 180 180 190;
-                --ink-faint: 132 132 144;
-                --line: 48 48 54;
-                --ember: 249 115 22;
-                --ember-hi: 251 146 60;
-                --font-display: 'Syne', system-ui, sans-serif;
-                --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
-                --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-                --maxw: 74rem;
-                width: 100%;
-                max-width: 100%;
-                margin: 0;
-                /* `hidden` is the fallback for browsers without overflow: clip. */
-                overflow-x: hidden;
-                overflow-x: clip;
-                background: rgb(var(--bg));
-                color: rgb(var(--ink));
-                font-family: var(--font-ui);
-                font-size: 16px;
-                line-height: 1.65;
-                -webkit-font-smoothing: antialiased;
-            }
-            .isl-root *, .isl-root *::before, .isl-root *::after { box-sizing: border-box; min-width: 0; }
-            .isl-root a { color: inherit; text-decoration: none; }
-            .isl-root img { display: block; max-width: 100%; }
-            .isl-root :focus-visible { outline: 3px solid rgb(var(--ember-hi)); outline-offset: 3px; border-radius: 5px; }
-            .isl-wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding-inline: clamp(1.15rem, 4vw, 2.5rem); }
-
-            .isl-kicker {
-                display: inline-flex; align-items: center; gap: 0.7rem; margin: 0 0 1.25rem;
-                color: rgb(var(--ember-hi)); font-family: var(--font-mono); font-size: 0.68rem;
-                font-weight: 700; letter-spacing: 0.16em; line-height: 1.4; text-transform: uppercase;
-            }
-            .isl-kicker::before { content: ''; width: 2.6rem; height: 1px; flex: 0 0 auto; background: rgba(251,146,60,0.55); }
-            .isl-section-head { max-width: 48rem; margin: 0 0 3rem; }
-            .isl-section-head.center { margin-inline: auto; text-align: center; }
-            .isl-section-head.center .isl-kicker::after { content: ''; width: 2.6rem; height: 1px; background: rgba(251,146,60,0.55); }
-            .isl-section-head h2 {
-                margin: 0 0 1rem; color: rgb(var(--ink)); font-family: var(--font-display);
-                font-size: clamp(2rem, 4.8vw, 3.4rem); font-weight: 750; letter-spacing: -0.04em;
-                line-height: 1.04; text-wrap: balance;
-            }
-            .isl-section-head p { max-width: 65ch; margin: 0; color: rgb(var(--ink-dim)); font-size: clamp(1rem, 1.5vw, 1.08rem); }
-            .isl-section-head.center p { margin-inline: auto; }
-            .isl-hl {
-                background: linear-gradient(120deg, #ff8a2a, #f26205); color: rgb(9 9 11);
-                padding: 0.01em 0.18em 0.06em; border-radius: 0.18em;
-                box-decoration-break: clone; -webkit-box-decoration-break: clone;
-            }
-
-            .isl-btn {
-                display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 0.5rem;
-                padding: 0.75rem 1.35rem; border: 1px solid transparent; border-radius: 0.58rem;
-                font-size: 0.9rem; font-weight: 750; line-height: 1.2; white-space: nowrap; cursor: pointer;
-                transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease,
-                    box-shadow 180ms ease, transform 180ms ease;
-            }
-            .isl-btn-primary { background: rgb(var(--ember)); color: rgb(9 9 11); box-shadow: 0 0 24px rgba(249,115,22,0.2); }
-            .isl-btn-primary:hover { background: rgb(var(--ember-hi)); box-shadow: 0 0 32px rgba(249,115,22,0.34); transform: translateY(-1px); }
-            .isl-btn-secondary { border-color: rgb(var(--line)); background: rgba(24,24,27,0.45); color: rgb(var(--ink)); }
-            .isl-btn-secondary:hover { border-color: rgb(var(--ink-faint)); background: rgb(var(--card)); }
-            .isl-btn-sm { min-height: 44px; padding: 0.62rem 1rem; font-size: 0.82rem; }
-
-            .isl-header {
-                position: sticky; top: 0; z-index: 40; border-bottom: 1px solid rgba(48,48,54,0.72);
-                background: rgba(9,9,11,0.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-            }
-            .isl-header .isl-wrap { display: flex; min-height: 4.35rem; align-items: center; justify-content: space-between; gap: 1rem; }
-            .isl-brand { display: inline-flex; min-height: 44px; align-items: center; gap: 0.62rem; flex: 0 0 auto; }
-            .isl-brand img { width: 30px; height: 30px; object-fit: contain; }
-            .isl-brand .word { color: rgb(var(--ink)); font-family: var(--font-display); font-size: 1.06rem; font-weight: 750; letter-spacing: -0.02em; }
-            .isl-brand .word .s { color: #ff7a1a; }
-            .isl-nav { display: flex; align-items: center; justify-content: flex-end; gap: clamp(0.7rem, 2vw, 1.6rem); }
-            .isl-nav > a.link { display: inline-flex; min-height: 44px; align-items: center; color: rgb(var(--ink-dim)); font-size: 0.86rem; font-weight: 600; }
-            .isl-nav > a.link:hover { color: rgb(var(--ink)); }
-            .isl-nav-actions { display: flex; align-items: center; gap: 0.55rem; }
-
-            .isl-hero {
-                position: relative; overflow: hidden; border-bottom: 1px solid rgba(48,48,54,0.72);
-                background: rgb(var(--bg)); padding: clamp(4.5rem, 9vw, 8rem) 0 clamp(4rem, 8vw, 7rem);
-            }
-            .isl-hero::before {
-                position: absolute; inset: 0; content: ''; pointer-events: none;
-                background: radial-gradient(ellipse at 13% 8%, rgba(249,115,22,0.16), transparent 44%),
-                    radial-gradient(circle at 87% 34%, rgba(249,115,22,0.07), transparent 30%);
-            }
-            .isl-hero::after {
-                position: absolute; inset: 0; content: ''; pointer-events: none; opacity: 0.42;
-                background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-                background-size: 64px 64px;
-                mask-image: linear-gradient(to bottom, black, transparent 78%);
-            }
-            .isl-hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(19rem, 0.85fr); align-items: center; gap: clamp(2.5rem, 7vw, 6.5rem); }
-            .isl-hero-copy h1 {
-                max-width: 12.5ch; margin: 0 0 1.5rem; color: rgb(var(--ink)); font-family: var(--font-display);
-                font-size: clamp(2.65rem, 6vw, 5.65rem); font-weight: 800; letter-spacing: -0.055em;
-                line-height: 0.98; text-wrap: balance;
-            }
-            .isl-hero-copy .lede { max-width: 61ch; margin: 0; color: rgb(var(--ink-dim)); font-size: clamp(1.04rem, 1.7vw, 1.2rem); }
-            .isl-hero-copy .lede strong { color: rgb(var(--ink)); font-weight: 700; }
-            .isl-cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
-            .isl-fit-note { margin: 1rem 0 0; color: rgb(var(--ink-faint)); font-family: var(--font-mono); font-size: 0.69rem; letter-spacing: 0.04em; }
-
-            .isl-standard {
-                position: relative; border: 1px solid rgba(251,146,60,0.26); border-radius: 1.15rem;
-                background: linear-gradient(145deg, rgba(31,25,22,0.9), rgba(17,16,19,0.96));
-                box-shadow: 0 28px 90px rgba(0,0,0,0.38); padding: clamp(1.35rem, 3.5vw, 2rem);
-            }
-            .isl-standard::before { position: absolute; top: -1px; left: 12%; width: 42%; height: 1px; content: ''; background: linear-gradient(90deg, transparent, rgb(var(--ember-hi)), transparent); }
-            .isl-standard-label { margin: 0 0 1.35rem; color: rgb(var(--ember-hi)); font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
-            .isl-standard-step { display: grid; grid-template-columns: 2.3rem 1fr; gap: 0.9rem; align-items: start; }
-            .isl-standard-step + .isl-standard-step { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(48,48,54,0.72); }
-            .isl-standard-step .n { color: rgb(var(--ember-hi)); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; }
-            .isl-standard-step h2 { margin: 0 0 0.25rem; color: rgb(var(--ink)); font-family: var(--font-display); font-size: 1.04rem; font-weight: 700; }
-            .isl-standard-step p { margin: 0; color: rgb(var(--ink-dim)); font-size: 0.86rem; line-height: 1.55; }
-            .isl-standard-foot { margin: 1.35rem 0 0; padding-top: 1rem; border-top: 1px solid rgba(48,48,54,0.72); color: rgb(var(--ink-faint)); font-size: 0.78rem; }
-            .isl-standard-foot strong { color: rgb(var(--ink)); }
-
-            .isl-proof { border-bottom: 1px solid rgba(48,48,54,0.72); background: rgb(var(--bg-raised)); }
-            .isl-proof-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-            .isl-proof-item { min-height: 8.25rem; padding: 1.65rem 1.35rem; }
-            .isl-proof-item + .isl-proof-item { border-left: 1px solid rgba(48,48,54,0.72); }
-            .isl-proof-item .n { display: block; margin-bottom: 0.5rem; color: rgb(var(--ember-hi)); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; }
-            .isl-proof-item strong { display: block; margin-bottom: 0.25rem; color: rgb(var(--ink)); font-family: var(--font-display); font-size: 0.95rem; }
-            .isl-proof-item span:last-child { display: block; color: rgb(var(--ink-faint)); font-size: 0.79rem; line-height: 1.45; }
-
-            .isl-section { padding: clamp(5rem, 9vw, 8rem) 0; border-bottom: 1px solid rgba(48,48,54,0.72); background: rgb(var(--bg)); }
-            .isl-section.alt { background: rgb(var(--bg-raised)); }
-            .isl-journey { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-            .isl-stage {
-                position: relative; min-height: 19rem; overflow: hidden; border: 1px solid rgb(var(--line));
-                border-radius: 1rem; background: rgba(24,24,27,0.7); padding: 1.75rem;
-            }
-            .isl-stage::after { position: absolute; right: -1.4rem; bottom: -4rem; color: rgba(251,146,60,0.055); content: attr(data-step); font-family: var(--font-display); font-size: 11rem; font-weight: 800; line-height: 1; }
-            .isl-stage .step { position: relative; z-index: 1; display: inline-flex; margin-bottom: 3.5rem; color: rgb(var(--ember-hi)); font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
-            .isl-stage h3 { position: relative; z-index: 1; margin: 0 0 0.75rem; color: rgb(var(--ink)); font-family: var(--font-display); font-size: 1.45rem; font-weight: 750; }
-            .isl-stage p { position: relative; z-index: 1; margin: 0; color: rgb(var(--ink-dim)); font-size: 0.9rem; }
-            .isl-stage .gate { position: relative; z-index: 1; display: inline-flex; margin-top: 1.25rem; border: 1px solid rgba(251,146,60,0.3); border-radius: 999px; padding: 0.35rem 0.7rem; color: rgb(var(--ember-hi)); font-family: var(--font-mono); font-size: 0.64rem; text-transform: uppercase; }
-
-            .isl-method-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-            .isl-method-card {
-                display: grid; grid-template-columns: 3.1rem 1fr; gap: 1.2rem; align-items: start;
-                border: 1px solid rgb(var(--line)); border-radius: 1rem; background: rgba(9,9,11,0.4); padding: clamp(1.35rem, 3vw, 1.8rem);
-                transition: border-color 180ms ease, background-color 180ms ease;
-            }
-            .isl-method-card:hover { border-color: rgba(251,146,60,0.4); background: rgba(24,24,27,0.78); }
-            .isl-method-card .icon { display: grid; width: 3.1rem; height: 3.1rem; place-items: center; border: 1px solid rgba(251,146,60,0.25); border-radius: 0.72rem; background: rgba(249,115,22,0.08); color: rgb(var(--ember-hi)); }
-            .isl-method-card svg { width: 1.45rem; height: 1.45rem; }
-            .isl-method-card h3 { margin: 0 0 0.45rem; color: rgb(var(--ink)); font-family: var(--font-display); font-size: 1.05rem; font-weight: 750; }
-            .isl-method-card p { margin: 0; color: rgb(var(--ink-dim)); font-size: 0.86rem; }
-
-            .isl-paths { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
-            .isl-core {
-                position: relative; border: 1px solid rgba(251,146,60,0.34); border-radius: 1rem;
-                background: linear-gradient(145deg, rgba(42,29,22,0.75), rgba(17,16,19,0.9)); padding: 2rem;
-            }
-            .isl-core .tag { display: inline-flex; margin-bottom: 1.25rem; color: rgb(var(--ember-hi)); font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
-            .isl-core h3 { margin: 0 0 0.7rem; color: rgb(var(--ink)); font-family: var(--font-display); font-size: 1.6rem; font-weight: 750; }
-            .isl-core p { margin: 0; color: rgb(var(--ink-dim)); font-size: 0.9rem; }
-            .isl-core .arrow { display: block; margin: 1.4rem 0; color: rgb(var(--ember-hi)); font-family: var(--font-mono); }
-            .isl-path-list { display: grid; gap: 0.7rem; }
-            .isl-path { display: flex; align-items: center; gap: 0.85rem; border: 1px solid rgb(var(--line)); border-radius: 0.72rem; background: rgba(9,9,11,0.52); padding: 0.9rem 1rem; }
-            .isl-path .dot { width: 0.45rem; height: 0.45rem; flex: 0 0 auto; border-radius: 50%; background: rgb(var(--ember-hi)); box-shadow: 0 0 14px rgba(249,115,22,0.5); }
-            .isl-path strong { display: block; color: rgb(var(--ink)); font-family: var(--font-display); font-size: 0.9rem; }
-            .isl-path span:last-child { display: block; color: rgb(var(--ink-faint)); font-size: 0.75rem; }
-
-            .isl-team-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
-            .isl-team-card { display: flex; min-height: 6.25rem; align-items: center; gap: 1rem; border: 1px solid rgb(var(--line)); border-radius: 0.85rem; background: rgba(24,24,27,0.62); padding: 1rem; }
-            .isl-team-photo { width: 3.65rem; height: 3.65rem; flex: 0 0 auto; border: 2px solid rgb(var(--bg)); border-radius: 50%; object-fit: cover; filter: grayscale(1); box-shadow: 0 0 0 2px rgba(249,115,22,0.45); }
-            .isl-team-initials { display: grid; width: 3.65rem; height: 3.65rem; flex: 0 0 auto; place-items: center; border: 2px solid rgb(var(--bg)); border-radius: 50%; background: rgb(var(--card)); color: rgb(var(--ember-hi)); font-family: var(--font-display); font-size: 0.8rem; font-weight: 750; box-shadow: 0 0 0 2px rgba(249,115,22,0.45); }
-            .isl-team-name { margin: 0 0 0.2rem; color: rgb(var(--ink)); font-family: var(--font-display); font-size: 0.88rem; font-weight: 750; line-height: 1.25; }
-            .isl-team-role { margin: 0; color: rgb(var(--ember-hi)); font-size: 0.68rem; line-height: 1.35; }
-
-            .isl-final { position: relative; overflow: hidden; padding: clamp(5.5rem, 10vw, 9rem) 0; text-align: center; background: rgb(var(--bg)); }
-            .isl-final::before { position: absolute; inset: auto 0 -15rem; height: 30rem; content: ''; pointer-events: none; background: radial-gradient(ellipse at center, rgba(249,115,22,0.16), transparent 65%); }
-            .isl-final .isl-wrap { position: relative; }
-            .isl-final h2 { max-width: 17ch; margin: 0 auto 1rem; color: rgb(var(--ink)); font-family: var(--font-display); font-size: clamp(2.25rem, 5.8vw, 4.5rem); font-weight: 800; letter-spacing: -0.05em; line-height: 1; text-wrap: balance; }
-            .isl-final p { max-width: 58ch; margin: 0 auto; color: rgb(var(--ink-dim)); font-size: 1.02rem; }
-            .isl-final .isl-cta-row { justify-content: center; }
-
-            .isl-footer { border-top: 1px solid rgba(48,48,54,0.72); background: rgb(var(--bg-raised)); }
-            .isl-footer .isl-wrap { display: flex; min-height: 7rem; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
-            .isl-footer .fb { display: inline-flex; align-items: center; gap: 0.55rem; color: rgb(var(--ink-dim)); font-family: var(--font-display); font-size: 0.85rem; font-weight: 750; }
-            .isl-footer .fb img { width: 22px; height: 22px; object-fit: contain; }
-            .isl-footer .fc { color: rgb(var(--ink-faint)); font-size: 0.72rem; letter-spacing: 0.04em; }
-            .isl-footer .fc a { display: inline-flex; min-height: 44px; align-items: center; color: rgb(var(--ember-hi)); }
-
-            @media (max-width: 980px) {
-                .isl-nav > a.link { display: none; }
-                .isl-hero-grid, .isl-paths { grid-template-columns: 1fr; }
-                .isl-hero-copy { max-width: 48rem; }
-                .isl-hero-copy h1 { max-width: 13ch; }
-                .isl-standard { max-width: 43rem; }
-                .isl-proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-                .isl-proof-item:nth-child(3) { border-left: 0; border-top: 1px solid rgba(48,48,54,0.72); }
-                .isl-proof-item:nth-child(4) { border-top: 1px solid rgba(48,48,54,0.72); }
-                .isl-team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            }
-            @media (max-width: 760px) {
-                .isl-brand .word { display: none; }
-                .isl-journey { grid-template-columns: 1fr; }
-                .isl-stage { min-height: 14rem; }
-                .isl-stage .step { margin-bottom: 2rem; }
-                .isl-method-grid { grid-template-columns: 1fr; }
-            }
-            @media (max-width: 520px) {
-                .isl-header .isl-wrap { min-height: 4rem; gap: 0.55rem; padding-inline: 0.85rem; }
-                .isl-nav, .isl-nav-actions { gap: 0.4rem; }
-                .isl-btn-sm { min-height: 44px; padding: 0.58rem 0.72rem; font-size: 0.72rem; }
-                .isl-hero { padding-top: 4rem; }
-                .isl-hero-copy h1 { max-width: 100%; font-size: clamp(2.45rem, 12.4vw, 3.55rem); overflow-wrap: anywhere; }
-                .isl-kicker { font-size: 0.61rem; letter-spacing: 0.11em; }
-                .isl-kicker::before, .isl-section-head.center .isl-kicker::after { width: 1.6rem; }
-                .isl-cta-row { display: grid; grid-template-columns: 1fr; }
-                .isl-cta-row .isl-btn { width: 100%; white-space: normal; text-align: center; }
-                .isl-standard { padding: 1.25rem; }
-                .isl-proof-item { min-height: 8rem; padding: 1.3rem 1rem; }
-                .isl-section-head { margin-bottom: 2.25rem; }
-                .isl-section-head h2 { font-size: clamp(2rem, 10vw, 2.75rem); overflow-wrap: anywhere; }
-                .isl-stage { min-height: 13rem; padding: 1.35rem; }
-                .isl-method-card { grid-template-columns: 2.75rem 1fr; gap: 0.9rem; padding: 1.15rem; }
-                .isl-method-card .icon { width: 2.75rem; height: 2.75rem; }
-                .isl-team-grid { gap: 0.55rem; }
-                .isl-team-card { min-height: 8rem; flex-direction: column; align-items: flex-start; gap: 0.75rem; padding: 0.9rem; }
-                .isl-team-photo { width: 3rem; height: 3rem; }
-                .isl-final h2 { max-width: 100%; overflow-wrap: anywhere; }
-                .isl-footer .isl-wrap { min-height: 9rem; justify-content: center; text-align: center; }
-                .isl-footer .fc { flex: 1 1 100%; }
-            }
-            @media (max-width: 340px) {
-                .isl-nav-actions .isl-btn-secondary { display: none; }
-                .isl-team-grid { grid-template-columns: 1fr; }
-                .isl-team-card { min-height: auto; flex-direction: row; align-items: center; }
-            }
-            @media (prefers-reduced-motion: reduce) {
-                .isl-root * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
-            }
-        </style>
+        <link rel="stylesheet" href="{{ S }}/front-door.css" />
     </head>
 
     <body class="isl-root" id="top">
@@ -313,8 +67,8 @@
                         <p class="isl-fit-note">{{ _('Credentials are optional. Production standards are not.') }}</p>
                     </div>
 
-                    <aside class="isl-standard" aria-label="{{ _('The practice standard') }}">
-                        <p class="isl-standard-label">{{ _('The practice standard') }}</p>
+                    <aside class="isl-standard" aria-label="{{ _('Inside the practice') }}">
+                        <p class="isl-standard-label">{{ _('Inside the practice') }}</p>
                         <div class="isl-standard-step">
                             <span class="n">01</span>
                             <div><h2>{{ _('House method') }}</h2><p>{{ _('Shared systems, review habits, and delivery discipline before tool loyalty.') }}</p></div>
@@ -462,17 +216,27 @@
                 </div>
             </section>
 
-            {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, 'rgb(9 9 11)') }} {% endif %}
+            {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, 'rgb(243 246 244)') }} {% endif %}
         </main>
 
         <footer class="isl-footer">
             <div class="isl-wrap">
-                <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> {{ _('Intent Solutions Learn') }}</span>
-                <span class="fc">{{ _('Model-agnostic practice · Production standards') }}</span>
-                <span class="fc"><a href="https://intentsolutions.io" target="_blank" rel="noopener">{{ _('intentsolutions.io') }}</a></span>
+                <div class="isl-footer-main">
+                    <div>
+                        <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> {{ _('Intent Solutions Learn') }}</span>
+                        <p class="isl-footer-note">{{ _('A model-agnostic implementation practice built around judgment, evidence, and production standards.') }}</p>
+                    </div>
+                    <nav class="isl-legal" aria-label="{{ _('Legal') }}">
+                        <a href="https://intentsolutions.io/terms">{{ _('Terms of Service') }}</a>
+                        <a href="https://intentsolutions.io/privacy">{{ _('Privacy Policy') }}</a>
+                        <a href="https://intentsolutions.io/acceptable-use">{{ _('Acceptable Use') }}</a>
+                    </nav>
+                </div>
+                <div class="isl-footer-bottom">
+                    <span>{{ _('© Intent Solutions. All rights reserved.') }}</span>
+                    <a href="https://intentsolutions.io">{{ _('intentsolutions.io') }}</a>
+                </div>
             </div>
         </footer>
-
-        {{ current_theme.jslibs() }}
     </body>
 </html>
