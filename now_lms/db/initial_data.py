@@ -66,12 +66,22 @@ if TYPE_CHECKING:
 def system_info(app: "Flask") -> None:
     """Información básica de la instalación."""
     with app.app_context():
-        version_sistema = SystemInfo(param="version", val=VERSION)
-        version_sistema_mayor = SystemInfo(param="version_mayor", val=str(MAYOR))
-        version_sistema_menor = SystemInfo(param="version_menor", val=str(MENOR))
-
-        for i in version_sistema, version_sistema_mayor, version_sistema_menor:
-            database.session.add(i)
+        try:
+            existing = {
+                row.param
+                for row in database.session.query(SystemInfo.param).all()
+            }
+        except Exception:
+            existing = set()
+        entries = []
+        if "version" not in existing:
+            entries.append(SystemInfo(param="version", val=VERSION))
+        if "version_mayor" not in existing:
+            entries.append(SystemInfo(param="version_mayor", val=str(MAYOR)))
+        if "version_menor" not in existing:
+            entries.append(SystemInfo(param="version_menor", val=str(MENOR)))
+        for entry in entries:
+            database.session.add(entry)
         database.session.commit()
 
 
