@@ -194,8 +194,9 @@ def inicializa_extenciones_terceros(flask_app: Flask) -> None:
     """Inicia extensiones de terceros."""
     log.trace("Starting third-party extensions")
     with flask_app.app_context():
-        from now_lms.i18n import get_locale, get_timezone
         from os.path import abspath, dirname, join
+
+        from now_lms.i18n import get_locale, get_timezone
 
         # Ensure Alembic reads migration scripts from the package directory using absolute path
         migrations_dir = abspath(join(dirname(__file__), "migrations"))
@@ -467,7 +468,9 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
     if environ.get("SECRET_KEY"):
         env_overrides["SECRET_KEY"] = environ.get("SECRET_KEY")
     if environ.get("DATABASE_URL"):
-        env_overrides["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL")
+        from now_lms.config import corregir_url_base_datos
+
+        env_overrides["SQLALCHEMY_DATABASE_URI"] = corregir_url_base_datos(environ.get("DATABASE_URL"))
     if environ.get("REDIS_URL"):
         env_overrides["CACHE_REDIS_URL"] = environ.get("REDIS_URL")
 
@@ -745,6 +748,6 @@ def init_app(with_examples=False, flask_app=None):
 
 # Import CLI module to register CLI commands - must be at the end to avoid circular imports
 try:
-    import now_lms.cli  # noqa: F401, E402
+    import now_lms.cli  # noqa: F401
 except ImportError:
     log.warning("Could not import CLI module")
