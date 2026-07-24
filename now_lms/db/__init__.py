@@ -695,8 +695,8 @@ class Programa(database.Model, BaseTabla):
     """Un programa agrupa una serie de cursos."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="codigo_programa_unico"),)
-    nombre = database.Column(database.String(20), nullable=False)
-    codigo = database.Column(database.String(10), nullable=False, unique=True)
+    nombre = database.Column(database.String(150), nullable=False)
+    codigo = database.Column(database.String(20), nullable=False, unique=True)
     descripcion = database.Column(database.String(200))
     texto = database.Column(database.String(1500))
     pagado = database.Column(database.Boolean())
@@ -717,7 +717,7 @@ class ProgramaCurso(database.Model, BaseTabla):
     """Cursos en un programa."""
 
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True)
-    programa = database.Column(database.String(10), database.ForeignKey("programa.codigo"), nullable=False, index=True)
+    programa = database.Column(database.String(20), database.ForeignKey("programa.codigo"), nullable=False, index=True)
     relacion_curso = database.relationship("Curso", foreign_keys=curso)
     relacion_programa = database.relationship("Programa", foreign_keys=programa)
 
