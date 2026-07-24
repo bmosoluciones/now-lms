@@ -130,7 +130,7 @@ def crear_cuenta() -> str | Response:
     form = LogonForm()
     config_result = database.session.execute(database.select(Configuracion)).first()
     config = config_result[0] if config_result else None
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         usuario_ = Usuario(
             usuario=form.correo_electronico.data,
             acceso=proteger_passwd(form.acceso.data),
@@ -175,7 +175,7 @@ def crear_cuenta() -> str | Response:
 def crear_usuario() -> str | Response:
     """Crear manualmente una cuenta de usuario."""
     form = LogonForm()
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         usuario_ = Usuario(
             usuario=form.usuario.data,
             acceso=proteger_passwd(form.acceso.data),
