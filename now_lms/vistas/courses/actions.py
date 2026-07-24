@@ -26,6 +26,7 @@ from now_lms.bi import (
     reorganiza_indice_seccion,
 )
 from now_lms.db import CursoRecurso, CursoSeccion, database
+from now_lms.vistas._helpers import safe_commit
 from now_lms.vistas.courses.base import course, VISTA_ADMINISTRAR_CURSO, VISTA_CURSOS
 
 
@@ -89,7 +90,7 @@ def modificar_orden_recurso(cource_code: str, seccion_id: str, resource_index: s
 def eliminar_recurso(curso_code: str, seccion: str, id_: str) -> Response:
     """Elimina un recurso del curso y reorganiza índices."""
     database.session.execute(delete(CursoRecurso).where(CursoRecurso.id == id_))
-    database.session.commit()
+    safe_commit()
     reorganiza_indice_seccion(seccion=seccion)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curso_code))
 
@@ -100,7 +101,7 @@ def eliminar_recurso(curso_code: str, seccion: str, id_: str) -> Response:
 def eliminar_seccion(curso_id: str, id_: str) -> Response:
     """Elimina una sección del curso y reorganiza índices."""
     database.session.execute(delete(CursoSeccion).where(CursoSeccion.id == id_))
-    database.session.commit()
+    safe_commit()
     reorganiza_indice_curso(codigo_curso=curso_id)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curso_id))
 
