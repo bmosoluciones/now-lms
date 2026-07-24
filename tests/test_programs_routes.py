@@ -22,6 +22,7 @@ from now_lms.db import (
 )
 from now_lms.auth import proteger_passwd
 
+
 @pytest.fixture
 def prog_setup(app, db_session):
     """Configura usuarios, cursos y categorías para pruebas de programas."""
@@ -83,6 +84,7 @@ def prog_setup(app, db_session):
         "etiqueta": tag,
     }
 
+
 def test_routes_create_program(client, db_session, prog_setup):
     """Prueba la creación de un nuevo programa por un instructor."""
     # Login instructor
@@ -113,6 +115,7 @@ def test_routes_create_program(client, db_session, prog_setup):
     assert cat_p is not None
     assert cat_p.categoria == prog_setup["categoria"].id
 
+
 def test_routes_list_programs(client, db_session, prog_setup):
     """Prueba listar programas para instructor y admin."""
     # Crear programa de prueba
@@ -139,6 +142,7 @@ def test_routes_list_programs(client, db_session, prog_setup):
     client.post("/user/login", data={"usuario": "admin_p", "acceso": "pass"})
     response_admin = client.get("/program/list")
     assert response_admin.status_code == 200
+
 
 def test_routes_edit_program(client, db_session, prog_setup):
     """Prueba editar programa como admin."""
@@ -171,6 +175,7 @@ def test_routes_edit_program(client, db_session, prog_setup):
     db_session.refresh(prog)
     assert prog.nombre == "Programa Edit Actualizado"
 
+
 def test_routes_explore_programs(client, db_session, prog_setup):
     """Prueba explorar programas públicos."""
     prog = Programa(
@@ -188,6 +193,7 @@ def test_routes_explore_programs(client, db_session, prog_setup):
     response = client.get("/program/explore")
     assert response.status_code == 200
     assert b"Programa Explore" in response.data
+
 
 def test_routes_enroll_and_take_program(client, db_session, prog_setup):
     """Prueba la inscripción y toma de un programa por un estudiante."""
@@ -213,6 +219,7 @@ def test_routes_enroll_and_take_program(client, db_session, prog_setup):
     # Tomar programa
     response_take = client.get(f"/program/PROG_TAKE/take")
     assert response_take.status_code == 200
+
 
 def test_routes_manage_courses_and_admin_enroll(client, db_session, prog_setup):
     """Prueba asociar cursos a programas e inscripción administrativa."""
@@ -249,7 +256,9 @@ def test_routes_manage_courses_and_admin_enroll(client, db_session, prog_setup):
     assert response_enroll.status_code == 200
 
     # Verificar enrolamiento
-    pe = db_session.execute(database.select(ProgramaEstudiante).filter_by(programa=prog.id, usuario="stud_p")).scalars().first()
+    pe = (
+        db_session.execute(database.select(ProgramaEstudiante).filter_by(programa=prog.id, usuario="stud_p")).scalars().first()
+    )
     assert pe is not None
 
     # Ver lista de enrollments
@@ -263,5 +272,7 @@ def test_routes_manage_courses_and_admin_enroll(client, db_session, prog_setup):
     )
     assert response_unenroll.status_code == 200
 
-    pe_deleted = db_session.execute(database.select(ProgramaEstudiante).filter_by(programa=prog.id, usuario="stud_p")).scalars().first()
+    pe_deleted = (
+        db_session.execute(database.select(ProgramaEstudiante).filter_by(programa=prog.id, usuario="stud_p")).scalars().first()
+    )
     assert pe_deleted is None
