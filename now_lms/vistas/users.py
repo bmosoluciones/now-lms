@@ -12,7 +12,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy.exc import OperationalError
 from werkzeug.wrappers import Response
@@ -21,6 +21,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
+from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.forms import ForgotPasswordForm, LoginForm, LogonForm, ResetPasswordForm
@@ -44,12 +45,31 @@ USER_LOGIN_ROUTE = "user.inicio_sesion"
 user = Blueprint("user", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
+def _check_rate_limit(limit_key: str, max_attempts: int, window: int = 60) -> bool:
+    """Check rate limit using cache. Returns True if allowed, False if exceeded."""
+    current = cache.get(limit_key)
+    if current is None:
+        cache.set(limit_key, 1, timeout=window)
+        return True
+    if int(current) >= max_attempts:
+        return False
+    cache.inc(limit_key)
+    return True
+
+
 @user.route("/user/login", methods=["GET", "POST"])
 def inicio_sesion() -> str | Response:
     """Inicio de sesión del usuario."""
     if current_user.is_authenticated:
         flash(USER_ALREADY_LOGGED_IN_MSG, "info")
         return PANEL_DE_USUARIO
+
+    # Rate limiting: 5 login attempts per minute per IP
+    rate_limit_key = f"rate_limit_login_{request.remote_addr}"
+    if request.method == "POST" and not _check_rate_limit(rate_limit_key, 5):
+        flash("Demasiados intentos de inicio de sesión. Intente nuevamente en un minuto.", "error")
+        return INICIO_SESION
+
     form = LoginForm()
 
     # Check if password recovery is available
@@ -238,6 +258,12 @@ def forgot_password() -> str | Response:
     if current_user.is_authenticated:
         flash(USER_ALREADY_LOGGED_IN_MSG, "info")
         return PANEL_DE_USUARIO
+
+    # Rate limiting: 3 forgot-password attempts per minute per IP
+    rate_limit_key = f"rate_limit_forgot_pwd_{request.remote_addr}"
+    if request.method == "POST" and not _check_rate_limit(rate_limit_key, 3):
+        flash("Demasiadas solicitudes de recuperación de contraseña. Intente nuevamente en un minuto.", "error")
+        return INICIO_SESION
 
     form = ForgotPasswordForm()
     if form.validate_on_submit():
