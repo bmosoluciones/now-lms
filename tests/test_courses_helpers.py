@@ -100,11 +100,46 @@ def test_get_course_evaluations_and_attempts_empty(db_session):
 
 
 def test_get_user_resource_progress(db_session):
-    from now_lms.db import CursoRecursoAvance
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, CursoRecurso, CursoRecursoAvance, CursoSeccion, Usuario
 
-    avance = CursoRecursoAvance(curso="curso1", recurso="1", usuario="user1", completado=True, requerido="required")
+    usuario = Usuario(
+        usuario="user1",
+        acceso=proteger_passwd("pass"),
+        nombre="User",
+        correo_electronico="user1@example.com",
+        tipo="student",
+        activo=True,
+    )
+    curso = Curso(
+        codigo="curso1",
+        nombre="Curso 1",
+        descripcion_corta="curso",
+        descripcion="curso",
+        estado="open",
+    )
+    db_session.add_all([usuario, curso])
+    db_session.commit()
+
+    seccion = CursoSeccion(curso="curso1", nombre="Seccion 1", descripcion="seccion", indice=1)
+    db_session.add(seccion)
+    db_session.commit()
+
+    recurso = CursoRecurso(
+        seccion=seccion.id,
+        curso="curso1",
+        nombre="Recurso 1",
+        descripcion="recurso",
+        tipo="text",
+    )
+    db_session.add(recurso)
+    db_session.commit()
+
+    avance = CursoRecursoAvance(
+        curso="curso1", recurso=recurso.id, usuario="user1", completado=True, requerido="required"
+    )
     db_session.add(avance)
     db_session.commit()
 
     progress = _get_user_resource_progress("curso1", "user1")
-    assert progress.get("1", {}).get("completado") is True
+    assert progress.get(recurso.id, {}).get("completado") is True
