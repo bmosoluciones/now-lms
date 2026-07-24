@@ -34,6 +34,31 @@ def _column_length(inspector, table: str, column: str):
     return None
 
 
+def _fk_name(inspector, table: str, column: str, ref_table: str):
+    """Return the foreign key constraint name for a column, or None."""
+    for fk in inspector.get_foreign_keys(table):
+        if column in fk["constrained_columns"] and ref_table in fk["referred_table"]:
+            return fk["name"]
+    return None
+
+
+def _alter_programa_curso_programa(inspector, target: int, existing: int):
+    """Alter programa_curso.programa column, dropping/recreating FK if needed."""
+    if "programa_curso" not in inspector.get_table_names():
+        return
+    if _column_length(inspector, "programa_curso", "programa") == target:
+        return
+
+    fk = _fk_name(inspector, "programa_curso", "programa", "programa")
+
+    with op.batch_alter_table("programa_curso") as batch_op:
+        if fk:
+            batch_op.drop_constraint(fk, type_="foreignkey")
+        batch_op.alter_column("programa", existing_type=sa.String(existing), type_=sa.String(target), existing_nullable=False)
+        if fk:
+            batch_op.create_foreign_key(fk, "programa", ["programa"], ["codigo"])
+
+
 def upgrade():
     """Increase programa nombre/codigo lengths and keep FK types consistent."""
     inspector = sa.inspect(op.get_bind())
@@ -45,21 +70,18 @@ def upgrade():
             if _column_length(inspector, "programa", "codigo") != 20:
                 batch_op.alter_column("codigo", existing_type=sa.String(10), type_=sa.String(20), existing_nullable=False)
 
-    if "programa_curso" in inspector.get_table_names():
-        with op.batch_alter_table("programa_curso") as batch_op:
-            if _column_length(inspector, "programa_curso", "programa") != 20:
-                batch_op.alter_column("programa", existing_type=sa.String(10), type_=sa.String(20), existing_nullable=False)
+    _alter_programa_curso_programa(inspector, 20, 10)
 
 
 def downgrade():
     """Restore programa nombre/codigo lengths to their previous sizes."""
     inspector = sa.inspect(op.get_bind())
 
-    if "programa_curso" in inspector.get_table_names():
-        with op.batch_alter_table("programa_curso") as batch_op:
-            batch_op.alter_column("programa", existing_type=sa.String(20), type_=sa.String(10), existing_nullable=False)
+    _alter_programa_curso_programa(inspector, 10, 20)
 
     if "programa" in inspector.get_table_names():
         with op.batch_alter_table("programa") as batch_op:
-            batch_op.alter_column("nombre", existing_type=sa.String(150), type_=sa.String(20), existing_nullable=False)
-            batch_op.alter_column("codigo", existing_type=sa.String(20), type_=sa.String(10), existing_nullable=False)
+            if _column_length(inspector, "programa", "nombre") != 20:
+                batch_op.alter_column("nombre", existing_type=sa.String(150), type_=sa.String(20), existing_nullable=False)
+            if _column_length(inspector, "programa", "codigo") != 10:
+                batch_op.alter_column("codigo", existing_type=sa.String(20), type_=sa.String(10), existing_nullable=False)
