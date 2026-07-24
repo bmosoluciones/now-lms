@@ -13,6 +13,7 @@ from pathlib import Path
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import flash
+from flask_babel import gettext
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
@@ -36,7 +37,7 @@ def safe_commit() -> bool:
         return True
     except OperationalError:
         database.session.rollback()
-        flash("Error de base de datos. Intente de nuevo.", "danger")
+        flash(gettext("Error de base de datos. Intente de nuevo."), "danger")
         return False
 
 
