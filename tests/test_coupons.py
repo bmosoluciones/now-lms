@@ -57,6 +57,7 @@ def test_courses(app, db_session):
         estado="open",
         pagado=True,
         precio=100.0,
+        plantilla_certificado=None,
     )
     free_course = Curso(
         codigo="FREE01",
@@ -65,6 +66,7 @@ def test_courses(app, db_session):
         descripcion="free",
         estado="open",
         pagado=False,
+        plantilla_certificado=None,
     )
     db_session.add_all([paid_course, free_course])
     db_session.commit()
