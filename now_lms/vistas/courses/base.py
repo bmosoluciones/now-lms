@@ -7,7 +7,6 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -171,7 +170,7 @@ def _save_course_logo(curso_) -> None:
             database.session.commit()
             log.warning("Course Logo not saved")
     except (UploadNotAllowed, AttributeError):
-        log.warning(gettext(COULD_NOT_UPDATE_PROFILE_PHOTO))
+        log.warning(_(COULD_NOT_UPDATE_PROFILE_PHOTO))
         database.session.rollback()
 
 
@@ -398,10 +397,10 @@ def nuevo_curso() -> str | Response:
         asignar_curso_a_instructor(form.codigo.data, usuario_id=current_user.usuario)
         _save_course_logo(nuevo_curso_)
         database.session.commit()
-        flash(gettext("Curso creado exitosamente."), "success")
+        flash(_("Curso creado exitosamente."), "success")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
     except OperationalError:
-        flash(gettext("Hubo en error al crear su curso."), "warning")
+        flash(_("Hubo en error al crear su curso."), "warning")
         return redirect("/instructor")
 
 
@@ -427,13 +426,13 @@ def editar_curso(course_code: str) -> str | Response:
                 _update_course_taxonomy(course_code, form.codigo.data, form)
             database.session.commit()
             _save_course_logo(curso_a_editar)
-            flash(gettext("Curso actualizado exitosamente."), "success")
+            flash(_("Curso actualizado exitosamente."), "success")
             return redirect(curso_url)
         except OperationalError:
-            flash(gettext("Hubo en error al actualizar el curso."), "warning")
+            flash(_("Hubo en error al actualizar el curso."), "warning")
             return redirect(curso_url)
     elif request.method == "POST" and form.errors:
-        flash(gettext("El formulario tiene errores. Revisa los campos marcados."), "warning")
+        flash(_("El formulario tiene errores. Revisa los campos marcados."), "warning")
 
     if request.method == "GET":
         _populate_edit_form(form, curso_a_editar, course_code)
@@ -464,10 +463,10 @@ def nuevo_seccion(course_code: str) -> str | Response:
             nueva_seccion.creado_por = current_user.usuario
             database.session.add(nueva_seccion)
             database.session.commit()
-            flash(gettext("Sección agregada correctamente al curso."), "success")
+            flash(_("Sección agregada correctamente al curso."), "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash(gettext("Hubo en error al crear la seccion."), "warning")
+            flash(_("Hubo en error al crear la seccion."), "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template("learning/nuevo_seccion.html", form=form)
@@ -491,10 +490,10 @@ def editar_seccion(course_code: str, seccion: str) -> str | Response:
             seccion_a_editar.modificado = datetime.now(timezone.utc)
             seccion_a_editar.modificado_por = current_user.usuario
             database.session.commit()
-            flash(gettext("Sección modificada correctamente."), "success")
+            flash(_("Sección modificada correctamente."), "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash(gettext("Hubo en error al actualizar la seccion."), "warning")
+            flash(_("Hubo en error al actualizar la seccion."), "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
@@ -667,21 +666,21 @@ def admin_course_enrollment(course_code: str) -> str | Response:
         notes = form.notes.data.strip() if form.notes.data else ""
         usuario_existe, existing_enrollment = _enrollment_student(course_code, student_username)
         if not usuario_existe:
-            flash(gettext("El usuario '%(username)s' no existe en el sistema.") % {"username": student_username}, "error")
+            flash(_("El usuario '%(username)s' no existe en el sistema.") % {"username": student_username}, "error")
             return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
         if existing_enrollment:
-            flash(gettext("El estudiante '%(username)s' ya está inscrito en este curso.") % {"username": student_username}, "warning")
+            flash(_("El estudiante '%(username)s' ya está inscrito en este curso.") % {"username": student_username}, "warning")
             return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
         try:
             _persist_admin_enrollment(course_code, _curso, usuario_existe, bypass_payment, notes)
 
-            flash(gettext("Estudiante '%(username)s' inscrito exitosamente en el curso '%(course_name)s'.") % {"username": student_username, "course_name": _curso.nombre}, "success")
+            flash(_("Estudiante '%(username)s' inscrito exitosamente en el curso '%(course_name)s'.") % {"username": student_username, "course_name": _curso.nombre}, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
-            flash(gettext("Error al inscribir al estudiante: %(error)s") % {"error": str(e)}, "error")
+            flash(_("Error al inscribir al estudiante: %(error)s") % {"error": str(e)}, "error")
 
     return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
@@ -742,7 +741,7 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
     ).scalar_one_or_none()
 
     if not enrollment:
-        flash(gettext("El estudiante '%(username)s' no está inscrito en este curso.") % {"username": student_username}, "error")
+        flash(_("El estudiante '%(username)s' no está inscrito en este curso.") % {"username": student_username}, "error")
         return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
 
     try:
@@ -752,11 +751,11 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
         enrollment.modificado_por = current_user.usuario
         database.session.commit()
 
-        flash(gettext("Estudiante '%(username)s' desinscrito del curso exitosamente.") % {"username": student_username}, "success")
+        flash(_("Estudiante '%(username)s' desinscrito del curso exitosamente.") % {"username": student_username}, "success")
 
     except Exception as e:
         database.session.rollback()
-        flash(gettext("Error al desinscribir al estudiante: %(error)s") % {"error": str(e)}, "error")
+        flash(_("Error al desinscribir al estudiante: %(error)s") % {"error": str(e)}, "error")
 
     return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
 

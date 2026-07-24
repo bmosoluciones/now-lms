@@ -8,7 +8,6 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -26,6 +25,7 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Etiqueta, database
 from now_lms.db.tools import cursos_por_etiqueta, programas_por_etiqueta
 from now_lms.forms import EtiquetaForm
+from now_lms.i18n import _
 from now_lms.vistas._helpers import safe_commit
 
 # ---------------------------------------------------------------------------------------
@@ -57,10 +57,10 @@ def new_tag() -> str | Response:
         database.session.add(etiqueta)
         try:
             database.session.commit()
-            flash(gettext("Nueva etiqueta creada."), "success")
+            flash(_("Nueva etiqueta creada."), "success")
         except OperationalError:
             database.session.rollback()
-            flash(gettext("Hubo un error al crear la etiqueta."), "warning")
+            flash(_("Hubo un error al crear la etiqueta."), "warning")
         return redirect(url_for(TAG_TAGS_ROUTE))
 
     return render_template("learning/etiquetas/nueva_etiqueta.html", form=form)
@@ -114,10 +114,10 @@ def edit_tag(ulid: str) -> str | Response:
         try:
             database.session.add(etiqueta)
             database.session.commit()
-            flash(gettext("Etiqueta editada correctamente."), "success")
+            flash(_("Etiqueta editada correctamente."), "success")
         except OperationalError:
             database.session.rollback()
-            flash(gettext("No se puedo editar la etiqueta."), "warning")
+            flash(_("No se puedo editar la etiqueta."), "warning")
         return redirect(url_for(TAG_TAGS_ROUTE))
 
     return render_template("learning/etiquetas/editar_etiqueta.html", form=form)

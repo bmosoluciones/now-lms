@@ -4,7 +4,6 @@
 """Public announcements views."""
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -24,6 +23,7 @@ from werkzeug.wrappers import Response
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, Curso, EstudianteCurso, database
+from now_lms.i18n import _
 
 public_announcements = Blueprint("public_announcements", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -62,7 +62,7 @@ def course_announcements(course_id: str) -> str | Response:
     # Verificar que el curso existe
     course = database.session.get(Curso, course_id)
     if not course:
-        flash(gettext("Curso no encontrado."), "error")
+        flash(_("Curso no encontrado."), "error")
         return redirect(url_for("public_announcements.global_announcements"))
 
     # Verificar que el usuario está inscrito en el curso
@@ -76,7 +76,7 @@ def course_announcements(course_id: str) -> str | Response:
         ).scalar_one_or_none()
 
         if not enrollment:
-            flash(gettext("No tienes acceso a los anuncios de este curso."), "error")
+            flash(_("No tienes acceso a los anuncios de este curso."), "error")
             return redirect(url_for("public_announcements.global_announcements"))
 
     # Obtener anuncios del curso

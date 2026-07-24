@@ -8,7 +8,6 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -26,6 +25,7 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, database
 from now_lms.db.tools import cursos_por_categoria, programas_por_categoria
 from now_lms.forms import CategoriaForm
+from now_lms.i18n import _
 from now_lms.vistas._helpers import safe_commit
 
 # ---------------------------------------------------------------------------------------
@@ -57,9 +57,9 @@ def new_category() -> str | Response:
         database.session.add(categoria)
         try:
             database.session.commit()
-            flash(gettext("Nueva categoria creada."), "success")
+            flash(_("Nueva categoria creada."), "success")
         except OperationalError:
-            flash(gettext("Hubo un error al crear la categoria."), "warning")
+            flash(_("Hubo un error al crear la categoria."), "warning")
         return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
     return render_template("learning/categorias/nueva_categoria.html", form=form)
@@ -113,9 +113,9 @@ def edit_category(ulid: str) -> str | Response:
         try:
             database.session.add(categoria)
             database.session.commit()
-            flash(gettext("Categoria editada correctamente."), "success")
+            flash(_("Categoria editada correctamente."), "success")
         except OperationalError:
-            flash(gettext("No se puedo editar la categoria."), "warning")
+            flash(_("No se puedo editar la categoria."), "warning")
         return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
     return render_template("learning/categorias/editar_categoria.html", form=form)

@@ -8,7 +8,6 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
-from flask_babel import gettext
 
 from collections import OrderedDict
 
@@ -948,7 +947,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
 
     except Exception:
         database.session.rollback()
-        flash(gettext("Error al inscribir al estudiante en el programa."), "error")
+        flash(_("Error al inscribir al estudiante en el programa."), "error")
 
     return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 

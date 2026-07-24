@@ -4,7 +4,6 @@
 """Admin profile views for NOW LMS."""
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -120,9 +119,9 @@ def activar_usuario(user_id: str) -> Response:
     if not perfil_usuario.activo:
         perfil_usuario.activo = True
         database.session.commit()
-        flash(gettext("Usuario definido como activo"), "info")
+        flash(_("Usuario definido como activo"), "info")
     else:
-        flash(gettext("Usuario ya se encuentra definido como activo"), "warning")
+        flash(_("Usuario ya se encuentra definido como activo"), "warning")
     cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_USERS_ROUTE))
     return redirect(url_for(ADMIN_USERS_ROUTE))
 
@@ -139,9 +138,9 @@ def inactivar_usuario(user_id: str) -> Response:
     if perfil_usuario.activo:
         perfil_usuario.activo = False
         database.session.commit()
-        flash(gettext("Usuario definido como inactivo"), "info")
+        flash(_("Usuario definido como inactivo"), "info")
     else:
-        flash(gettext("Usuario ya se encuentra definido como inactivo"), "warning")
+        flash(_("Usuario ya se encuentra definido como inactivo"), "warning")
     cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_USERS_ROUTE))
     return redirect(url_for(ADMIN_USERS_ROUTE))
 
@@ -154,7 +153,7 @@ def eliminar_usuario(user_id: str) -> Response:
     database.session.execute(delete(Usuario).where(Usuario.id == user_id))
     database.session.commit()
     cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_USERS_ROUTE))
-    flash(gettext("Usuario eliminado correctamente."), "info")
+    flash(_("Usuario eliminado correctamente."), "info")
     return redirect(url_for(request.form.get("ruta", default="home", type=str)))
 
 
@@ -209,7 +208,7 @@ def verificar_email_usuario(user_id: str) -> Response:
 
     row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
     if row is None:
-        flash(gettext("Usuario no encontrado."), "error")
+        flash(_("Usuario no encontrado."), "error")
         return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
     perfil_usuario = row[0]
@@ -245,7 +244,7 @@ def rechazar_usuario_sin_verificar(user_id: str) -> Response:
 
     row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
     if row is None:
-        flash(gettext("Usuario no encontrado."), "error")
+        flash(_("Usuario no encontrado."), "error")
         return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
     perfil_usuario = row[0]
@@ -315,7 +314,7 @@ def pagos() -> str:
         if end_date_raw:
             end_date = date.fromisoformat(end_date_raw)
     except ValueError:
-        flash(gettext("El rango de fechas no es válido."), "warning")
+        flash(_("El rango de fechas no es válido."), "warning")
         start_date_raw = ""
         end_date_raw = ""
 

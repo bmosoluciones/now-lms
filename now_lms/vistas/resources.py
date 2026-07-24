@@ -8,7 +8,6 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
-from flask_babel import gettext
 
 from collections import OrderedDict
 
@@ -35,6 +34,7 @@ from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, files, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, Configuracion, Etiqueta, Recurso, database
 from now_lms.forms import RecursoForm
+from now_lms.i18n import _
 from now_lms.misc import TIPOS_RECURSOS
 
 # ---------------------------------------------------------------------------------------
@@ -92,9 +92,9 @@ def new_resource() -> str | Response:
         database.session.add(recurso)
         try:
             database.session.commit()
-            flash(gettext("Nuevo Recurso creado correctamente."), "success")
+            flash(_("Nuevo Recurso creado correctamente."), "success")
         except OperationalError:
-            flash(gettext("Hubo un error al crear el recurso."), "warning")
+            flash(_("Hubo un error al crear el recurso."), "warning")
         return redirect(url_for("resource.lista_de_recursos"))
 
     return render_template("learning/recursos/nuevo_recurso.html", form=form)
@@ -180,9 +180,9 @@ def edit_resource(ulid: str) -> str | Response:
 
         try:
             database.session.commit()
-            flash(gettext("Recurso actualizado correctamente."), "success")
+            flash(_("Recurso actualizado correctamente."), "success")
         except OperationalError:
-            flash(gettext("Error al editar el recurso."), "warning")
+            flash(_("Error al editar el recurso."), "warning")
         return redirect(url_for("resource.vista_recurso", resource_code=recurso.codigo))
 
     return render_template("learning/recursos/editar_recurso.html", form=form, recurso=recurso)

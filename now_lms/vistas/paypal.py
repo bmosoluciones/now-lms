@@ -4,7 +4,6 @@
 """PayPal Payments."""
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -29,6 +28,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, Curso, Pago, PaypalConfig, database
+from now_lms.i18n import _
 
 # Constants for PayPal API URLs
 PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
@@ -442,7 +442,6 @@ def enviar_recibo_pago(pago: Pago) -> None:
     from flask_mail import Message
     from flask import render_template
     from now_lms.db import Curso, Programa
-    from now_lms.i18n import _
 
     recipient = pago.correo_electronico
     if not recipient:
@@ -563,7 +562,7 @@ def resume_payment(payment_id: str) -> Response:
         )
 
         if not pago:
-            flash(gettext("Pago no encontrado o ya procesado."), "error")
+            flash(_("Pago no encontrado o ya procesado."), "error")
             return redirect(url_for(HOME_PAGE_ROUTE))
 
         if pago.programa:
@@ -578,7 +577,7 @@ def resume_payment(payment_id: str) -> Response:
 
     except Exception:
         logging.exception("Error resuming payment")
-        flash(gettext("Error al reanudar el pago."), "error")
+        flash(_("Error al reanudar el pago."), "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
 
@@ -600,16 +599,16 @@ def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]
 
     curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
-        flash(gettext("Curso no encontrado."), "error")
+        flash(_("Curso no encontrado."), "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
     if not curso.pagado:
-        flash(gettext("Este curso es gratuito."), "info")
+        flash(_("Este curso es gratuito."), "info")
         return redirect(url_for("course.curso", course_code=course_code))
 
     # Check if PayPal is enabled
     if not check_paypal_enabled():
-        flash(gettext("Los pagos con PayPal no están habilitados."), "error")
+        flash(_("Los pagos con PayPal no están habilitados."), "error")
         return redirect(url_for("course.curso", course_code=course_code))
 
     # Get site currency

@@ -4,7 +4,6 @@
 """Master Class views."""
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -98,7 +97,7 @@ def enroll(slug: str) -> str | Response:
     )
 
     if existing_enrollment:
-        flash(gettext("Ya estás inscrito en esta clase magistral."), "info")
+        flash(_("Ya estás inscrito en esta clase magistral."), "info")
         return redirect(url_for("masterclass.detail_public", slug=slug))
 
     form = MasterClassEnrollmentForm()
@@ -115,7 +114,7 @@ def enroll(slug: str) -> str | Response:
         database.session.add(enrollment)
         database.session.commit()
 
-        flash(gettext("Te has inscrito exitosamente en la clase magistral."), "success")
+        flash(_("Te has inscrito exitosamente en la clase magistral."), "success")
         return redirect(url_for("masterclass.detail_public", slug=slug))
 
     return render_template(
@@ -196,7 +195,7 @@ def instructor_create() -> str | Response:
         database.session.add(master_class)
         database.session.commit()
 
-        flash(gettext("Clase magistral creada exitosamente."), "success")
+        flash(_("Clase magistral creada exitosamente."), "success")
         return redirect(url_for("masterclass.instructor_list"))
 
     return render_template("masterclass/instructor_create.html", form=form, title=_("Crear Clase Magistral"))
@@ -261,7 +260,7 @@ def instructor_edit(master_class_id: int) -> str | Response:
 
         database.session.commit()
 
-        flash(gettext("Clase magistral actualizada exitosamente."), "success")
+        flash(_("Clase magistral actualizada exitosamente."), "success")
         return redirect(url_for("masterclass.instructor_list"))
 
     return render_template(
