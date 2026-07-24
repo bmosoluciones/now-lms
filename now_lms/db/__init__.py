@@ -370,6 +370,8 @@ class CursoRecursoAvance(database.Model, BaseTabla):
     Para que un curso de considere finalizado un alumno debe completar todos los recursos requeridos.
     """
 
+    __table_args__ = (database.UniqueConstraint("usuario", "curso", "recurso", name="unique_avance_por_usuario_curso_recurso"),)
+
     curso = database.Column(
         database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
     )
