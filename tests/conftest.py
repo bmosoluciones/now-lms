@@ -48,13 +48,17 @@ def app():
     yield app
 
     with app.app_context():
-        if "mysql" in app.config.get("SQLALCHEMY_DATABASE_URI", ""):
-            database.session.execute(database.text("SET FOREIGN_KEY_CHECKS=0"))
+        database.session.rollback()
         database.session.remove()
-        database.drop_all()
-        if "mysql" in app.config.get("SQLALCHEMY_DATABASE_URI", ""):
-            database.session.execute(database.text("SET FOREIGN_KEY_CHECKS=1"))
-        database.session.commit()
+        database.engine.dispose()
+        url = app.config.get("SQLALCHEMY_DATABASE_URI", "")
+        with database.engine.connect() as conn:
+            if url.startswith("mysql"):
+                conn.execute(database.text("SET FOREIGN_KEY_CHECKS=0"))
+            database.metadata.drop_all(conn)
+            if url.startswith("mysql"):
+                conn.execute(database.text("SET FOREIGN_KEY_CHECKS=1"))
+            conn.commit()
 
 
 @pytest.fixture(scope="function")
