@@ -24,9 +24,14 @@ jobs:
               run: |
                   python -m pip install --require-hashes -r test.lock
             - name: Check python package
+              env:
+                  CI: True
+                  SECRET_KEY: ASD123klj+aAddSadadadadafafsaggsdfsfdasf
               run: |
                   python -m build
                   python -m twine check dist/*
+                  pybabel compile -d now_lms/translations
+                  pytest
 
     lint:
         name: Linting
@@ -41,6 +46,9 @@ jobs:
               run: |
                   python -m pip install --require-hashes -r test.lock
             - name: Linting
+              env:
+                  CI: True
+                  SECRET_KEY: ASD123klj+aAddSadadadadafafsaggsdfsfdasf
               run: |
                   flake8 --max-line-length=120 --ignore=E501,E203,E266,W503,E722 now_lms
                   mypy now_lms --install-types --non-interactive --ignore-missing-imports
