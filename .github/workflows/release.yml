@@ -125,8 +125,7 @@ jobs:
                   ADMIN_PSWD: ${{ env.TEST_ADMIN_PASSWORD }}
                   FLASK_APP: now_lms
               run: |
-                  pytest -v -v --cov=now_lms tests/test_multipledb.py
-                  pytest -v -v --cov=now_lms --cov-append tests/test_alembic_upgrade.py
+                  pytest -v -v --cov=now_lms
             - uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
               with:
                   fail_ci_if_error: true
@@ -170,8 +169,7 @@ jobs:
                   ADMIN_PSWD: ${{ env.TEST_ADMIN_PASSWORD }}
                   FLASK_APP: now_lms
               run: |
-                  pytest -v -v --cov=now_lms tests/test_multipledb.py
-                  pytest -v -v --cov=now_lms --cov-append tests/test_alembic_upgrade.py
+                  pytest -v -v --cov=now_lms 
             - uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
               with:
                   fail_ci_if_error: true
