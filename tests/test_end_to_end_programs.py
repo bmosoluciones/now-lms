@@ -174,7 +174,7 @@ def test_e2e_program_view(app, db_session):
     instructor = _crear_instructor(db_session)  # noqa: F841
     programa = Programa(
         nombre="Programa Público",
-        codigo="prog-public",
+        codigo="prog-pub",
         descripcion="Programa de acceso público",
         texto="Contenido del programa público",
         publico=True,
@@ -188,7 +188,7 @@ def test_e2e_program_view(app, db_session):
     client_public = app.test_client()
     resp_view = client_public.get(f"/program/{programa.codigo}")
     assert resp_view.status_code == 200
-    assert "Programa Público".encode() in resp_view.data or b"prog-public" in resp_view.data
+    assert "Programa Público".encode() in resp_view.data or b"prog-pub" in resp_view.data
 
 
 def test_e2e_program_list(app, db_session):
@@ -222,7 +222,7 @@ def test_e2e_program_add_course(app, db_session):
     instructor = _crear_instructor(db_session)  # noqa: F841
     programa = Programa(
         nombre="Programa con Cursos",
-        codigo="prog-cursos",
+        codigo="prog-cur",
         descripcion="Programa para agregar cursos",
         texto="Contenido del programa",
         publico=True,
