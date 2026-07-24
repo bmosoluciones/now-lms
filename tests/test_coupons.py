@@ -4,7 +4,7 @@
 Tests unitarios y de integración para la gestión de cupones de descuento.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pytest
 from flask_login import login_user, logout_user
 from now_lms.db import database, Usuario, Curso, DocenteCurso, Coupon, EstudianteCurso, Configuracion
@@ -152,7 +152,7 @@ def test_validate_coupon_for_enrollment_validation_errors(app, db_session, test_
         code="EXPIRED",
         discount_type="percentage",
         discount_value=10.0,
-        expires_at=datetime.now() - timedelta(days=1),
+        expires_at=datetime.now(timezone.utc) - timedelta(days=1),
         created_by="inst_coupon",
     )
     # Límite de usos alcanzado
