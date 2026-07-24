@@ -1260,7 +1260,7 @@ def test_ver_biblioteca_curso_estudiante_no_permitido(app, db_session):
 def test_ver_biblioteca_curso_no_inscrito(app, db_session):
     """Un usuario no inscrito no puede ver la biblioteca privada."""
     crear_usuario(db_session, "student", "alumno12")
-    curso = crear_curso(db_session, "curso_biblioteca_privada")
+    curso = crear_curso(db_session, "curso_bib_privada")
 
     client = app.test_client()
     login_usuario(client, "alumno12")
