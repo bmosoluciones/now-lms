@@ -21,7 +21,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
-from now_lms.cache import cache
+from now_lms.cache import cache, cache_incr
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.forms import ForgotPasswordForm, LoginForm, LogonForm, ResetPasswordForm
@@ -53,7 +53,7 @@ def _check_rate_limit(limit_key: str, max_attempts: int, window: int = 60) -> bo
         return True
     if int(current) >= max_attempts:
         return False
-    cache.cache.inc(limit_key)
+    cache_incr(limit_key, timeout=window)
     return True
 
 

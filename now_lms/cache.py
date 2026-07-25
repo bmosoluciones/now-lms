@@ -123,6 +123,29 @@ def cache_key_with_auth_state() -> str:
     return key
 
 
+def cache_incr(key: str, timeout: int = 60) -> int:
+    """Incrementa un contador en cache de forma atómica.
+
+    Para Redis usa INCR nativo; para otros backends (o si Redis no está
+    disponible) realiza get + set manual.
+    """
+    backend = cache.cache
+    client = getattr(backend, "_write_client", None)
+    if client is not None:
+        try:
+            prefix = getattr(backend, "_get_prefix", lambda: "")()
+            return client.incr(name=f"{prefix}{key}", amount=1)
+        except Exception:
+            pass
+    current = cache.get(key)
+    if current is None:
+        current = 1
+    else:
+        current = int(current) + 1
+    cache.set(key, current, timeout=timeout)
+    return current
+
+
 def invalidate_all_cache() -> bool:
     """Invalida toda la cache del sistema cuando cambia el tema."""
     try:
