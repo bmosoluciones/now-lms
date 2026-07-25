@@ -12,7 +12,7 @@ from sqlalchemy.exc import OperationalError
 from werkzeug.wrappers import Response
 
 from now_lms.auth import perfil_requerido, usuario_requiere_verificacion_email
-from now_lms.cache import cache, cache_key_with_auth_state, no_guardar_en_cache_global
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.calendar_utils import create_events_for_student_enrollment
 from now_lms.db import (
     Certificacion,
@@ -270,7 +270,7 @@ def course_enroll(course_code: str) -> str | Response:
 @course.route("/course/<course_code>/take")
 @login_required
 @perfil_requerido("student")
-@cache.cached(key_prefix=cache_key_with_auth_state, unless=no_guardar_en_cache_global)  # type: ignore[arg-type]
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def tomar_curso(course_code: str) -> str | Response:
     """Pagina principal del curso."""
     if current_user.tipo == "student":
@@ -336,7 +336,7 @@ def tomar_curso(course_code: str) -> str | Response:
 @course.route("/course/<course_code>/moderate")
 @login_required
 @perfil_requerido("moderator")
-@cache.cached(key_prefix=cache_key_with_auth_state, unless=no_guardar_en_cache_global)  # type: ignore[arg-type]
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def moderar_curso(course_code: str) -> str | Response:
     """Pagina principal del curso."""
     if current_user.tipo in ("moderator", "admin"):

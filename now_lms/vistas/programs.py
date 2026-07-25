@@ -30,7 +30,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache, cache_key_with_auth_state, invalidar_cache_programa, no_guardar_en_cache_global
+from now_lms.cache import cache, cache_key_with_auth_state, invalidar_cache_programa
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
@@ -181,7 +181,7 @@ def nuevo_programa() -> str | Response:
 @program.route("/program/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
-@cache.cached(timeout=60, unless=no_guardar_en_cache_global)
+@cache.cached(timeout=60)
 def programas() -> str:
     """Lista de programas."""
     if current_user.tipo == "admin":
@@ -212,8 +212,9 @@ def delete_program(ulid: str) -> Response:
         abort(404)
     codigo = programa.codigo
 
+    database.session.execute(delete(Programa).where(Programa.id == ulid))
+
     if current_user.tipo == "admin":
-        database.session.execute(delete(Programa).where(Programa.id == ulid))
         database.session.commit()
         invalidar_cache_programa(codigo)
         cache.delete("view/" + url_for(PROGRAMS_ROUTE))
@@ -308,7 +309,7 @@ def programa_cursos(codigo: str) -> str | Response:
 
 
 @program.route("/program/<codigo>", methods=["GET"])
-@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state, unless=no_guardar_en_cache_global)  # type: ignore[arg-type]
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def pagina_programa(codigo: str) -> str:
     """Pagina principal del curso."""
     programa_obj = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
@@ -317,7 +318,7 @@ def pagina_programa(codigo: str) -> str:
 
 
 @program.route("/program/explore", methods=["GET"])
-@cache.cached(key_prefix=cache_key_with_auth_state, unless=no_guardar_en_cache_global)  # type: ignore[arg-type]
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_programas() -> str:
     """Lista de programas."""
     max_count = 3 if DESARROLLO else 30

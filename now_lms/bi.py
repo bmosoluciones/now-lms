@@ -14,7 +14,6 @@ from flask_login import current_user
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.cache import invalidar_cache_curso
 from now_lms.db import Curso, CursoRecurso, CursoSeccion, DocenteCurso, EstudianteCurso, ModeradorCurso, Usuario, database
 from now_lms.i18n import _
 from now_lms.logs import log
@@ -78,7 +77,10 @@ def reorganiza_indice_curso(codigo_curso: str | None = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
     secciones = (
         database.session.execute(
-            database.select(CursoSeccion).filter_by(curso=codigo_curso).order_by(CursoSeccion.indice).with_for_update()
+            database.select(CursoSeccion)
+            .filter_by(curso=codigo_curso)
+            .order_by(CursoSeccion.indice)
+            .with_for_update()
         )
         .scalars()
         .all()
@@ -245,8 +247,8 @@ def cambia_curso_publico(id_curso: str | int | None = None):
             CURSO.publico = False
         else:
             CURSO.publico = True
-        CURSO.modificado_por = current_user.usuario
-        database.session.commit()
+            CURSO.modificado_por = current_user.usuario
+            database.session.commit()
     else:
         flash(_("No se puede publicar el curso"), "warning")
 

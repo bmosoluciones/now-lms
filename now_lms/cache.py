@@ -98,57 +98,23 @@ def no_guardar_en_cache_global() -> bool:
     # IMPORTANT: This only controls whether to WRITE to cache, not whether to READ from it
     # If an anonymous user's cached page exists, authenticated users will still see it
     # unless we use a different cache key per authentication state
-    return bool(current_user and current_user.is_authenticated)
-
-
-def get_courses_cache_version() -> int:
-    """Obtiene la versión actual de la caché de cursos."""
-    try:
-        if CTYPE == "NullCache":
-            return 1
-        version = cache.get("courses_version")
-        if version is None:
-            version = 1
-            cache.set("courses_version", version, timeout=86400)
-        return int(version)
-    except Exception:
-        return 1
-
-
-def get_programs_cache_version() -> int:
-    """Obtiene la versión actual de la caché de programas."""
-    try:
-        if CTYPE == "NullCache":
-            return 1
-        version = cache.get("programs_version")
-        if version is None:
-            version = 1
-            cache.set("programs_version", version, timeout=86400)
-        return int(version)
-    except Exception:
-        return 1
+    return current_user and current_user.is_authenticated
 
 
 def cache_key_with_auth_state() -> str:
-    """Generate cache key that includes authentication state and namespace version.
+    """Generate cache key that includes authentication state.
 
     This ensures authenticated and anonymous users get different cached versions
-    of the same page, and versioning ensures invalidation also clears query string variants.
+    of the same page, preventing authenticated users from seeing cached anonymous
+    pages (and vice versa).
     """
     from flask import request
 
     # Include authentication state in the cache key
     auth_state = "auth" if (current_user and current_user.is_authenticated) else "anon"
 
-    # Determine cache version prefix based on the requested resource
-    version_prefix = ""
-    if "course" in request.path or request.path == "/" or request.path == "/home":
-        version_prefix = f"v{get_courses_cache_version()}/"
-    elif "program" in request.path:
-        version_prefix = f"v{get_programs_cache_version()}/"
-
     # Build key from request path and auth state
-    key = f"view/{version_prefix}{request.path}/{auth_state}"
+    key = f"view/{request.path}/{auth_state}"
 
     # Include query parameters if present
     if request.query_string:
@@ -169,23 +135,71 @@ def invalidate_all_cache() -> bool:
         return False
 
 
+def _obtiene_llaves_generales_cache() -> list[str]:
+    """Retorna las llaves comunes de catálogo y página de inicio para invalidación."""
+    return [
+        # Con doble diagonal
+        "view//course/explore/anon",
+        "view//course/explore/auth",
+        "view//program/explore/anon",
+        "view//program/explore/auth",
+        "view///anon",
+        "view///auth",
+        # Con diagonal simple
+        "view/course/explore/anon",
+        "view/course/explore/auth",
+        "view/program/explore/anon",
+        "view/program/explore/auth",
+        "view//anon",
+        "view//auth",
+    ]
+
+
 def invalidar_cache_curso(course_code: str) -> None:
-    """Elimina la caché relacionada con un curso después de modificarlo, mediante versionado."""
+    """Invalidar cache para un curso específico y las vistas relacionadas."""
+    if CTYPE == "NullCache":
+        return
     try:
-        if CTYPE != "NullCache":
-            current_version = cache.get("courses_version") or 1
-            cache.set("courses_version", int(current_version) + 1, timeout=86400)
-            log.trace(f"Courses cache version incremented to {int(current_version) + 1}")
+        keys_to_delete = [
+            f"view//course/{course_code}/view/anon",
+            f"view//course/{course_code}/view/auth",
+            f"view//course/{course_code}/admin/anon",
+            f"view//course/{course_code}/admin/auth",
+            f"view//course/{course_code}/take/anon",
+            f"view//course/{course_code}/take/auth",
+            f"view//course/{course_code}/moderate/anon",
+            f"view//course/{course_code}/moderate/auth",
+            f"view/course/{course_code}/view/anon",
+            f"view/course/{course_code}/view/auth",
+            f"view/course/{course_code}/admin/anon",
+            f"view/course/{course_code}/admin/auth",
+            f"view/course/{course_code}/take/anon",
+            f"view/course/{course_code}/take/auth",
+            f"view/course/{course_code}/moderate/anon",
+            f"view/course/{course_code}/moderate/auth",
+        ]
+        keys_to_delete.extend(_obtiene_llaves_generales_cache())
+        for key in keys_to_delete:
+            cache.delete(key)
+        log.trace(f"Cache invalidated for course: {course_code}")
     except Exception as e:
-        log.error(f"Error invalidating courses cache version: {e}")
+        log.error(f"Error invalidating cache for course {course_code}: {e}")
 
 
 def invalidar_cache_programa(program_code: str) -> None:
-    """Elimina la caché relacionada con un programa después de modificarlo, mediante versionado."""
+    """Invalidar cache para un programa específico y las vistas relacionadas."""
+    if CTYPE == "NullCache":
+        return
     try:
-        if CTYPE != "NullCache":
-            current_version = cache.get("programs_version") or 1
-            cache.set("programs_version", int(current_version) + 1, timeout=86400)
-            log.trace(f"Programs cache version incremented to {int(current_version) + 1}")
+        keys_to_delete = [
+            f"view//program/{program_code}/anon",
+            f"view//program/{program_code}/auth",
+            f"view/program/{program_code}/anon",
+            f"view/program/{program_code}/auth",
+        ]
+        keys_to_delete.extend(_obtiene_llaves_generales_cache())
+        for key in keys_to_delete:
+            cache.delete(key)
+        log.trace(f"Cache invalidated for program: {program_code}")
     except Exception as e:
-        log.error(f"Error invalidating programs cache version: {e}")
+        log.error(f"Error invalidating cache for program {program_code}: {e}")

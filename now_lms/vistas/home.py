@@ -19,7 +19,7 @@ from werkzeug.wrappers import Response
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.cache import cache, cache_key_with_auth_state, no_guardar_en_cache_global
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS
 from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
@@ -51,7 +51,7 @@ home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 # ---------------------------------------------------------------------------------------
 @home.route("/", methods=["GET"])
 @home.route("/home", methods=["GET"])
-@cache.cached(timeout=90, key_prefix=cache_key_with_auth_state, unless=no_guardar_en_cache_global)  # type: ignore[arg-type]
+@cache.cached(timeout=90, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def pagina_de_inicio() -> str:
     """Página principal de la aplicación."""
     if DESARROLLO:

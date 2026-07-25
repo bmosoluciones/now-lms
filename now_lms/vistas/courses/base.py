@@ -40,7 +40,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.bi import (
     asignar_curso_a_instructor,
 )
-from now_lms.cache import cache, cache_key_with_auth_state, invalidar_cache_curso, no_guardar_en_cache_global
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.calendar_utils import create_events_for_student_enrollment
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import (
@@ -278,7 +278,7 @@ course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
 @course.route("/course/<course_code>/view", methods=["GET"])
-@cache.cached(key_prefix=cache_key_with_auth_state, unless=no_guardar_en_cache_global)  # type: ignore[arg-type]
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def curso(course_code: str) -> str:
     """Pagina principal del curso."""
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
@@ -315,7 +315,7 @@ def curso(course_code: str) -> str:
 @course.route("/course/<course_code>/admin", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
-@cache.cached(key_prefix=cache_key_with_auth_state, unless=no_guardar_en_cache_global)  # type: ignore[arg-type]
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def administrar_curso(course_code: str) -> str:
     """Pagina principal del curso."""
     return render_template(
@@ -563,7 +563,7 @@ def course_index() -> Response:
 
 
 @course.route("/course/explore", methods=["GET"])
-@cache.cached(key_prefix=cache_key_with_auth_state, unless=no_guardar_en_cache_global)  # type: ignore[arg-type]
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_cursos() -> str:
     """Lista de cursos."""
     max_count = 3 if DESARROLLO else 30
