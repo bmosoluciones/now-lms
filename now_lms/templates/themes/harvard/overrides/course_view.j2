@@ -1,0 +1,37 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="{{ current_locale() }}">
+    {% set config = config() %}
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ curso.nombre | title }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+            <div class="container py-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('home.panel') }}">{{ _('Inicio') }}</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('course.lista_cursos', page=1) }}">{{ _('Cursos') }}</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{ curso.nombre }}</li>
+                    </ol>
+                </nav>
+                <h1>{{ curso.nombre }}</h1>
+                <p>{{ curso.descripcion_corta }}</p>
+                {% if curso.portada %}
+                <img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}" alt="{{ curso.nombre }}" class="img-fluid rounded mb-4" />
+                {% endif %}
+                <div>{{ curso.descripcion }}</div>
+            </div>
+        </main>
+        {{ current_theme.footer() }}
+        {{ current_theme.jslibs() }}
+    </body>
+</html>

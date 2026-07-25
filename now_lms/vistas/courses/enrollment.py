@@ -32,6 +32,7 @@ from now_lms.db import (
 )
 from now_lms.forms import CouponApplicationForm, PagoForm
 from now_lms.misc import CURSO_NIVEL, TIPOS_RECURSOS
+from now_lms.themes import get_course_take_template
 from .base import VISTA_CURSOS, course, markdown2html
 from .helpers import _crear_indice_avance_curso
 from .coupons import _validate_coupon_for_enrollment
@@ -308,7 +309,7 @@ def tomar_curso(course_code: str) -> str | Response:
         )
 
         return render_template(
-            "learning/curso.html",
+            get_course_take_template(),
             curso=curso_obj,
             secciones=database.session.execute(select(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice))
             .scalars()
@@ -341,7 +342,7 @@ def moderar_curso(course_code: str) -> str | Response:
     """Pagina principal del curso."""
     if current_user.tipo in ("moderator", "admin"):
         return render_template(
-            "learning/curso.html",
+            get_course_take_template(),
             curso=database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first(),
             secciones=database.session.execute(select(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice))
             .scalars()
