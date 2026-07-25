@@ -167,6 +167,83 @@ def test_invalidar_cache_curso():
             assert key in called_keys
 
 
+def test_no_guardar_en_cache_global_authenticated():
+    """Test that no_guardar_en_cache_global returns True if user is authenticated."""
+    from now_lms.cache import no_guardar_en_cache_global
+    # Mock current_user as authenticated
+    mock_user = mock.MagicMock()
+    mock_user.is_authenticated = True
+    with mock.patch("now_lms.cache.current_user", mock_user):
+        assert no_guardar_en_cache_global() is True
+
+
+def test_no_guardar_en_cache_global_anonymous():
+    """Test that no_guardar_en_cache_global returns False if user is anonymous or not authenticated."""
+    from now_lms.cache import no_guardar_en_cache_global
+    # Mock current_user as anonymous
+    mock_user = mock.MagicMock()
+    mock_user.is_authenticated = False
+    with mock.patch("now_lms.cache.current_user", mock_user):
+        assert no_guardar_en_cache_global() is False
+
+    with mock.patch("now_lms.cache.current_user", None):
+        assert no_guardar_en_cache_global() is False
+
+
+def test_detect_cache_invalidations_curso():
+    """Test that detect_cache_invalidations correctly detects modified courses and registers them."""
+    from now_lms.db import detect_cache_invalidations
+
+    # Mock some model instances
+    mock_curso = mock.MagicMock()
+    mock_curso.__class__.__name__ = "Curso"
+    mock_curso.codigo = "test-course"
+
+    mock_seccion = mock.MagicMock()
+    mock_seccion.__class__.__name__ = "CursoSeccion"
+    mock_seccion.curso = "test-course-sec"
+
+    mock_recurso = mock.MagicMock()
+    mock_recurso.__class__.__name__ = "CursoRecurso"
+    mock_recurso.curso = "test-course-rec"
+
+    mock_programa = mock.MagicMock()
+    mock_programa.__class__.__name__ = "Programa"
+    mock_programa.codigo = "test-program"
+
+    # Mock session
+    mock_session = mock.MagicMock()
+    mock_session.new = [mock_curso]
+    mock_session.dirty = [mock_seccion, mock_recurso]
+    mock_session.deleted = [mock_programa]
+    mock_session.info = {}
+
+    detect_cache_invalidations(mock_session)
+
+    assert mock_session.info["courses_to_invalidate"] == {"test-course", "test-course-sec", "test-course-rec"}
+    assert mock_session.info["programs_to_invalidate"] == {"test-program"}
+
+
+def test_trigger_cache_invalidations():
+    """Test that trigger_cache_invalidations calls invalidar_cache_curso and invalidar_cache_programa."""
+    from now_lms.db import trigger_cache_invalidations
+
+    mock_session = mock.MagicMock()
+    mock_session.info = {
+        "courses_to_invalidate": {"test-course"},
+        "programs_to_invalidate": {"test-program"}
+    }
+
+    with mock.patch("now_lms.cache.invalidar_cache_curso") as mock_invalidar_curso, \
+         mock.patch("now_lms.cache.invalidar_cache_programa") as mock_invalidar_programa:
+        trigger_cache_invalidations(mock_session)
+        mock_invalidar_curso.assert_called_once_with("test-course")
+        mock_invalidar_programa.assert_called_once_with("test-program")
+
+    assert "courses_to_invalidate" not in mock_session.info
+    assert "programs_to_invalidate" not in mock_session.info
+
+
 def test_invalidar_cache_programa():
     """Test that invalidar_cache_programa calls cache.delete with the expected keys."""
     from now_lms.cache import invalidar_cache_programa, cache

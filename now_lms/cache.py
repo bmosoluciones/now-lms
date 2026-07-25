@@ -98,7 +98,7 @@ def no_guardar_en_cache_global() -> bool:
     # IMPORTANT: This only controls whether to WRITE to cache, not whether to READ from it
     # If an anonymous user's cached page exists, authenticated users will still see it
     # unless we use a different cache key per authentication state
-    return current_user and current_user.is_authenticated
+    return bool(current_user and current_user.is_authenticated)
 
 
 def cache_key_with_auth_state() -> str:

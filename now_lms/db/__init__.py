@@ -1645,3 +1645,48 @@ def populate_audit_fields_before_commit(session):
     for instance in session.dirty:
         if isinstance(instance, BaseTabla) and instance.modificado_por is not None:
             manually_set_modificado_por[id(instance)] = instance.modificado_por
+
+
+@event.listens_for(database.session, "before_commit")
+def detect_cache_invalidations(session):
+    """Detect modified courses or programs before commit to invalidate cache after success."""
+    courses = set()
+    programs = set()
+
+    for instance in list(session.new) + list(session.dirty) + list(session.deleted):
+        cls_name = instance.__class__.__name__
+        if cls_name == "Curso":
+            code = getattr(instance, "codigo", None)
+            if code:
+                courses.add(code)
+        elif cls_name in ("CursoSeccion", "CursoRecurso"):
+            course_code = getattr(instance, "curso", None)
+            if course_code:
+                courses.add(course_code)
+        elif cls_name == "Programa":
+            code = getattr(instance, "codigo", None)
+            if code:
+                programs.add(code)
+
+    session.info["courses_to_invalidate"] = courses
+    session.info["programs_to_invalidate"] = programs
+
+
+@event.listens_for(database.session, "after_commit")
+def trigger_cache_invalidations(session):
+    """Invalidate caches for modified courses or programs after successful commit."""
+    courses = session.info.pop("courses_to_invalidate", set())
+    programs = session.info.pop("programs_to_invalidate", set())
+
+    if courses or programs:
+        try:
+            from now_lms.cache import invalidar_cache_curso, invalidar_cache_programa
+
+            for course_code in courses:
+                if course_code:
+                    invalidar_cache_curso(course_code)
+            for program_code in programs:
+                if program_code:
+                    invalidar_cache_programa(program_code)
+        except Exception:
+            pass
