@@ -43,7 +43,7 @@ def check_rate_limit(key_record):
     if int(current_count) >= LIMIT:
         return False
 
-    cache.inc(cache_key)
+    cache.cache.inc(cache_key)
     return True
 
 
