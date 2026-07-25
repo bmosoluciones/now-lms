@@ -200,24 +200,26 @@ The theming system now supports complete page template overrides. You can custom
 
 - **`home.j2`**: Custom home page template
 - **`course_list.j2`**: Custom course listing page
-- **`course_view.j2`**: Custom individual course page
+- **`course_view.j2`**: Custom course detail page (public view)
+- **`course_take.j2`**: Custom course taking page (enrolled student view)
 - **`program_list.j2`**: Custom program listing page
 - **`program_view.j2`**: Custom individual program page
+- **`resource_list.j2`**: Custom resource listing page
+- **`resource_view.j2`**: Custom resource detail page
 
-### Using the `get_home_template()` Function
+### Using the Override Functions
 
-The system automatically uses the `get_home_template()` function to determine which template to use:
+The system automatically uses override functions to determine which template to use. Each function checks for a theme-specific override file and falls back to the default template if not found:
 
 ```python
-def get_home_template() -> str:
-    """Returns the path to the home page template."""
+def get_course_take_template() -> str:
+    """Returns the path to the course taking template."""
     THEME = get_current_theme()
-    HOME = Path(path.join(get_theme_path(), "overrides", "home.j2"))
+    COURSE_TAKE = Path(path.join(get_theme_path(), "overrides", "course_take.j2"))
 
-    if HOME.exists():
-        return THEMES_DIRECTORY + str(THEME) + "/overrides/home.j2"
-    else:
-        return "inicio/home.html"  # Default template
+    if COURSE_TAKE.exists():
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/course_take.j2"
+    return "learning/curso.html"  # Default template
 ```
 
 ### Template Override Functions
@@ -226,9 +228,12 @@ The system includes several template override functions:
 
 - `get_home_template()` - Home page override
 - `get_course_list_template()` - Course listing override
+- `get_course_view_template()` - Course detail (public) override
+- `get_course_take_template()` - Course taking (enrolled student) override
 - `get_program_list_template()` - Program listing override
-- `get_course_view_template()` - Course view override
 - `get_program_view_template()` - Program view override
+- `get_resource_list_template()` - Resource listing override
+- `get_resource_view_template()` - Resource detail override
 
 ## Custom Pages
 
