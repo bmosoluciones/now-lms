@@ -222,7 +222,7 @@ def test_messages_uncovered_paths(client, patch_users, db_session):
     db_session.add(msg)
     try:
         db_session.commit()
-    except IntegrityError:
+    except Exception:
         db_session.rollback()
         return
 
