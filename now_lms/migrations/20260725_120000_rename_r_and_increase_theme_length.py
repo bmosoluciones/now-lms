@@ -31,12 +31,7 @@ def upgrade():
         if "r" in columns:
             # Rename r to csrf_seed
             with op.batch_alter_table("configuracion") as batch_op:
-                batch_op.alter_column(
-                    "r",
-                    new_column_name="csrf_seed",
-                    existing_type=sa.LargeBinary(),
-                    existing_nullable=True
-                )
+                batch_op.alter_column("r", new_column_name="csrf_seed", existing_type=sa.LargeBinary(), existing_nullable=True)
         elif "csrf_seed" not in columns:
             # Add csrf_seed as a new column
             with op.batch_alter_table("configuracion") as batch_op:
@@ -53,10 +48,7 @@ def upgrade():
             if current_length != 40:
                 with op.batch_alter_table("style") as batch_op:
                     batch_op.alter_column(
-                        "theme",
-                        existing_type=sa.String(current_length or 15),
-                        type_=sa.String(40),
-                        existing_nullable=True
+                        "theme", existing_type=sa.String(current_length or 15), type_=sa.String(40), existing_nullable=True
                     )
 
 
@@ -69,12 +61,7 @@ def downgrade():
         columns = {col["name"]: col for col in inspector.get_columns("configuracion")}
         if "csrf_seed" in columns:
             with op.batch_alter_table("configuracion") as batch_op:
-                batch_op.alter_column(
-                    "csrf_seed",
-                    new_column_name="r",
-                    existing_type=sa.LargeBinary(),
-                    existing_nullable=True
-                )
+                batch_op.alter_column("csrf_seed", new_column_name="r", existing_type=sa.LargeBinary(), existing_nullable=True)
 
     # 2. Handle style table (restore theme column length back to 15)
     if "style" in inspector.get_table_names():
@@ -86,8 +73,5 @@ def downgrade():
             if current_length != 15:
                 with op.batch_alter_table("style") as batch_op:
                     batch_op.alter_column(
-                        "theme",
-                        existing_type=sa.String(current_length or 40),
-                        type_=sa.String(15),
-                        existing_nullable=True
+                        "theme", existing_type=sa.String(current_length or 40), type_=sa.String(15), existing_nullable=True
                     )

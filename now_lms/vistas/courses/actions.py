@@ -132,8 +132,9 @@ def cambiar_estatus_curso() -> Response:
     cambia_estado_curso_por_id(
         request.args.get("curse"), nuevo_estado=request.args.get("status"), usuario=request.args.get("usuario")
     )
-    invalidar_cache_curso(request.args.get("curse"))
-    return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=request.args.get("curse")))
+    curse = request.args.get("curse", "")
+    invalidar_cache_curso(curse)
+    return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curse))
 
 
 @course.route("/course/change_curse_public")
@@ -141,11 +142,12 @@ def cambiar_estatus_curso() -> Response:
 @perfil_requerido("instructor")
 def cambiar_curso_publico() -> Response:
     """Actualiza el estado público de un curso."""
+    curse = request.args.get("curse", "")
     cambia_curso_publico(
-        id_curso=request.args.get("curse"),
+        id_curso=curse,
     )
-    invalidar_cache_curso(request.args.get("curse"))
-    return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=request.args.get("curse")))
+    invalidar_cache_curso(curse)
+    return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curse))
 
 
 @course.route("/course/change_curse_seccion_public")
@@ -153,8 +155,9 @@ def cambiar_curso_publico() -> Response:
 @perfil_requerido("instructor")
 def cambiar_seccion_publico() -> Response:
     """Actualiza el estado público de una sección."""
+    course_code = request.args.get("course_code", "")
     cambia_seccion_publico(
         codigo=request.args.get("codigo"),
     )
-    invalidar_cache_curso(request.args.get("course_code"))
+    invalidar_cache_curso(course_code)
     return redirect(url_for(VISTA_CURSOS, course_code=request.args.get("course_code")))
