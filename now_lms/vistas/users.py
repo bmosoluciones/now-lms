@@ -53,7 +53,7 @@ def _check_rate_limit(limit_key: str, max_attempts: int, window: int = 60) -> bo
         return True
     if int(current) >= max_attempts:
         return False
-    cache.inc(limit_key)
+    cache.cache.inc(limit_key)
     return True
 
 
