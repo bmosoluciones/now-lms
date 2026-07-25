@@ -685,7 +685,7 @@ class Configuracion(database.Model, BaseTabla):
 class Style(database.Model, BaseTabla):
     """Configuration for site appearance and theming."""
 
-    theme = database.Column(database.String(40))
+    theme = database.Column(database.String(40), nullable=False, default="now_lms")
     custom_logo = database.Column(database.Boolean())
     custom_logo_ext = database.Column(database.String(5))
     custom_favicon = database.Column(database.Boolean())  # png
