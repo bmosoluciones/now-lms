@@ -7,7 +7,6 @@ import os
 import tempfile
 from unittest import mock
 
-import pytest
 from flask import Flask
 
 from now_lms.cache_utils import get_memory_cache_config, init_cache
@@ -23,9 +22,11 @@ def test_get_memory_cache_config_disabled():
 def test_get_memory_cache_config_enabled_shm_success():
     """Test get_memory_cache_config when /dev/shm is writeable."""
     with mock.patch.dict(os.environ, {"NOW_LMS_MEMORY_CACHE": "1"}):
-        with mock.patch("os.path.exists", return_value=True), \
-             mock.patch("builtins.open", mock.mock_open()), \
-             mock.patch("os.remove") as mock_remove:
+        with (
+            mock.patch("os.path.exists", return_value=True),
+            mock.patch("builtins.open", mock.mock_open()),
+            mock.patch("os.remove") as mock_remove,
+        ):
             config = get_memory_cache_config()
             assert config["CACHE_TYPE"] == "FileSystemCache"
             assert config["CACHE_DIR"] == "/dev/shm/now_lms_cache"
@@ -41,10 +42,12 @@ def test_get_memory_cache_config_shm_fails_temp_success():
                 raise OSError("No permission")
             return mock.mock_open()()
 
-        with mock.patch("os.path.exists", return_value=False), \
-             mock.patch("os.makedirs"), \
-             mock.patch("builtins.open", side_effect=side_effect), \
-             mock.patch("os.remove"):
+        with (
+            mock.patch("os.path.exists", return_value=False),
+            mock.patch("os.makedirs"),
+            mock.patch("builtins.open", side_effect=side_effect),
+            mock.patch("os.remove"),
+        ):
             config = get_memory_cache_config()
             assert config["CACHE_TYPE"] == "FileSystemCache"
             assert config["CACHE_DIR"] == os.path.join(tempfile.gettempdir(), "now_lms_cache")
@@ -53,9 +56,11 @@ def test_get_memory_cache_config_shm_fails_temp_success():
 def test_get_memory_cache_config_all_fail():
     """Test fallback to NullCache when both shm and temp dir fail."""
     with mock.patch.dict(os.environ, {"NOW_LMS_MEMORY_CACHE": "1"}):
-        with mock.patch("os.path.exists", return_value=False), \
-             mock.patch("os.makedirs", side_effect=OSError("Drive full")), \
-             mock.patch("builtins.open", side_effect=OSError("No write access")):
+        with (
+            mock.patch("os.path.exists", return_value=False),
+            mock.patch("os.makedirs", side_effect=OSError("Drive full")),
+            mock.patch("builtins.open", side_effect=OSError("No write access")),
+        ):
             config = get_memory_cache_config()
             assert config == {"CACHE_TYPE": "NullCache"}
 
@@ -65,6 +70,7 @@ def test_init_cache_redis():
     app = Flask("test_app")
     with mock.patch.dict(os.environ, {"CACHE_REDIS_URL": "redis://localhost:6379/0"}):
         from now_lms.cache import cache
+
         with mock.patch.object(cache, "init_app") as mock_init_app:
             init_cache(app)
             # The config passed should use RedisCache
@@ -78,6 +84,7 @@ def test_init_cache_redis_fallback():
     app = Flask("test_app")
     with mock.patch.dict(os.environ, {"REDIS_URL": "redis://localhost:6379/1"}):
         from now_lms.cache import cache
+
         with mock.patch.object(cache, "init_app") as mock_init_app:
             init_cache(app)
             called_config = mock_init_app.call_args[1]["config"]
@@ -90,6 +97,7 @@ def test_init_cache_memcached():
     app = Flask("test_app")
     with mock.patch.dict(os.environ, {"CACHE_MEMCACHED_SERVERS": "localhost:11211"}):
         from now_lms.cache import cache
+
         with mock.patch.object(cache, "init_app") as mock_init_app:
             init_cache(app)
             called_config = mock_init_app.call_args[1]["config"]
@@ -104,6 +112,7 @@ def test_init_cache_app_overrides():
     app.config["CACHE_THRESHOLD"] = 1000
 
     from now_lms.cache import cache
+
     with mock.patch.object(cache, "init_app") as mock_init_app:
         init_cache(app)
         called_config = mock_init_app.call_args[1]["config"]
@@ -115,6 +124,7 @@ def test_init_cache_exception_fallback():
     """Test that cache initialization exception falls back to NullCache."""
     app = Flask("test_app")
     from now_lms.cache import cache
+
     with mock.patch.object(cache, "init_app", side_effect=[Exception("Initialization failed"), None]) as mock_init_app:
         init_cache(app)
         # Should be called twice (the first fail, then fallback)
@@ -122,3 +132,64 @@ def test_init_cache_exception_fallback():
         # The second call must be with NullCache
         last_called_config = mock_init_app.call_args_list[-1][1]["config"]
         assert last_called_config == {"CACHE_TYPE": "NullCache"}
+
+
+def test_invalidar_cache_curso():
+    """Test that invalidar_cache_curso calls cache.delete with the expected keys."""
+    from now_lms.cache import invalidar_cache_curso, cache
+
+    with mock.patch.object(cache, "delete") as mock_delete:
+        invalidar_cache_curso("test-course-code")
+
+        # Verify that expected keys are deleted
+        expected_keys = [
+            "view//course/test-course-code/view/auth",
+            "view//course/test-course-code/view/anon",
+            "view//course/test-course-code/admin/auth",
+            "view//course/test-course-code/admin/anon",
+            "view//course/test-course-code/take/auth",
+            "view//course/test-course-code/take/anon",
+            "view//course/test-course-code/moderate/auth",
+            "view//course/test-course-code/moderate/anon",
+            "view//course/explore/auth",
+            "view//course/explore/anon",
+            "view//course/explore",
+            "view///auth",
+            "view///anon",
+            "view//home/auth",
+            "view//home/anon",
+            "view//home",
+        ]
+
+        # Check that cache.delete was called for each expected key
+        called_keys = [args[0] for args, _ in mock_delete.call_args_list]
+        for key in expected_keys:
+            assert key in called_keys
+
+
+def test_invalidar_cache_programa():
+    """Test that invalidar_cache_programa calls cache.delete with the expected keys."""
+    from now_lms.cache import invalidar_cache_programa, cache
+
+    with mock.patch.object(cache, "delete") as mock_delete:
+        invalidar_cache_programa("test-program-code")
+
+        # Verify that expected keys are deleted
+        expected_keys = [
+            "view//program/test-program-code/auth",
+            "view//program/test-program-code/anon",
+            "view//program/explore/auth",
+            "view//program/explore/anon",
+            "view//program/explore",
+            "view//program/list",
+            "view///auth",
+            "view///anon",
+            "view//home/auth",
+            "view//home/anon",
+            "view//home",
+        ]
+
+        # Check that cache.delete was called for each expected key
+        called_keys = [args[0] for args, _ in mock_delete.call_args_list]
+        for key in expected_keys:
+            assert key in called_keys

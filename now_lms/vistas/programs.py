@@ -30,7 +30,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache, cache_key_with_auth_state
+from now_lms.cache import cache, cache_key_with_auth_state, invalidar_cache_programa
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
@@ -167,6 +167,7 @@ def nuevo_programa() -> str | Response:
         try:
             programa = _create_program_from_form(form)
             cache.delete("view/" + url_for(PROGRAMS_ROUTE))
+            invalidar_cache_programa(programa.codigo)
             flash(_("Nuevo Programa creado."), "success")
             return redirect(url_for("program.pagina_programa", codigo=programa.codigo))
         except OperationalError:
@@ -206,11 +207,16 @@ def programas() -> str:
 @perfil_requerido("instructor")
 def delete_program(ulid: str) -> Response:
     """Elimina programa."""
-    database.session.execute(delete(Programa).where(Programa.id == ulid))
+    programa = database.session.execute(database.select(Programa).filter(Programa.id == ulid)).scalars().first()
+    if programa is None:
+        abort(404)
+    codigo = programa.codigo
 
     if current_user.tipo == "admin":
+        database.session.execute(delete(Programa).where(Programa.id == ulid))
         database.session.commit()
         cache.delete("view/" + url_for(PROGRAMS_ROUTE))
+        invalidar_cache_programa(codigo)
         return redirect(url_for(PROGRAMS_ROUTE))
     return abort(403)
 
@@ -274,6 +280,8 @@ def edit_program(ulid: str) -> str | Response:
 
             database.session.commit()
             _save_program_logo(programa)
+            invalidar_cache_programa(programa.codigo)
+            invalidar_cache_programa(form.codigo.data)
 
             flash(_("Programa editado correctamente."), "success")
         except OperationalError:

@@ -133,3 +133,67 @@ def invalidate_all_cache() -> bool:
     except Exception as e:
         log.error(f"Error invalidating cache: {e}")
         return False
+
+
+def invalidar_cache_curso(course_code: str) -> None:
+    """Elimina la caché relacionada con un curso después de modificarlo."""
+    # Lista de claves específicas a eliminar
+    keys_to_delete = [
+        # Claves de la vista del curso
+        f"view//course/{course_code}/view/auth",
+        f"view//course/{course_code}/view/anon",
+        # Claves de la vista de administración del curso
+        f"view//course/{course_code}/admin/auth",
+        f"view//course/{course_code}/admin/anon",
+        # Claves de tomar curso
+        f"view//course/{course_code}/take/auth",
+        f"view//course/{course_code}/take/anon",
+        # Claves de moderar curso
+        f"view//course/{course_code}/moderate/auth",
+        f"view//course/{course_code}/moderate/anon",
+        # Claves del catálogo/lista de cursos
+        "view//course/explore/auth",
+        "view//course/explore/anon",
+        "view//course/explore",
+        # Claves de la página de inicio (que podría mostrar el curso)
+        "view///auth",
+        "view///anon",
+        "view//home/auth",
+        "view//home/anon",
+        "view//home",
+    ]
+
+    log.trace(f"Invalidating cache for course {course_code}")
+    for key in keys_to_delete:
+        try:
+            cache.delete(key)
+        except Exception as e:
+            log.error(f"Error deleting cache key {key}: {e}")
+
+
+def invalidar_cache_programa(program_code: str) -> None:
+    """Elimina la caché relacionada con un programa después de modificarlo."""
+    keys_to_delete = [
+        # Claves de la vista del programa
+        f"view//program/{program_code}/auth",
+        f"view//program/{program_code}/anon",
+        # Claves del catálogo/lista de programas
+        "view//program/explore/auth",
+        "view//program/explore/anon",
+        "view//program/explore",
+        # Claves de la lista administrativa de programas
+        "view//program/list",
+        # Claves de la página de inicio (que podría mostrar programas)
+        "view///auth",
+        "view///anon",
+        "view//home/auth",
+        "view//home/anon",
+        "view//home",
+    ]
+
+    log.trace(f"Invalidating cache for program {program_code}")
+    for key in keys_to_delete:
+        try:
+            cache.delete(key)
+        except Exception as e:
+            log.error(f"Error deleting cache key {key}: {e}")

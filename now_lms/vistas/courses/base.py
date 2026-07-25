@@ -40,7 +40,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.bi import (
     asignar_curso_a_instructor,
 )
-from now_lms.cache import cache, cache_key_with_auth_state
+from now_lms.cache import cache, cache_key_with_auth_state, invalidar_cache_curso
 from now_lms.calendar_utils import create_events_for_student_enrollment
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import (
@@ -397,6 +397,7 @@ def nuevo_curso() -> str | Response:
         asignar_curso_a_instructor(form.codigo.data, usuario_id=current_user.usuario)
         _save_course_logo(nuevo_curso_)
         database.session.commit()
+        invalidar_cache_curso(form.codigo.data)
         flash("Curso creado exitosamente.", "success")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
     except OperationalError:
@@ -426,6 +427,8 @@ def editar_curso(course_code: str) -> str | Response:
                 _update_course_taxonomy(course_code, form.codigo.data, form)
             database.session.commit()
             _save_course_logo(curso_a_editar)
+            invalidar_cache_curso(course_code)
+            invalidar_cache_curso(form.codigo.data)
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
         except OperationalError:
