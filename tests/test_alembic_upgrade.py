@@ -77,6 +77,43 @@ def test_alembic_upgrade_app_context(monkeypatch):
             # La tabla alembic_version no existe después del downgrade, lo cual es válido
             pass
 
+        # Verificar que en el estado downgrade('base'), las columnas críticas se revirtieron correctamente
+        import sqlalchemy as sa
+        test_secret = b"my-ultra-secret-key-1234"
+        try:
+            inspector_downgraded = sa.inspect(db.engine)
+            existing_tables_dg = inspector_downgraded.get_table_names()
+
+            if "configuracion" in existing_tables_dg:
+                config_columns_dg = {col["name"]: col for col in inspector_downgraded.get_columns("configuracion")}
+                assert "r" in config_columns_dg, "En downgrade('base'), la columna 'r' debe existir en configuracion"
+                assert "csrf_seed" not in config_columns_dg, "En downgrade('base'), la columna 'csrf_seed' no debe existir"
+
+                # Poblar la columna 'r' con datos binarios para probar conservación de datos
+                config_count = db.session.execute(db.text("SELECT COUNT(*) FROM configuracion")).scalar()
+                if config_count == 0:
+                    db.session.execute(
+                        db.text("INSERT INTO configuracion (id, titulo, descripcion, r) VALUES (:id, :titulo, :desc, :r)"),
+                        {"id": "test-config-id", "titulo": "Test", "desc": "Desc", "r": test_secret}
+                    )
+                else:
+                    first_id = db.session.execute(db.text("SELECT id FROM configuracion LIMIT 1")).scalar()
+                    db.session.execute(
+                        db.text("UPDATE configuracion SET r = :r WHERE id = :id"),
+                        {"r": test_secret, "id": first_id}
+                    )
+                db.session.commit()
+
+            if "style" in existing_tables_dg:
+                style_columns_dg = {col["name"]: col for col in inspector_downgraded.get_columns("style")}
+                assert "theme" in style_columns_dg, "En downgrade('base'), la columna 'theme' debe existir en style"
+                theme_type_dg = style_columns_dg["theme"]["type"]
+                assert getattr(theme_type_dg, "length", None) == 15, (
+                    f"En downgrade('base'), la columna 'theme' debe tener longitud 15, obtenido: {getattr(theme_type_dg, 'length', None)}"
+                )
+        except (OperationalError, ProgrammingError):
+            pass
+
         # Paso 5: Hacer upgrade de nuevo hasta head
         alembic.upgrade()
         db.session.commit()
@@ -84,6 +121,29 @@ def test_alembic_upgrade_app_context(monkeypatch):
         # Verificar que ahora sí hay una versión válida
         version_after_final_upgrade = db.session.execute(db.text("SELECT version_num FROM alembic_version")).scalar()
         assert version_after_final_upgrade is not None, "Después de upgrade(), debe haber una versión válida"
+
+        # Asegurar que migraciones críticas están aplicadas al finalizar el upgrade a head
+        inspector_upgraded = sa.inspect(db.engine)
+        existing_tables_ug = inspector_upgraded.get_table_names()
+
+        assert "configuracion" in existing_tables_ug, "La tabla configuracion debe existir"
+        config_columns_ug = {col["name"]: col for col in inspector_upgraded.get_columns("configuracion")}
+        assert "csrf_seed" in config_columns_ug, "La columna csrf_seed debe existir en configuracion"
+        assert "r" not in config_columns_ug, "La columna r no debe existir en configuracion (debe haber sido renombrada)"
+
+        # Verificar conservación de datos
+        preserved_secret = db.session.execute(db.text("SELECT csrf_seed FROM configuracion LIMIT 1")).scalar()
+        assert preserved_secret == test_secret, (
+            f"La clave cifrada debe conservarse idéntica después del upgrade. Esperado: {test_secret}, Obtenido: {preserved_secret}"
+        )
+
+        assert "style" in existing_tables_ug, "La tabla style debe existir"
+        style_columns_ug = {col["name"]: col for col in inspector_upgraded.get_columns("style")}
+        assert "theme" in style_columns_ug, "La columna theme debe existir en style"
+        theme_type_ug = style_columns_ug["theme"]["type"]
+        assert getattr(theme_type_ug, "length", None) == 40, (
+            f"La columna theme en style debe tener longitud 40, actual: {getattr(theme_type_ug, 'length', None)}"
+        )
 
         # Verificar que el ciclo completo funcionó correctamente
         # La versión final debe ser igual a la inicial si no se agregaron migraciones durante el test
