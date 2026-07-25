@@ -767,7 +767,8 @@ def get_current_theme() -> str:
     try:
         if consulta := database.session.execute(database.select(Style)).first():
             data = consulta[0]
-            return data.theme
+            if data.theme:
+                return data.theme
         return "now_lms"
     except (AttributeError, OperationalError):
         return "now_lms"
