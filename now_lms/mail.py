@@ -24,6 +24,7 @@ from flask_mail import Mail, Message
 from now_lms.auth import descifrar_secreto
 from now_lms.config import DESARROLLO
 from now_lms.db import MailConfig, database
+from now_lms.i18n import _
 from now_lms.logs import LOG_LEVEL
 from now_lms.logs import log as logger
 
@@ -45,17 +46,17 @@ mail_configured: bool = False
 # ---------------------------------------------------------------------------------------
 def _load_mail_config_from_env() -> SimpleNamespace:
     """Carga la configuración de correo electrónico desde las variables de entorno."""
-    logger.trace("Loading email configuration from environment variables.")
+    logger.trace("Obteniendo configuración de correo electronico desde variables de entorno.")
     # Server name and user credentials
     mail_server = environ.get("MAIL_SERVER", None)
     mail_port = environ.get("MAIL_PORT", None)
     mail_username = environ.get("MAIL_USERNAME", None)
     mail_password = environ.get("MAIL_PASSWORD", None)
     if mail_server and mail_port and mail_username and mail_password:
-        logger.debug("Email configuration loaded from environment variables.")
+        logger.debug(_("Configuración de correo electrónico cargada desde variables de entorno."))
         is_mail_configured = True
     else:
-        logger.trace("No email configuration found in environment variables.")
+        logger.trace(_("No se encontró configuración de correo electrónico en variables de entorno."))
         is_mail_configured = False
     # TLS/SSL settings
     mail_use_tls = environ.get("MAIL_USE_TLS", "False").capitalize()
@@ -90,7 +91,7 @@ def _load_mail_config_from_env() -> SimpleNamespace:
 
 def _load_mail_config_from_db() -> SimpleNamespace:
     """Carga la configuración de correo electrónico desde la base de datos."""
-    logger.trace("Loading email configuration from database.")
+    logger.trace(_("Obteniendo configuración de correo electronico desde base de datos."))
     with current_app.app_context():
         row = database.session.execute(database.select(MailConfig)).first()
         if row is None:
@@ -136,18 +137,24 @@ def send_threaded_email(app: Flask, mail: Mail, msg: Message, _log: str = "", _f
     :param mail: Instancia de Flask-Mail.
     :param msg: Instancia de flask_mail.Message.
     """
-    logger.trace(f"Sending email to {msg.recipients} in background.")
+    logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
     try:
         with app.app_context():
-            logger.trace("Sending email in background.")
+            logger.trace(_("Intentando enviar correo electrónico en segundo plano."))
             mail.send(msg)
-            logger.trace("Email sent to %s.", msg.recipients)
+            logger.trace(_("Correo enviado a {recipients}.").format(recipients=msg.recipients))
             if _log != "":
                 logger.info(_log)
             if _flush != "":
                 flash(_flush)
     except Exception as e:
-        logger.error("Failed to send email to %s: %s", msg.recipients, e)
+        logger.error(
+            _("Error al enviar correo a %(recipients)s: %(error)s")
+            % {
+                "recipients": msg.recipients,
+                "error": e,
+            }
+        )
 
 
 def send_mail(msg: Message, background: bool = True, no_config: bool = False, _log: str = "", _flush: str = ""):
@@ -171,23 +178,23 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
     if DESARROLLO:
         _app.config["MAIL_SUPPRESS_SEND"] = True
 
-    logger.trace("Email configuration loaded into Flask application.")
+    logger.trace(_("Configuración de correo electrónico cargada en la aplicación Flask."))
 
-    logger.trace("Creating Flask-Mail instance.")
+    logger.trace(_("Creando instancia de Flask-Mail."))
     _mail = Mail(_app)
 
     if config.mail_configured or no_config:
-        logger.trace("Email configuration verified.")
+        logger.trace(_("Configuración de correo electrónico verificada."))
         if background:
-            logger.trace("Sending email in background.")
+            logger.trace(_("Enviando correo en segundo plano."))
             try:
                 hilo = threading.Thread(target=send_threaded_email, args=(_app, _mail, msg, _log, _flush))
                 hilo.start()
-                logger.trace("Thread started to send email to: %s", msg.recipients)
+                logger.trace(_("Hilo iniciado para enviar email a: {recipients}").format(recipients=msg.recipients))
             except Exception as e:
-                logger.error("Could not start email sending thread: %s", e)
+                logger.error(_("No se pudo iniciar el hilo de envío de correo: {error}").format(error=e))
         else:
-            logger.trace("Sending email synchronously.")
+            logger.trace(_("Enviando correo de forma síncrona."))
             with _app.app_context():
                 _mail.send(msg)
-                logger.trace("Email sent to %s.", msg.recipients)
+                logger.trace(_("Correo enviado a {recipients}.").format(recipients=msg.recipients))
