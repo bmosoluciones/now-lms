@@ -35,6 +35,7 @@ from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, files, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, Configuracion, Etiqueta, Recurso, database
 from now_lms.forms import RecursoForm
 from now_lms.misc import TIPOS_RECURSOS
+from now_lms.themes import get_resource_list_template, get_resource_view_template
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de gestión de recursos descargables
@@ -192,7 +193,7 @@ def edit_resource(ulid: str) -> str | Response:
 def vista_recurso(resource_code: str) -> str:
     """Pagina de un recurso."""
     return render_template(
-        "learning/recursos/recurso.html",
+        get_resource_view_template(),
         curso=database.session.execute(database.select(Recurso).filter_by(codigo=resource_code)).scalars().first(),
         tipo=TIPOS_RECURSOS,
     )
@@ -230,7 +231,7 @@ def lista_recursos() -> str:
         PARAMETROS = None
 
     return render_template(
-        "inicio/recursos.html",
+        get_resource_list_template(),
         cursos=consulta_cursos,
         etiquetas=etiquetas,
         categorias=categorias,
