@@ -103,7 +103,7 @@ class MasterClassForm(FlaskForm):
     # Certification fields
     is_certificate = BooleanField(_("Otorga Certificación"))
 
-    diploma_template_id = SelectField(_("Plantilla de Certificado"), coerce=str, validators=[Optional()])
+    diploma_template_id = SelectField(_("Plantilla de Certificado"), coerce=str, validators=[])
 
     # Optional recording URL
     video_recording_url = StringField(
