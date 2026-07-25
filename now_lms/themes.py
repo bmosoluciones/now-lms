@@ -153,15 +153,18 @@ def current_theme() -> SimpleNamespace:
 def list_themes() -> list[str]:
     """Devuelve una lista de los temas disponibles."""
     from os import listdir
+    from os.path import isdir
     from os.path import join
 
     # Build path to themes directory
     THEMES_PATH = join(str(DIRECTORIO_PLANTILLAS), "themes")
     TEMPLATE_LIST = []
 
-    # Scan directory for available themes
-    for template in listdir(THEMES_PATH):
-        TEMPLATE_LIST.append(template)
+    # Scan directory for available themes, only including valid theme directories
+    for entry in listdir(THEMES_PATH):
+        entry_path = join(THEMES_PATH, entry)
+        if isdir(entry_path) and path.isfile(join(entry_path, "theme.yml")):
+            TEMPLATE_LIST.append(entry)
 
     # Return sorted list for consistent ordering
     TEMPLATE_LIST.sort()
