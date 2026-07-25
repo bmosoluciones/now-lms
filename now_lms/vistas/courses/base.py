@@ -7,7 +7,6 @@ Gestión de certificados.
 """
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -398,10 +397,10 @@ def nuevo_curso() -> str | Response:
         asignar_curso_a_instructor(form.codigo.data, usuario_id=current_user.usuario)
         _save_course_logo(nuevo_curso_)
         database.session.commit()
-        flash(gettext("Curso creado exitosamente."), "success")
+        flash("Curso creado exitosamente.", "success")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
     except OperationalError:
-        flash(gettext("Hubo en error al crear su curso."), "warning")
+        flash("Hubo en error al crear su curso.", "warning")
         return redirect("/instructor")
 
 
@@ -427,13 +426,13 @@ def editar_curso(course_code: str) -> str | Response:
                 _update_course_taxonomy(course_code, form.codigo.data, form)
             database.session.commit()
             _save_course_logo(curso_a_editar)
-            flash(gettext("Curso actualizado exitosamente."), "success")
+            flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
         except OperationalError:
-            flash(gettext("Hubo en error al actualizar el curso."), "warning")
+            flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
     elif request.method == "POST" and form.errors:
-        flash(gettext("El formulario tiene errores. Revisa los campos marcados."), "warning")
+        flash("El formulario tiene errores. Revisa los campos marcados.", "warning")
 
     if request.method == "GET":
         _populate_edit_form(form, curso_a_editar, course_code)
@@ -464,10 +463,10 @@ def nuevo_seccion(course_code: str) -> str | Response:
             nueva_seccion.creado_por = current_user.usuario
             database.session.add(nueva_seccion)
             database.session.commit()
-            flash(gettext("Sección agregada correctamente al curso."), "success")
+            flash("Sección agregada correctamente al curso.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash(gettext("Hubo en error al crear la seccion."), "warning")
+            flash("Hubo en error al crear la seccion.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template("learning/nuevo_seccion.html", form=form)
@@ -491,10 +490,10 @@ def editar_seccion(course_code: str, seccion: str) -> str | Response:
             seccion_a_editar.modificado = datetime.now(timezone.utc)
             seccion_a_editar.modificado_por = current_user.usuario
             database.session.commit()
-            flash(gettext("Sección modificada correctamente."), "success")
+            flash("Sección modificada correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash(gettext("Hubo en error al actualizar la seccion."), "warning")
+            flash("Hubo en error al actualizar la seccion.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)

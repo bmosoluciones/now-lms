@@ -4,7 +4,6 @@
 """User groups management for NOW LMS."""
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -46,11 +45,11 @@ def nuevo_grupo() -> str | Response:
             database.session.add(grupo_)
             database.session.commit()
             # cache.delete("view/" + url_for("lista_grupos"))
-            flash(gettext("Grupo creado correctamente"), "success")
+            flash("Grupo creado correctamente", "success")
             return redirect("/admin/panel")
         except OperationalError:
             database.session.rollback()
-            flash(gettext("Error al crear el nuevo grupo."), "warning")
+            flash("Error al crear el nuevo grupo.", "warning")
             return redirect("/new_group")
     else:
         return render_template("admin/grupos/nuevo.html", form=form)

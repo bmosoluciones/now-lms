@@ -8,7 +8,6 @@ Gestión de usuarios.
 """
 
 from __future__ import annotations
-from flask_babel import gettext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -35,8 +34,8 @@ from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
 
 
 # Constants
-USER_ALREADY_LOGGED_IN_MSG = gettext("Su usuario ya tiene una sesión iniciada.")
-ACCOUNT_CREATION_ERROR_MSG = gettext("Error al crear la cuenta.")
+USER_ALREADY_LOGGED_IN_MSG = "Su usuario ya tiene una sesión iniciada."
+ACCOUNT_CREATION_ERROR_MSG = "Error al crear la cuenta."
 USER_LOGIN_ROUTE = "user.inicio_sesion"
 
 # ---------------------------------------------------------------------------------------
@@ -68,7 +67,7 @@ def inicio_sesion() -> str | Response:
     # Rate limiting: 5 login attempts per minute per IP
     rate_limit_key = f"rate_limit_login_{request.remote_addr}"
     if request.method == "POST" and not _check_rate_limit(rate_limit_key, 5):
-        flash(gettext("Demasiados intentos de inicio de sesión. Intente nuevamente en un minuto."), "error")
+        flash("Demasiados intentos de inicio de sesión. Intente nuevamente en un minuto.", "error")
         return INICIO_SESION
 
     form = LoginForm()
@@ -102,14 +101,12 @@ def inicio_sesion() -> str | Response:
                         database.session.commit()
                         login_user(identidad)
                         flash(
-                            gettext(
-                                "Su correo electrónico no ha sido verificado. Su acceso a la plataforma está limitado. "
-                                "Por favor, verifique su correo electrónico para acceder a todas las funcionalidades."
-                            ),
+                            "Su correo electrónico no ha sido verificado. Su acceso a la plataforma está limitado. "
+                            "Por favor, verifique su correo electrónico para acceder a todas las funcionalidades.",
                             "warning",
                         )
                         return PANEL_DE_USUARIO
-                    flash(gettext("Su cuenta esta inactiva."), "info")
+                    flash("Su cuenta esta inactiva.", "info")
                     return INICIO_SESION
 
                 # Account is active, allow login
@@ -118,18 +115,16 @@ def inicio_sesion() -> str | Response:
                 # Show warning if email is not verified
                 if not identidad.correo_electronico_verificado and config and config.verify_user_by_email:
                     flash(
-                        gettext(
-                            "Su correo electrónico no ha sido verificado. Su acceso a algunas funcionalidades está limitado."
-                        ),
+                        "Su correo electrónico no ha sido verificado. Su acceso a algunas funcionalidades está limitado.",
                         "warning",
                     )
 
                 return PANEL_DE_USUARIO
 
-        flash(gettext("Inicio de Sesion Incorrecto."), "warning")
+        flash("Inicio de Sesion Incorrecto.", "warning")
         return INICIO_SESION
     return render_template(
-        "auth/login.html", form=form, titulo=gettext("Inicio de Sesion - NOW LMS"), show_forgot_password=show_forgot_password
+        "auth/login.html", form=form, titulo="Inicio de Sesion - NOW LMS", show_forgot_password=show_forgot_password
     )
 
 
@@ -149,7 +144,7 @@ def cerrar_sesion() -> Response:
 def crear_cuenta() -> str | Response:
     """Crear cuenta de usuario desde el sistio web."""
     if current_user.is_authenticated:
-        flash(gettext("Usted ya posee una cuenta en el sistema."), "warning")
+        flash("Usted ya posee una cuenta en el sistema.", "warning")
         return PANEL_DE_USUARIO
 
     form = LogonForm()
@@ -191,7 +186,7 @@ def crear_cuenta() -> str | Response:
         except PendingRollbackError:
             flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
             return redirect("/")
-    return render_template("auth/logon.html", form=form, titulo=gettext("Crear cuenta - NOW LMS"))
+    return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
 
 
 @user.route("/user/new_user", methods=["GET", "POST"])
@@ -215,7 +210,7 @@ def crear_usuario() -> str | Response:
         try:
             database.session.add(usuario_)
             database.session.commit()
-            flash(gettext("Usuario creado exitosamente."), "success")
+            flash("Usuario creado exitosamente.", "success")
             return redirect(url_for("user_profile.usuario", id_usuario=form.usuario.data))
         except OperationalError:
             flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
@@ -234,9 +229,9 @@ def check_mail(token: str) -> Response:
 
     _token = validate_confirmation_token(token)
     if _token:
-        flash(gettext("Correo verificado exitosamente. Ya puede iniciar sesión en el sistema"), "success")
+        flash("Correo verificado exitosamente. Ya puede iniciar sesión en el sistema", "success")
         return redirect(url_for(USER_LOGIN_ROUTE))
-    flash(gettext("Token de verificación invalido."), "warning")
+    flash("Token de verificación invalido.", "warning")
     return redirect(url_for("user.cerrar_sesion"))
 
 
@@ -248,13 +243,13 @@ def _send_password_reset_message(usuario) -> None:
             from now_lms.auth import send_password_reset_email
 
             if send_password_reset_email(usuario):
-                flash(gettext("Se ha enviado un correo con instrucciones para recuperar su contraseña."), "success")
+                flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
             else:
-                flash(gettext("Error al enviar el correo de recuperación. Intente más tarde."), "error")
+                flash("Error al enviar el correo de recuperación. Intente más tarde.", "error")
         else:
-            flash(gettext("El sistema de correo no está configurado. Contacte al administrador."), "warning")
+            flash("El sistema de correo no está configurado. Contacte al administrador.", "warning")
     else:
-        flash(gettext("Se ha enviado un correo con instrucciones para recuperar su contraseña."), "success")
+        flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
 
 
 @user.route("/user/forgot_password", methods=["GET", "POST"])
@@ -267,7 +262,7 @@ def forgot_password() -> str | Response:
     # Rate limiting: 3 forgot-password attempts per minute per IP
     rate_limit_key = f"rate_limit_forgot_pwd_{request.remote_addr}"
     if request.method == "POST" and not _check_rate_limit(rate_limit_key, 3):
-        flash(gettext("Demasiadas solicitudes de recuperación de contraseña. Intente nuevamente en un minuto."), "error")
+        flash("Demasiadas solicitudes de recuperación de contraseña. Intente nuevamente en un minuto.", "error")
         return INICIO_SESION
 
     form = ForgotPasswordForm()
@@ -280,7 +275,7 @@ def forgot_password() -> str | Response:
 
         return redirect(url_for(USER_LOGIN_ROUTE))
 
-    return render_template("auth/forgot_password.html", form=form, titulo=gettext("Recuperar Contraseña - NOW LMS"))
+    return render_template("auth/forgot_password.html", form=form, titulo="Recuperar Contraseña - NOW LMS")
 
 
 @user.route("/user/reset_password/<token>", methods=["GET", "POST"])
@@ -294,26 +289,26 @@ def reset_password(token: str) -> str | Response:
 
     email = validate_password_reset_token(token)
     if not email:
-        flash(gettext("El enlace de recuperación es inválido o ha expirado."), "error")
+        flash("El enlace de recuperación es inválido o ha expirado.", "error")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
     usuario = database.session.execute(database.select(Usuario).filter_by(correo_electronico=email)).scalar_one_or_none()
     if not usuario:
-        flash(gettext("Usuario no encontrado."), "error")
+        flash("Usuario no encontrado.", "error")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
         if form.new_password.data != form.confirm_password.data:
-            flash(gettext("Las nuevas contraseñas no coinciden."), "error")
-            return render_template("auth/reset_password.html", form=form, titulo=gettext("Restablecer Contraseña - NOW LMS"))
+            flash("Las nuevas contraseñas no coinciden.", "error")
+            return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")
 
         # Update password
         usuario.acceso = proteger_passwd(form.new_password.data)
         database.session.commit()
 
-        flash(gettext("Contraseña actualizada exitosamente. Ya puede iniciar sesión."), "success")
+        flash("Contraseña actualizada exitosamente. Ya puede iniciar sesión.", "success")
         log.info(f"Password reset for user {usuario.usuario}")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
-    return render_template("auth/reset_password.html", form=form, titulo=gettext("Restablecer Contraseña - NOW LMS"))
+    return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")

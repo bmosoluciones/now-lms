@@ -200,8 +200,8 @@
                     finalPrice = Math.max(0, finalPrice);
                     
                     previewElement.innerHTML = `
-                        <strong>{{ _("Vista previa:") }}</strong> 
-                        {{ _("Descuento:") }} $${discountAmount.toFixed(2)} USD | 
+                        <strong>{{ _("Vista previa:") }}</strong>
+                        {{ _("Descuento:") }} $${discountAmount.toFixed(2)} USD |
                         {{ _("Precio") }} {{ _("final:") }} $${finalPrice.toFixed(2)} USD
                         ${finalPrice === 0 ? '<span class="badge bg-success ms-2">{{ _("¡GRATIS!") }}</span>' : ''}
                     `;

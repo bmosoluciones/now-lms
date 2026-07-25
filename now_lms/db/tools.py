@@ -716,9 +716,7 @@ def database_is_populated(app):
         from sqlalchemy.sql import text
 
         try:
-            result = database.session.execute(
-                text("SELECT 1 FROM system_info WHERE param = 'version'")
-            ).first()
+            result = database.session.execute(text("SELECT 1 FROM system_info WHERE param = 'version'")).first()
             return result is not None
         except (AttributeError, OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, ResourceClosedError):
             return False
