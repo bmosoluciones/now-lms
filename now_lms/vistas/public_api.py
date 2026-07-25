@@ -27,7 +27,7 @@ def check_rate_limit(key_record):
     Uses the application cache to store request counts.
     Default: 60 requests per minute per API Key.
     """
-    from now_lms.cache import cache
+    from now_lms.cache import cache, cache_incr
 
     # Define limit: 60 requests per 60 seconds
     LIMIT = 60
@@ -43,7 +43,7 @@ def check_rate_limit(key_record):
     if int(current_count) >= LIMIT:
         return False
 
-    cache.cache.inc(cache_key)
+    cache_incr(cache_key, timeout=WINDOW)
     return True
 
 
