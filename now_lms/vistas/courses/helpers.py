@@ -187,9 +187,7 @@ def _crear_indice_avance_curso(course_code: str) -> None:
     if recursos:
         for recurso in recursos:
             existing = database.session.execute(
-                database.select(CursoRecursoAvance).filter_by(
-                    usuario=usuario, curso=course_code, recurso=recurso.id
-                )
+                database.select(CursoRecursoAvance).filter_by(usuario=usuario, curso=course_code, recurso=recurso.id)
             ).scalar_one_or_none()
             if existing:
                 continue

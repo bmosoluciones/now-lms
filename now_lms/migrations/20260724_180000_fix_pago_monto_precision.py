@@ -13,7 +13,6 @@ This migration alters the column to Numeric(10, 2) to preserve cents.
 from alembic import op
 import sqlalchemy as sa
 
-
 revision = "20260724_180000"
 down_revision = "20260724_120000"
 branch_labels = None
