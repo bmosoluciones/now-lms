@@ -167,7 +167,6 @@ def nuevo_programa() -> str | Response:
         try:
             programa = _create_program_from_form(form)
             cache.delete("view/" + url_for(PROGRAMS_ROUTE))
-            invalidar_cache_programa(programa.codigo)
             flash(_("Nuevo Programa creado."), "success")
             return redirect(url_for("program.pagina_programa", codigo=programa.codigo))
         except OperationalError:
@@ -181,7 +180,7 @@ def nuevo_programa() -> str | Response:
 @program.route("/program/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, unless=no_guardar_en_cache_global)
 def programas() -> str:
     """Lista de programas."""
     if current_user.tipo == "admin":
@@ -210,13 +209,11 @@ def delete_program(ulid: str) -> Response:
     programa = database.session.execute(database.select(Programa).filter(Programa.id == ulid)).scalars().first()
     if programa is None:
         abort(404)
-    codigo = programa.codigo
 
     if current_user.tipo == "admin":
         database.session.execute(delete(Programa).where(Programa.id == ulid))
         database.session.commit()
         cache.delete("view/" + url_for(PROGRAMS_ROUTE))
-        invalidar_cache_programa(codigo)
         return redirect(url_for(PROGRAMS_ROUTE))
     return abort(403)
 
@@ -280,8 +277,6 @@ def edit_program(ulid: str) -> str | Response:
 
             database.session.commit()
             _save_program_logo(programa)
-            invalidar_cache_programa(programa.codigo)
-            invalidar_cache_programa(form.codigo.data)
 
             flash(_("Programa editado correctamente."), "success")
         except OperationalError:

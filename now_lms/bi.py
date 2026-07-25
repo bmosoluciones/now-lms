@@ -232,7 +232,6 @@ def cambia_estado_curso_por_id(id_curso: str | int | None, /, nuevo_estado: str 
         except RuntimeError:
             # No estamos en contexto de request (ej: durante pruebas)
             pass
-    invalidar_cache_curso(str(id_curso))
 
 
 def cambia_curso_publico(id_curso: str | int | None = None):
@@ -248,7 +247,6 @@ def cambia_curso_publico(id_curso: str | int | None = None):
             CURSO.publico = True
         CURSO.modificado_por = current_user.usuario
         database.session.commit()
-        invalidar_cache_curso(CURSO.codigo)
     else:
         flash(_("No se puede publicar el curso"), "warning")
 

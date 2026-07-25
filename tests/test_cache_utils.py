@@ -134,42 +134,28 @@ def test_init_cache_exception_fallback():
         assert last_called_config == {"CACHE_TYPE": "NullCache"}
 
 
-def test_invalidar_cache_curso():
-    """Test that invalidar_cache_curso calls cache.delete with the expected keys."""
+def test_invalidar_cache_curso_versioning():
+    """Test that invalidar_cache_curso increments courses_version."""
     from now_lms.cache import invalidar_cache_curso, cache
 
-    with mock.patch.object(cache, "delete") as mock_delete:
+    store = {"courses_version": 5}
+
+    def mock_set(key, val, **kwargs):
+        store[key] = val
+
+    with (
+        mock.patch.object(cache, "get", side_effect=store.get),
+        mock.patch.object(cache, "set", side_effect=mock_set),
+        mock.patch("now_lms.cache.CTYPE", "SimpleCache"),
+    ):
         invalidar_cache_curso("test-course-code")
-
-        # Verify that expected keys are deleted
-        expected_keys = [
-            "view//course/test-course-code/view/auth",
-            "view//course/test-course-code/view/anon",
-            "view//course/test-course-code/admin/auth",
-            "view//course/test-course-code/admin/anon",
-            "view//course/test-course-code/take/auth",
-            "view//course/test-course-code/take/anon",
-            "view//course/test-course-code/moderate/auth",
-            "view//course/test-course-code/moderate/anon",
-            "view//course/explore/auth",
-            "view//course/explore/anon",
-            "view//course/explore",
-            "view///auth",
-            "view///anon",
-            "view//home/auth",
-            "view//home/anon",
-            "view//home",
-        ]
-
-        # Check that cache.delete was called for each expected key
-        called_keys = [args[0] for args, _ in mock_delete.call_args_list]
-        for key in expected_keys:
-            assert key in called_keys
+        assert store["courses_version"] == 6
 
 
 def test_no_guardar_en_cache_global_authenticated():
     """Test that no_guardar_en_cache_global returns True if user is authenticated."""
     from now_lms.cache import no_guardar_en_cache_global
+
     # Mock current_user as authenticated
     mock_user = mock.MagicMock()
     mock_user.is_authenticated = True
@@ -180,6 +166,7 @@ def test_no_guardar_en_cache_global_authenticated():
 def test_no_guardar_en_cache_global_anonymous():
     """Test that no_guardar_en_cache_global returns False if user is anonymous or not authenticated."""
     from now_lms.cache import no_guardar_en_cache_global
+
     # Mock current_user as anonymous
     mock_user = mock.MagicMock()
     mock_user.is_authenticated = False
@@ -229,13 +216,12 @@ def test_trigger_cache_invalidations():
     from now_lms.db import trigger_cache_invalidations
 
     mock_session = mock.MagicMock()
-    mock_session.info = {
-        "courses_to_invalidate": {"test-course"},
-        "programs_to_invalidate": {"test-program"}
-    }
+    mock_session.info = {"courses_to_invalidate": {"test-course"}, "programs_to_invalidate": {"test-program"}}
 
-    with mock.patch("now_lms.cache.invalidar_cache_curso") as mock_invalidar_curso, \
-         mock.patch("now_lms.cache.invalidar_cache_programa") as mock_invalidar_programa:
+    with (
+        mock.patch("now_lms.cache.invalidar_cache_curso") as mock_invalidar_curso,
+        mock.patch("now_lms.cache.invalidar_cache_programa") as mock_invalidar_programa,
+    ):
         trigger_cache_invalidations(mock_session)
         mock_invalidar_curso.assert_called_once_with("test-course")
         mock_invalidar_programa.assert_called_once_with("test-program")
@@ -244,29 +230,111 @@ def test_trigger_cache_invalidations():
     assert "programs_to_invalidate" not in mock_session.info
 
 
-def test_invalidar_cache_programa():
-    """Test that invalidar_cache_programa calls cache.delete with the expected keys."""
+def test_invalidar_cache_programa_versioning():
+    """Test that invalidar_cache_programa increments programs_version."""
     from now_lms.cache import invalidar_cache_programa, cache
 
-    with mock.patch.object(cache, "delete") as mock_delete:
+    store = {"programs_version": 10}
+
+    def mock_set(key, val, **kwargs):
+        store[key] = val
+
+    with (
+        mock.patch.object(cache, "get", side_effect=store.get),
+        mock.patch.object(cache, "set", side_effect=mock_set),
+        mock.patch("now_lms.cache.CTYPE", "SimpleCache"),
+    ):
         invalidar_cache_programa("test-program-code")
+        assert store["programs_version"] == 11
 
-        # Verify that expected keys are deleted
-        expected_keys = [
-            "view//program/test-program-code/auth",
-            "view//program/test-program-code/anon",
-            "view//program/explore/auth",
-            "view//program/explore/anon",
-            "view//program/explore",
-            "view//program/list",
-            "view///auth",
-            "view///anon",
-            "view//home/auth",
-            "view//home/anon",
-            "view//home",
-        ]
 
-        # Check that cache.delete was called for each expected key
-        called_keys = [args[0] for args, _ in mock_delete.call_args_list]
-        for key in expected_keys:
-            assert key in called_keys
+def test_cache_key_with_auth_state_versioning(app):
+    """Test that cache_key_with_auth_state incorporates cache versions and query parameters."""
+    from now_lms.cache import cache, cache_key_with_auth_state
+
+    store = {"courses_version": 2, "programs_version": 4}
+
+    def mock_set(key, val, **kwargs):
+        store[key] = val
+
+    with (
+        mock.patch.object(cache, "get", side_effect=store.get),
+        mock.patch.object(cache, "set", side_effect=mock_set),
+        mock.patch("now_lms.cache.CTYPE", "SimpleCache"),
+    ):
+        with app.test_request_context("/course/explore?page=2"):
+            key = cache_key_with_auth_state()
+            assert "view/v2//course/explore/anon?page=2" in key
+
+        # Increment version and assert key changes (cache invalidation check!)
+        store["courses_version"] = 3
+        with app.test_request_context("/course/explore?page=2"):
+            key = cache_key_with_auth_state()
+            assert "view/v3//course/explore/anon?page=2" in key
+
+
+def test_cache_invalidations_commit_vs_rollback():
+    """Test that transaction rollback does NOT queue/trigger cache invalidation, but commit does."""
+    from now_lms.db import detect_cache_invalidations, trigger_cache_invalidations
+
+    mock_session = mock.MagicMock()
+    mock_session.new = []
+    mock_session.dirty = []
+    mock_session.deleted = []
+    mock_session.info = {}
+
+    # Simulating a dirty course
+    mock_curso = mock.MagicMock()
+    mock_curso.__class__.__name__ = "Curso"
+    mock_curso.codigo = "rollback-course"
+    mock_session.dirty.append(mock_curso)
+
+    # If rollback happens, detect_cache_invalidations is called before commit,
+    # but after_commit is NOT called.
+    detect_cache_invalidations(mock_session)
+    assert mock_session.info["courses_to_invalidate"] == {"rollback-course"}
+
+    # When rollback happens, we clear session.info and trigger_cache_invalidations is never called.
+    mock_session.info.clear()
+
+    # Now simulate successful commit path
+    mock_session.info = {}
+    detect_cache_invalidations(mock_session)
+    with mock.patch("now_lms.cache.invalidar_cache_curso") as mock_invalidar:
+        trigger_cache_invalidations(mock_session)
+        mock_invalidar.assert_called_once_with("rollback-course")
+
+
+def test_program_list_cache_isolation():
+    """Verify that program list cache is bypassed for authenticated users to ensure isolation."""
+    from now_lms.cache import no_guardar_en_cache_global
+
+    # Simulating Instructor A
+    mock_user_a = mock.MagicMock()
+    mock_user_a.is_authenticated = True
+    mock_user_a.tipo = "instructor"
+    mock_user_a.usuario = "instructor_a"
+
+    with mock.patch("now_lms.cache.current_user", mock_user_a):
+        # Must return True (cache bypassed, ensuring Instructor A's views are never cached or leaked)
+        assert no_guardar_en_cache_global() is True
+
+    # Simulating Instructor B
+    mock_user_b = mock.MagicMock()
+    mock_user_b.is_authenticated = True
+    mock_user_b.tipo = "instructor"
+    mock_user_b.usuario = "instructor_b"
+
+    with mock.patch("now_lms.cache.current_user", mock_user_b):
+        # Must return True (cache bypassed, ensuring Instructor B's views are never cached or leaked)
+        assert no_guardar_en_cache_global() is True
+
+    # Simulating Admin
+    mock_admin = mock.MagicMock()
+    mock_admin.is_authenticated = True
+    mock_admin.tipo = "admin"
+    mock_admin.usuario = "admin_user"
+
+    with mock.patch("now_lms.cache.current_user", mock_admin):
+        # Must return True (cache bypassed, ensuring Admin views are never cached or leaked)
+        assert no_guardar_en_cache_global() is True

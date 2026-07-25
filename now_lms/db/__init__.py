@@ -1659,14 +1659,35 @@ def detect_cache_invalidations(session):
             code = getattr(instance, "codigo", None)
             if code:
                 courses.add(code)
-        elif cls_name in ("CursoSeccion", "CursoRecurso"):
+        elif cls_name in ("CursoSeccion", "CursoRecurso", "DocenteCurso", "ModeradorCurso", "EstudianteCurso"):
             course_code = getattr(instance, "curso", None)
             if course_code:
                 courses.add(course_code)
+        elif cls_name == "Evaluation":
+            section_id = getattr(instance, "section_id", None)
+            if section_id:
+                from now_lms.db import CursoSeccion
+                sec = session.get(CursoSeccion, section_id)
+                if sec and sec.curso:
+                    courses.add(sec.curso)
         elif cls_name == "Programa":
             code = getattr(instance, "codigo", None)
             if code:
                 programs.add(code)
+        elif cls_name == "ProgramaCurso":
+            course_code = getattr(instance, "curso", None)
+            program_code = getattr(instance, "programa", None)
+            if course_code:
+                courses.add(course_code)
+            if program_code:
+                programs.add(program_code)
+        elif cls_name == "ProgramaEstudiante":
+            program_id = getattr(instance, "programa", None)
+            if program_id:
+                from now_lms.db import Programa
+                prog = session.get(Programa, program_id)
+                if prog and prog.codigo:
+                    programs.add(prog.codigo)
 
     session.info["courses_to_invalidate"] = courses
     session.info["programs_to_invalidate"] = programs
@@ -1688,5 +1709,6 @@ def trigger_cache_invalidations(session):
             for program_code in programs:
                 if program_code:
                     invalidar_cache_programa(program_code)
-        except Exception:
-            pass
+        except Exception as e:
+            from now_lms.logs import log
+            log.exception(f"Error invalidating cache after database commit: {e}")
