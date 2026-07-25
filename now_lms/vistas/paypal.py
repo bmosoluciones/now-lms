@@ -422,9 +422,7 @@ def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
         coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
         coupon = (
             database.session.execute(
-                database.select(Coupon)
-                .filter_by(course_id=course_code, code=coupon_code)
-                .with_for_update()
+                database.select(Coupon).filter_by(course_id=course_code, code=coupon_code).with_for_update()
             )
             .scalars()
             .first()

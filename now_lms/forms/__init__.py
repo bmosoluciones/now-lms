@@ -654,7 +654,7 @@ class CursoRecursoMeet(CursoRecursoForm):
     hora_inicio = TimeField(validators=[])
     hora_fin = TimeField(validators=[])
     url = StringField(validators=[DataRequired()])
-    notes = SelectField(_("Plataforma"), choices=[], validators=[])
+    notes = SelectField(_("Plataforma"), choices=[], validate_choice=False)
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -678,7 +678,7 @@ class ProgramaForm(BaseForm):
     codigo = StringField(validators=[DataRequired()])
     precio = FlexibleDecimalField(validators=[])
     publico = BooleanField(validators=[])
-    estado = SelectField(_("Estado"), choices=[], validators=[])
+    estado = SelectField(_("Estado"), choices=[], validate_choice=False)
     promocionado = BooleanField(validators=[])
     pagado = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
