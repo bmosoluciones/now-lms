@@ -9,6 +9,15 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.3.1] - 2026-07-25
+
+### Added:
+ - Direct role access links to admin panel: new 'Acceso a Roles' card with direct links to Instructor and Moderator panels.
+
+### Fixed:
+ - Correct blueprint name in `url_for` for `nuevo_recurso_html` endpoint (was using 'course' instead of 'resources').
+ - Handle both `r` and `csrf_seed` columns in database migration.
+
 ## [1.3.0] - 2026-07-25
 
 ### Added:
