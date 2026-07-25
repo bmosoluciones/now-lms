@@ -207,7 +207,7 @@ def certificate_inspect(ulid: str) -> str:
     """Inspect a certificate by its ULID."""
     row = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     if row is None:
-        return "Certificate not found"
+        return gettext("Certificate not found")
     consulta = row[0]
 
     return insert_style_in_html(consulta)
@@ -381,12 +381,12 @@ def certificado(ulid: str) -> str:
     """Lista de certificaciones emitidas."""
     row = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
     if row is None:
-        return "Certificate not found"
+        return gettext("Certificate not found")
     certificacion_obj = row[0]
 
     row = database.session.execute(database.select(Certificado).filter_by(code=certificacion_obj.certificado)).first()
     if row is None:
-        return "Certificate template not found"
+        return gettext("Certificate template not found")
     certificado_obj = row[0]
 
     # Get course or master class information
@@ -395,7 +395,7 @@ def certificado(ulid: str) -> str:
 
     row = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
     if row is None:
-        return "User not found"
+        return gettext("User not found")
     usuario = row[0]
 
     # Create context with both curso and master_class for template compatibility
@@ -426,7 +426,7 @@ def certificacion_crear(course_id: str, user: str, template: str) -> Response:
 
     can_receive, reason = can_user_receive_certificate(course_id, user)
     if not can_receive:
-        flash(f"No se puede emitir el certificado: {reason}", "warning")
+        flash(gettext("No se puede emitir el certificado: %(reason)s", reason=reason), "warning")
         return redirect(url_for("certificate.certificaciones"))
 
     # Calculate expiration date if required
@@ -452,7 +452,7 @@ def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | N
 
         can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
         if not can_receive:
-            flash(f"No se puede emitir el certificado: {reason}", "warning")
+            flash(gettext("No se puede emitir el certificado: %(reason)s", reason=reason), "warning")
             return None
         curso_obj = database.session.execute(database.select(Curso).filter_by(codigo=form.curso.data)).scalar_one_or_none()
         return Certificacion(

@@ -128,7 +128,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                     })
                     .catch(function (err) {
                         console.error("Error al copiar: ", err)
-                        alert("No se pudo copiar el enlace")
+                        alert("{{ _('No se pudo copiar el enlace') }}")
                     })
             }
         </script>

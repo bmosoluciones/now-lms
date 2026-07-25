@@ -368,7 +368,7 @@ def inscribir_usuario_en_cursos_de_programa(username: str, programa: Programa) -
         pago.metodo = "program_enrollment"
         pago.monto = 0
         pago.moneda = get_site_currency()
-        pago.descripcion = f"Inscripción al curso como parte del programa '{programa.nombre}'"
+        pago.descripcion = gettext("Inscripción al curso como parte del programa '%(name)s'", name=programa.nombre)
         pago.audit = False
         pago.creado = datetime.now(timezone.utc).date()
         pago.creado_por = current_user.usuario if (current_user and current_user.is_authenticated) else username
@@ -428,7 +428,7 @@ def inscribir_usuario_en_curso_especifico_de_programa(username: str, course_code
     pago.metodo = "program_enrollment"
     pago.monto = 0
     pago.moneda = get_site_currency()
-    pago.descripcion = f"Inscripción al curso como parte del programa '{programa.nombre}'"
+    pago.descripcion = gettext("Inscripción al curso como parte del programa '%(name)s'", name=programa.nombre)
     pago.audit = False
     pago.creado = datetime.now(timezone.utc).date()
     pago.creado_por = current_user.usuario if (current_user and current_user.is_authenticated) else "system"
@@ -504,7 +504,7 @@ def inscribir_programa(codigo: str) -> str | Response:
             pago.nombre = current_user.nombre or current_user.usuario
             pago.apellido = current_user.apellido or ""
             pago.correo_electronico = current_user.correo_electronico or ""
-            pago.descripcion = f"Pago del programa '{programa.nombre}'"
+            pago.descripcion = gettext("Pago del programa '%(name)s'", name=programa.nombre)
             pago.audit = False
             pago.creado = datetime.now(timezone.utc).date()
             pago.creado_por = current_user.usuario
@@ -842,9 +842,9 @@ def _get_or_create_course_enrollment(course_code, student_username, bypass_payme
     pago.estado = "completed"
     pago.metodo = "admin_program_enrollment"
     pago.monto = 0 if bypass_payment else curso.precio
-    pago.descripcion = f"Inscripción administrativa al programa '{programa.nombre}' por {current_user.usuario}"
+    pago.descripcion = gettext("Inscripción administrativa al programa '%(name)s' por %(user)s", name=programa.nombre, user=current_user.usuario)
     if notes:
-        pago.descripcion += f" - Notas: {notes}"
+        pago.descripcion += " - " + gettext("Notas: %(notes)s", notes=notes)
     pago.audit = not bypass_payment and curso.pagado
     pago.creado = datetime.now(timezone.utc).date()
     pago.creado_por = current_user.usuario

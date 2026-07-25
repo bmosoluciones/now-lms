@@ -431,7 +431,7 @@ class ThemeForm(FlaskForm):
     """Formulario para editar el tema del sistema."""
 
     style = SelectField(
-        "Estilo",
+        _l("Estilo"),
         choices=[],
     )
 
@@ -865,22 +865,22 @@ class CheckMailForm(FlaskForm):
 class ChangePasswordForm(FlaskForm):
     """Formulario para cambiar la contraseña del usuario."""
 
-    current_password = PasswordField("Contraseña Actual", validators=[DataRequired()])
-    new_password = PasswordField("Nueva Contraseña", validators=[DataRequired()])
-    confirm_password = PasswordField("Confirmar Nueva Contraseña", validators=[DataRequired()])
+    current_password = PasswordField(_l("Contraseña Actual"), validators=[DataRequired()])
+    new_password = PasswordField(_l("Nueva Contraseña"), validators=[DataRequired()])
+    confirm_password = PasswordField(_l("Confirmar Nueva Contraseña"), validators=[DataRequired()])
 
 
 class ForgotPasswordForm(FlaskForm):
     """Formulario para solicitar recuperación de contraseña."""
 
-    email = StringField("Correo Electrónico", validators=[DataRequired()])
+    email = StringField(_l("Correo Electrónico"), validators=[DataRequired()])
 
 
 class ResetPasswordForm(FlaskForm):
     """Formulario para restablecer contraseña con token."""
 
-    new_password = PasswordField("Nueva Contraseña", validators=[DataRequired()])
-    confirm_password = PasswordField("Confirmar Nueva Contraseña", validators=[DataRequired()])
+    new_password = PasswordField(_l("Nueva Contraseña"), validators=[DataRequired()])
+    confirm_password = PasswordField(_l("Confirmar Nueva Contraseña"), validators=[DataRequired()])
 
 
 class PagoForm(FlaskForm):

@@ -489,13 +489,13 @@ def new_question(evaluation_id: str) -> str | Response:
                 # Create True/False options for boolean questions
                 true_option = QuestionOption(
                     question_id=question.id,
-                    text="Verdadero",
+                    text=gettext("Verdadero"),
                     is_correct=False,  # Default to false, user needs to set correct answer
                     creado_por=current_user.usuario,
                 )
                 false_option = QuestionOption(
                     question_id=question.id,
-                    text="Falso",
+                    text=gettext("Falso"),
                     is_correct=False,
                     creado_por=current_user.usuario,
                 )
@@ -506,7 +506,7 @@ def new_question(evaluation_id: str) -> str | Response:
                 for i in range(4):  # Create 4 default options
                     option = QuestionOption(
                         question_id=question.id,
-                        text=f"Opción {i + 1}",
+                        text=gettext("Opción %(num)s", num=i + 1),
                         is_correct=False,
                         creado_por=current_user.usuario,
                     )

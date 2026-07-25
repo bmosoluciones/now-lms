@@ -649,7 +649,7 @@
                                                 <i class="bi bi-facebook"></i> {{_("Facebook")}}:
                                             </label>
                                             {{ form.social_facebook(class="form-control", id="social_facebook",
-                                            value=config.social_facebook, placeholder="https://facebook.com/tu-pagina") }} {{
+                                            value=config.social_facebook, placeholder="{{ _('https://facebook.com/tu-pagina') }}") }} {{
                                             render_field_errors(form.social_facebook) }}
                                             <div class="form-text">{{_("URL completa de su página de Facebook")}}.</div>
                                         </div>
@@ -658,7 +658,7 @@
                                                 <i class="bi bi-twitter-x"></i> {{_("Twitter/X")}}:
                                             </label>
                                             {{ form.social_twitter(class="form-control", id="social_twitter",
-                                            value=config.social_twitter, placeholder="https://twitter.com/tu-cuenta") }} {{
+                                            value=config.social_twitter, placeholder="{{ _('https://twitter.com/tu-cuenta') }}") }} {{
                                             render_field_errors(form.social_twitter) }}
                                             <div class="form-text">{{_("URL completa de su perfil de Twitter/X")}}.</div>
                                         </div>
@@ -670,7 +670,7 @@
                                             </label>
                                             {{ form.social_linkedin(class="form-control", id="social_linkedin",
                                             value=config.social_linkedin,
-                                            placeholder="https://linkedin.com/company/tu-empresa") }} {{
+                                            placeholder="{{ _('https://linkedin.com/company/tu-empresa') }}") }} {{
                                             render_field_errors(form.social_linkedin) }}
                                             <div class="form-text">
                                                 {{_("URL completa de su perfil o página de LinkedIn")}}.
@@ -681,7 +681,7 @@
                                                 <i class="bi bi-youtube"></i> {{_("YouTube")}}:
                                             </label>
                                             {{ form.social_youtube(class="form-control", id="social_youtube",
-                                            value=config.social_youtube, placeholder="https://youtube.com/@tu-canal") }} {{
+                                            value=config.social_youtube, placeholder="{{ _('https://youtube.com/@tu-canal') }}") }} {{
                                             render_field_errors(form.social_youtube) }}
                                             <div class="form-text">{{_("URL completa de su canal de YouTube")}}.</div>
                                         </div>
@@ -692,7 +692,7 @@
                                                 <i class="bi bi-instagram"></i> {{_("Instagram")}}:
                                             </label>
                                             {{ form.social_instagram(class="form-control", id="social_instagram",
-                                            value=config.social_instagram, placeholder="https://instagram.com/tu-cuenta") }} {{
+                                            value=config.social_instagram, placeholder="{{ _('https://instagram.com/tu-cuenta') }}") }} {{
                                             render_field_errors(form.social_instagram) }}
                                             <div class="form-text">{{_("URL completa de su perfil de Instagram")}}.</div>
                                         </div>
@@ -701,7 +701,7 @@
                                                 <i class="bi bi-github"></i> {{_("GitHub")}}:
                                             </label>
                                             {{ form.social_github(class="form-control", id="social_github",
-                                            value=config.social_github, placeholder="https://github.com/tu-organizacion") }} {{
+                                            value=config.social_github, placeholder="{{ _('https://github.com/tu-organizacion') }}") }} {{
                                             render_field_errors(form.social_github) }}
                                             <div class="form-text">
                                                 {{_("URL completa de su perfil u organización de GitHub")}}.
@@ -756,7 +756,7 @@
                                                 <i class="bi bi-envelope"></i> {{_("Correo de contacto")}}:
                                             </label>
                                             {{ form.contact_email(class="form-control", id="contact_email",
-                                            value=config.contact_email, placeholder="contacto@ejemplo.com") }} {{
+                                            value=config.contact_email, placeholder="{{ _('contacto@ejemplo.com') }}") }} {{
                                             render_field_errors(form.contact_email) }}
                                             <div class="form-text">{{_("Correo electrónico de contacto público")}}.</div>
                                         </div>

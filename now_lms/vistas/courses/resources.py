@@ -714,7 +714,7 @@ def nuevo_recurso_pdf(course_code: str, seccion: str) -> str | Response:
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash(gettext("RECURSO_AGREGADO"), "success")
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -806,7 +806,7 @@ def nuevo_recurso_meet(course_code: str, seccion: str) -> str | Response:
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash(gettext("RECURSO_AGREGADO"), "success")
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -909,7 +909,7 @@ def nuevo_recurso_img(course_code: str, seccion: str) -> str | Response:
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash(gettext("RECURSO_AGREGADO"), "success")
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -1009,7 +1009,7 @@ def nuevo_recurso_audio(course_code: str, seccion: str) -> str | Response:
     try:
         database.session.add(nuevo_recurso_)
         database.session.commit()
-        flash(gettext("RECURSO_AGREGADO"), "success")
+        flash(RECURSO_AGREGADO, "success")
     except OperationalError:
         flash(ERROR_AL_AGREGAR_CURSO, "warning")
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
@@ -1242,7 +1242,7 @@ def nuevo_recurso_slideshow(course_code: str, seccion: str) -> str | Response:
 
         except Exception as e:
             database.session.rollback()
-            flash(f"Error al crear la presentación: {str(e)}", "error")
+            flash(gettext("Error al crear la presentación: %(error)s", error=str(e)), "error")
 
     return render_template(
         "learning/resources_new/nuevo_recurso_slides.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1312,7 +1312,7 @@ def editar_slideshow(course_code: str, slideshow_id: str) -> str | Response:
 
         except Exception as e:
             database.session.rollback()
-            flash(f"Error al actualizar la presentación: {str(e)}", "error")
+            flash(gettext("Error al actualizar la presentación: %(error)s", error=str(e)), "error")
 
         return redirect(url_for(".editar_slideshow", course_code=course_code, slideshow_id=slideshow_id))
 
@@ -1543,16 +1543,16 @@ def _store_library_file(course_code: str, uploaded_file: Any, form: Any) -> str:
     library_path = ensure_course_library_directory(course_code)
     sanitized_filename = sanitize_filename(uploaded_file.filename or "")
     if not sanitized_filename:
-        raise ValueError("Nombre de archivo inválido.")
+        raise ValueError(gettext("Nombre de archivo inválido."))
     existing_file = database.session.execute(
         database.select(CourseLibrary).filter_by(curso=course_code, filename=sanitized_filename)
     ).scalar_one_or_none()
     if existing_file:
-        raise ValueError(f"Ya existe un archivo con el nombre '{sanitized_filename}' en la biblioteca.")
+        raise ValueError(gettext("Ya existe un archivo con el nombre '%(name)s' en la biblioteca.", name=sanitized_filename))
 
     destination_path = path.realpath(path.join(library_path, sanitized_filename))
     if not destination_path.startswith(path.realpath(library_path)):
-        raise ValueError("Ruta de destino inválida.")
+        raise ValueError(gettext("Ruta de destino inválida."))
     try:
         uploaded_file.save(destination_path)
         library_file = CourseLibrary(
@@ -1607,12 +1607,12 @@ def upload_library_file(course_code: str) -> str | Response:
 
         try:
             sanitized_filename = _store_library_file(course_code, uploaded_file, form)
-            flash(f"Archivo '{sanitized_filename}' subido exitosamente a la biblioteca del curso.", "success")
+            flash(gettext("Archivo '%(name)s' subido exitosamente a la biblioteca del curso.", name=sanitized_filename), "success")
             return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
         except ValueError as e:
             flash(str(e), "warning")
         except Exception as e:
-            flash(f"Error al subir el archivo: {str(e)}", "error")
+            flash(gettext("Error al subir el archivo: %(error)s", error=str(e)), "error")
 
     return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
@@ -1696,7 +1696,7 @@ def delete_library_file(course_code: str, file_id: str) -> Response:
 
     except Exception as e:
         database.session.rollback()
-        flash(f"Error al eliminar el archivo: {str(e)}", "error")
+        flash(gettext("Error al eliminar el archivo: %(error)s", error=str(e)), "error")
 
     return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
 

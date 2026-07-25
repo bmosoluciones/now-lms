@@ -163,6 +163,8 @@
         <script>
             const coursePrice = {{ curso.precio }};
             const currentUses = {{ coupon.current_uses }};
+            const msgPercentHelp = '{{ _("Porcentaje de descuento (0-100)") }}';
+            const msgFixedHelp = '{{ _("Cantidad fija de descuento (máximo") }}';
             
             function updateDiscountHelp() {
                 const discountType = document.getElementById('discount_type').value;
@@ -170,10 +172,10 @@
                 const discountValue = document.getElementById('discount_value');
                 
                 if (discountType === 'percentage') {
-                    helpText.textContent = 'Porcentaje de descuento (0-100)';
+                    helpText.textContent = msgPercentHelp;
                     discountValue.max = '100';
                 } else {
-                    helpText.textContent = `Cantidad fija de descuento (máximo $${coursePrice})`;
+                    helpText.textContent = `${msgFixedHelp} $${coursePrice})`;
                     discountValue.max = coursePrice;
                 }
                 updatePreview();

@@ -638,7 +638,7 @@ def _validate_paypal_enabled(form: PayaplForm, config: PaypalConfig) -> bool:
     if validation["valid"]:
         return True
 
-    flash(f"Error en la configuración de PayPal: {validation['message']}", "error")
+    flash(gettext("Error en la configuración de PayPal: %(error)s", error=validation['message']), "error")
     return False
 
 

@@ -168,7 +168,7 @@ msgstr "Aprenda no seu ritmo."
 
 #: now_lms/db/tools.py:138
 msgid "NOW LMS - Aprende a tu ritmo."
-msgstr "AGORA LMS - Aprenda no seu ritmo."
+msgstr "NOW LMS - Aprenda no seu ritmo."
 
 #: now_lms/db/tools.py:403
 msgid "Imagen de usuario eliminada correctamente."
@@ -193,7 +193,7 @@ msgstr "Não é um valor de data válido."
 #: now_lms/templates/masterclass/admin_list.html:36
 #: now_lms/templates/masterclass/instructor_list.html:31
 msgid "Título"
-msgstr "Qualificação"
+msgstr "Título"
 
 #: now_lms/forms/__init__.py:362
 msgid "Moneda"
@@ -361,7 +361,7 @@ msgstr "O fórum não pode ser ativado em cursos individualizados"
 #: now_lms/forms/__init__.py:545
 #: now_lms/templates/learning/resources/type_macros.html:85
 msgid "Requerido"
-msgstr "Solicitado"
+msgstr "Obrigatório"
 
 #: now_lms/forms/__init__.py:579
 #: now_lms/templates/learning/curso/library.html:85
@@ -378,11 +378,11 @@ msgstr "Descreve o uso ou conteúdo do arquivo"
 
 #: now_lms/forms/__init__.py:612 now_lms/templates/admin/theme.html:63
 msgid "Tema"
-msgstr "Emitir"
+msgstr "Tema"
 
 #: now_lms/forms/__init__.py:624
 msgid "Tema Reveal.js"
-msgstr "Tema Revelar.js"
+msgstr "Tema Reveal.js"
 
 #: now_lms/forms/__init__.py:639
 msgid "Título de la Diapositiva"
@@ -467,7 +467,7 @@ msgstr "Estado"
 #: now_lms/templates/learning/resources_new/nuevo_recurso_youtube.html:38
 #: now_lms/templates/masterclass/admin_list.html:42
 msgid "Tipo"
-msgstr "Cara"
+msgstr "Tipo"
 
 #: now_lms/forms/__init__.py:735
 msgid "Genero"
@@ -475,7 +475,7 @@ msgstr "Gênero"
 
 #: now_lms/forms/__init__.py:736
 msgid "Titulo"
-msgstr "Qualificação"
+msgstr "Título"
 
 #: now_lms/forms/__init__.py:758
 #: now_lms/templates/admin/contact_messages.html:58
@@ -683,7 +683,7 @@ msgstr "Código do cupom (opcional)"
 #: now_lms/forms/__init__.py:1034 now_lms/templates/perfiles/admin.html:391
 #: now_lms/templates/perfiles/instructor.html:326
 msgid "Contenido"
-msgstr "Contente"
+msgstr "Conteúdo"
 
 #: now_lms/forms/__init__.py:1035
 msgid "Permitir comentarios"
