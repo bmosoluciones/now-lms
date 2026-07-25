@@ -117,36 +117,67 @@ def get_program_view_template() -> str:
     return "learning/programa.html"
 
 
+def get_course_take_template() -> str:
+    """Devuelve la ruta del template para tomar un curso (estudiante inscrito)."""
+    THEME = get_current_theme()
+
+    COURSE_TAKE = Path(path.join(get_theme_path(), "overrides", "course_take.j2"))
+
+    if COURSE_TAKE.exists():
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/course_take.j2"
+    return "learning/curso.html"
+
+
+def get_resource_list_template() -> str:
+    """Devuelve la ruta del template de la lista de recursos."""
+    THEME = get_current_theme()
+
+    RESOURCE_LIST = Path(path.join(get_theme_path(), "overrides", "resource_list.j2"))
+
+    if RESOURCE_LIST.exists():
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/resource_list.j2"
+    return "inicio/recursos.html"
+
+
+def get_resource_view_template() -> str:
+    """Devuelve la ruta del template de vista de recurso."""
+    THEME = get_current_theme()
+
+    RESOURCE_VIEW = Path(path.join(get_theme_path(), "overrides", "resource_view.j2"))
+
+    if RESOURCE_VIEW.exists():
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/resource_view.j2"
+    return "learning/recursos/recurso.html"
+
+
 # ---------------------------------------------------------------------------------------
 # Theme loading and context utilities
 # ---------------------------------------------------------------------------------------
 
 
+def _load_macro(theme_name: str, filename: str, macro_name: str):
+    """Carga un macro desde un tema, con fallback al tema por defecto."""
+    default_path = THEMES_DIRECTORY + "now_lms/" + filename
+    theme_path = THEMES_DIRECTORY + theme_name + "/" + filename
+
+    try:
+        return get_macro(theme_path, macro_name)
+    except Exception:
+        return get_macro(default_path, macro_name)
+
+
 def current_theme() -> SimpleNamespace:
     """Carga las variables de los temas en el contexto de la aplicacion."""
-    theme = get_current_theme
-    dir_ = THEMES_DIRECTORY
+    theme_name = get_current_theme() or "now_lms"
 
-    # Check if theme has footer macro, otherwise use default
-    theme_path = dir_ + theme()
-    footer_path = theme_path + "/footer.j2"
-
-    # Try to load theme-specific footer, fall back to default
-    try:
-        footer_macro = get_macro(footer_path, "footer")
-    except Exception:
-        # Fall back to default theme footer if theme doesn't have one
-        footer_macro = get_macro(dir_ + "now_lms/footer.j2", "footer")
-
-    # Load theme macros and return as namespace object for template access
     return SimpleNamespace(
-        headertags=get_macro(dir_ + theme() + "/header.j2", "headertags"),
-        jslibs=get_macro(dir_ + theme() + "/js.j2", "jslibs"),
-        local_style=get_macro(dir_ + theme() + "/local_style.j2", "local_style"),
-        navbar=get_macro(dir_ + theme() + "/navbar.j2", "navbar"),
-        notify=get_macro(dir_ + theme() + "/notify.j2", "notify"),
-        rendizar_paginacion=get_macro(dir_ + theme() + "/pagination.j2", "paginate"),
-        footer=footer_macro,
+        headertags=_load_macro(theme_name, "header.j2", "headertags"),
+        jslibs=_load_macro(theme_name, "js.j2", "jslibs"),
+        local_style=_load_macro(theme_name, "local_style.j2", "local_style"),
+        navbar=_load_macro(theme_name, "navbar.j2", "navbar"),
+        notify=_load_macro(theme_name, "notify.j2", "notify"),
+        rendizar_paginacion=_load_macro(theme_name, "pagination.j2", "paginate"),
+        footer=_load_macro(theme_name, "footer.j2", "footer"),
     )
 
 
