@@ -63,7 +63,7 @@
                                 role="button"
                                 aria-disabled="true"
                             >
-                                Iniciar Sesión
+                                 {{ _('Iniciar Sesión') }}
                             </a>
                             <a
                                 href="{{ url_for('user.crear_cuenta') }}"
@@ -71,7 +71,7 @@
                                 role="button"
                                 aria-disabled="true"
                             >
-                                {{ _("Crear") }} Cuenta
+                                 {{ _("Crear") }} {{ _('Cuenta') }}
                             </a>
                         </div>
                         {% endif %}
@@ -80,7 +80,7 @@
                         <h3>{{ tipo[curso.tipo] | safe }} {{ curso.nombre }}</h3>
                         <p>{{ curso.descripcion }}</p>
                         <a href="{{ url_for('resource.descargar_recurso', resource_code=curso.id) }}"
-                            ><i class="bi bi-cloud-download-fill" aria-hidden="true"></i> Descarga El {{ _("Recurso") }}</a
+                            ><i class="bi bi-cloud-download-fill" aria-hidden="true"></i> {{ _('Descarga El') }} {{ _("Recurso") }}</a
                         >
                     </div>
                 </div>

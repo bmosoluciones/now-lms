@@ -22,20 +22,20 @@ set config = config() %}
                         <div class="card">
                             <div class="card-header">
                                 <h4>
-                                    <i class="fas fa-user-plus"></i> {{ _("Inscripción") }} Administrativa a {{ _("Programa")
+                                    <i class="fas fa-user-plus"></i> {{ _("Inscripción") }} {{ _('Administrativa a') }} {{ _("Programa")
                                     }}
                                 </h4>
                                 <p class="mb-0 text-muted">
-                                    {{ _("Inscribir") }} estudiante al programa: <strong>{{ programa.nombre }}</strong>
+                                    {{ _("Inscribir") }} {{ _('estudiante al programa:') }} <strong>{{ programa.nombre }}</strong>
                                 </p>
                             </div>
                             <div class="card-body">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle"></i>
-                                    <strong>{{ _("Inscripción") }} a {{ _("Programa") }}:</strong> Al inscribir un estudiante a
-                                    este programa, será automáticamente inscrito a todos los cursos que forman parte del
-                                    programa. {% if programa.pagado %} Si algunos cursos son pagados, puedes omitir el pago
-                                    para dar acceso completo al estudiante. {% endif %}
+                                    {{ _("Inscripción") }} a {{ _("Programa") }}: {{ _('Al inscribir un estudiante a') }}
+                                    {{ _('este programa, será automáticamente inscrito a todos los cursos que forman parte del') }}
+                                    {{ _('programa.') }} {% if programa.pagado %} {{ _('Si algunos cursos son pagados, puedes omitir el pago') }}
+                                    {{ _('para dar acceso completo al estudiante.') }} {% endif %}
                                 </div>
 
                                 <form method="POST">
@@ -46,7 +46,7 @@ set config = config() %}
                                         form.student_username(class="form-control") }} {{
                                         render_field_errors(form.student_username) }}
                                         <div class="form-text">
-                                            Ingresa el nombre de usuario del estudiante que deseas inscribir.
+                                            {{ _('Ingresa el nombre de usuario del estudiante que deseas inscribir.') }}
                                         </div>
                                     </div>
 
@@ -57,8 +57,7 @@ set config = config() %}
                                             form.bypass_payment.label(class="form-check-label") }}
                                         </div>
                                         <div class="form-text">
-                                            Si está marcado, el estudiante tendrá acceso completo a todos los cursos del
-                                            programa, incluso aquellos que requieren pago.
+                                            {{ _('Si está marcado, el estudiante tendrá acceso completo a todos los cursos del programa, incluso aquellos que requieren pago.') }}
                                         </div>
                                     </div>
 
@@ -66,7 +65,7 @@ set config = config() %}
                                         {{ form.notes.label(class="form-label") }} {{ form.notes(class="form-control") }} {{
                                         render_field_errors(form.notes) }}
                                         <div class="form-text">
-                                            Notas opcionales sobre esta inscripción (para referencia administrativa).
+                                            {{ _('Notas opcionales sobre esta inscripción (para referencia administrativa).') }}
                                         </div>
                                     </div>
 
@@ -93,7 +92,7 @@ set config = config() %}
                                 <div class="row">
                                     <div class="col-md-6">
                                         <strong>{{ _("Nombre") }}:</strong> {{ programa.nombre }}<br />
-                                        <strong>Código:</strong> {{ programa.codigo }}<br />
+                                         <strong>{{ _('Código:') }}</strong> {{ programa.codigo }}<br />
                                         <strong>{{ _("Estado") }}:</strong>
                                         <span
                                             class="badge bg-{% if programa.estado == 'open' %}success{% elif programa.estado == 'closed' %}danger{% else %}warning{% endif %}"

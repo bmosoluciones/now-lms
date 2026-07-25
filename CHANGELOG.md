@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Added:
  - Payment receipt generation: automatically sends a beautiful HTML receipt via email when PayPal payments are completed (if SMTP is configured).
  - Student payment history: a new `/payments` dashboard where students can view their transaction history, and download a simple PDF copy of their receipt using Weasyprint.
+ - i18n and l10n improvements: wrapped untranslated strings in `gettext()` across all views and templates, added missing Jinja2 `{{ _('...') }}` wrappers in 8 instructor evaluation templates, fixed syntax errors in multi-line translatable strings, resolved fuzzy/wrong English translations in `.po` files, and completed missing translation entries.
 
 ### Changed:
  - `mysql-connector-python` is now the recommended driver for MySQL/MariaDB connections (`DATABASE_URL` with `mysql://` is corrected to `mysql+mysqlconnector://`). It is already included as a first-level dependency and in the Docker image.

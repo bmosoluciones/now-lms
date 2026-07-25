@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="{{ current_locale() }}">
     {% from 'macros/blog_section.j2' import render_blog_section %} {% set current_theme = current_theme() %} {% set site_config
     = config() %}
     <head>
@@ -17,8 +17,7 @@
                             <p class="cambridge-kicker">THE CAMBRIDGE COLLECTION <span>·</span> NOW LMS</p>
                             <h1>{{ _('Ideas become discoveries.') }}</h1>
                             <p class="cambridge-hero-lead">
-                                {{ site_config.hero or _('Un espacio de aprendizaje para investigar, experimentar y compartir
-                                conocimiento.') }}
+                                {{ site_config.hero or _('Un espacio de aprendizaje para investigar, experimentar y compartir\nconocimiento.') }}
                             </p>
                             <div class="cambridge-hero-actions">
                                 {% if not current_user.is_authenticated %}

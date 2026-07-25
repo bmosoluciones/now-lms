@@ -2,10 +2,10 @@
 set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Editar Evaluación</title>
+        <title>{{ _('Editar Evaluación') }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -25,21 +25,21 @@ set config = config() %}
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.pagina_instructor') }}"
-                                        >Panel Instructor</a
+                                        >{{ _('Panel Instructor') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.cursos') }}"
-                                        >Cursos</a
+                                        >{{ _('Cursos') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.course_evaluations', course_code=course_code) }}"
-                                        >Evaluaciones</a
+                                        >{{ _('Evaluaciones') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">{{ evaluacion.title }}</li>
@@ -59,9 +59,9 @@ set config = config() %}
                                     </div>
                                     <div>
                                         {% if evaluacion.is_exam %}
-                                        <span class="badge bg-danger">Examen</span>
-                                        {% else %}
-                                        <span class="badge bg-primary">Quiz</span>
+                                         <span class="badge bg-danger">{{ _('Examen') }}</span>
+                                         {% else %}
+                                         <span class="badge bg-primary">{{ _('Quiz') }}</span>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@ set config = config() %}
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h5>Configuración de la Evaluación</h5>
+                                         <h5>{{ _('Configuración de la Evaluación') }}</h5>
 
                                         <form method="POST">
                                             {{ form.hidden_tag() }}
@@ -112,21 +112,21 @@ set config = config() %}
                                                 {{ form.max_attempts.label(class="form-label") }} {{
                                                 form.max_attempts(class="form-control") }} {{
                                                 render_field_errors(form.max_attempts) }}
-                                                <div class="form-text">Deje vacío para intentos ilimitados.</div>
+                                                 <div class="form-text">{{ _('Deje vacío para intentos ilimitados.') }}</div>
                                             </div>
 
-                                            <button type="submit" class="btn btn-primary">Actualizar Evaluación</button>
+                                             <button type="submit" class="btn btn-primary">{{ _('Actualizar Evaluación') }}</button>
                                         </form>
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <h5>Preguntas ({{ preguntas|length }})</h5>
+                                             <h5>{{ _('Preguntas') }} ({{ preguntas|length }})</h5>
                                             <a
                                                 href="{{ url_for('instructor_profile.new_question', evaluation_id=evaluacion.id) }}"
                                                 class="btn btn-success btn-sm"
                                             >
-                                                <i class="bi bi-plus"></i> Nueva Pregunta
+                                                 <i class="bi bi-plus"></i> {{ _('Nueva Pregunta') }}
                                             </a>
                                         </div>
 
@@ -136,21 +136,21 @@ set config = config() %}
                                             <div class="list-group-item">
                                                 <div class="d-flex justify-content-between align-items-start">
                                                     <div class="flex-grow-1">
-                                                        <h6 class="mb-1">Pregunta {{ pregunta.order }}</h6>
+                                                         <h6 class="mb-1">{{ _('Pregunta') }} {{ pregunta.order }}</h6>
                                                         <p class="mb-1">
                                                             {{ pregunta.text[:100] }}{% if pregunta.text|length > 100 %}...{%
                                                             endif %}
                                                         </p>
                                                         <small class="text-muted">
-                                                            Tipo: {% if pregunta.type == "boolean" %} Verdadero/Falso {% else
-                                                            %} Opción Múltiple {% endif %} | {{ pregunta.options|length }}
-                                                            opciones
+                                                             {{ _('Tipo') }}: {% if pregunta.type == "boolean" %} {{ _('Verdadero/Falso') }} {% else
+                                                             %} {{ _('Opción Múltiple') }} {% endif %} | {{ pregunta.options|length }}
+                                                             {{ _('opciones') }}
                                                         </small>
 
                                                         <!-- Show options -->
                                                         {% if pregunta.options %}
                                                         <div class="mt-2">
-                                                            <small class="text-muted">Opciones:</small>
+                                                             <small class="text-muted">{{ _('Opciones') }}:</small>
                                                             <ul class="list-unstyled ms-3 mb-1">
                                                                 {% for option in pregunta.options %}
                                                                 <li class="d-flex justify-content-between align-items-center">
@@ -196,7 +196,7 @@ set config = config() %}
                                                                 href="{{ url_for('instructor_profile.new_question_option', question_id=pregunta.id) }}"
                                                                 class="btn btn-outline-success btn-sm"
                                                             >
-                                                                <i class="bi bi-plus"></i> Agregar opción
+                                                                 <i class="bi bi-plus"></i> {{ _('Agregar opción') }}
                                                             </a>
                                                             {% endif %}
                                                         </div>
@@ -236,13 +236,13 @@ set config = config() %}
                                         {% else %}
                                         <div class="alert alert-info">
                                             <i class="bi bi-info-circle"></i>
-                                            No hay preguntas creadas para esta evaluación.
-                                            <br />
-                                            <a
-                                                href="{{ url_for('instructor_profile.new_question', evaluation_id=evaluacion.id) }}"
-                                                class="btn btn-primary btn-sm mt-2"
-                                            >
-                                                Crear primera pregunta
+                                             No hay preguntas creadas para esta evaluación.
+                                             <br />
+                                             <a
+                                                 href="{{ url_for('instructor_profile.new_question', evaluation_id=evaluacion.id) }}"
+                                                 class="btn btn-primary btn-sm mt-2"
+                                             >
+                                                 {{ _('Crear primera pregunta') }}
                                             </a>
                                         </div>
                                         {% endif %}
@@ -252,13 +252,13 @@ set config = config() %}
                                 {% if preguntas %}
                                 <hr />
                                 <div class="alert alert-success">
-                                    <h6>Evaluación lista para estudiantes:</h6>
-                                    <ul class="mb-0">
-                                        <li>{{ preguntas|length }} pregunta(s) configurada(s)</li>
-                                        <li>Puntuación mínima: {{ evaluacion.passing_score }}%</li>
-                                        <li>
-                                            Máximo intentos: {% if evaluacion.max_attempts %}{{ evaluacion.max_attempts }}{%
-                                            else %}Ilimitado{% endif %}
+                                 <h6>{{ _('Evaluación lista para estudiantes') }}:</h6>
+                                 <ul class="mb-0">
+                                     <li>{{ preguntas|length }} {{ _('pregunta(s) configurada(s)') }}</li>
+                                     <li>{{ _('Puntuación mínima') }}: {{ evaluacion.passing_score }}%</li>
+                                     <li>
+                                         {{ _('Máximo intentos') }}: {% if evaluacion.max_attempts %}{{ evaluacion.max_attempts }}{%
+                                         else %}{{ _('Ilimitado') }}{% endif %}
                                         </li>
                                     </ul>
                                 </div>

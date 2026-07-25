@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="{{ current_locale() }}">
     {% from 'macros/blog_section.j2' import render_blog_section %} {% set current_theme = current_theme() %} {% set site_config
     = config() %}
     <head>
@@ -16,8 +16,7 @@
                             <p class="oxford-kicker">THE OXFORD READING ROOM <span>·</span> 1249—NOW</p>
                             <h1>{{ _('Question everything.') }}</h1>
                             <p class="oxford-hero-lead">
-                                {{ site_config.hero or _('Una colección abierta de cursos, ideas y lecturas para aprender con
-                                profundidad.') }}
+                                {{ site_config.hero or _('Una colección abierta de cursos, ideas y lecturas para aprender con\nprofundidad.') }}
                             </p>
                             <div class="oxford-hero-actions">
                                 {% if not current_user.is_authenticated %}<a

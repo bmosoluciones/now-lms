@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="{{ current_locale() }}">
     {% from 'macros/blog_section.j2' import render_blog_section %} {% set current_theme = current_theme() %}{% set site_config
     = config() %}
     <head>
@@ -325,8 +325,7 @@
                                 {{ _('Diverse Courses') }}
                             </h4>
                             <p class="text-muted" style="line-height: 1.6">
-                                {{ _('Discover new skills from countless in-depth topics taught by passionate experts in their
-                                fields.') }}
+                                {{ _('Discover new skills from countless in-depth topics taught by passionate experts in their\nfields.') }}
                             </p>
                         </div>
                     </div>

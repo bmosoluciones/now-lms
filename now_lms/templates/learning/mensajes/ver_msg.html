@@ -25,13 +25,13 @@ import "learning/resources/type_macros.html" as r_macros %}
                             <h6>{{ mensaje.nombre }}</h6>
                             <div class="row">
                                 <div class="col-1">
-                                    <strong>De:</strong>
+                                    <strong>{{ _("De:") }}</strong>
                                 </div>
                                 <div class="col-11">{{ usuario.nombre | capitalize }} {{ usuario.apellido | capitalize }}</div>
                             </div>
                             <div class="row">
                                 <div class="col-1">
-                                    <strong>Asunto:</strong>
+                                    <strong>{{ _("Asunto:") }}</strong>
                                 </div>
                                 <div class="col-11">{{ mensaje.titulo }}</div>
                             </div>
@@ -49,21 +49,21 @@ import "learning/resources/type_macros.html" as r_macros %}
                             </div>
                         </div>
                         <div class="row">
-                            <h5>Respuestas:</h5>
+                            <h5>{{ _("Respuestas:") }}</h5>
                             {% if respuestas %} {% for respuesta in respuestas %} {{ respuesta.creado }}
-                            <strong>{{ respuesta[1].nombre }} {{ respuesta[1].apellido }}</strong> respondio: {{
-                            mkdown2html(respuesta[0].texto) | safe }} {% endfor %} {% else %} No hay respuestas publicadas a
-                            este mensaje. {% endif %}
+                            <strong>{{ respuesta[1].nombre }} {{ respuesta[1].apellido }}</strong> {{ _("respondio:") }} {{
+                            mkdown2html(respuesta[0].texto) | safe }} {% endfor %} {% else %} {{ _("No hay respuestas publicadas a
+                            este mensaje.") }} {% endif %}
                         </div>
                         <div class="row">
                             <br />
-                            <h5>Publicar una respuesta:</h5>
+                            <h5>{{ _("Publicar una respuesta:") }}</h5>
                             <form action="{{ url_for('msg.nuevo_mensaje') }}" method="post">
                                 {{ form.csrf_token }} {{ render_form_errors(form) }} {{ form.parent }} {{ form.editor }} {{
                                 mde.preview }} {{ mde.js }}
 
                                 <button class="w-10 btn btn-sml btn-primary btn-block" type="submit">
-                                    <i class="bi bi-envelope-plus" aria-hidden="true"></i> Publicar Respuesta
+                                    <i class="bi bi-envelope-plus" aria-hidden="true"></i> {{ _("Publicar Respuesta") }}
                                 </button>
                             </form>
                         </div>

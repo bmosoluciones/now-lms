@@ -64,17 +64,17 @@
                                         master_class.end_time.strftime('%H:%M') }}
                                     </li>
                                     <li>
-                                        <i class="fas fa-desktop text-primary"></i> <strong>Plataforma:</strong> {{
+                                         <i class="fas fa-desktop text-primary"></i> <strong>{{ _('Plataforma:') }}</strong> {{
                                         master_class.platform_name }}
                                     </li>
                                     <li>
-                                        <i class="fas fa-user text-primary"></i> <strong>Instructor:</strong> {{
+                                         <i class="fas fa-user text-primary"></i> <strong>{{ _('Instructor:') }}</strong> {{
                                         master_class.instructor.nombre }} {{ master_class.instructor.apellido or '' }}
                                     </li>
                                     {% if master_class.is_certificate %}
                                     <li>
                                         <i class="fas fa-certificate text-primary"></i>
-                                        <strong>Certificación:</strong> Disponible
+                                         <strong>{{ _('Certificación:') }}</strong> {{ _('Disponible') }}
                                     </li>
                                     {% endif %}
                                 </ul>
@@ -84,16 +84,15 @@
                                 {% if master_class.is_upcoming() %}
                                 <span class="badge bg-info fs-6">{{ _('Próximamente') }}</span>
                                 {% elif master_class.is_ongoing() %}
-                                <span class="badge bg-warning fs-6">En Progreso</span>
+                                 <span class="badge bg-warning fs-6">{{ _('En Progreso') }}</span>
                                 {% elif master_class.is_finished() %}
                                 <span class="badge bg-secondary fs-6">{{ _('Finalizado') }}</span>
                                 {% endif %}
 
                                 <div class="mt-3">
-                                    <h6 class="text-success">Acceso Gratuito</h6>
-                                    <p class="text-muted">
-                                        Esta clase magistral es completamente gratuita. Solo necesitas registrarte para
-                                        participar.
+                                     <h6 class="text-success">{{ _('Acceso Gratuito') }}</h6>
+                                     <p class="text-muted">
+                                         {{ _('Esta clase magistral es completamente gratuita. Solo necesitas registrarte para participar.') }}
                                     </p>
                                 </div>
                             </div>
@@ -109,30 +108,30 @@
                         </div>
                         {% endif %} {% if enrollment and enrollment.is_confirmed %}
                         <div class="alert alert-success">
-                            <h4><i class="fas fa-check-circle"></i> Ya estás inscrito en esta clase magistral</h4>
+                             <h4><i class="fas fa-check-circle"></i> {{ _('Ya estás inscrito en esta clase magistral') }}</h4>
 
-                            {% if not master_class.is_finished() %}
-                            <h5>Recomendaciones para la Participación:</h5>
-                            <ul>
-                                <li>{{ _('Únete 5 minutos antes del inicio') }}</li>
-                                <li>Asegúrate de tener una conexión estable a internet</li>
-                                <li>Prueba tu audio y video beforehand</li>
-                                <li>Busca un ambiente tranquilo</li>
+                             {% if not master_class.is_finished() %}
+                             <h5>{{ _('Recomendaciones para la Participación') }}:</h5>
+                             <ul>
+                                 <li>{{ _('Únete 5 minutos antes del inicio') }}</li>
+                                 <li>{{ _('Asegúrate de tener una conexión estable a internet') }}</li>
+                                 <li>{{ _('Prueba tu audio y video beforehand') }}</li>
+                                 <li>{{ _('Busca un ambiente tranquilo') }}</li>
                             </ul>
                             {% endif %} {% if master_class.is_upcoming() %}
                             <a href="{{ master_class.platform_url }}" class="btn btn-primary btn-lg" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> Acceder a {{ master_class.platform_name }}
+                                 <i class="fas fa-external-link-alt"></i> {{ _('Acceder a') }} {{ master_class.platform_name }}
                             </a>
                             {% elif master_class.is_finished() and master_class.video_recording_url %}
                             <a href="{{ master_class.video_recording_url }}" class="btn btn-secondary btn-lg" target="_blank">
-                                <i class="fas fa-play"></i> Ver Grabación
-                            </a>
+                                 <i class="fas fa-play"></i> {{ _('Ver Grabación') }}
+                             </a>
                             {% endif %}
                         </div>
                         {% elif current_user.is_authenticated %}
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Inscríbete en esta Clase Magistral</h5>
+                                 <h5 class="card-title">{{ _('Inscríbete en esta Clase Magistral') }}</h5>
                                 <p class="card-text">
                                     {{ _('Obtén acceso completo a la sesión en vivo y material exclusivo.') }}
                                 </p>
@@ -140,23 +139,23 @@
                                     href="{{ url_for('masterclass.enroll', slug=master_class.slug) }}"
                                     class="btn btn-primary btn-lg"
                                 >
-                                    Inscribirse Ahora
+                                     {{ _('Inscribirse Ahora') }}
                                 </a>
                             </div>
                         </div>
                         {% else %}
                         <div class="alert alert-warning">
-                            <h5><i class="fas fa-sign-in-alt"></i> Inicia Sesión para Inscribirte</h5>
-                            <p>Necesitas una cuenta para inscribirte en esta clase magistral.</p>
-                            <a href="{{ url_for('home.acceso') }}" class="btn btn-warning">Iniciar Sesión</a>
+                             <h5><i class="fas fa-sign-in-alt"></i> {{ _('Inicia Sesión para Inscribirte') }}</h5>
+                             <p>{{ _('Necesitas una cuenta para inscribirte en esta clase magistral.') }}</p>
+                             <a href="{{ url_for('home.acceso') }}" class="btn btn-warning">{{ _('Iniciar Sesión') }}</a>
                         </div>
                         {% endif %} {% if master_class.is_finished() and not enrollment and master_class.video_recording_url %}
                         <div class="alert alert-info">
                             <h5><i class="fas fa-video"></i> {{ _('Grabación Disponible') }}</h5>
                             <p>{{ _('Aunque el evento en vivo ya terminó, puedes ver la grabación.') }}</p>
-                            <a href="{{ master_class.video_recording_url }}" class="btn btn-info" target="_blank">
-                                <i class="fas fa-play"></i> Ver Grabación
-                            </a>
+                             <a href="{{ master_class.video_recording_url }}" class="btn btn-info" target="_blank">
+                                 <i class="fas fa-play"></i> {{ _('Ver Grabación') }}
+                             </a>
                         </div>
                         {% endif %}
                     </div>
@@ -179,7 +178,7 @@
                                     class="btn btn-outline-primary btn-sm"
                                     target="_blank"
                                 >
-                                    <i class="fas fa-external-link-alt"></i> Sitio Web
+                                     <i class="fas fa-external-link-alt"></i> {{ _('Sitio Web') }}
                                 </a>
                                 {% endif %} {% if master_class.instructor.linkedin %}
                                 <a
@@ -196,7 +195,7 @@
                         {% if master_class.is_upcoming() %}
                         <div class="card mt-3">
                             <div class="card-header">
-                                <h5>Tiempo Restante</h5>
+                                 <h5>{{ _('Tiempo Restante') }}</h5>
                             </div>
                             <div class="card-body text-center">
                                 <div id="countdown" class="fs-4 text-primary"></div>
