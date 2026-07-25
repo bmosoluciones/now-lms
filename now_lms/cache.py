@@ -133,3 +133,73 @@ def invalidate_all_cache() -> bool:
     except Exception as e:
         log.error(f"Error invalidating cache: {e}")
         return False
+
+
+def _obtiene_llaves_generales_cache() -> list[str]:
+    """Retorna las llaves comunes de catálogo y página de inicio para invalidación."""
+    return [
+        # Con doble diagonal
+        "view//course/explore/anon",
+        "view//course/explore/auth",
+        "view//program/explore/anon",
+        "view//program/explore/auth",
+        "view///anon",
+        "view///auth",
+        # Con diagonal simple
+        "view/course/explore/anon",
+        "view/course/explore/auth",
+        "view/program/explore/anon",
+        "view/program/explore/auth",
+        "view//anon",
+        "view//auth",
+    ]
+
+
+def invalidar_cache_curso(course_code: str) -> None:
+    """Invalidar cache para un curso específico y las vistas relacionadas."""
+    if CTYPE == "NullCache":
+        return
+    try:
+        keys_to_delete = [
+            f"view//course/{course_code}/view/anon",
+            f"view//course/{course_code}/view/auth",
+            f"view//course/{course_code}/admin/anon",
+            f"view//course/{course_code}/admin/auth",
+            f"view//course/{course_code}/take/anon",
+            f"view//course/{course_code}/take/auth",
+            f"view//course/{course_code}/moderate/anon",
+            f"view//course/{course_code}/moderate/auth",
+            f"view/course/{course_code}/view/anon",
+            f"view/course/{course_code}/view/auth",
+            f"view/course/{course_code}/admin/anon",
+            f"view/course/{course_code}/admin/auth",
+            f"view/course/{course_code}/take/anon",
+            f"view/course/{course_code}/take/auth",
+            f"view/course/{course_code}/moderate/anon",
+            f"view/course/{course_code}/moderate/auth",
+        ]
+        keys_to_delete.extend(_obtiene_llaves_generales_cache())
+        for key in keys_to_delete:
+            cache.delete(key)
+        log.trace(f"Cache invalidated for course: {course_code}")
+    except Exception as e:
+        log.error(f"Error invalidating cache for course {course_code}: {e}")
+
+
+def invalidar_cache_programa(program_code: str) -> None:
+    """Invalidar cache para un programa específico y las vistas relacionadas."""
+    if CTYPE == "NullCache":
+        return
+    try:
+        keys_to_delete = [
+            f"view//program/{program_code}/anon",
+            f"view//program/{program_code}/auth",
+            f"view/program/{program_code}/anon",
+            f"view/program/{program_code}/auth",
+        ]
+        keys_to_delete.extend(_obtiene_llaves_generales_cache())
+        for key in keys_to_delete:
+            cache.delete(key)
+        log.trace(f"Cache invalidated for program: {program_code}")
+    except Exception as e:
+        log.error(f"Error invalidating cache for program {program_code}: {e}")

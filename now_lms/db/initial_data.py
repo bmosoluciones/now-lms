@@ -67,10 +67,7 @@ def system_info(app: "Flask") -> None:
     """Información básica de la instalación."""
     with app.app_context():
         try:
-            existing = {
-                row.param
-                for row in database.session.query(SystemInfo.param).all()
-            }
+            existing = {row.param for row in database.session.query(SystemInfo.param).all()}
         except Exception:
             existing = set()
         entries = []

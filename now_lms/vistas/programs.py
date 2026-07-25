@@ -30,7 +30,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache, cache_key_with_auth_state
+from now_lms.cache import cache, cache_key_with_auth_state, invalidar_cache_programa
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
@@ -163,9 +163,10 @@ def nuevo_programa() -> str | Response:
     form.categoria.choices = generate_category_choices()
     form.etiquetas.choices = generate_tag_choices()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         try:
             programa = _create_program_from_form(form)
+            invalidar_cache_programa(programa.codigo)
             cache.delete("view/" + url_for(PROGRAMS_ROUTE))
             flash(_("Nuevo Programa creado."), "success")
             return redirect(url_for("program.pagina_programa", codigo=programa.codigo))
@@ -206,10 +207,16 @@ def programas() -> str:
 @perfil_requerido("instructor")
 def delete_program(ulid: str) -> Response:
     """Elimina programa."""
+    programa = database.session.execute(database.select(Programa).filter(Programa.id == ulid)).scalars().first()
+    if programa is None:
+        abort(404)
+    codigo = programa.codigo
+
     database.session.execute(delete(Programa).where(Programa.id == ulid))
 
     if current_user.tipo == "admin":
         database.session.commit()
+        invalidar_cache_programa(codigo)
         cache.delete("view/" + url_for(PROGRAMS_ROUTE))
         return redirect(url_for(PROGRAMS_ROUTE))
     return abort(403)
@@ -224,33 +231,22 @@ def edit_program(ulid: str) -> str | Response:
     if programa is None:
         abort(404)
 
-    form = ProgramaForm(
-        nombre=programa.nombre,
-        descripcion=programa.descripcion,
-        codigo=programa.codigo,
-        precio=programa.precio,
-        estado=programa.estado,
-        promocionado=programa.promocionado,
-        plantilla_certificado=programa.plantilla_certificado,
-    )
-    form.plantilla_certificado.choices = generate_template_choices_program()
-    form.plantilla_certificado.data = programa.plantilla_certificado
-    form.certificado.data = programa.certificado
-
-    # Populate category and tag choices and current values
-    form.categoria.choices = generate_category_choices()
-    form.etiquetas.choices = generate_tag_choices()
-    form.categoria.data = get_program_category(programa.id)
-    form.etiquetas.data = get_program_tags(programa.id)
-
     if current_user.tipo != "admin":
         return abort(403)
 
-    if form.validate_on_submit() or request.method == "POST":
+    form = ProgramaForm()
+    form.plantilla_certificado.choices = generate_template_choices_program()
+    form.categoria.choices = generate_category_choices()
+    form.etiquetas.choices = generate_tag_choices()
+
+    if form.validate_on_submit():
         if programa.promocionado is False and form.promocionado.data is True:
             programa.fecha_promocionado = datetime.today()
 
+        original_codigo = programa.codigo
+
         programa.nombre = form.nombre.data
+        programa.codigo = form.codigo.data
         programa.descripcion = form.descripcion.data
         programa.precio = form.precio.data
         programa.publico = form.publico.data
@@ -275,11 +271,28 @@ def edit_program(ulid: str) -> str | Response:
             database.session.commit()
             _save_program_logo(programa)
 
+            invalidar_cache_programa(original_codigo)
+            if original_codigo != programa.codigo:
+                invalidar_cache_programa(programa.codigo)
+
             flash(_("Programa editado correctamente."), "success")
         except OperationalError:
             database.session.rollback()
             flash(_("No se puedo editar el programa."))
         return redirect(url_for(PROGRAMS_ROUTE))
+
+    if request.method == "GET":
+        form.nombre.data = programa.nombre
+        form.descripcion.data = programa.descripcion
+        form.codigo.data = programa.codigo
+        form.precio.data = programa.precio
+        form.estado.data = programa.estado
+        form.promocionado.data = programa.promocionado
+        form.certificado.data = programa.certificado
+        form.plantilla_certificado.data = programa.plantilla_certificado
+        form.publico.data = programa.publico
+        form.categoria.data = get_program_category(programa.id)
+        form.etiquetas.data = get_program_tags(programa.id)
 
     return render_template("learning/programas/editar_programa.html", form=form, programa=programa)
 
