@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.3.2] - 2026-07-25
+
+### Fixed:
+ - Rate-limit counter `AttributeError: 'Cache' object has no attribute 'inc'` in login and public API endpoints. Flask-Caching 2.4.0 does not expose `inc()` on its `Cache` wrapper; now accesses the underlying cachelib backend via `cache.cache.inc()`.
+
 ## [1.3.1] - 2026-07-25
 
 ### Added:
