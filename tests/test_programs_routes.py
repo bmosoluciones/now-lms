@@ -93,7 +93,7 @@ def test_routes_create_program(client, db_session, prog_setup):
     response = client.post(
         "/program/new",
         data={
-            "nombre": "Espec Python",
+            "nombre": "Especialización Python",
             "descripcion": "Aprende python desde cero",
             "codigo": "PYSP01",
             "precio": "199.99",
@@ -108,7 +108,7 @@ def test_routes_create_program(client, db_session, prog_setup):
     # Verificar creación en DB
     prog = db_session.execute(database.select(Programa).filter_by(codigo="PYSP01")).scalars().first()
     assert prog is not None
-    assert prog.nombre == "Espec Python"
+    assert prog.nombre == "Especialización Python"
 
     # Verificar asociación de categoría y etiquetas
     cat_p = db_session.execute(database.select(CategoriaPrograma).filter_by(programa=prog.id)).scalars().first()
@@ -163,7 +163,7 @@ def test_routes_edit_program(client, db_session, prog_setup):
     response_edit = client.post(
         f"/program/{prog.id}/edit",
         data={
-            "nombre": "Prog Edit Act",
+            "nombre": "Programa Edit Actualizado",
             "descripcion": "desc actualizada",
             "codigo": "PROG_EDIT",
             "precio": "50.0",
@@ -173,7 +173,7 @@ def test_routes_edit_program(client, db_session, prog_setup):
     )
     assert response_edit.status_code == 200
     db_session.refresh(prog)
-    assert prog.nombre == "Prog Edit Act"
+    assert prog.nombre == "Programa Edit Actualizado"
 
 
 def test_routes_explore_programs(client, db_session, prog_setup):

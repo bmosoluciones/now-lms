@@ -65,7 +65,7 @@ def test_e2e_program_creation(app, db_session):
     resp_new = client.post(
         "/program/new",
         data={
-            "nombre": "Python Avanzado",
+            "nombre": "Programa Python Avanzado",
             "descripcion": "Programa completo de Python",
             "codigo": "python-adv",
             "publico": "y",
@@ -78,7 +78,7 @@ def test_e2e_program_creation(app, db_session):
     # 3) Verificar que el programa existe en la base de datos
     programa = db_session.execute(database.select(Programa).filter_by(codigo="python-adv")).scalars().first()
     assert programa is not None
-    assert programa.nombre == "Python Avanzado"
+    assert programa.nombre == "Programa Python Avanzado"
     assert programa.descripcion == "Programa completo de Python"
 
 
@@ -141,8 +141,8 @@ def test_e2e_program_enrollment(app, db_session):
     instructor = _crear_instructor(db_session)  # noqa: F841
     estudiante = _crear_estudiante(db_session)
     programa = Programa(
-        nombre="Prog Inscripción",
-        codigo="prog-insc",
+        nombre="Programa de Inscripción",
+        codigo="prog-inscr",
         descripcion="Programa para prueba de inscripción",
         texto="Texto del programa",
         publico=True,
@@ -274,7 +274,7 @@ def test_e2e_program_with_category(app, db_session):
     resp_new = client.post(
         "/program/new",
         data={
-            "nombre": "Prog Categoría",
+            "nombre": "Programa con Categoría",
             "descripcion": "Programa categorizado",
             "codigo": "prog-cat",
             "publico": "y",

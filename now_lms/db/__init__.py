@@ -64,7 +64,7 @@ def eliminar_base_de_datos_segura():
     except SQLAlchemyError as e:
         # Si hay un error, hacer rollback para evitar inconsistencia
         database.session.rollback()
-        app.logger.error("Error deleting the database: %s", e)
+        app.logger.error(f"Error eliminando la base de datos: {e}")
         raise
     finally:
         # Cierra la sesión para asegurar limpieza
@@ -685,7 +685,7 @@ class Configuracion(database.Model, BaseTabla):
 class Style(database.Model, BaseTabla):
     """Configuration for site appearance and theming."""
 
-    theme = database.Column(database.String(15))
+    theme = database.Column(database.String(40))
     custom_logo = database.Column(database.Boolean())
     custom_logo_ext = database.Column(database.String(5))
     custom_favicon = database.Column(database.Boolean())  # png
@@ -1055,7 +1055,7 @@ class Pago(database.Model, BaseTabla):
     )
     programa = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_PROGRAMA), nullable=True, index=True)
     moneda = database.Column(database.String(5))  # Ejemplo: USD, EUR, CRC
-    monto = database.Column(database.Numeric(asdecimal=True))
+    monto = database.Column(database.Numeric(10, 2, asdecimal=True))
     fecha = database.Column(database.DateTime, default=utc_now)
     estado = database.Column(database.String(20), default="pending", index=True)  # pending, completed, failed
     metodo = database.Column(database.String(20))  # paypal, stripe, bank_transfer
