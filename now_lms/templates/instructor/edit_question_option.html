@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Editar Opción - {{ option.text[:30] }}...</title>
+        <title>{{ _('Editar Opción') }} - {{ option.text[:30] }}...</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -24,14 +24,14 @@
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.pagina_instructor') }}"
-                                        >Panel Instructor</a
+                                        >{{ _('Panel Instructor') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.evaluaciones_lista') }}"
-                                        >Evaluaciones</a
+                                        >{{ _('Evaluaciones') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
@@ -41,7 +41,7 @@
                                         >{{ evaluacion.title }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Editar Opción</li>
+                                 <li class="breadcrumb-item active" aria-current="page">{{ _('Editar Opción') }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -53,14 +53,14 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-header">
-                                <h5>Editar Opción</h5>
+                                 <h5>{{ _('Editar Opción') }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="mb-3">
-                                    <strong>Pregunta:</strong>
+                                     <strong>{{ _('Pregunta') }}:</strong>
                                     <p class="text-muted">{{ question.text }}</p>
                                     <span class="badge bg-info"
-                                        >{{ "Verdadero/Falso" if question.type == "boolean" else "Opción Múltiple" }}</span
+                                        >                                         {{ _("Verdadero/Falso") if question.type == "boolean" else _("Opción Múltiple") }}</span
                                     >
                                 </div>
 
@@ -86,7 +86,7 @@
                                             form.is_correct.label(class="form-check-label") }}
                                         </div>
                                         <small class="form-text text-muted">
-                                            Marque esta casilla si esta es la respuesta correcta.
+                                             {{ _('Marque esta casilla si esta es la respuesta correcta.') }}
                                         </small>
                                     </div>
 
@@ -95,9 +95,9 @@
                                             href="{{ url_for('instructor_profile.edit_evaluation', evaluation_id=evaluacion.id) }}"
                                             class="btn btn-outline-secondary me-md-2"
                                         >
-                                            Cancelar
+                                             {{ _('Cancelar') }}
                                         </a>
-                                        <button type="submit" class="btn btn-primary">Actualizar Opción</button>
+                                         <button type="submit" class="btn btn-primary">{{ _('Actualizar Opción') }}</button>
                                     </div>
                                 </form>
                             </div>
@@ -107,19 +107,19 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6>Información</h6>
+                                 <h6>{{ _('Información') }}</h6>
                             </div>
                             <div class="card-body">
                                 <p class="card-text">
                                     <small class="text-muted">
-                                        Edite el texto de la opción y marque si es correcta o no.
+                                         {{ _('Edite el texto de la opción y marque si es correcta o no.') }}
                                     </small>
                                 </p>
                                 <p class="card-text">
                                     <small class="text-muted">
-                                        {% if question.type == "boolean" %} En preguntas de Verdadero/Falso, solo una opción
-                                        debe ser correcta. {% else %} En preguntas de opción múltiple, puede haber múltiples
-                                        opciones correctas. {% endif %}
+                                         {% if question.type == "boolean" %} {{ _('En preguntas de Verdadero/Falso, solo una opción
+                                         debe ser correcta.') }} {% else %} {{ _('En preguntas de opción múltiple, puede haber múltiples
+                                         opciones correctas.') }} {% endif %}
                                     </small>
                                 </p>
                             </div>

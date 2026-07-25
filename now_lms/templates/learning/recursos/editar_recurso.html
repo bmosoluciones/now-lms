@@ -4,7 +4,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Actualizar {{ _("Recurso") }}</title>
+        <title>{{ _('Actualizar') }} {{ _("Recurso") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,7 +18,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Actualizar {{ _("Recurso") }}.</h4>
+                <h4 class="pb-2 border-bottom">{{ _('Actualizar') }} {{ _("Recurso") }}.</h4>
                 <form method="post">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
@@ -37,7 +37,7 @@
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <label for="descripcion" class="form-label">{{ _('Descripcion') }}</label>
                             {{ form.descripcion(class="form-control", id="descripcion", value=recurso.descripcion) }} {{
                             render_field_errors(form.descripcion) }}
                         </div>
@@ -50,15 +50,15 @@
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">{{ _("Recurso") }} Publico</label>
+                            <label for="descripcion" class="form-label">{{ _("Recurso") }} {{ _('Publico') }}</label>
                             {{ form.publico(checked=recurso.publico) }} {{ render_field_errors(form.publico) }}
 
-                            <label for="descripcion" class="form-label">{{ _("Recurso") }} Promocionado</label>
+                            <label for="descripcion" class="form-label">{{ _("Recurso") }} {{ _('Promocionado') }}</label>
                             {{ form.promocionado(checked=recurso.promocionado) }} {{ render_field_errors(form.promocionado) }}
                         </div>
                     </div>
                     <br />
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Actualizar {{ _("Recurso") }}</button>
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">{{ _('Actualizar') }} {{ _("Recurso") }}</button>
                 </form>
             </div>
 

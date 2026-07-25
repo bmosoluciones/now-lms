@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _("Editar") }} Cupón - {{ curso.nombre }}</title>
+        <title>{{ _('Editar Cupón') }} - {{ curso.nombre }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -13,7 +13,7 @@
         <main>
             <div class="container">
                 <div class="py-5 text-center">
-                    <h1 class="h2">{{ _("Editar") }} Cupón: {{ coupon.code }}</h1>
+                    <h1 class="h2">{{ _('Editar Cupón') }}: {{ coupon.code }}</h1>
                     <p class="lead">{{ _("Curso") }}: {{ curso.nombre }}</p>
                 </div>
 
@@ -32,14 +32,14 @@
                     <div class="col-md-8">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h6>{{ _("Estado") }} Actual del Cupón</h6>
+                                <h6>{{ _('Estado Actual del Cupón') }}</h6>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <strong>Usos actuales:</strong> {{ coupon.current_uses }}
+                                        <strong>{{ _('Usos actuales:') }}</strong> {{ coupon.current_uses }}
                                         {% if coupon.max_uses %}
                                             / {{ coupon.max_uses }}
                                         {% else %}
-                                            (ilimitado)
+                                            {{ _('(ilimitado)') }}
                                         {% endif %}
                                     </div>
                                     <div class="col-md-4">
@@ -52,7 +52,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Creado:</strong> {{ coupon.timestamp.strftime('%d/%m/%Y') }}
+                                        <strong>{{ _('Creado:') }}</strong> {{ coupon.timestamp.strftime('%d/%m/%Y') }}
                                     </div>
                                 </div>
                             </div>
@@ -63,9 +63,9 @@
                             
                             <div class="row g-3">
                                 <div class="col-12">
-                                    <label for="code" class="form-label">Código del Cupón *</label>
+                                    <label for="code" class="form-label">{{ _('Código del Cupón') }} *</label>
                                     {{ form.code(class="form-control", id="code", required=True) }}
-                                    <div class="form-text">Código único para el cupón</div>
+                                    <div class="form-text">{{ _('Código único para el cupón') }}</div>
                                     {% if form.code.errors %}
                                         <div class="text-danger">
                                             {% for error in form.code.errors %}
@@ -76,7 +76,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="discount_type" class="form-label">{{ _("Tipo") }} de Descuento *</label>
+                                    <label for="discount_type" class="form-label">{{ _('Tipo de Descuento') }} *</label>
                                     {{ form.discount_type(class="form-select", id="discount_type", required=True, onchange="updateDiscountHelp()") }}
                                     {% if form.discount_type.errors %}
                                         <div class="text-danger">
@@ -88,10 +88,10 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="discount_value" class="form-label">Valor del Descuento *</label>
+                                    <label for="discount_value" class="form-label">{{ _('Valor del Descuento') }} *</label>
                                     {{ form.discount_value(class="form-control", id="discount_value", required=True, step="0.01", min="0") }}
                                     <div class="form-text" id="discount_help">
-                                        Valor del descuento
+                                        {{ _('Valor del descuento') }}
                                     </div>
                                     {% if form.discount_value.errors %}
                                         <div class="text-danger">
@@ -103,12 +103,12 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="max_uses" class="form-label">Máximo de Usos</label>
+                                    <label for="max_uses" class="form-label">{{ _('Máximo de Usos') }}</label>
                                     {{ form.max_uses(class="form-control", id="max_uses", min=coupon.current_uses if coupon.current_uses > 0 else 1) }}
                                     <div class="form-text">
-                                        Mínimo: {{ coupon.current_uses }} (usos actuales)
+                                        {{ _('Mínimo:') }} {{ coupon.current_uses }} {{ _('(usos actuales)') }}
                                         {% if not coupon.max_uses %}
-                                            <br>Actualmente: Ilimitado
+                                            <br>{{ _('Actualmente: Ilimitado') }}
                                         {% endif %}
                                     </div>
                                     {% if form.max_uses.errors %}
@@ -121,9 +121,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="expires_at" class="form-label">{{ _("Fecha") }} de Expiración</label>
+                                    <label for="expires_at" class="form-label">{{ _('Fecha de Expiración') }}</label>
                                     {{ form.expires_at(class="form-control", id="expires_at") }}
-                                    <div class="form-text">Dejar vacío si no expira</div>
+                                    <div class="form-text">{{ _('Dejar vacío si no expira') }}</div>
                                     {% if form.expires_at.errors %}
                                         <div class="text-danger">
                                             {% for error in form.expires_at.errors %}
@@ -136,8 +136,8 @@
                                 <div class="col-12">
                                     <div class="card bg-light">
                                         <div class="card-body">
-                                            <h6>{{ _("Información") }} del {{ _("Curso") }}</h6>
-                                            <p class="mb-1"><strong>{{ _("Precio") }} actual:</strong> ${{ curso.precio }} USD</p>
+                                            <h6>{{ _('Información del Curso') }}</h6>
+                                            <p class="mb-1"><strong>{{ _('Precio actual:') }}</strong> ${{ curso.precio }} USD</p>
                                             <p class="mb-0" id="preview_discount"></p>
                                         </div>
                                     </div>
@@ -151,7 +151,7 @@
                                     <i class="bi bi-arrow-left"></i> {{ _("Cancelar") }}
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-circle"></i> Actualizar Cupón
+                                    <i class="bi bi-check-circle"></i> {{ _('Actualizar Cupón') }}
                                 </button>
                             </div>
                         </form>
@@ -198,10 +198,10 @@
                     finalPrice = Math.max(0, finalPrice);
                     
                     previewElement.innerHTML = `
-                        <strong>Vista previa:</strong> 
-                        Descuento: $${discountAmount.toFixed(2)} USD | 
-                        {{ _("Precio") }} final: $${finalPrice.toFixed(2)} USD
-                        ${finalPrice === 0 ? '<span class="badge bg-success ms-2">¡GRATIS!</span>' : ''}
+                        <strong>{{ _("Vista previa:") }}</strong>
+                        {{ _("Descuento:") }} $${discountAmount.toFixed(2)} USD |
+                        {{ _("Precio") }} {{ _("final:") }} $${finalPrice.toFixed(2)} USD
+                        ${finalPrice === 0 ? '<span class="badge bg-success ms-2">{{ _("¡GRATIS!") }}</span>' : ''}
                     `;
                 } else {
                     previewElement.innerHTML = '';
