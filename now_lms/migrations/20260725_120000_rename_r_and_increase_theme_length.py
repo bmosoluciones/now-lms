@@ -28,7 +28,17 @@ def upgrade():
     if "configuracion" in inspector.get_table_names():
         columns = {col["name"]: col for col in inspector.get_columns("configuracion")}
 
-        if "r" in columns:
+        if "r" in columns and "csrf_seed" in columns:
+            # Some installations received csrf_seed from an earlier local
+            # migration while retaining the legacy r column. Preserve any
+            # values that were only stored in r, then remove the obsolete
+            # duplicate so the schema matches the model.
+            conn.execute(
+                sa.text("UPDATE configuracion SET csrf_seed = COALESCE(csrf_seed, r) WHERE r IS NOT NULL")
+            )
+            with op.batch_alter_table("configuracion") as batch_op:
+                batch_op.drop_column("r")
+        elif "r" in columns:
             # Rename r to csrf_seed
             with op.batch_alter_table("configuracion") as batch_op:
                 batch_op.alter_column("r", new_column_name="csrf_seed", existing_type=sa.LargeBinary(), existing_nullable=True)
