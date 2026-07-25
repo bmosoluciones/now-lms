@@ -505,9 +505,9 @@ def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: st
         "learning/resources_new/editar_recurso_youtube.html",
         id_curso=course_code,
         id_seccion=seccion,
-            recurso=recurso,
-            form=form,
-        )
+        recurso=recurso,
+        form=form,
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/text/new", methods=["GET", "POST"])
@@ -935,8 +935,8 @@ def nuevo_recurso_img(course_code: str, seccion: str) -> str | Response:
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     return render_template(
-            "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/img/<resource_id>/edit", methods=["GET", "POST"])

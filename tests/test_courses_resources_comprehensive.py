@@ -569,3 +569,69 @@ def test_resources_wtforms_error_handling_and_cache_invalidation(client_instruct
         assert resp_valid.status_code == 302
         # Check that invalidar_cache_curso was called with correct course_code
         mock_invalidate.assert_called_with(course_code)
+
+
+def test_resource_edit_get_requests_and_errors(client_instructor, db_session, resources_setup):
+    """Test GET requests, invalid POSTs, and OperationalErrors on all resource routes to achieve 100% patch coverage."""
+    course_code = resources_setup["course"].codigo
+    section_id = resources_setup["section"].id
+
+    # Create dummy resources of all types
+    types = ["html", "youtube", "text", "link", "pdf", "meet", "img", "mp3", "descargable"]
+    recursos = {}
+    for t in types:
+        rec = CursoRecurso(
+            curso=course_code, seccion=section_id, tipo=t,
+            nombre=f"Rec {t}", descripcion=f"Desc {t}", doc=f"f.{t}", creado_por="inst"
+        )
+        db_session.add(rec)
+        recursos[t] = rec
+    db_session.commit()
+
+    # Enable downloadable file uploads in config
+    cfg = db_session.execute(database.select(Configuracion)).scalars().first()
+    if cfg:
+        cfg.enable_file_uploads = True
+        db_session.commit()
+
+    url_prefixes = {
+        "html": "html",
+        "youtube": "youtube",
+        "text": "text",
+        "link": "link",
+        "pdf": "pdf",
+        "meet": "meet",
+        "img": "img",
+        "mp3": "audio",
+        "descargable": "descargable",
+    }
+
+    # 1. GET requests on edit pages (for form pre-population from DB)
+    for t, rec in recursos.items():
+        prefix = url_prefixes[t]
+        resp = client_instructor.get(f"/course/{course_code}/{section_id}/{prefix}/{rec.id}/edit")
+        assert resp.status_code == 200
+
+    # 2. Invalid POST requests to NEW routes (missing required fields like 'nombre')
+    invalid_data = {"nombre": "", "descripcion": "", "requerido": "required"}
+    for t in types:
+        prefix = url_prefixes[t]
+        resp = client_instructor.post(f"/course/{course_code}/{section_id}/{prefix}/new", data=invalid_data)
+        assert resp.status_code == 200
+
+    # 3. Invalid POST requests to EDIT routes (missing required fields like 'nombre')
+    for t, rec in recursos.items():
+        prefix = url_prefixes[t]
+        resp = client_instructor.post(f"/course/{course_code}/{section_id}/{prefix}/{rec.id}/edit", data=invalid_data)
+        assert resp.status_code == 200
+
+    # 4. Test OperationalError coverage on commits
+    from sqlalchemy.exc import OperationalError
+    with mock.patch("now_lms.vistas.courses.resources.database.session.commit", side_effect=OperationalError("mock", {}, Exception())):
+        # Try editing PDF with an operational error
+        resp = client_instructor.post(
+            f"/course/{course_code}/{section_id}/pdf/{recursos['pdf'].id}/edit",
+            data={"nombre": "New PDF", "descripcion": "New Desc", "requerido": "required"},
+            follow_redirects=False
+        )
+        assert resp.status_code == 302  # Redirects on error
