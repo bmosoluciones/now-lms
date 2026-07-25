@@ -242,19 +242,15 @@ def panel() -> str | Response:
 @cache.cached(timeout=180)
 def custom_page(page: str) -> str | Response:
     """Muestra páginas personalizadas por tema."""
-    THEME = get_current_theme()
+    THEME = get_current_theme() or "now_lms"
 
     if any(c in page for c in ["/", "\\", ".", "$"]):
         return redirect("/")
 
-    if THEME and THEME != "now_lms":
-        THEMES_DIRECTORY = "themes/"
-        custom_page_path = Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTORY, THEME, "custom_pages", f"{page}.j2"))
+    THEMES_DIRECTORY = "themes/"
+    custom_page_path = Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTORY, THEME, "custom_pages", f"{page}.j2"))
 
-        if custom_page_path.exists():
-            template_path = f"{THEMES_DIRECTORY}{THEME}/custom_pages/{page}.j2"
-            return render_template(template_path)
-        return redirect("/")
-
-    # Si no existe la página personalizada, redirigir al inicio
+    if custom_page_path.exists():
+        template_path = f"{THEMES_DIRECTORY}{THEME}/custom_pages/{page}.j2"
+        return render_template(template_path)
     return redirect("/")
