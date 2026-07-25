@@ -197,7 +197,7 @@ def _try_issue_certificate(section) -> None:
     from now_lms.vistas.courses import _emitir_certificado
     from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 
-    can_receive, _none = can_user_receive_certificate(section.curso, current_user.usuario)
+    can_receive, _ = can_user_receive_certificate(section.curso, current_user.usuario)
     if not can_receive:
         return
     curso = database.session.execute(database.select(Curso).filter(Curso.codigo == section.curso)).scalars().first()

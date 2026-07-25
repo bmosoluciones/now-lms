@@ -1775,7 +1775,7 @@ def _meet_calendar_details(recurso: Any, course_obj: Any):
 @resources.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics", methods=["GET"])
 @login_required
 def download_meet_calendar(course_code: str, codigo: str) -> Response:
-    recurso, _none = _meet_resource_context(course_code, codigo)
+    recurso, _ = _meet_resource_context(course_code, codigo)
 
     ics_content = _generate_meet_ics_content(recurso)
     filename = f"meet-{recurso.nombre[:20].replace(' ', '-')}-{recurso.id}.ics"

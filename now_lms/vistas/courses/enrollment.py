@@ -56,7 +56,7 @@ def _calculate_enrollment_pricing(course_obj: Curso, coupon_code: str, user: Usu
     if not coupon_code or not course_obj.pagado:
         return pricing
 
-    coupon, _none, validation_error = _validate_coupon_for_enrollment(course_obj.codigo, coupon_code, user)
+    coupon, _, validation_error = _validate_coupon_for_enrollment(course_obj.codigo, coupon_code, user)
     if coupon:
         pricing.applied_coupon = coupon
         pricing.discount_amount = coupon.calculate_discount(original_price)
