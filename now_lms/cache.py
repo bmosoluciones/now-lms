@@ -133,3 +133,80 @@ def invalidate_all_cache() -> bool:
     except Exception as e:
         log.error(f"Error invalidating cache: {e}")
         return False
+
+
+def invalidar_cache_curso(course_code: str) -> None:
+    """Invalidar cache para un curso específico y las vistas relacionadas."""
+    if CTYPE == "NullCache":
+        return
+    try:
+        keys_to_delete = [
+            # Curso view
+            f"view//course/{course_code}/view/anon",
+            f"view//course/{course_code}/view/auth",
+            # Curso admin
+            f"view//course/{course_code}/admin/anon",
+            f"view//course/{course_code}/admin/auth",
+            # Curso take
+            f"view//course/{course_code}/take/anon",
+            f"view//course/{course_code}/take/auth",
+            # Curso moderate
+            f"view//course/{course_code}/moderate/anon",
+            f"view//course/{course_code}/moderate/auth",
+            # Catalog listing / explore
+            "view//course/explore/anon",
+            "view//course/explore/auth",
+            # Homepage
+            "view///anon",
+            "view///auth",
+        ]
+        keys_to_delete.extend([
+            f"view/course/{course_code}/view/anon",
+            f"view/course/{course_code}/view/auth",
+            f"view/course/{course_code}/admin/anon",
+            f"view/course/{course_code}/admin/auth",
+            f"view/course/{course_code}/take/anon",
+            f"view/course/{course_code}/take/auth",
+            f"view/course/{course_code}/moderate/anon",
+            f"view/course/{course_code}/moderate/auth",
+            "view/course/explore/anon",
+            "view/course/explore/auth",
+            "view//anon",
+            "view//auth",
+        ])
+        for key in keys_to_delete:
+            cache.delete(key)
+        log.trace(f"Cache invalidated for course: {course_code}")
+    except Exception as e:
+        log.error(f"Error invalidating cache for course {course_code}: {e}")
+
+
+def invalidar_cache_programa(program_code: str) -> None:
+    """Invalidar cache para un programa específico y las vistas relacionadas."""
+    if CTYPE == "NullCache":
+        return
+    try:
+        keys_to_delete = [
+            # Program view
+            f"view//program/{program_code}/anon",
+            f"view//program/{program_code}/auth",
+            # Catalog listing / explore
+            "view//program/explore/anon",
+            "view//program/explore/auth",
+            # Homepage
+            "view///anon",
+            "view///auth",
+        ]
+        keys_to_delete.extend([
+            f"view/program/{program_code}/anon",
+            f"view/program/{program_code}/auth",
+            "view/program/explore/anon",
+            "view/program/explore/auth",
+            "view//anon",
+            "view//auth",
+        ])
+        for key in keys_to_delete:
+            cache.delete(key)
+        log.trace(f"Cache invalidated for program: {program_code}")
+    except Exception as e:
+        log.error(f"Error invalidating cache for program {program_code}: {e}")

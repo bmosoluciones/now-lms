@@ -83,6 +83,7 @@ from now_lms.forms import (
     CursoRecursoVideoYoutube,
     SlideShowForm,
 )
+from now_lms.cache import invalidar_cache_curso
 from now_lms.i18n import _
 from now_lms.misc import INICIO_SESION, sanitize_slide_content
 from now_lms.vistas.courses.base import (
@@ -341,7 +342,7 @@ def nuevo_recurso_html(course_code: str, seccion: str) -> str | Response:
     form = CursoRecursoExternalCode()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         config = database.session.execute(database.select(Configuracion)).scalars().first()
         html_preformateado = False
         if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
@@ -362,6 +363,7 @@ def nuevo_recurso_html(course_code: str, seccion: str) -> str | Response:
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
@@ -386,7 +388,7 @@ def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str
 
     form = CursoRecursoExternalCode()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.requerido = form.requerido.data
@@ -397,17 +399,19 @@ def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str
 
         try:
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
-    form.nombre.data = recurso.nombre
-    form.descripcion.data = recurso.descripcion
-    form.requerido.data = recurso.requerido
-    form.html_externo.data = recurso.external_code
-    form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
+    if request.method == "GET":
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+        form.html_externo.data = recurso.external_code
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
     return render_template(
         "learning/resources_new/editar_recurso_html.html",
@@ -425,7 +429,7 @@ def nuevo_recurso_youtube_video(course_code: str, seccion: str) -> str | Respons
     form = CursoRecursoVideoYoutube()
     consulta_recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((consulta_recursos or 0) + 1)
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         config = database.session.execute(database.select(Configuracion)).scalars().first()
         html_preformateado = False
         if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
@@ -446,15 +450,16 @@ def nuevo_recurso_youtube_video(course_code: str, seccion: str) -> str | Respons
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+
+    return render_template(
+        "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/youtube/<resource_id>/edit", methods=["GET", "POST"])
@@ -470,7 +475,7 @@ def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: st
 
     form = CursoRecursoVideoYoutube()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.url = form.youtube_url.data
@@ -482,22 +487,24 @@ def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: st
 
         try:
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+
+    if request.method == "GET":
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.youtube_url.data = recurso.url
         form.requerido.data = recurso.requerido
         form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
-        return render_template(
-            "learning/resources_new/editar_recurso_youtube.html",
-            id_curso=course_code,
-            id_seccion=seccion,
+    return render_template(
+        "learning/resources_new/editar_recurso_youtube.html",
+        id_curso=course_code,
+        id_seccion=seccion,
             recurso=recurso,
             form=form,
         )
@@ -510,7 +517,7 @@ def nuevo_recurso_text(course_code: str, seccion: str) -> str | Response:
     form = CursoRecursoArchivoText()
     consulta_recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((consulta_recursos or 0) + 1)
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         config = database.session.execute(database.select(Configuracion)).scalars().first()
         html_preformateado = False
         if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
@@ -533,15 +540,16 @@ def nuevo_recurso_text(course_code: str, seccion: str) -> str | Response:
             nuevo_recurso_.creado_por = current_user.usuario
             database.session.add(nuevo_recurso_)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+
+    return render_template(
+        "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/text/<resource_id>/edit", methods=["GET", "POST"])
@@ -557,7 +565,7 @@ def editar_recurso_text(course_code: str, seccion: str, resource_id: str) -> str
 
     form = CursoRecursoArchivoText()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.requerido = form.requerido.data
@@ -573,25 +581,27 @@ def editar_recurso_text(course_code: str, seccion: str, resource_id: str) -> str
 
         try:
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+
+    if request.method == "GET":
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
         form.editor.data = recurso.text
         form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
-        return render_template(
-            "learning/resources_new/editar_recurso_text.html",
-            id_curso=course_code,
-            id_seccion=seccion,
-            recurso=recurso,
-            form=form,
-        )
+    return render_template(
+        "learning/resources_new/editar_recurso_text.html",
+        id_curso=course_code,
+        id_seccion=seccion,
+        recurso=recurso,
+        form=form,
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/link/new", methods=["GET", "POST"])
@@ -601,7 +611,7 @@ def nuevo_recurso_link(course_code: str, seccion: str) -> str | Response:
     form = CursoRecursoExternalLink()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         config = database.session.execute(database.select(Configuracion)).scalars().first()
         html_preformateado = False
         if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
@@ -622,15 +632,16 @@ def nuevo_recurso_link(course_code: str, seccion: str) -> str | Response:
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+
+    return render_template(
+        "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/link/<resource_id>/edit", methods=["GET", "POST"])
@@ -646,7 +657,7 @@ def editar_recurso_link(course_code: str, seccion: str, resource_id: str) -> str
 
     form = CursoRecursoExternalLink()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.requerido = form.requerido.data
@@ -661,25 +672,27 @@ def editar_recurso_link(course_code: str, seccion: str, resource_id: str) -> str
 
         try:
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+
+    if request.method == "GET":
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
         form.url.data = recurso.url
         form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
-        return render_template(
-            "learning/resources_new/editar_recurso_link.html",
-            id_curso=course_code,
-            id_seccion=seccion,
-            recurso=recurso,
-            form=form,
-        )
+    return render_template(
+        "learning/resources_new/editar_recurso_link.html",
+        id_curso=course_code,
+        id_seccion=seccion,
+        recurso=recurso,
+        form=form,
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
@@ -689,7 +702,7 @@ def nuevo_recurso_pdf(course_code: str, seccion: str) -> str | Response:
     form = CursoRecursoArchivoPDF()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
-    if (form.validate_on_submit() or request.method == "POST") and "pdf" in request.files:
+    if form.validate_on_submit() and "pdf" in request.files:
         config = database.session.execute(database.select(Configuracion)).scalars().first()
         html_preformateado = False
         if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
@@ -713,15 +726,16 @@ def nuevo_recurso_pdf(course_code: str, seccion: str) -> str | Response:
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+
+    return render_template(
+        "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/pdf/<resource_id>/edit", methods=["GET", "POST"])
@@ -737,7 +751,7 @@ def editar_recurso_pdf(course_code: str, seccion: str, resource_id: str) -> str 
 
     form = CursoRecursoArchivoPDF()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.requerido = form.requerido.data
@@ -753,24 +767,26 @@ def editar_recurso_pdf(course_code: str, seccion: str, resource_id: str) -> str 
 
         try:
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+
+    if request.method == "GET":
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
         form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
-        return render_template(
-            "learning/resources_new/editar_recurso_pdf.html",
-            id_curso=course_code,
-            id_seccion=seccion,
-            recurso=recurso,
-            form=form,
-        )
+    return render_template(
+        "learning/resources_new/editar_recurso_pdf.html",
+        id_curso=course_code,
+        id_seccion=seccion,
+        recurso=recurso,
+        form=form,
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/meet/new", methods=["GET", "POST"])
@@ -780,7 +796,7 @@ def nuevo_recurso_meet(course_code: str, seccion: str) -> str | Response:
     form = CursoRecursoMeet()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         config = database.session.execute(database.select(Configuracion)).scalars().first()
         html_preformateado = False
         if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
@@ -805,15 +821,16 @@ def nuevo_recurso_meet(course_code: str, seccion: str) -> str | Response:
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+
+    return render_template(
+        "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/meet/<resource_id>/edit", methods=["GET", "POST"])
@@ -829,7 +846,7 @@ def editar_recurso_meet(course_code: str, seccion: str, resource_id: str) -> str
 
     form = CursoRecursoMeet()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.requerido = form.requerido.data
@@ -849,12 +866,14 @@ def editar_recurso_meet(course_code: str, seccion: str, resource_id: str) -> str
         try:
             database.session.commit()
             update_meet_resource_events(resource_id)
+            invalidar_cache_curso(course_code)
             flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+
+    if request.method == "GET":
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
@@ -865,13 +884,13 @@ def editar_recurso_meet(course_code: str, seccion: str, resource_id: str) -> str
         form.notes.data = recurso.notes
         form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
-        return render_template(
-            "learning/resources_new/editar_recurso_meet.html",
-            id_curso=course_code,
-            id_seccion=seccion,
-            recurso=recurso,
-            form=form,
-        )
+    return render_template(
+        "learning/resources_new/editar_recurso_meet.html",
+        id_curso=course_code,
+        id_seccion=seccion,
+        recurso=recurso,
+        form=form,
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/img/new", methods=["GET", "POST"])
@@ -881,7 +900,7 @@ def nuevo_recurso_img(course_code: str, seccion: str) -> str | Response:
     form = CursoRecursoArchivoImagen()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
-    if (form.validate_on_submit() or request.method == "POST") and "img" in request.files:
+    if form.validate_on_submit() and "img" in request.files:
         config = database.session.execute(database.select(Configuracion)).scalars().first()
         html_preformateado = False
         if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
@@ -908,13 +927,14 @@ def nuevo_recurso_img(course_code: str, seccion: str) -> str | Response:
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
-        return render_template(
+
+    return render_template(
             "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
         )
 
@@ -932,7 +952,7 @@ def editar_recurso_img(course_code: str, seccion: str, resource_id: str) -> str 
 
     form = CursoRecursoArchivoImagen()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.requerido = form.requerido.data
@@ -950,24 +970,26 @@ def editar_recurso_img(course_code: str, seccion: str, resource_id: str) -> str 
 
         try:
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+
+    if request.method == "GET":
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
         form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
-        return render_template(
-            "learning/resources_new/editar_recurso_img.html",
-            id_curso=course_code,
-            id_seccion=seccion,
-            recurso=recurso,
-            form=form,
-        )
+    return render_template(
+        "learning/resources_new/editar_recurso_img.html",
+        id_curso=course_code,
+        id_seccion=seccion,
+        recurso=recurso,
+        form=form,
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/audio/new", methods=["GET", "POST"])
@@ -978,7 +1000,7 @@ def nuevo_recurso_audio(course_code: str, seccion: str) -> str | Response:
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
 
-    if not ((form.validate_on_submit() or request.method == "POST") and "audio" in request.files):
+    if not (form.validate_on_submit() and "audio" in request.files):
         return render_template(
             "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
         )
@@ -1008,6 +1030,7 @@ def nuevo_recurso_audio(course_code: str, seccion: str) -> str | Response:
     try:
         database.session.add(nuevo_recurso_)
         database.session.commit()
+        invalidar_cache_curso(course_code)
         flash("RECURSO_AGREGADO", "success")
     except OperationalError:
         flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -1027,11 +1050,12 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
 
     form = CursoRecursoArchivoAudio()
 
-    if not (form.validate_on_submit() or request.method == "POST"):
-        form.nombre.data = recurso.nombre
-        form.descripcion.data = recurso.descripcion
-        form.requerido.data = recurso.requerido
-        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
+    if not form.validate_on_submit():
+        if request.method == "GET":
+            form.nombre.data = recurso.nombre
+            form.descripcion.data = recurso.descripcion
+            form.requerido.data = recurso.requerido
+            form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
         return render_template(
             "learning/resources_new/editar_recurso_mp3.html",
             id_curso=course_code,
@@ -1064,6 +1088,7 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
 
     try:
         database.session.commit()
+        invalidar_cache_curso(course_code)
         flash(MSG_RECURSO_ACTUALIZADO, "success")
     except OperationalError:
         flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
@@ -1083,7 +1108,7 @@ def nuevo_recurso_descargable(course_code: str, seccion: str) -> str | Response:
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
 
-    if (form.validate_on_submit() or request.method == "POST") and "archivo" in request.files:
+    if form.validate_on_submit() and "archivo" in request.files:
         uploaded_file = request.files["archivo"]
 
         is_valid, error_msg = validate_downloadable_file(uploaded_file, site_config.max_file_size)
@@ -1115,6 +1140,7 @@ def nuevo_recurso_descargable(course_code: str, seccion: str) -> str | Response:
 
             database.session.add(nuevo_recurso_)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
@@ -1160,7 +1186,7 @@ def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str)
         abort(404)
     form = CursoRecursoArchivoDescargable()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         try:
             _update_downloadable_file(recurso, course_code, site_config)
             recurso.nombre = form.nombre.data
@@ -1168,6 +1194,7 @@ def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str)
             recurso.requerido = form.requerido.data
             recurso.modificado_por = current_user.usuario
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except ValueError as exc:
@@ -1186,19 +1213,20 @@ def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str)
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+
+    if request.method == "GET":
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
 
-        return render_template(
-            "learning/resources_new/editar_recurso_descargable.html",
-            id_curso=course_code,
-            id_seccion=seccion,
-            recurso=recurso,
-            form=form,
-            max_file_size=site_config.max_file_size,
-        )
+    return render_template(
+        "learning/resources_new/editar_recurso_descargable.html",
+        id_curso=course_code,
+        id_seccion=seccion,
+        recurso=recurso,
+        form=form,
+        max_file_size=site_config.max_file_size,
+    )
 
 
 # Slideshow

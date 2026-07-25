@@ -537,3 +537,35 @@ def test_crud_all_resource_types(client_instructor, db_session, resources_setup)
     assert resp_post_link.status_code == 302
     db_session.expire(rec_link)
     assert rec_link.nombre == "Web Link Updated"
+
+
+def test_resources_wtforms_error_handling_and_cache_invalidation(client_instructor, db_session, resources_setup):
+    """Test that invalid form submissions are handled gracefully without 500 errors and cache is invalidated on success."""
+    course_code = resources_setup["course"].codigo
+    section_id = resources_setup["section"].id
+
+    # 1. Invalid submission (missing required 'nombre' and 'descripcion')
+    invalid_data = {
+        "nombre": "",
+        "descripcion": "",
+        "requerido": "required",
+        "editor": "# Hello",
+    }
+    # Send post to create new text resource
+    resp = client_instructor.post(f"/course/{course_code}/{section_id}/text/new", data=invalid_data)
+    # It should not return 500! It must return 200 with the template re-rendered
+    assert resp.status_code == 200
+    assert b"Markdown" in resp.data  # Assures the editor form is shown again with errors
+
+    # 2. Valid submission with cache invalidation check
+    valid_data = {
+        "nombre": "Valid Text Resource",
+        "descripcion": "Valid description",
+        "requerido": "required",
+        "editor": "# Hello world",
+    }
+    with mock.patch("now_lms.vistas.courses.resources.invalidar_cache_curso") as mock_invalidate:
+        resp_valid = client_instructor.post(f"/course/{course_code}/{section_id}/text/new", data=valid_data, follow_redirects=False)
+        assert resp_valid.status_code == 302
+        # Check that invalidar_cache_curso was called with correct course_code
+        mock_invalidate.assert_called_with(course_code)

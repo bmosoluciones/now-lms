@@ -74,6 +74,7 @@ from now_lms.forms import (
 from now_lms.i18n import _
 from now_lms.logs import log
 from now_lms.misc import CURSO_NIVEL, TIPOS_RECURSOS
+from now_lms.cache import invalidar_cache_curso
 from now_lms.themes import get_course_list_template, get_course_view_template
 from now_lms.vistas.courses.helpers import markdown2html, _crear_indice_avance_curso
 
@@ -397,6 +398,7 @@ def nuevo_curso() -> str | Response:
         asignar_curso_a_instructor(form.codigo.data, usuario_id=current_user.usuario)
         _save_course_logo(nuevo_curso_)
         database.session.commit()
+        invalidar_cache_curso(form.codigo.data)
         flash("Curso creado exitosamente.", "success")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
     except OperationalError:
@@ -426,6 +428,9 @@ def editar_curso(course_code: str) -> str | Response:
                 _update_course_taxonomy(course_code, form.codigo.data, form)
             database.session.commit()
             _save_course_logo(curso_a_editar)
+            invalidar_cache_curso(course_code)
+            if course_code != form.codigo.data:
+                invalidar_cache_curso(form.codigo.data)
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
         except OperationalError:
@@ -463,6 +468,7 @@ def nuevo_seccion(course_code: str) -> str | Response:
             nueva_seccion.creado_por = current_user.usuario
             database.session.add(nueva_seccion)
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash("Sección agregada correctamente al curso.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
@@ -490,6 +496,7 @@ def editar_seccion(course_code: str, seccion: str) -> str | Response:
             seccion_a_editar.modificado = datetime.now(timezone.utc)
             seccion_a_editar.modificado_por = current_user.usuario
             database.session.commit()
+            invalidar_cache_curso(course_code)
             flash("Sección modificada correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:

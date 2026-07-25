@@ -15,6 +15,7 @@ from werkzeug.wrappers import Response
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
+from now_lms.cache import invalidar_cache_curso
 from now_lms.auth import perfil_requerido
 from now_lms.bi import (
     cambia_curso_publico,
@@ -45,6 +46,7 @@ def incrementar_indice_seccion(course_code: str, indice: str) -> Response:
         indice=indice_int,
         task="increment",
     )
+    invalidar_cache_curso(course_code)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
 
@@ -63,6 +65,7 @@ def reducir_indice_seccion(course_code: str, indice: str) -> Response:
         indice=indice_int,
         task="decrement",
     )
+    invalidar_cache_curso(course_code)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
 
@@ -81,6 +84,7 @@ def modificar_orden_recurso(cource_code: str, seccion_id: str, resource_index: s
         indice=indice_int,
         task=task,
     )
+    invalidar_cache_curso(cource_code)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=cource_code))
 
 
@@ -92,6 +96,7 @@ def eliminar_recurso(curso_code: str, seccion: str, id_: str) -> Response:
     database.session.execute(delete(CursoRecurso).where(CursoRecurso.id == id_))
     safe_commit()
     reorganiza_indice_seccion(seccion=seccion)
+    invalidar_cache_curso(curso_code)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curso_code))
 
 
@@ -103,6 +108,7 @@ def eliminar_seccion(curso_id: str, id_: str) -> Response:
     database.session.execute(delete(CursoSeccion).where(CursoSeccion.id == id_))
     safe_commit()
     reorganiza_indice_curso(codigo_curso=curso_id)
+    invalidar_cache_curso(curso_id)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curso_id))
 
 
@@ -114,6 +120,7 @@ def elimina_logo(course_code: str) -> Response:
     from now_lms.db.tools import elimina_logo_perzonalizado_curso
 
     elimina_logo_perzonalizado_curso(course_code=course_code)
+    invalidar_cache_curso(course_code)
     return redirect(url_for("course.editar_curso", course_code=course_code))
 
 
@@ -125,6 +132,7 @@ def cambiar_estatus_curso() -> Response:
     cambia_estado_curso_por_id(
         request.args.get("curse"), nuevo_estado=request.args.get("status"), usuario=request.args.get("usuario")
     )
+    invalidar_cache_curso(request.args.get("curse"))
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=request.args.get("curse")))
 
 
@@ -136,6 +144,7 @@ def cambiar_curso_publico() -> Response:
     cambia_curso_publico(
         id_curso=request.args.get("curse"),
     )
+    invalidar_cache_curso(request.args.get("curse"))
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=request.args.get("curse")))
 
 
@@ -147,4 +156,5 @@ def cambiar_seccion_publico() -> Response:
     cambia_seccion_publico(
         codigo=request.args.get("codigo"),
     )
+    invalidar_cache_curso(request.args.get("course_code"))
     return redirect(url_for(VISTA_CURSOS, course_code=request.args.get("course_code")))
