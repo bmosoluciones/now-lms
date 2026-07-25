@@ -9,19 +9,35 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.3.0] - 2026-07-25
+
 ### Added:
  - Payment receipt generation: automatically sends a beautiful HTML receipt via email when PayPal payments are completed (if SMTP is configured).
  - Student payment history: a new `/payments` dashboard where students can view their transaction history, and download a simple PDF copy of their receipt using Weasyprint.
- - i18n and l10n improvements: wrapped untranslated strings in `gettext()` across all views and templates, added missing Jinja2 `{{ _('...') }}` wrappers in 8 instructor evaluation templates, fixed syntax errors in multi-line translatable strings, resolved fuzzy/wrong English translations in `.po` files, and completed missing translation entries.
+ - i18n and l10n improvements: wrapped untranslated strings in `gettext()` across all views and templates, completed missing EN/PT_BR translations.
+ - Comprehensive form testing suite (`tests/test_forms_comprehensive.py`).
+ - Alembic migration validation test (`tests/test_alembic_upgrade.py`).
+ - `pool_pre_ping` enabled on SQLAlchemy engine options.
+ - `invalidar_cache_curso()` and `invalidar_cache_programa()` functions for targeted cache invalidation.
 
 ### Changed:
- - `mysql-connector-python` is now the recommended driver for MySQL/MariaDB connections (`DATABASE_URL` with `mysql://` is corrected to `mysql+mysqlconnector://`). It is already included as a first-level dependency and in the Docker image.
- - Test suite: the pytest fixtures now create an isolated Flask application per test, which stabilizes the test run across SQLite, MySQL and PostgreSQL. When `DATABASE_URL` is not defined, tests always use an in-memory SQLite database.
+ - `mysql-connector-python` is now the recommended driver for MySQL/MariaDB connections (`DATABASE_URL` with `mysql://` is corrected to `mysql+mysqlconnector://`).
+ - Test suite: pytest fixtures now create an isolated Flask application per test for multi-database stability.
+ - Increased Programa.nombre column length from 20 to 150.
+ - Increased Style.theme column length from 15 to 40.
+ - Renamed Configuracion.r column to csrf_seed.
+ - Universal cache invalidation for courses and programs on mutations.
+ - Prevent caching of authenticated routes with CSRF protection.
+ - Black formatting applied to recently modified files.
 
 ### Fixed:
  - Apply the database URL driver correction also when `DATABASE_URL` is overridden via environment variable in the application factory.
- - Fixed foreign key violation when creating certificate templates: the `usuario` field now correctly stores the username instead of the user ULID. This bug went unnoticed with SQLite (which does not enforce foreign keys by default) but failed on MySQL and PostgreSQL.
+ - Fixed foreign key violation when creating certificate templates: the `usuario` field now correctly stores the username instead of the user ULID.
  - Fixed several tests that assigned the user ULID to foreign keys that reference `usuario.usuario` (username).
+ - Fixed WTForms validation flow replacing `form.validate_on_submit() or request.method == "POST"` with strict `form.validate_on_submit()` in course, section, resource and program forms.
+ - Fixed MasterClassForm template validation bypass when template ID was empty due to WTForms Optional validator.
+ - Fixed Pago.monto precision/scale to prevent MySQL rounding (Numeric(10,2)).
+ - Fixed certificate foreign key storing username in Certificado.usuario, Certificacion.usuario, ProgramaEstudiante.usuario and BlogPost.author_id.
 
 ## [1.2.4] - 2026-05-12
 
