@@ -12,6 +12,7 @@ Each theme is located in the `now_lms/templates/themes/` directory and follows t
 
 ```
 now_lms/templates/themes/your_theme_name/
+├── theme.yml            # Theme metadata (required for validation)
 ├── base.j2              # Base template structure
 ├── header.j2            # HTML head tags and metadata
 ├── js.j2                # JavaScript libraries and scripts
@@ -23,6 +24,20 @@ now_lms/templates/themes/your_theme_name/
 │   └── home.j2          # Custom home page (most common override)
 └── README.md            # Theme documentation
 ```
+
+### Theme Validation
+
+A directory is only recognized as a valid theme if it contains a `theme.yml` file. The system checks for this file when listing available themes in the admin settings panel. Directories without `theme.yml` are ignored, which prevents issues with stray files or incomplete theme directories.
+
+The `theme.yml` file serves as a theme marker. Its content is not validated beyond existence, but it must be present for the theme to appear in the theme selector. Example:
+
+```yaml
+name: my_custom_theme
+```
+
+### Default Theme Fallback
+
+If the active theme is not set or is invalid, the system automatically falls back to the `now_lms` default theme. This ensures the application always has a working theme, even if the database configuration is missing or corrupted.
 
 ### Static Assets
 
@@ -96,7 +111,15 @@ Create a new directory in `now_lms/templates/themes/` with your theme name:
 mkdir now_lms/templates/themes/my_custom_theme
 ```
 
-### Step 2: Copy Base Files
+### Step 2: Create Theme Metadata
+
+Create a `theme.yml` file in your theme directory. This file is **required** for the theme to be recognized by the system:
+
+```bash
+echo "name: my_custom_theme" > now_lms/templates/themes/my_custom_theme/theme.yml
+```
+
+### Step 3: Copy Base Files
 
 Start by copying files from an existing theme as a template:
 
@@ -104,7 +127,7 @@ Start by copying files from an existing theme as a template:
 cp -r now_lms/templates/themes/now_lms/* now_lms/templates/themes/my_custom_theme/
 ```
 
-### Step 3: Customize Theme Components
+### Step 4: Customize Theme Components
 
 #### Header Component (`header.j2`)
 
@@ -651,9 +674,19 @@ The theming system includes automatic cache invalidation. When you change the ac
 ### Theme Not Loading
 
 1. Verify theme directory structure
-2. Check file permissions
-3. Clear browser cache
-4. Restart the application if needed
+2. Ensure `theme.yml` exists in the theme directory
+3. Check file permissions
+4. Clear browser cache
+5. Restart the application if needed
+
+### Theme Not Appearing in Admin Panel
+
+If your custom theme does not appear in the theme selector at `/setting/theming`:
+
+1. Verify the theme directory is under `now_lms/templates/themes/`
+2. Confirm `theme.yml` exists inside the theme directory
+3. Check that the directory is not a file (e.g., `__pycache__`)
+4. Restart the application to reload the theme list
 
 ### Styling Issues
 
