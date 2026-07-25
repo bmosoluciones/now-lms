@@ -434,6 +434,31 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Role Access -->
+                                    <div class="col-md-6">
+                                        <div class="card border-secondary border-opacity-25">
+                                            <div class="card-body p-3">
+                                                <h6 class="card-title text-secondary">
+                                                    <i class="bi bi-person-badge me-2"></i>{{ _('Acceso a Roles') }}
+                                                </h6>
+                                                <div class="d-grid gap-1">
+                                                    <a
+                                                        href="{{ url_for('instructor_profile.pagina_instructor') }}"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                    >
+                                                        <i class="bi bi-mortarboard me-1"></i>{{ _('Panel de Instructor') }}
+                                                    </a>
+                                                    <a
+                                                        href="{{ url_for('moderator_profile.pagina_moderador') }}"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                    >
+                                                        <i class="bi bi-shield me-1"></i>{{ _('Panel de Moderador') }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
