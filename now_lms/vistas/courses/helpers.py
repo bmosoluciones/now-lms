@@ -56,16 +56,16 @@ def _validate_course_code(course_code: str) -> None:
 def validate_downloadable_file(file, max_size_mb: int = 1) -> tuple[bool, str]:
     """Valida archivo subido para recursos descargables."""
     if not file or not getattr(file, "filename", None):
-        return False, gettext("No se ha seleccionado ningún archivo")
+        return False, "No se ha seleccionado ningún archivo"
 
     filename = str(file.filename or "").lower()
     file_ext = splitext(filename)[1].lower()
 
     if file_ext in DANGEROUS_FILE_EXTENSIONS:
-        return False, gettext("Tipo de archivo no permitido por seguridad: %(ext)s", ext=file_ext)
+        return False, f"Tipo de archivo no permitido por seguridad: {file_ext}"
 
     if file_ext not in SAFE_FILE_EXTENSIONS:
-        return False, gettext("Tipo de archivo no soportado: %(ext)s", ext=file_ext)
+        return False, f"Tipo de archivo no soportado: {file_ext}"
 
     # Calcular tamaño en bytes
     try:
@@ -78,7 +78,7 @@ def validate_downloadable_file(file, max_size_mb: int = 1) -> tuple[bool, str]:
 
     max_size_bytes = max_size_mb * 1024 * 1024
     if file_size > max_size_bytes:
-        return False, gettext("El archivo es demasiado grande. Máximo permitido: %(size)sMB", size=max_size_mb)
+        return False, f"El archivo es demasiado grande. Máximo permitido: {max_size_mb}MB"
 
     return True, ""
 
@@ -187,7 +187,9 @@ def _crear_indice_avance_curso(course_code: str) -> None:
     if recursos:
         for recurso in recursos:
             existing = database.session.execute(
-                database.select(CursoRecursoAvance).filter_by(usuario=usuario, curso=course_code, recurso=recurso.id)
+                database.select(CursoRecursoAvance).filter_by(
+                    usuario=usuario, curso=course_code, recurso=recurso.id
+                )
             ).scalar_one_or_none()
             if existing:
                 continue

@@ -126,7 +126,7 @@
                     <input type="hidden" name="slide_{{ loop.index0 }}_order" value="{{ slide.order }}">
 
                     <div class="mb-3">
-                      <label class="form-label">{{ _('Título de la Diapositiva') }}</label>
+                      <label class="form-label">Título de la Diapositiva</label>
                       <input type="text" class="form-control" name="slide_{{ loop.index0 }}_title"
                         value="{{ slide.title }}" required>
                     </div>
@@ -196,7 +196,6 @@
 
   <script>
     let slideCount = {{ slides| length }};
-    const slideLabel = {{ _('Diapositiva') }};
 
     function addSlide() {
       const container = document.getElementById('slides-container');
@@ -205,7 +204,7 @@
       const slideHtml = `
                     <div class="slide-editor" data-slide-index="${slideIndex}">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="mb-0">${slideLabel} ${slideIndex + 1}</h6>
+                            <h6 class="mb-0">Diapositiva ${slideIndex + 1}</h6>
                             <div>
                                 <button type="button" class="btn btn-sm btn-outline-primary me-1" onclick="previewSlide(${slideIndex})">
                                     <i class="bi bi-eye"></i>
@@ -221,14 +220,14 @@
 
                         <div class="mb-3">
                       <label class="form-label">{{ _('Título de la Diapositiva') }}</label>
-                            <input type="text" class="form-control" name="slide_${slideIndex}_title" placeholder="{{ _('Título de la diapositiva') }}" required>
+                            <input type="text" class="form-control" name="slide_${slideIndex}_title" placeholder="Título de la diapositiva" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">{{ _('Contenido HTML') }}</label>
-                            <textarea class="form-control slide-content-editor" name="slide_${slideIndex}_content" rows="8" placeholder="{{ _('<h2>Título</h2><p>Tu contenido aquí...</p>') }}" required></textarea>
+                            <label class="form-label">Contenido HTML</label>
+                            <textarea class="form-control slide-content-editor" name="slide_${slideIndex}_content" rows="8" placeholder="<h2>Título</h2><p>Tu contenido aquí...</p>" required></textarea>
                             <div class="form-text">
-                                {{ _('Etiquetas permitidas:') }} &lt;p&gt;, &lt;b&gt;, &lt;i&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, &lt;br&gt;, &lt;img&gt;, &lt;h1&gt;-&lt;h4&gt;
+                                Etiquetas permitidas: &lt;p&gt;, &lt;b&gt;, &lt;i&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, &lt;br&gt;, &lt;img&gt;, &lt;h1&gt;-&lt;h4&gt;
                             </div>
                         </div>
 
@@ -251,7 +250,7 @@
     }
 
     function removeSlide(index) {
-      if (confirm('{{ _("¿Estás seguro de que quieres eliminar esta diapositiva?") }}')) {
+      if (confirm('¿Estás seguro de que quieres eliminar esta diapositiva?')) {
         const slide = document.querySelector(`[data-slide-index="${index}"]`);
         if (slide) {
           slide.remove();
@@ -279,7 +278,7 @@
 
       slides.forEach((slide, index) => {
         slide.setAttribute('data-slide-index', index);
-        slide.querySelector('h6').textContent = `${slideLabel} ${index + 1}`;
+        slide.querySelector('h6').textContent = `Diapositiva ${index + 1}`;
         slide.querySelector('[name$="_order"]').value = index + 1;
       });
     }

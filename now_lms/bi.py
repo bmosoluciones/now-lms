@@ -77,7 +77,10 @@ def reorganiza_indice_curso(codigo_curso: str | None = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
     secciones = (
         database.session.execute(
-            database.select(CursoSeccion).filter_by(curso=codigo_curso).order_by(CursoSeccion.indice).with_for_update()
+            database.select(CursoSeccion)
+            .filter_by(curso=codigo_curso)
+            .order_by(CursoSeccion.indice)
+            .with_for_update()
         )
         .scalars()
         .all()

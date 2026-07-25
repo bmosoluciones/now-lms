@@ -129,8 +129,6 @@
 
         <script>
             const coursePrice = {{ curso.precio }};
-            const msgPercentHelp = '{{ _("Ingrese el porcentaje de descuento (0-100)") }}';
-            const msgFixedHelp = '{{ _("Ingrese la cantidad fija de descuento (máximo") }}';
             
             function updateDiscountHelp() {
                 const discountType = document.getElementById('discount_type').value;
@@ -138,10 +136,10 @@
                 const discountValue = document.getElementById('discount_value');
                 
                 if (discountType === 'percentage') {
-                    helpText.textContent = msgPercentHelp;
+                    helpText.textContent = 'Ingrese el porcentaje de descuento (0-100)';
                     discountValue.max = '100';
                 } else {
-                    helpText.textContent = `${msgFixedHelp} $${coursePrice})`;
+                    helpText.textContent = `Ingrese la cantidad fija de descuento (máximo $${coursePrice})`;
                     discountValue.max = coursePrice;
                 }
                 updatePreview();

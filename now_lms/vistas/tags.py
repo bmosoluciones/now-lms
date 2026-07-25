@@ -56,7 +56,7 @@ def new_tag() -> str | Response:
         database.session.add(etiqueta)
         try:
             database.session.commit()
-            flash(gettext("Nueva etiqueta creada."), "success")
+            flash("Nueva etiqueta creada.", "successs")
         except OperationalError:
             database.session.rollback()
             flash("Hubo un error al crear la etiqueta.", "warning")

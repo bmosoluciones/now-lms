@@ -85,11 +85,11 @@ def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: b
         response = requests.post(token_url, headers=headers, data=data, auth=(client_id, client_secret), timeout=20)
 
         if response.status_code == 200:
-            return {"valid": True, "message": gettext("Configuración de PayPal válida")}
-        return {"valid": False, "message": gettext("Error de configuración de PayPal: %(error)s", error=response.text)}
+            return {"valid": True, "message": "Configuración de PayPal válida"}
+        return {"valid": False, "message": f"Error de configuración de PayPal: {response.text}"}
 
     except Exception as e:
-        return {"valid": False, "message": gettext("Error al validar configuración: %(error)s", error=str(e))}
+        return {"valid": False, "message": f"Error al validar configuración: {str(e)}"}
 
 
 def _paypal_credentials(config_data, descifrar_secreto) -> tuple[str, str] | None:
@@ -320,7 +320,7 @@ def _payment_record(payment_data: dict[str, object]) -> tuple[Any, tuple[FlaskRe
                 jsonify(
                     {
                         "success": True,
-                        "message": gettext("Pago ya procesado anteriormente"),
+                        "message": "Pago ya procesado anteriormente",
                         "redirect_url": url_for("program.tomar_programa", codigo=course_code),
                     }
                 ),
@@ -351,7 +351,7 @@ def _payment_record(payment_data: dict[str, object]) -> tuple[Any, tuple[FlaskRe
                 jsonify(
                     {
                         "success": True,
-                        "message": gettext("Pago ya procesado anteriormente"),
+                        "message": "Pago ya procesado anteriormente",
                         "redirect_url": url_for("course.tomar_curso", course_code=course_code),
                     }
                 ),
@@ -422,7 +422,9 @@ def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
         coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
         coupon = (
             database.session.execute(
-                database.select(Coupon).filter_by(course_id=course_code, code=coupon_code).with_for_update()
+                database.select(Coupon)
+                .filter_by(course_id=course_code, code=coupon_code)
+                .with_for_update()
             )
             .scalars()
             .first()
@@ -499,7 +501,7 @@ def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskRe
     except OperationalError:
         database.session.rollback()
         logging.exception("Database error during enrollment")
-        return jsonify({"success": False, "error": gettext("Error en la base de datos. Por favor contacte soporte.")}), 500
+        return jsonify({"success": False, "error": "Error en la base de datos. Por favor contacte soporte."}), 500
 
     _update_coupon_usage(pago, course_code, order_id)
 
@@ -520,7 +522,7 @@ def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskRe
         jsonify(
             {
                 "success": True,
-                "message": gettext("Pago completado exitosamente"),
+                "message": "Pago completado exitosamente",
                 "redirect_url": redirect_url,
             }
         ),

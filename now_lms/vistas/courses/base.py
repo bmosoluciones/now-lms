@@ -80,13 +80,13 @@ from now_lms.vistas.courses.helpers import markdown2html, _crear_indice_avance_c
 # ---------------------------------------------------------------------------------------
 # Gestión de cursos.
 # ---------------------------------------------------------------------------------------
-RECURSO_AGREGADO = _("Recurso agregado correctamente al curso.")
-ERROR_AL_AGREGAR_CURSO = _("Hubo en error al crear el recurso.")
+RECURSO_AGREGADO = "Recurso agregado correctamente al curso."
+ERROR_AL_AGREGAR_CURSO = "Hubo en error al crear el recurso."
 
 VISTA_CURSOS = "course.curso"
 VISTA_ADMINISTRAR_CURSO = "course.administrar_curso"
-COULD_NOT_UPDATE_PROFILE_PHOTO = _("Could not update profile photo.")
-NO_AUTORIZADO_MSG = _("No se encuentra autorizado a acceder al recurso solicitado.")
+COULD_NOT_UPDATE_PROFILE_PHOTO = "Could not update profile photo."
+NO_AUTORIZADO_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
 
 # ---------------------------------------------------------------------------------------
 # Template constants
@@ -624,7 +624,7 @@ def _persist_admin_enrollment(course_code: str, curso, student, bypass_payment: 
         estado="completed",
         metodo="admin_enrollment",
         monto=0 if bypass_payment else curso.precio,
-        descripcion=gettext("Inscripción administrativa por %(user)s", user=current_user.usuario),
+        descripcion=f"Inscripción administrativa por {current_user.usuario}",
         audit=not bypass_payment and curso.pagado,
         nombre=student.nombre,
         apellido=student.apellido,
@@ -633,7 +633,7 @@ def _persist_admin_enrollment(course_code: str, curso, student, bypass_payment: 
         creado_por=current_user.usuario,
     )
     if notes:
-        pago.descripcion += " - " + gettext("Notas: %(notes)s", notes=notes)
+        pago.descripcion += f" - Notas: {notes}"
     database.session.add(pago)
     database.session.flush()
     enrollment = EstudianteCurso(
@@ -666,21 +666,21 @@ def admin_course_enrollment(course_code: str) -> str | Response:
         notes = form.notes.data.strip() if form.notes.data else ""
         usuario_existe, existing_enrollment = _enrollment_student(course_code, student_username)
         if not usuario_existe:
-            flash(_("El usuario '%(username)s' no existe en el sistema.", username=student_username), "error")
+            flash(f"El usuario '{student_username}' no existe en el sistema.", "error")
             return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
         if existing_enrollment:
-            flash(_("El estudiante '%(username)s' ya está inscrito en este curso.", username=student_username), "warning")
+            flash(f"El estudiante '{student_username}' ya está inscrito en este curso.", "warning")
             return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
         try:
             _persist_admin_enrollment(course_code, _curso, usuario_existe, bypass_payment, notes)
 
-            flash(_("Estudiante '%(username)s' inscrito exitosamente en el curso '%(course)s'.", username=student_username, course=_curso.nombre), "success")
+            flash(f"Estudiante '{student_username}' inscrito exitosamente en el curso '{_curso.nombre}'.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
-            flash(_("Error al inscribir al estudiante: %(error)s", error=str(e)), "error")
+            flash(f"Error al inscribir al estudiante: {str(e)}", "error")
 
     return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
@@ -741,7 +741,7 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
     ).scalar_one_or_none()
 
     if not enrollment:
-        flash(_("El estudiante '%(username)s' no está inscrito en este curso.", username=student_username), "error")
+        flash(f"El estudiante '{student_username}' no está inscrito en este curso.", "error")
         return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
 
     try:
@@ -751,11 +751,11 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
         enrollment.modificado_por = current_user.usuario
         database.session.commit()
 
-        flash(_("Estudiante '%(username)s' desinscrito del curso exitosamente.", username=student_username), "success")
+        flash(f"Estudiante '{student_username}' desinscrito del curso exitosamente.", "success")
 
     except Exception as e:
         database.session.rollback()
-        flash(_("Error al desinscribir al estudiante: %(error)s", error=str(e)), "error")
+        flash(f"Error al desinscribir al estudiante: {str(e)}", "error")
 
     return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
 

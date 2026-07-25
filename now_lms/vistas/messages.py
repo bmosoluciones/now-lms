@@ -86,7 +86,7 @@ def _get_accessible_messages(course_codes: list[str]) -> list[dict]:
                     "id": message.id,
                     "content": content,
                     "sender": f"{message.sender.nombre} {message.sender.apellido}",
-                    "thread_title": gettext("Curso: %(name)s", name=thread.course.nombre),
+                    "thread_title": f"Curso: {thread.course.nombre}",
                     "timestamp": message.timestamp.strftime("%d/%m/%Y %H:%M"),
                 }
             )

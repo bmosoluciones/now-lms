@@ -192,7 +192,7 @@ msgstr "Not a valid date value."
 #: now_lms/templates/masterclass/admin_list.html:36
 #: now_lms/templates/masterclass/instructor_list.html:31
 msgid "Título"
-msgstr "Title"
+msgstr "Qualification"
 
 #: now_lms/forms/__init__.py:362
 msgid "Moneda"
@@ -360,7 +360,7 @@ msgstr "The forum cannot be enabled in self-paced courses"
 #: now_lms/forms/__init__.py:545
 #: now_lms/templates/learning/resources/type_macros.html:85
 msgid "Requerido"
-msgstr "Required"
+msgstr "Requested"
 
 #: now_lms/forms/__init__.py:579
 #: now_lms/templates/learning/curso/library.html:85
@@ -377,7 +377,7 @@ msgstr "Describes the use or content of the file"
 
 #: now_lms/forms/__init__.py:612 now_lms/templates/admin/theme.html:63
 msgid "Tema"
-msgstr "Topic"
+msgstr "Issue"
 
 #: now_lms/forms/__init__.py:624
 msgid "Tema Reveal.js"
@@ -435,7 +435,7 @@ msgstr "Platform"
 #: now_lms/templates/payments/receipt_email.html:40
 #: now_lms/templates/payments/receipt_pdf.html:128
 msgid "Estado"
-msgstr "Status"
+msgstr "State"
 
 #: now_lms/forms/__init__.py:714 now_lms/forms/__init__.py:804
 #: now_lms/forms/__init__.py:918 now_lms/templates/admin/grupos/grupo.html:69
@@ -466,7 +466,7 @@ msgstr "Status"
 #: now_lms/templates/learning/resources_new/nuevo_recurso_youtube.html:38
 #: now_lms/templates/masterclass/admin_list.html:42
 msgid "Tipo"
-msgstr "Type"
+msgstr "Guy"
 
 #: now_lms/forms/__init__.py:735
 msgid "Genero"
@@ -474,7 +474,7 @@ msgstr "Gender"
 
 #: now_lms/forms/__init__.py:736
 msgid "Titulo"
-msgstr "Title"
+msgstr "Qualification"
 
 #: now_lms/forms/__init__.py:758
 #: now_lms/templates/admin/contact_messages.html:58
@@ -483,7 +483,7 @@ msgstr "Title"
 #: now_lms/templates/learning/mensajes/nuevo_msg.html:27
 #: now_lms/templates/page_info/contact.html:49
 msgid "Asunto"
-msgstr "Subject"
+msgstr "Affair"
 
 #: now_lms/forms/__init__.py:759 now_lms/forms/__init__.py:952
 #: now_lms/forms/__init__.py:966 now_lms/forms/__init__.py:974
@@ -789,7 +789,7 @@ msgstr "URL"
 #: now_lms/templates/learning/curso/coupons/edit.html:49
 #: now_lms/templates/learning/curso/coupons/list.html:73
 msgid "Activo"
-msgstr "Active"
+msgstr "Asset"
 
 #: now_lms/forms/__init__.py:1113
 msgid "Mostrar en el footer"
@@ -805,7 +805,7 @@ msgstr "Allowed origin (optional)"
 
 #: now_lms/forms/__init__.py:1121
 msgid "Notas"
-msgstr "Notes"
+msgstr "Grades"
 
 #: now_lms/forms/masterclass.py:54
 msgid "El título es requerido"

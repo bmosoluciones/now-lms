@@ -37,8 +37,6 @@ __all__ = [
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.i18n import _
-
 # pylint: disable=E1101
 
 # < --------------------------------------------------------------------------------------------- >
@@ -275,14 +273,14 @@ class Curso(database.Model, BaseTabla):
     def validar_foro_habilitado(self):
         """Valida que el foro solo pueda habilitarse en cursos no self-paced."""
         if self.foro_habilitado and self.modalidad == "self_paced":
-            return False, _("El foro no puede habilitarse en cursos con modalidad self-paced")
+            return False, "El foro no puede habilitarse en cursos con modalidad self-paced"
         return True, ""
 
     @database.validates("foro_habilitado")
     def validate_foro_habilitado(self, key, value):
         """Validación de SQLAlchemy para foro_habilitado."""
         if value and self.modalidad == "self_paced":
-            raise ValueError(_("El foro no puede habilitarse en cursos con modalidad self-paced"))
+            raise ValueError("El foro no puede habilitarse en cursos con modalidad self-paced")
         return value
 
     def is_self_paced(self):
@@ -1213,12 +1211,12 @@ class Coupon(database.Model, BaseTabla):
             now = utc_now().replace(tzinfo=None)
             expires = self.expires_at.replace(tzinfo=None) if self.expires_at.tzinfo else self.expires_at
             if now > expires:
-                return False, _("Cupón expirado")
+                return False, "Cupón expirado"
 
         # Check usage limit
         current_uses = self.current_uses or 0
         if self.max_uses and current_uses >= self.max_uses:
-            return False, _("Cupón ha alcanzado el límite de usos")
+            return False, "Cupón ha alcanzado el límite de usos"
 
         return True, ""
 

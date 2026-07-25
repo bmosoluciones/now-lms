@@ -192,7 +192,7 @@ def _process_validated_enrollment(
 
     # Add coupon information to payment description
     if pricing.applied_coupon:
-        pago.descripcion = gettext("Cupón aplicado: %(code)s (Descuento: %(amount)s)", code=pricing.applied_coupon.code, amount=pricing.discount_amount)
+        pago.descripcion = f"Cupón aplicado: {pricing.applied_coupon.code} (Descuento: {pricing.discount_amount})"
 
     # Handle different enrollment modes
     if _is_free_enrollment(course_obj, pricing.final_price):

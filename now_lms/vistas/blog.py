@@ -321,7 +321,7 @@ def admin_create_post() -> str | Response:
         form.status.data = "published"
     else:
         form.status.data = "pending"
-        form.status.choices = [("draft", gettext("Borrador")), ("pending", gettext("Pendiente"))]
+        form.status.choices = [("draft", "Borrador"), ("pending", "Pendiente")]
 
     if form.validate_on_submit() or request.method == "POST":
         post = BlogPost(
@@ -367,7 +367,7 @@ def admin_edit_post(post_id: int) -> str | Response:
     form = BlogPostForm(obj=post)
 
     if current_user.tipo != "admin":
-        form.status.choices = [("draft", gettext("Borrador")), ("pending", gettext("Pendiente"))]
+        form.status.choices = [("draft", "Borrador"), ("pending", "Pendiente")]
 
     tag_names = [tag.name for tag in post.tags]
     form.tags.data = ", ".join(tag_names)

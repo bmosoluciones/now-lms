@@ -19,7 +19,6 @@ from sqlalchemy.exc import OperationalError
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.config import DIRECTORIO_ARCHIVOS_PUBLICOS
-from now_lms.i18n import _
 
 IMAGES_PATH = "/images/"
 
@@ -37,7 +36,7 @@ def safe_commit() -> bool:
         return True
     except OperationalError:
         database.session.rollback()
-        flash(_("Error de base de datos. Intente de nuevo."), "danger")
+        flash("Error de base de datos. Intente de nuevo.", "danger")
         return False
 
 

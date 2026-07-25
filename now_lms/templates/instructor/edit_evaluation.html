@@ -175,7 +175,7 @@ set config = config() %}
                                                                             style="display: inline"
                                                                             onsubmit="
                                                                                 return confirm(
-                                                                                    '{{ _("¿Está seguro de eliminar esta opción?") }}'
+                                                                                    '¿Está seguro de eliminar esta opción?'
                                                                                 )
                                                                             "
                                                                         >
@@ -206,7 +206,7 @@ set config = config() %}
                                                         <a
                                                             href="{{ url_for('instructor_profile.edit_question', question_id=pregunta.id) }}"
                                                             class="btn btn-outline-primary btn-sm"
-                                                            title="{{ _('Editar pregunta') }}"
+                                                            title="Editar pregunta"
                                                         >
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
@@ -216,14 +216,14 @@ set config = config() %}
                                                             style="display: inline"
                                                             onsubmit="
                                                                 return confirm(
-                                                                    '{{ _("¿Está seguro de eliminar esta pregunta y todas sus opciones?") }}'
+                                                                    '¿Está seguro de eliminar esta pregunta y todas sus opciones?'
                                                                 )
                                                             "
                                                         >
                                                             <button
                                                                 type="submit"
                                                                 class="btn btn-outline-danger btn-sm"
-                                                                title="{{ _('Eliminar pregunta') }}"
+                                                                title="Eliminar pregunta"
                                                             >
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
@@ -236,7 +236,7 @@ set config = config() %}
                                         {% else %}
                                         <div class="alert alert-info">
                                             <i class="bi bi-info-circle"></i>
-                                             {{ _('No hay preguntas creadas para esta evaluación.') }}
+                                             No hay preguntas creadas para esta evaluación.
                                              <br />
                                              <a
                                                  href="{{ url_for('instructor_profile.new_question', evaluation_id=evaluacion.id) }}"
