@@ -1645,3 +1645,70 @@ def populate_audit_fields_before_commit(session):
     for instance in session.dirty:
         if isinstance(instance, BaseTabla) and instance.modificado_por is not None:
             manually_set_modificado_por[id(instance)] = instance.modificado_por
+
+
+@event.listens_for(database.session, "before_commit")
+def detect_cache_invalidations(session):
+    """Detect modified courses or programs before commit to invalidate cache after success."""
+    courses = set()
+    programs = set()
+
+    for instance in list(session.new) + list(session.dirty) + list(session.deleted):
+        cls_name = instance.__class__.__name__
+        if cls_name == "Curso":
+            code = getattr(instance, "codigo", None)
+            if code:
+                courses.add(code)
+        elif cls_name in ("CursoSeccion", "CursoRecurso", "DocenteCurso", "ModeradorCurso", "EstudianteCurso"):
+            course_code = getattr(instance, "curso", None)
+            if course_code:
+                courses.add(course_code)
+        elif cls_name == "Evaluation":
+            section_id = getattr(instance, "section_id", None)
+            if section_id:
+                from now_lms.db import CursoSeccion
+                sec = session.get(CursoSeccion, section_id)
+                if sec and sec.curso:
+                    courses.add(sec.curso)
+        elif cls_name == "Programa":
+            code = getattr(instance, "codigo", None)
+            if code:
+                programs.add(code)
+        elif cls_name == "ProgramaCurso":
+            course_code = getattr(instance, "curso", None)
+            program_code = getattr(instance, "programa", None)
+            if course_code:
+                courses.add(course_code)
+            if program_code:
+                programs.add(program_code)
+        elif cls_name == "ProgramaEstudiante":
+            program_id = getattr(instance, "programa", None)
+            if program_id:
+                from now_lms.db import Programa
+                prog = session.get(Programa, program_id)
+                if prog and prog.codigo:
+                    programs.add(prog.codigo)
+
+    session.info["courses_to_invalidate"] = courses
+    session.info["programs_to_invalidate"] = programs
+
+
+@event.listens_for(database.session, "after_commit")
+def trigger_cache_invalidations(session):
+    """Invalidate caches for modified courses or programs after successful commit."""
+    courses = session.info.pop("courses_to_invalidate", set())
+    programs = session.info.pop("programs_to_invalidate", set())
+
+    if courses or programs:
+        try:
+            from now_lms.cache import invalidar_cache_curso, invalidar_cache_programa
+
+            for course_code in courses:
+                if course_code:
+                    invalidar_cache_curso(course_code)
+            for program_code in programs:
+                if program_code:
+                    invalidar_cache_programa(program_code)
+        except Exception as e:
+            from now_lms.logs import log
+            log.exception(f"Error invalidating cache after database commit: {e}")
