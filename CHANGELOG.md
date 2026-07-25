@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.3.3] - 2026-07-25
+
+### Fixed:
+ - Rate-limit counters `ResponseError: value is not an integer or out of range` in Redis. `cache.cache.inc()` sent pickled byte-strings to Redis INCR which expects plain integers. Now uses Redis native `INCR` via `cache_incr()` for atomic counter increments, with get+set fallback for non-Redis backends.
+
 ## [1.3.2] - 2026-07-25
 
 ### Fixed:
