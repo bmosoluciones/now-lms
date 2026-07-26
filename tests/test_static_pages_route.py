@@ -3,7 +3,6 @@
 
 """Tests for the static pages route (theme-defined filesystem pages)."""
 
-import pytest
 from flask import url_for
 
 

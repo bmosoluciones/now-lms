@@ -96,7 +96,9 @@ class TestContactMessagesAdmin:
         from now_lms.db import ContactMessage, database
 
         with app.app_context():
-            msg = ContactMessage(name="Filter Test", email="filter@test.com", subject="Filter", message="Filter msg", status="not_seen")
+            msg = ContactMessage(
+                name="Filter Test", email="filter@test.com", subject="Filter", message="Filter msg", status="not_seen"
+            )
             database.session.add(msg)
             database.session.commit()
 
@@ -107,7 +109,9 @@ class TestContactMessagesAdmin:
         from now_lms.db import ContactMessage, database
 
         with app.app_context():
-            msg = ContactMessage(name="View Test", email="view@test.com", subject="View", message="View msg", status="not_seen")
+            msg = ContactMessage(
+                name="View Test", email="view@test.com", subject="View", message="View msg", status="not_seen"
+            )
             database.session.add(msg)
             database.session.commit()
             msg_id = msg.id
@@ -122,7 +126,9 @@ class TestContactMessagesAdmin:
         from now_lms.db import ContactMessage, database
 
         with app.app_context():
-            msg = ContactMessage(name="Update Test", email="update@test.com", subject="Update", message="Update msg", status="not_seen")
+            msg = ContactMessage(
+                name="Update Test", email="update@test.com", subject="Update", message="Update msg", status="not_seen"
+            )
             database.session.add(msg)
             database.session.commit()
             msg_id = msg.id
@@ -147,7 +153,9 @@ class TestContactMessagesAdmin:
         from now_lms.db import ContactMessage, database
 
         with app.test_request_context():
-            msg = ContactMessage(name="URL Test", email="url@test.com", subject="URL Test", message="URL test content", status="not_seen")
+            msg = ContactMessage(
+                name="URL Test", email="url@test.com", subject="URL Test", message="URL test content", status="not_seen"
+            )
             database.session.add(msg)
             database.session.commit()
 

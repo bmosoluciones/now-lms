@@ -3,8 +3,6 @@
 
 """Unit tests for vistas helpers (now_lms/vistas/_helpers.py)."""
 
-import os
-from pathlib import Path
 from unittest import mock
 
 import pytest
@@ -171,7 +169,7 @@ def test_get_custom_pages_and_enlaces(app, db_session):
 
     # Retrieve and check footer links
     links = get_footer_enlaces()
-    link_titles = [l.titulo for l in links]
+    link_titles = [lnk.titulo for lnk in links]
     assert "BMO Soluciones Unique Link" in link_titles
     assert "Disabled Link Unique Link" not in link_titles
 

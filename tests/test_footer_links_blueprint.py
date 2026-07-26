@@ -4,7 +4,6 @@
 """Tests for the footer links blueprint (enlaces utiles)."""
 
 import pytest
-from flask import url_for
 
 
 @pytest.fixture
@@ -95,7 +94,9 @@ class TestFooterLinksAdmin:
         from now_lms.db import EnlacesUtiles, database
 
         with app.app_context():
-            link = EnlacesUtiles(titulo="Delete Test Link", url="https://delete-test.com", orden=1, activo=True, creado_por="test")
+            link = EnlacesUtiles(
+                titulo="Delete Test Link", url="https://delete-test.com", orden=1, activo=True, creado_por="test"
+            )
             database.session.add(link)
             database.session.commit()
             link_id = link.id
