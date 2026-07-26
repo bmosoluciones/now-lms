@@ -17,10 +17,14 @@
 <!-- Bootstrap Font -->
 <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.min.css') }}" />
 
-<!-- Favicons (fallback raster set, kept for platforms that ignore the SVG icon above) -->
-<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/favicon/apple-touch-icon.png') }}" />
-<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/favicon/favicon-32x32.png') }}" />
-<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='icons/favicon/favicon-16x16.png') }}" />
+<!-- Favicons (fallback raster set, kept for platforms that ignore the SVG icon above).
+     These point at the theme's own directory, NOT static/icons/favicon/. That shared path
+     belongs to upstream and is referenced by every other bundled theme, so overwriting it
+     with Intent Solutions marks made cambridge/harvard/ocean/oxford/sakura/corporative and
+     the default now_lms theme render our favicon. Branding stays inside the theme. -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='themes/intent_learn/favicon/apple-touch-icon.png') }}" />
+<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='themes/intent_learn/favicon/favicon-32x32.png') }}" />
+<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='themes/intent_learn/favicon/favicon-16x16.png') }}" />
 <link rel="manifest" href="{{ url_for('static', filename='icons/favicon/site.webmanifest') }}" />
 
 {{ adsense_meta() | safe }} {{ adsense_code() | safe }} {%- endmacro %}
