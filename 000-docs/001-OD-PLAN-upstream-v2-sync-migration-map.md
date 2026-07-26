@@ -1,8 +1,9 @@
 # Upstream v2.0.0 sync — migration map
 
 **Status:** planning only. Nothing in this document has been executed.
-**Measured:** 2026-07-26, fork `deploy/now-lms-fixed` @ `4755503` vs `upstream/main` @ `0c9eb75`
-(re-measured after our four PRs merged upstream; the first pass used the then-current `3fec727`).
+**Measured:** 2026-07-26, fork `deploy/now-lms-fixed` @ `4755503` vs `upstream/main` @ `b7bc8cf`
+(third pass — first used `3fec727`, second `0c9eb75` after our four PRs merged, third after
+upstream's security-headers series landed the same day).
 **Tracking:** intent-solutions-io/now-lms#12. Deploy prerequisites: #14.
 
 Every number here was measured, not estimated. Where it contradicts the earlier
@@ -13,9 +14,12 @@ than silently corrected.
 
 ## 1. The headline: this sync is much smaller than it looks
 
-Divergence is **41 ahead / 107 behind** (35 of the 41 are non-merge commits). The 107 includes
+Divergence is **41 ahead / 111 behind** (35 of the 41 are non-merge commits). The 111 includes
 the four commits upstream took from us today, so the *surviving* fork set shrinks by three once
-they are dropped (§2).
+they are dropped (§2). The last four upstream commits are the security-headers series (their
+#213 line: global security headers + CSP/HSTS hardening + a README fix) — measured against them,
+the conflict surface is **unchanged at 61 files with zero new conflicts**: that work merges
+cleanly over this fork. Its one behavioral consequence for us is the CSP item in §7.
 
 A test merge of `upstream/main` into `deploy/now-lms-fixed` produces **61
 conflicted files** — all content conflicts, no rename/delete conflicts.
@@ -325,7 +329,25 @@ Reason it stays mandatory despite the guards: `20260725_120000` moves a live
   arms compare against `"TRUE"`/`"FALSE"`, so they never match and the value
   stays a truthy string. Both transports read as enabled simultaneously.
   Candidate fifth upstream PR; tracked in #14.
-- **No test job on the deploy line.** `python.yml` runs only on
-  `main`/`development`, so PRs into `deploy/now-lms-fixed` get the AI reviewer and
-  no tests. This is why a P1 flagged on PR #10 reached production. Fix before the
-  sync, or the sync ships unverified.
+- **Test gate on the deploy line — SHIPPED advisory, flips to blocking at the
+  sync** (PR #18, bead `now-lms-dbq`). The gate's first-ever PostgreSQL run
+  surfaced ~40 pre-existing suite failures: SQLite-masked strictness bugs
+  (varchar-too-long, fixture FK violations — the suite had never run on the
+  production engine) and i18n assertion drift (fork code emits English, inherited
+  tests assert Spanish). Both classes are replaced wholesale by this sync, which
+  is exactly why the pytest step is `continue-on-error` until then — lint is
+  blocking today. Two fixture bugs live in fork-owned test files that survive the
+  sync and need fixing regardless: `test_cca_seed.py` references a `default`
+  certificate it never seeds (Postgres enforces the FK), and the front-door
+  `lang="en"` assertion (fixed on the PR #13 branch).
+
+- **CSP will silently break ionicons at the sync** (bead `now-lms-fzl`).
+  Upstream's new global Content-Security-Policy allows scripts only from `'self'`,
+  PayPal, and cdnjs — and the theme's `base.j2` loads ionicons from **unpkg.com**.
+  Post-sync, browsers refuse both scripts and every ionicon on inner pages
+  vanishes with console-only errors. Fix: vendor ionicons into the theme's static
+  dir (matches the 07-23 Google-Fonts-removal privacy posture) and add the same
+  no-CDN test guard. Safe to do **before** the sync — it is inert. Everything
+  else in the theme survives the new CSP: inline styles are allowed
+  (`'unsafe-inline'`), fonts and images are self-hosted; ionicons is the only
+  external resource hit.
