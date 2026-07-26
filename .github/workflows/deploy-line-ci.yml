@@ -64,7 +64,33 @@ jobs:
             - name: Lint (pylint)
               run: python -m pylint now_lms --score=yes --fail-under=9.5
 
-            - name: Tests
+            # Tests run against REAL PostgreSQL, matching production (Postgres 16 on the
+            # VPS) and release.yml's proven recipe -- the runner's built-in postgresql
+            # service, same user/database setup, same pg8000 driver.
+            #
+            # Not SQLite, deliberately. This workflow's own first run proved that the
+            # fork's conftest fails under conftest's `sqlite:///:memory:` fallback: with
+            # SQLAlchemy's default pooling every new connection to an in-memory SQLite
+            # database gets its OWN empty database, so the schema `initial_setup()`
+            # creates is invisible to later connections and much of the suite dies with
+            # `no such table: ad_sense`. (Upstream's conftest survives this; the fork's
+            # rewritten one -- 47de77c -- does not.) Fixing that belongs in conftest and
+            # will be moot at the v2.0.0 sync; meanwhile Postgres is the honest gate,
+            # because it is what production actually runs.
+            - name: Tests (PostgreSQL)
               env:
                   CI: "True"
-              run: pytest --tb=short -q
+                  SECRET_KEY: deploy-line-ci-test-key
+                  DATABASE_URL: postgresql+pg8000://lmsctl2:lmsctl2pass@127.0.0.1:5432/lmsctl2
+                  FLASK_APP: now_lms
+              run: |
+                  sudo systemctl start postgresql.service
+                  sudo -u postgres psql -c "CREATE USER lmsctl2 WITH PASSWORD 'lmsctl2pass';"
+                  sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO lmsctl2;"
+                  sudo -u postgres psql -c "CREATE DATABASE lmsctl2;"
+                  sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE lmsctl2 TO lmsctl2;"
+                  sudo -u postgres psql -c "ALTER DATABASE lmsctl2 OWNER TO lmsctl2;"
+                  sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
+                  sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
+                  sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
+                  pytest --tb=short -q
