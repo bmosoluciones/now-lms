@@ -28,6 +28,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, Curso, Pago, PaypalConfig, database
+from now_lms.i18n import _
 
 # Constants for PayPal API URLs
 PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
@@ -85,11 +86,11 @@ def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: b
         response = requests.post(token_url, headers=headers, data=data, auth=(client_id, client_secret), timeout=20)
 
         if response.status_code == 200:
-            return {"valid": True, "message": "Configuración de PayPal válida"}
-        return {"valid": False, "message": f"Error de configuración de PayPal: {response.text}"}
+            return {"valid": True, "message": _("Configuración de PayPal válida")}
+        return {"valid": False, "message": _("Error de configuración de PayPal: {}").format(response.text)}
 
     except Exception as e:
-        return {"valid": False, "message": f"Error al validar configuración: {str(e)}"}
+        return {"valid": False, "message": _("Error al validar configuración: {}").format(str(e))}
 
 
 def _paypal_credentials(config_data, descifrar_secreto) -> tuple[str, str] | None:
@@ -320,7 +321,7 @@ def _payment_record(payment_data: dict[str, object]) -> tuple[Any, tuple[FlaskRe
                 jsonify(
                     {
                         "success": True,
-                        "message": "Pago ya procesado anteriormente",
+                        "message": _("Pago ya procesado anteriormente"),
                         "redirect_url": url_for("program.tomar_programa", codigo=course_code),
                     }
                 ),
@@ -351,7 +352,7 @@ def _payment_record(payment_data: dict[str, object]) -> tuple[Any, tuple[FlaskRe
                 jsonify(
                     {
                         "success": True,
-                        "message": "Pago ya procesado anteriormente",
+                        "message": _("Pago ya procesado anteriormente"),
                         "redirect_url": url_for("course.tomar_curso", course_code=course_code),
                     }
                 ),
@@ -499,7 +500,7 @@ def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskRe
     except OperationalError:
         database.session.rollback()
         logging.exception("Database error during enrollment")
-        return jsonify({"success": False, "error": "Error en la base de datos. Por favor contacte soporte."}), 500
+        return jsonify({"success": False, "error": _("Error en la base de datos. Por favor contacte soporte.")}), 500
 
     _update_coupon_usage(pago, course_code, order_id)
 
@@ -520,7 +521,7 @@ def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskRe
         jsonify(
             {
                 "success": True,
-                "message": "Pago completado exitosamente",
+                "message": _("Pago completado exitosamente"),
                 "redirect_url": redirect_url,
             }
         ),
@@ -543,7 +544,7 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
         return _process_confirmed_payment(payment_data)
     except Exception:
         logging.exception("Unexpected error in payment confirmation")
-        return jsonify({"success": False, "error": "Error interno del servidor. Por favor contacte soporte."}), 500
+        return jsonify({"success": False, "error": _("Error interno del servidor. Por favor contacte soporte.")}), 500
 
 
 @paypal.route("/resume_payment/<payment_id>", methods=["GET"])
@@ -562,7 +563,7 @@ def resume_payment(payment_id: str) -> Response:
         )
 
         if not pago:
-            flash("Pago no encontrado o ya procesado.", "error")
+            flash(_("Pago no encontrado o ya procesado."), "error")
             return redirect(url_for(HOME_PAGE_ROUTE))
 
         if pago.programa:
@@ -577,7 +578,7 @@ def resume_payment(payment_id: str) -> Response:
 
     except Exception:
         logging.exception("Error resuming payment")
-        flash("Error al reanudar el pago.", "error")
+        flash(_("Error al reanudar el pago."), "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
 
@@ -599,16 +600,16 @@ def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]
 
     curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
-        flash("Curso no encontrado.", "error")
+        flash(_("Curso no encontrado."), "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
     if not curso.pagado:
-        flash("Este curso es gratuito.", "info")
+        flash(_("Este curso es gratuito."), "info")
         return redirect(url_for("course.curso", course_code=course_code))
 
     # Check if PayPal is enabled
     if not check_paypal_enabled():
-        flash("Los pagos con PayPal no están habilitados.", "error")
+        flash(_("Los pagos con PayPal no están habilitados."), "error")
         return redirect(url_for("course.curso", course_code=course_code))
 
     # Get site currency

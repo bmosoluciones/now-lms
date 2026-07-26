@@ -14,6 +14,7 @@ from flask import Blueprint, jsonify, request, url_for
 from flask_mail import Message
 from now_lms.auth import proteger_passwd, generate_confirmation_token
 from now_lms.db import ExternalApiKey, Curso, RemoteEnrollmentRequest, Usuario, EstudianteCurso, database, MailConfig
+from now_lms.i18n import _
 from now_lms.mail import send_mail
 from now_lms.version import VERSION
 
@@ -252,34 +253,34 @@ def send_enrollment_email(user, course, is_new_user, sync=False):
     if not mail_config or not mail_config.email_verificado:
         return
 
-    subject = f"Has sido inscrito en {course.nombre}"
+    subject = _("Has sido inscrito en {}").format(course.nombre)
 
     if is_new_user:
         token = generate_confirmation_token(user.correo_electronico)
         action_url = url_for("user.check_mail", token=token, _external=True)
         body_text = f"""
-        Hola,
+        {_("Hola,")}
 
-        Has sido inscrito en el curso: {course.nombre}.
+        {_("Has sido inscrito en el curso: {}.").format(course.nombre)}
 
-        Como eres un usuario nuevo, por favor completa tu primer acceso y verifica tu cuenta haciendo clic en el siguiente enlace:
+        {_("Como eres un usuario nuevo, por favor completa tu primer acceso y verifica tu cuenta haciendo clic en el siguiente enlace:")}
         {action_url}
 
-        En este enlace podrás definir tu contraseña y completar tu perfil.
+        {_("En este enlace podrás definir tu contraseña y completar tu perfil.")}
         """
     else:
         action_url = url_for("home.pagina_de_inicio", _external=True)
         body_text = f"""
-        Hola,
+        {_("Hola,")}
 
-        Has sido inscrito en el curso: {course.nombre}.
+        {_("Has sido inscrito en el curso: {}.").format(course.nombre)}
 
-        Puedes acceder al curso ingresando a la plataforma:
+        {_("Puedes acceder al curso ingresando a la plataforma:")}
         {action_url}
         """
 
     if course.certificado:
-        body_text += "\n\nEste curso cuenta con certificación al finalizar exitosamente."
+        body_text += "\n\n" + _("Este curso cuenta con certificación al finalizar exitosamente.")
 
     msg = Message(
         subject=subject,

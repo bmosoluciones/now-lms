@@ -31,6 +31,7 @@ from now_lms.db import (
     select,
 )
 from now_lms.forms import CouponApplicationForm, PagoForm
+from now_lms.i18n import _
 from now_lms.misc import CURSO_NIVEL, TIPOS_RECURSOS
 from now_lms.themes import get_course_take_template
 from .base import VISTA_CURSOS, course, markdown2html
@@ -74,9 +75,9 @@ def _build_coupon_flash_message(applied_coupon: object | None, final_price: floa
         return None
 
     if final_price == 0:
-        return f"¡Cupón aplicado exitosamente! Inscripción gratuita con código {applied_coupon.code}"
+        return _("¡Cupón aplicado exitosamente! Inscripción gratuita con código {}").format(applied_coupon.code)
 
-    return f"¡Cupón aplicado! Descuento de {discount_amount} aplicado"
+    return _("¡Cupón aplicado! Descuento de {} aplicado").format(discount_amount)
 
 
 def _build_pago_from_form(form, course_obj: Curso, final_price: float) -> Pago:
@@ -134,7 +135,7 @@ def _finalize_completed_enrollment(
         return redirect(url_for("course.tomar_curso", course_code=course_code))
     except OperationalError:
         database.session.rollback()
-        flash("Hubo en error al crear el registro de pago.", "warning")
+        flash(_("Hubo en error al crear el registro de pago."), "warning")
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
@@ -154,7 +155,7 @@ def _process_paid_enrollment(pago: Pago, course_code: str) -> Response:
         return redirect(url_for("paypal.payment_page", course_code=course_code, payment_id=pago.id))
     except OperationalError:
         database.session.rollback()
-        flash("Error al procesar el pago", "warning")
+        flash(_("Error al procesar el pago"), "warning")
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
@@ -173,8 +174,8 @@ def _check_unverified_email_restriction(course_obj: Curso) -> bool:
     """
     if course_obj.pagado and usuario_requiere_verificacion_email():
         flash(
-            "Debe verificar su correo electrónico para inscribirse en cursos de pago o usar cupones. "
-            "Los cursos gratuitos están disponibles sin verificación.",
+            _("Debe verificar su correo electrónico para inscribirse en cursos de pago o usar cupones. "
+            "Los cursos gratuitos están disponibles sin verificación."),
             "warning",
         )
         return True
@@ -256,7 +257,7 @@ def course_enroll(course_code: str) -> str | Response:
 
     return render_template(
         "learning/curso/enroll.html",
-        title=f"Inscripción - {_curso.nombre}",
+        title=_("Inscripción - {}").format(_curso.nombre),
         curso=_curso,
         usuario=_usuario,
         form=form,
