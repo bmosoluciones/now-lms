@@ -23,7 +23,7 @@ from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import Certificacion, Curso, DocenteCurso, EstudianteCurso, Usuario, database
 from now_lms.db.tools import elimina_imagen_usuario
 from now_lms.forms import ChangePasswordForm, UserForm
-from now_lms.i18n import _, _l
+from now_lms.i18n import _
 from now_lms.logs import log
 from now_lms.misc import GENEROS
 
