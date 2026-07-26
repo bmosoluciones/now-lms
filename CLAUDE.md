@@ -44,23 +44,44 @@ a green PR.
 This repo uses **bd (beads)**. Run `bd prime` for the full workflow, and prefer
 `bd` over ad-hoc TODO lists.
 
+Issues are prefixed `now-lms` (e.g. `now-lms-0oy`). The database is **local only**
+— see below before pushing anything.
+
 ### ⚠️ Do NOT run `bd dolt push` from this repository yet
 
-The beads database here is **not** a clean project database:
+The database is now clean, but no sync route has been chosen. Until one is,
+there is nowhere correct to push.
 
-1. It is a **clone of the Intent Solutions umbrella database** — 1,207 issues
-   under the `bd_000-projects` prefix, sharing the umbrella's `project_id`. There
-   are no `now-lms`-prefixed issues, so now-lms work is indistinguishable from
-   estate-wide work.
-2. `sync.remote` in `.beads/config.yaml` points at a **different project's**
-   DoltHub database (`jeremylongshore/Intent-eval-platform`). A push from here
-   would file now-lms beads against the Intent Eval Platform.
-3. **This repository is public.** Beads sync can also travel as `refs/dolt/data`
-   on the git remote, which would publish estate-wide issues.
+**What was wrong (fixed 2026-07-26):**
 
-`.beads/` is git-ignored in the tracked `.gitignore` for the same reason — that
-stops the *file* from being committed, but it does **not** stop a Dolt push.
+1. `.beads/` here was a **clone of the Intent Solutions umbrella database** —
+   1,205 issues under the `bd_000-projects` prefix, sharing the umbrella's
+   `project_id`. now-lms work was indistinguishable from estate work. Cause:
+   `bd init` walks *up* the directory tree, finds `~/000-projects/.beads`, and
+   adopts it.
+2. `sync.remote` pointed at a **different project's** DoltHub database
+   (`jeremylongshore/Intent-eval-platform`). Any push would have filed now-lms
+   beads against the Intent Eval Platform.
+3. `bd init --reinit-local --discard-remote` — the documented cleanup — would
+   have made the next push a **history-replacing force-push** against that IEP
+   database. It was not run, and must never be run against a remote another
+   project owns.
 
-Nothing has been pushed yet: there are no `refs/dolt/*` refs on `origin` and none
-locally. Keep it that way until the sync design is settled, then update this
-section. Ask before wiring up beads sync.
+**What is true now:** a fresh database was minted *outside* `~/000-projects` (so
+`bd init` could not adopt the umbrella), then installed here. Prefix is
+`now-lms`; the IEP remote is removed (`bd dolt remote list` → "No remotes
+configured"); the epic and its children were migrated with descriptions intact;
+the old clone is preserved, not deleted.
+
+**What is still needed:** pick a sync route — a dedicated DoltHub database, or
+`refs/dolt/data` on the git remote. ⚠️ This repository is **public**, so option
+two makes every bead world-readable. Nothing is pushed today:
+`git ls-remote origin 'refs/dolt/*'` is empty.
+
+Tracked as bead `now-lms-7e4`. Update this section once the route is chosen.
+
+### Regenerating boilerplate
+
+`bd init` **overwrites `AGENTS.md` and `CLAUDE.md`** in the working tree with
+generic boilerplate, without warning. If these files suddenly look generic, that
+is what happened — restore them from git rather than re-writing them.
