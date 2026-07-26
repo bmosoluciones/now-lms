@@ -286,3 +286,15 @@ now_lms/static/files/public/themes/nowlearninginstitute
 now_lms/now_lms/
 
 notes.txtcookies.txt
+
+# Beads / Dolt files (added by bd init)
+#
+# .beads/ MUST stay ignored in the tracked .gitignore, not just in
+# .git/info/exclude. The exclude file is machine-local and does not travel with a
+# clone, so without this line a teammate who clones and runs any bd command would
+# see .beads/ as untracked and could commit it. This repository is PUBLIC, and
+# .beads/issues.jsonl here is a ~2 MB export of the whole Intent Solutions estate
+# (1,207 issues under the bd_000-projects prefix), not just now-lms work.
+.beads/
+.dolt/
+.beads-credential-key
