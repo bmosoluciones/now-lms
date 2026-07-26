@@ -15,11 +15,19 @@
 
 A simple-to-{install, use, configure, monetize, and maintain} learning management system.
 
-![ScreenShot](https://bmogroup.solutions/imgs/lms/Course.png)
+![Default NOW LMS view](docs/images/default.png)
 
 -----------
 
-[![ScreenShot](https://bmogroup.solutions/imgs/lms/AdminDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/AdminDashboard.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/Home_thumb.png)](https://bmogroup.solutions/imgs/lms/Home.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/InstructorPanel_thumb.png)](https://bmogroup.solutions/imgs/lms/InstructorPanel.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/StudentDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/StudentDashboard.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/ModerationDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/ModerationDashboard.png)
+<table>
+  <tr>
+    <td><a href="docs/images/bmo.png"><img src="docs/images/bmo.png" alt="BMO theme" width="140"></a></td>
+    <td><a href="docs/images/now-lms.png"><img src="docs/images/now-lms.png" alt="NOW LMS landing page" width="140"></a></td>
+    <td><a href="docs/images/excel.png"><img src="docs/images/excel.png" alt="Excel theme" width="140"></a></td>
+    <td><a href="docs/images/sunshine.png"><img src="docs/images/sunshine.png" alt="Sunshine theme" width="140"></a></td>
+    <td><a href="docs/images/theme.png"><img src="docs/images/theme.png" alt="Custom theme" width="140"></a></td>
+  </tr>
+</table>
 
 -----------
 
