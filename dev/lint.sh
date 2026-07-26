@@ -1,10 +1,5 @@
 #!/bin/bash
 echo -------------------------------------------------
-echo Ensure company headers in Python files
-echo -------------------------------------------------
-echo
-python dev/ensure_headers.py --apply --paths now_lms,tests
-echo -------------------------------------------------
 echo Format Python code
 echo -------------------------------------------------
 echo
