@@ -50,13 +50,13 @@
                                         </td>
                                         <td>
                                             <a
-                                                href="{{ url_for('static_pages.edit_page', page_id=page.id) }}"
+                                                href="{{ url_for('custom_pages.edit_page', page_id=page.id) }}"
                                                 class="btn btn-sm btn-primary"
                                             >
                                                 <i class="bi bi-pencil"></i> {{ _("Editar") }}
                                             </a>
                                             <a
-                                                href="{{ url_for('static_pages.view_page', slug=page.slug) }}"
+                                                href="{{ url_for('custom_pages.view_page', slug=page.slug) }}"
                                                 class="btn btn-sm btn-outline-secondary"
                                                 target="_blank"
                                             >

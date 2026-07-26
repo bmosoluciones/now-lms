@@ -1107,8 +1107,8 @@ class EnlaceUtilForm(FlaskForm):
     activo = BooleanField(_("Activo"), default=True, validators=[])
 
 
-class StaticPageFooterForm(FlaskForm):
-    """Formulario para configurar si una página estática se muestra en el footer."""
+class CustomPageFooterForm(FlaskForm):
+    """Formulario para configurar si una página custom se muestra en el footer."""
 
     mostrar_en_footer = BooleanField(_("Mostrar en el footer"), default=False, validators=[])
 

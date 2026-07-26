@@ -1,4 +1,4 @@
-{% macro footer() -%} {% if config().enable_footer %} {% set footer_pages = get_footer_pages() %} {% set footer_enlaces =
+{% macro footer() -%} {% if config().enable_footer %} {% set footer_pages = get_custom_pages() %} {% set footer_enlaces =
 get_footer_enlaces() %}
 <footer class="footer bg-dark text-white mt-auto py-3">
     <div class="container">
@@ -10,7 +10,7 @@ get_footer_enlaces() %}
                     {% for page in footer_pages %}
                     <li>
                         <a
-                            href="{{ url_for('static_pages.view_page', slug=page.slug) }}"
+                            href="{{ url_for('custom_pages.view_page', slug=page.slug) }}"
                             class="text-white-50 text-decoration-none"
                             >{{ page.title }}</a
                         >
@@ -40,7 +40,7 @@ get_footer_enlaces() %}
                 {% else %}
                 <ul class="list-unstyled">
                     <li>
-                        <a href="{{ url_for('static_pages.contact') }}" class="text-white-50 text-decoration-none"
+                        <a href="{{ url_for('custom_pages.contact') }}" class="text-white-50 text-decoration-none"
                             >{{ _("Contacto") }}</a
                         >
                     </li>

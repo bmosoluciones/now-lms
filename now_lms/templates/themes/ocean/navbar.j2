@@ -43,7 +43,7 @@
                 </li>
                 {% endif %} {% if is_contact_enabled() %}
                 <li class="nav-item">
-                    <a href="{{ url_for('static_pages.contact') }}" class="nav-link">{{ _('Contact') }}</a>
+                    <a href="{{ url_for('custom_pages.contact') }}" class="nav-link">{{ _('Contact') }}</a>
                 </li>
                 {% endif %} {% if current_user.is_authenticated and (current_user.tipo == "instructor" or current_user.tipo ==
                 "admin") %}

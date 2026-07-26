@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2025 - 2026 BMO Soluciones, S.A.
-"""Static pages views (About Us, Privacy Policy, Contact)."""
+"""Custom pages views (About Us, Privacy Policy, Contact)."""
 
 from __future__ import annotations
 
@@ -17,38 +17,38 @@ from werkzeug.wrappers import Response
 from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import ContactMessage, EnlacesUtiles, StaticPage, database
+from now_lms.db import ContactMessage, CustomPage, EnlacesUtiles, database
 from now_lms.forms import EnlaceUtilForm
 from now_lms.i18n import _
 
-static_pages = Blueprint("static_pages", __name__, template_folder=DIRECTORIO_PLANTILLAS)
+custom_pages = Blueprint("custom_pages", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 PAGE_NOT_FOUND_MESSAGE = _("Página no encontrada.")
 HOME_ROUTE = "home.pagina_de_inicio"
 CONTACT_TEMPLATE = "page_info/contact.html"
-STATIC_LINKS_ROUTE = "static_pages.list_enlaces_utiles"
+CUSTOM_LINKS_ROUTE = "custom_pages.list_enlaces_utiles"
 
 
-@static_pages.route("/page/<slug>", methods=["GET"])
+@custom_pages.route("/page/<slug>", methods=["GET"])
 @cache.cached(timeout=300)
 def view_page(slug: str) -> str | Response:
-    """View a static page by slug."""
+    """View a custom page by slug."""
     # Validate slug to prevent path traversal
     if any(c in slug for c in ["/", "\\", ".", "$"]):
         flash(PAGE_NOT_FOUND_MESSAGE, "danger")
-        return redirect(url_for("static_pages.list_pages"))
+        return redirect(url_for("custom_pages.list_pages"))
 
     page = database.session.execute(
-        database.select(StaticPage).filter(StaticPage.slug == slug, StaticPage.is_active.is_(True))
+        database.select(CustomPage).filter(CustomPage.slug == slug, CustomPage.is_active.is_(True))
     ).scalar_one_or_none()
 
     if not page:
         flash(PAGE_NOT_FOUND_MESSAGE, "danger")
         return redirect(url_for(HOME_ROUTE))
 
-    return render_template("page_info/static_page.html", page=page)
+    return render_template("page_info/custom_page.html", page=page)
 
 
-@static_pages.route("/contact", methods=["GET", "POST"])
+@custom_pages.route("/contact", methods=["GET", "POST"])
 def contact() -> str | Response:
     """Contact form page."""
     # Get system configuration to display contact information
@@ -89,22 +89,22 @@ def contact() -> str | Response:
     return render_template(CONTACT_TEMPLATE, config=config)
 
 
-@static_pages.route("/admin/pages", methods=["GET"])
+@custom_pages.route("/admin/pages", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def list_pages() -> str:
-    """List all static pages for admin."""
-    pages = database.session.execute(database.select(StaticPage).order_by(StaticPage.slug)).scalars().all()
+    """List all custom pages for admin."""
+    pages = database.session.execute(database.select(CustomPage).order_by(CustomPage.slug)).scalars().all()
 
-    return render_template("admin/static_pages.html", pages=pages)
+    return render_template("admin/custom_pages.html", pages=pages)
 
 
-@static_pages.route("/admin/pages/<page_id>/edit", methods=["GET", "POST"])
+@custom_pages.route("/admin/pages/<page_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
 def edit_page(page_id: str) -> str | Response:
-    """Edit a static page."""
-    page = database.session.get(StaticPage, page_id)
+    """Edit a custom page."""
+    page = database.session.get(CustomPage, page_id)
 
     if not page:
         flash(PAGE_NOT_FOUND_MESSAGE, "danger")
@@ -122,12 +122,12 @@ def edit_page(page_id: str) -> str | Response:
         cache.delete_memoized(view_page, page.slug)
 
         flash(_("Página actualizada correctamente."), "success")
-        return redirect(url_for("static_pages.list_pages"))
+        return redirect(url_for("custom_pages.list_pages"))
 
-    return render_template("admin/edit_static_page.html", page=page)
+    return render_template("admin/edit_custom_page.html", page=page)
 
 
-@static_pages.route("/admin/contact-messages", methods=["GET"])
+@custom_pages.route("/admin/contact-messages", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def list_contact_messages() -> str:
@@ -144,7 +144,7 @@ def list_contact_messages() -> str:
     return render_template("admin/contact_messages.html", messages=messages, status_filter=status_filter)
 
 
-@static_pages.route("/admin/contact-messages/<message_id>/view", methods=["GET", "POST"])
+@custom_pages.route("/admin/contact-messages/<message_id>/view", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
 def view_contact_message(message_id: str) -> str | Response:
@@ -155,7 +155,7 @@ def view_contact_message(message_id: str) -> str | Response:
 
     if not message:
         flash(_("Mensaje no encontrado."), "danger")
-        return redirect(url_for("static_pages.list_contact_messages"))
+        return redirect(url_for("custom_pages.list_contact_messages"))
 
     # Mark as seen on first view
     if message.status == "not_seen":
@@ -180,12 +180,12 @@ def view_contact_message(message_id: str) -> str | Response:
 
         database.session.commit()
         flash(_("Mensaje actualizado correctamente."), "success")
-        return redirect(url_for("static_pages.list_contact_messages"))
+        return redirect(url_for("custom_pages.list_contact_messages"))
 
     return render_template("admin/view_contact_message.html", message=message)
 
 
-@static_pages.route("/admin/enlaces-utiles", methods=["GET"])
+@custom_pages.route("/admin/enlaces-utiles", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def list_enlaces_utiles() -> str:
@@ -194,7 +194,7 @@ def list_enlaces_utiles() -> str:
     return render_template("admin/enlaces_utiles.html", enlaces=enlaces)
 
 
-@static_pages.route("/admin/enlaces-utiles/new", methods=["GET", "POST"])
+@custom_pages.route("/admin/enlaces-utiles/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
 def create_enlace_util() -> str | Response:
@@ -212,12 +212,12 @@ def create_enlace_util() -> str | Response:
         database.session.commit()
 
         flash(_("Enlace útil creado correctamente."), "success")
-        return redirect(url_for(STATIC_LINKS_ROUTE))
+        return redirect(url_for(CUSTOM_LINKS_ROUTE))
 
     return render_template("admin/edit_enlace_util.html", form=form, enlace=None)
 
 
-@static_pages.route("/admin/enlaces-utiles/<enlace_id>/edit", methods=["GET", "POST"])
+@custom_pages.route("/admin/enlaces-utiles/<enlace_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
 def edit_enlace_util(enlace_id: str) -> str | Response:
@@ -226,7 +226,7 @@ def edit_enlace_util(enlace_id: str) -> str | Response:
 
     if not enlace:
         flash(_("Enlace no encontrado."), "danger")
-        return redirect(url_for(STATIC_LINKS_ROUTE))
+        return redirect(url_for(CUSTOM_LINKS_ROUTE))
 
     form = EnlaceUtilForm(obj=enlace)
 
@@ -239,12 +239,12 @@ def edit_enlace_util(enlace_id: str) -> str | Response:
         database.session.commit()
 
         flash(_("Enlace útil actualizado correctamente."), "success")
-        return redirect(url_for(STATIC_LINKS_ROUTE))
+        return redirect(url_for(CUSTOM_LINKS_ROUTE))
 
     return render_template("admin/edit_enlace_util.html", form=form, enlace=enlace)
 
 
-@static_pages.route("/admin/enlaces-utiles/<enlace_id>/delete", methods=["POST"])
+@custom_pages.route("/admin/enlaces-utiles/<enlace_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def delete_enlace_util(enlace_id: str) -> Response:
@@ -253,10 +253,10 @@ def delete_enlace_util(enlace_id: str) -> Response:
 
     if not enlace:
         flash(_("Enlace no encontrado."), "danger")
-        return redirect(url_for(STATIC_LINKS_ROUTE))
+        return redirect(url_for(CUSTOM_LINKS_ROUTE))
 
     database.session.delete(enlace)
     database.session.commit()
 
     flash(_("Enlace útil eliminado correctamente."), "success")
-    return redirect(url_for(STATIC_LINKS_ROUTE))
+    return redirect(url_for(CUSTOM_LINKS_ROUTE))

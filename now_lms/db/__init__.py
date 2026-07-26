@@ -27,7 +27,7 @@ __all__ = [
     "eliminar_base_de_datos_segura",
     "UserEvent",
     "CourseLibrary",
-    "StaticPage",
+    "CustomPage",
     "ContactMessage",
     "EnlacesUtiles",
     "ExternalApiKey",
@@ -1505,10 +1505,10 @@ class UserEvent(database.Model, BaseTabla):
     evaluation = database.relationship("Evaluation", back_populates="user_events")
 
 
-class StaticPage(database.Model, BaseTabla):
-    """Static pages like About Us, Privacy Policy, etc."""
+class CustomPage(database.Model, BaseTabla):
+    """Custom pages created by administrators (About Us, Privacy Policy, etc.)."""
 
-    __tablename__ = "static_pages"
+    __tablename__ = "custom_pages"
 
     slug = database.Column(database.String(50), unique=True, nullable=False, index=True)
     title = database.Column(database.String(200), nullable=False)
