@@ -1493,7 +1493,7 @@ def slide_show(recurso_code: str) -> str:
     if legacy_slide:
         return render_template(TEMPLATE_SLIDE_SHOW, resource=legacy_slide, slides=legacy_slides, legacy=True)
 
-    flash("Presentación no encontrada.", "error")
+    flash(_("Presentación no encontrada."), "error")
     abort(404)
 
 

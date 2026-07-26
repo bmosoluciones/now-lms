@@ -16,6 +16,20 @@
                 errorReloadPage: {{ _('Recargue la página') | tojson }},
                 errorContactSupport: {{ _('Contacte soporte si el problema persiste') | tojson }},
                 errorReloadBtn: {{ _('Recargar página') | tojson }},
+                processingPayment: {{ _('Procesando pago...') | tojson }},
+                paymentCompleted: {{ _('¡Pago completado exitosamente! Redirigiendo...') | tojson }},
+                errorPayPalUnavailable: {{ _('Error: PayPal no está disponible. Por favor recargue la página.') | tojson }},
+                errorInvalidParams: {{ _('Error: Parámetros de pago inválidos.') | tojson }},
+                errorCreatingOrder: {{ _('Error al crear la orden de pago. Por favor intente nuevamente.') | tojson }},
+                errorCapturingPayment: {{ _('Error al capturar el pago. Por favor contacte soporte.') | tojson }},
+                errorPayPal: {{ _('Error de PayPal') | tojson }},
+                errorUnknown: {{ _('Error desconocido') | tojson }},
+                paymentCancelled: {{ _('Pago cancelado por el usuario.') | tojson }},
+                errorLoadingButtons: {{ _('Error al cargar los botones de PayPal. Por favor recargue la página.') | tojson }},
+                errorInitializing: {{ _('Error al inicializar PayPal. Por favor recargue la página.') | tojson }},
+                errorConfirmingPayment: {{ _('Error al confirmar el pago después de %(max)s intentos. Por favor contacte soporte con el ID de orden: %(order)s') | tojson }},
+                errorInvalidCourse: {{ _('Error: Datos del curso inválidos.') | tojson }},
+                verifyingPayment: {{ _('Verificando estado del pago...') | tojson }},
             }
             let sdkLoadAttempts = 0
             const maxSDKAttempts = 3

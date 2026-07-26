@@ -20,6 +20,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event, select
 from sqlalchemy.exc import SQLAlchemyError
 
+from now_lms.i18n import _
+
 __all__ = [
     "select",
     "database",
@@ -1211,12 +1213,12 @@ class Coupon(database.Model, BaseTabla):
             now = utc_now().replace(tzinfo=None)
             expires = self.expires_at.replace(tzinfo=None) if self.expires_at.tzinfo else self.expires_at
             if now > expires:
-                return False, "Cupón expirado"
+                return False, _("Cupón expirado")
 
         # Check usage limit
         current_uses = self.current_uses or 0
         if self.max_uses and current_uses >= self.max_uses:
-            return False, "Cupón ha alcanzado el límite de usos"
+            return False, _("Cupón ha alcanzado el límite de usos")
 
         return True, ""
 

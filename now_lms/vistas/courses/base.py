@@ -631,7 +631,7 @@ def _persist_admin_enrollment(course_code: str, curso, student, bypass_payment: 
         estado="completed",
         metodo="admin_enrollment",
         monto=0 if bypass_payment else curso.precio,
-        descripcion=f"Inscripción administrativa por {current_user.usuario}",
+        descripcion=_("Inscripción administrativa por %(user)s", user=current_user.usuario),
         audit=not bypass_payment and curso.pagado,
         nombre=student.nombre,
         apellido=student.apellido,
@@ -640,7 +640,7 @@ def _persist_admin_enrollment(course_code: str, curso, student, bypass_payment: 
         creado_por=current_user.usuario,
     )
     if notes:
-        pago.descripcion += f" - Notas: {notes}"
+        pago.descripcion += _(" - Notas: %(notes)s", notes=notes)
     database.session.add(pago)
     database.session.flush()
     enrollment = EstudianteCurso(
