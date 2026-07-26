@@ -1,0 +1,3371 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../wsgi/">
+      
+      
+        <link rel="next" href="../windows-support/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Waitress - NOW - LMS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Source Code Pro"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#waitress" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="NOW - LMS" class="md-header__button md-logo" aria-label="NOW - LMS" data-md-component="logo">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NOW - LMS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Waitress
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bmosoluciones/now-lms" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    bmosoluciones/now-lms
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
+          
+  
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../setup/" class="md-tabs__link">
+          
+  
+  
+  System Administrator Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../course-creator/" class="md-tabs__link">
+          
+  
+  
+  Course Creator Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../CONTRIBUTING/" class="md-tabs__link">
+          
+  
+  
+  Development Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../faq/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="NOW - LMS" class="md-nav__button md-logo" aria-label="NOW - LMS" data-md-component="logo">
+      
+  <img src="../../../images/logo.svg" alt="logo">
+
+    </a>
+    NOW - LMS
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bmosoluciones/now-lms" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    bmosoluciones/now-lms
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1">
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Administrator Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    System Administrator Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../setup-conf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../db/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../pypi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oci/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_6">
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Server Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rocky/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CentOS / Alma / Rocky
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_7">
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other Deployment options
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other Deployment options
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dev_ops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server less
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/bmosoluciones/now-lms/wiki/Instaling-NOW-LMS" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wiki Guides
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9">
+        
+          
+          <label class="md-nav__link" for="__nav_2_9" id="__nav_2_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../configure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mail/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mail
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../payments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../adsense/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AdSense
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../theming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Theming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Creator Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Course Creator Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/course-creation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Creation Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/course-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/sections-resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sections and Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/markdown-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Markdown Formatting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/slideshow-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Slide Shows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/certificate-customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Certificates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/forum-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Forums and Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../course-creator/moderator-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moderator Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../master-class-organizer-guide.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Master Classes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../sing-off/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Certificate of Origin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/query_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database Queries Help
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/session_fixtures_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session Scoped Tests Fixtures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/python-features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/bmosoluciones/now-lms/blob/main/CHANGELOG.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/bmosoluciones/now-lms/blob/main/README.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Readme
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/bmosoluciones/now-lms/blob/main/LICENSE" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_2">
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archive/2025/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2025
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../announcement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Announcement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../breaking-changes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Breaking Changes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../bug-fixes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bug Fixes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../gunicorn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gunicorn
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-administration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Administration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../wsgi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WSGI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    
+      
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Waitress
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Windows Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content" data-md-component="content">
+    <div class="md-content__inner">
+      <header class="md-typeset">
+        <h1 id="waitress">Waitress</h1>
+      </header>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+      <nav class="md-post__authors md-typeset">
+        
+          <span class="md-author">
+            <img src="https://github.com/bmosoluciones.png" alt="NOW-LMS Team">
+          </span>
+        
+      </nav>
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
+          <time datetime="2025-10-27 00:00:00+00:00">Monday, October 27, 2025</time></li>
+        
+          <li class="md-meta__item">
+            in
+            
+              <a href="../development/" class="md-meta__link">Development</a>, 
+              <a href="../system-administration/" class="md-meta__link">System Administration</a>, 
+              <a href="../deployment/" class="md-meta__link">Deployment</a>, 
+              <a href="../wsgi/" class="md-meta__link">WSGI</a>, 
+              <a href="../gunicorn/" class="md-meta__link">Gunicorn</a></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              3 min read
+            
+          </li>
+        
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="synchronized-configuration-for-waitress-and-gunicorn"><a class="toclink" href="../../2025/10/27/waitress-gunicorn-config-sync/">Synchronized Configuration for Waitress and Gunicorn</a></h2>
+<p>We've improved NOW LMS to ensure both Waitress and Gunicorn WSGI servers work seamlessly out-of-the-box with identical configuration.</p>
+
+    
+      <nav class="md-post__action">
+        <a href="../../2025/10/27/waitress-gunicorn-config-sync/">
+          Continue reading
+        </a>
+      </nav>
+    
+    
+  </div>
+</article>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+      <nav class="md-post__authors md-typeset">
+        
+          <span class="md-author">
+            <img src="https://github.com/bmosoluciones.png" alt="NOW-LMS Team">
+          </span>
+        
+      </nav>
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
+          <time datetime="2025-10-10 00:00:00+00:00">Friday, October 10, 2025</time></li>
+        
+          <li class="md-meta__item">
+            in
+            
+              <a href="../performance/" class="md-meta__link">Performance</a>, 
+              <a href="../system-administration/" class="md-meta__link">System Administration</a>, 
+              <a href="../deployment/" class="md-meta__link">Deployment</a>, 
+              <a href="../wsgi/" class="md-meta__link">WSGI</a>, 
+              <a href="../gunicorn/" class="md-meta__link">Gunicorn</a></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              6 min read
+            
+          </li>
+        
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="wsgi-server-session-storage-configuration"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/">WSGI Server Session Storage Configuration</a></h2>
+<h3 id="problem"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#problem">Problem</a></h3>
+<p>When running NOW LMS with production WSGI servers (Gunicorn multi-process or Waitress multi-threaded), users can experience erratic session behavior:</p>
+<ul>
+<li>Sometimes appeared logged in after authentication</li>
+<li>Sometimes appeared logged out after refresh</li>
+<li>"Already logged in" messages appeared inconsistently</li>
+<li>UI flickered between authenticated and anonymous states</li>
+</ul>
+<h3 id="root-cause"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#root-cause">Root Cause</a></h3>
+<p>The WSGI server does not make Flask's signed-cookie sessions worker-local. The failure occurs when NOW LMS selects server-side sessions but that interface is not actually installed, its backend is unavailable, or workers use different secrets/backends.</p>
+<h4 id="gunicorn-multi-process"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#gunicorn-multi-process">Gunicorn (Multi-Process)</a></h4>
+<p>Gunicorn spawns multiple worker processes (e.g., <code>gunicorn app:app --workers 4</code>). Every process must use the same stable <code>SECRET_KEY</code> and the same Redis or SQLAlchemy session backend. NOW LMS also disables Gunicorn app preloading so workers do not inherit pooled database connections opened before the fork.</p>
+<h4 id="waitress-multi-threaded"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#waitress-multi-threaded">Waitress (Multi-Threaded)</a></h4>
+<p>Waitress uses a single process with multiple threads, so it does not switch requests between process-local workers. It still uses the same server-side backend as Gunicorn, which keeps deployment behavior consistent and supports multiple NOW LMS instances behind a load balancer.</p>
+<h3 id="solution"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#solution">Solution</a></h3>
+<p>Implement <strong>shared session storage</strong> that all workers/threads can safely access:</p>
+<h4 id="1-redis-preferred"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#1-redis-preferred">1. Redis (Preferred)</a></h4>
+<p>Redis provides optimal performance and is the recommended solution for production with both Gunicorn and Waitress:</p>
+<ul>
+<li>Fast in-memory storage</li>
+<li>Shared across all workers/threads</li>
+<li>Thread-safe operations</li>
+<li>Persistent across server restarts</li>
+<li>Supports session expiration</li>
+</ul>
+<h4 id="2-sqlalchemy-fallback"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#2-sqlalchemy-fallback">2. SQLAlchemy (Fallback)</a></h4>
+<p>When Redis is not configured, sessions use the same SQLAlchemy database as NOW LMS:</p>
+<ul>
+<li>Shared across worker processes and application instances</li>
+<li>Requires no additional service</li>
+<li>Works with every database backend supported by NOW LMS</li>
+</ul>
+<h4 id="3-testing-mode"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#3-testing-mode">3. Testing Mode</a></h4>
+<p>During tests (when pytest is detected), the system uses Flask's default signed cookie sessions since tests run in a single process.</p>
+<h3 id="configuration"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#configuration">Configuration</a></h3>
+<h4 id="automatic-configuration"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#automatic-configuration">Automatic Configuration</a></h4>
+<p>The system automatically detects the best available session storage:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Priority order:</span>
+<span class="mf">1.</span> <span class="n">Redis</span> <span class="p">(</span><span class="k">if</span> <span class="n">REDIS_URL</span> <span class="ow">or</span> <span class="n">SESSION_REDIS_URL</span> <span class="ow">is</span> <span class="nb">set</span><span class="p">)</span>
+<span class="mf">2.</span> <span class="n">SQLAlchemy</span> <span class="n">database</span> <span class="p">(</span><span class="k">if</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">testing</span> <span class="n">mode</span><span class="p">)</span>
+<span class="mf">3.</span> <span class="n">Default</span> <span class="n">Flask</span> <span class="n">sessions</span> <span class="p">(</span><span class="k">for</span> <span class="n">testing</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="redis-configuration"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#redis-configuration">Redis Configuration</a></h4>
+<p>Set the Redis URL in your environment:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span>redis://localhost:6379/0
+<span class="c1"># or</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SESSION_REDIS_URL</span><span class="o">=</span>redis://localhost:6379/0
+</code></pre></div>
+<p>Then run your WSGI server of choice:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Using Waitress (default)</span>
+lmsctl<span class="w"> </span>serve
+
+<span class="c1"># Using Gunicorn</span>
+lmsctl<span class="w"> </span>serve<span class="w"> </span>--wsgi-server<span class="w"> </span>gunicorn
+
+<span class="c1"># Or directly</span>
+gunicorn<span class="w"> </span><span class="s2">"now_lms:lms_app"</span><span class="w"> </span>--workers<span class="w"> </span><span class="m">4</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">0</span>.0.0.0:8000
+</code></pre></div>
+<h4 id="without-redis"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#without-redis">Without Redis</a></h4>
+<p>If Redis is not configured, the system automatically stores sessions in the configured SQLAlchemy database. No additional service is needed.</p>
+<h4 id="secret_key-critical"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#secret_key-critical">SECRET_KEY (Critical!)</a></h4>
+<p><strong>ALWAYS</strong> set a stable SECRET_KEY in production:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">SECRET_KEY</span><span class="o">=</span><span class="s2">"your-long-random-secret-key-here"</span>
+</code></pre></div>
+<p>⚠️ <strong>Never use the default "dev" SECRET_KEY in production!</strong> This will cause session issues even with shared storage.</p>
+<p>Generate a secure key:</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import secrets; print(secrets.token_hex(32))"</span>
+</code></pre></div>
+<h3 id="session-settings"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#session-settings">Session Settings</a></h3>
+<p>All session storage backends use these production-ready settings:</p>
+<ul>
+<li><strong>SESSION_PERMANENT</strong>: False (sessions expire when browser closes, but PERMANENT_SESSION_LIFETIME still applies)</li>
+<li><strong>SESSION_USE_SIGNER</strong>: True (sessions are cryptographically signed for security)</li>
+<li><strong>PERMANENT_SESSION_LIFETIME</strong>: 86400 seconds (24 hours)</li>
+<li><strong>SESSION_KEY_PREFIX</strong>: "session:" (for Redis, to namespace keys)</li>
+<li><strong>SESSION_COOKIE_HTTPONLY</strong>: True (prevents JavaScript access to session cookie)</li>
+<li><strong>SESSION_COOKIE_SECURE</strong>: True in production (enforces HTTPS)</li>
+<li><strong>SESSION_COOKIE_SAMESITE</strong>: "Lax" (protects against CSRF attacks)</li>
+<li><strong>SESSION_CLEANUP_N_REQUESTS</strong>: 100 for the SQLAlchemy backend</li>
+</ul>
+<h3 id="files-modified"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#files-modified">Files Modified</a></h3>
+<ol>
+<li><strong><code>requirements.txt</code></strong>: Added <code>flask-session</code> dependency</li>
+<li><strong><code>now_lms/session_config.py</code></strong>: Session configuration with cookie security settings</li>
+<li><strong><code>now_lms/__init__.py</code></strong>: Integrated session initialization</li>
+<li><strong><code>now_lms/config/__init__.py</code></strong>: Added SECRET_KEY warning</li>
+<li><strong><code>run.py</code></strong>: Waitress configuration with shared session storage</li>
+<li><strong><code>now_lms/cli.py</code></strong>: Both Gunicorn and Waitress configuration with shared session storage</li>
+</ol>
+<h3 id="testing"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#testing">Testing</a></h3>
+<p>Run the session configuration tests:</p>
+<div class="highlight"><pre><span></span><code>pytest<span class="w"> </span>tests/test_session_multiworker.py<span class="w"> </span>-v
+</code></pre></div>
+<p>Tests verify:
+- Redis configuration when REDIS_URL is set
+- SQLAlchemy fallback when Redis is not configured
+- Proper settings for production use
+- Flask-Login persistence across independent worker processes</p>
+<h3 id="wsgi-server-configuration"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#wsgi-server-configuration">WSGI Server Configuration</a></h3>
+<p>NOW LMS has built-in configuration for both Waitress and Gunicorn in <code>run.py</code> and <code>now_lms/cli.py</code> with optimal settings for session handling:</p>
+<h4 id="waitress-configuration"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#waitress-configuration">Waitress Configuration</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># Key configurations for session support</span>
+<span class="n">serve</span><span class="p">(</span>
+    <span class="n">lms_app</span><span class="p">,</span>
+    <span class="n">host</span><span class="o">=</span><span class="s2">"0.0.0.0"</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="n">PORT</span><span class="p">,</span>
+    <span class="n">threads</span><span class="o">=</span><span class="n">threads</span><span class="p">,</span>  <span class="c1"># Automatically calculated based on system resources</span>
+    <span class="n">channel_timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+    <span class="n">cleanup_interval</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><strong>Important</strong>: 
+- Waitress is single-process, multi-threaded
+- Thread count is automatically calculated based on CPU and RAM
+- Works well with both Redis and SQLAlchemy sessions
+- Cross-platform (Windows, Linux, macOS)</p>
+<h4 id="gunicorn-configuration"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#gunicorn-configuration">Gunicorn Configuration</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># Key configurations for session support</span>
+<span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"preload_app"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Keep SQLAlchemy engines worker-local</span>
+    <span class="s2">"workers"</span><span class="p">:</span> <span class="n">workers</span><span class="p">,</span>  <span class="c1"># Intelligent calculation based on CPU and RAM</span>
+    <span class="s2">"threads"</span><span class="p">:</span> <span class="n">threads</span><span class="p">,</span>  <span class="c1"># Default 1, can be &gt;1 for more concurrency</span>
+    <span class="s2">"worker_class"</span><span class="p">:</span> <span class="s2">"gthread"</span> <span class="k">if</span> <span class="n">threads</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">"sync"</span><span class="p">,</span>
+    <span class="s2">"graceful_timeout"</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Important</strong>: 
+- <code>preload_app = False</code> prevents workers from inheriting pooled database connections
+- Works with both Redis and SQLAlchemy sessions
+- Worker/thread counts are automatically calculated based on system resources
+- Linux/Unix only (not supported on Windows)</p>
+<h3 id="wsgi-server-best-practices"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#wsgi-server-best-practices">WSGI Server Best Practices</a></h3>
+<h4 id="using-the-cli-command"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#using-the-cli-command">Using the CLI Command</a></h4>
+<p>The recommended way to run NOW LMS is using the built-in CLI:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Using Waitress (default, cross-platform)</span>
+lmsctl<span class="w"> </span>serve
+
+<span class="c1"># Using Gunicorn (Linux/Unix only)</span>
+lmsctl<span class="w"> </span>serve<span class="w"> </span>--wsgi-server<span class="w"> </span>gunicorn
+</code></pre></div>
+<p>Or directly with Python:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Uses Waitress by default</span>
+python<span class="w"> </span>run.py
+</code></pre></div>
+<p>The CLI command automatically configures your chosen WSGI server with:
+- Intelligent worker/thread calculation based on CPU and RAM
+- Environment variable support (NOW_LMS_WORKERS, NOW_LMS_THREADS)
+- Proper session storage configuration</p>
+<h4 id="with-environment-variables"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#with-environment-variables">With Environment Variables</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">SECRET_KEY</span><span class="o">=</span><span class="s2">"your-secret-key"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REDIS_URL</span><span class="o">=</span><span class="s2">"redis://localhost:6379/0"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">"postgresql://user:pass@localhost/dbname"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NOW_LMS_WORKERS</span><span class="o">=</span><span class="m">4</span><span class="w">  </span><span class="c1"># For Gunicorn only</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NOW_LMS_THREADS</span><span class="o">=</span><span class="m">4</span><span class="w">  </span><span class="c1"># For both Waitress and Gunicorn</span>
+
+<span class="c1"># Using Waitress (default)</span>
+lmsctl<span class="w"> </span>serve
+
+<span class="c1"># Using Gunicorn</span>
+lmsctl<span class="w"> </span>serve<span class="w"> </span>--wsgi-server<span class="w"> </span>gunicorn
+</code></pre></div>
+<h4 id="advanced-direct-server-commands"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#advanced-direct-server-commands">Advanced: Direct Server Commands</a></h4>
+<h5 id="waitress"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#waitress">Waitress</a></h5>
+<div class="highlight"><pre><span></span><code>waitress-serve<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8000</span><span class="w"> </span>--threads<span class="o">=</span><span class="m">4</span><span class="w"> </span>now_lms:lms_app
+</code></pre></div>
+<h5 id="gunicorn"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#gunicorn">Gunicorn</a></h5>
+<div class="highlight"><pre><span></span><code>gunicorn<span class="w"> </span><span class="s2">"now_lms:lms_app"</span><span class="w"> </span>--workers<span class="w"> </span><span class="m">4</span><span class="w"> </span>--threads<span class="w"> </span><span class="m">2</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">0</span>.0.0.0:8000
+</code></pre></div>
+<p>Note: Using the CLI command (<code>lmsctl serve</code>) is recommended as it automatically configures the server with optimal settings.</p>
+<h4 id="workerthread-count-recommendations"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#workerthread-count-recommendations">Worker/Thread Count Recommendations</a></h4>
+<p>NOW LMS automatically calculates optimal counts, but you can override:</p>
+<h5 id="for-gunicorn-multi-process"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#for-gunicorn-multi-process">For Gunicorn (Multi-Process)</a></h5>
+<ul>
+<li><strong>CPU-bound workloads</strong>: <code>workers = (2 × CPU cores) + 1</code></li>
+<li><strong>I/O-bound workloads</strong>: Use more threads per worker instead</li>
+</ul>
+<p>Example for 4 CPU cores:
+</p><div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">NOW_LMS_WORKERS</span><span class="o">=</span><span class="m">9</span>
+lmsctl<span class="w"> </span>serve<span class="w"> </span>--wsgi-server<span class="w"> </span>gunicorn
+</code></pre></div><p></p>
+<h5 id="for-waitress-single-process-multi-threaded"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#for-waitress-single-process-multi-threaded">For Waitress (Single-Process Multi-Threaded)</a></h5>
+<ul>
+<li><strong>Threads</strong>: Automatically calculated based on available RAM and CPU</li>
+<li><strong>I/O-bound workloads</strong>: Can benefit from higher thread counts</li>
+</ul>
+<p>Example:
+</p><div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">NOW_LMS_THREADS</span><span class="o">=</span><span class="m">8</span>
+lmsctl<span class="w"> </span>serve
+</code></pre></div><p></p>
+<h4 id="additional-server-options"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#additional-server-options">Additional Server Options</a></h4>
+<h5 id="gunicorn-with-timeout"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#gunicorn-with-timeout">Gunicorn with Timeout</a></h5>
+<div class="highlight"><pre><span></span><code>gunicorn<span class="w"> </span><span class="s2">"now_lms:lms_app"</span><span class="w"> </span>--workers<span class="w"> </span><span class="m">4</span><span class="w"> </span>--timeout<span class="w"> </span><span class="m">120</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">0</span>.0.0.0:8000
+</code></pre></div>
+<h5 id="waitress-with-custom-settings"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#waitress-with-custom-settings">Waitress with Custom Settings</a></h5>
+<div class="highlight"><pre><span></span><code>waitress-serve<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8000</span><span class="w"> </span>--threads<span class="o">=</span><span class="m">8</span><span class="w"> </span>--channel-timeout<span class="o">=</span><span class="m">120</span><span class="w"> </span>now_lms:lms_app
+</code></pre></div>
+<h3 id="monitoring"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#monitoring">Monitoring</a></h3>
+<p>Check logs for session configuration:</p>
+<div class="highlight"><pre><span></span><code>INFO: Configuring Redis-based session storage for multi-worker/multi-threaded WSGI servers
+INFO: Session storage initialized: redis
+INFO: Using Redis for session storage - optimal for multi-worker WSGI servers
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><span></span><code>INFO: Configuring SQLAlchemy-based session storage for multi-worker/multi-threaded WSGI servers
+INFO: Session storage initialized: sqlalchemy
+INFO: Session table: flask_sessions
+</code></pre></div>
+<h3 id="troubleshooting"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#troubleshooting">Troubleshooting</a></h3>
+<h4 id="sessions-still-erratic-with-redis"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#sessions-still-erratic-with-redis">Sessions still erratic with Redis</a></h4>
+<ol>
+<li>Verify Redis is running: <code>redis-cli ping</code> (should return "PONG")</li>
+<li>Check Redis URL is correct: <code>echo $REDIS_URL</code></li>
+<li>Verify SECRET_KEY is set and stable: <code>echo $SECRET_KEY</code></li>
+<li>Check WSGI server logs for session initialization messages</li>
+</ol>
+<h4 id="sessions-not-persisting"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#sessions-not-persisting">Sessions not persisting</a></h4>
+<ol>
+<li>Check SECRET_KEY is not "dev": <code>echo $SECRET_KEY</code></li>
+<li>Verify the application database is reachable and the <code>flask_sessions</code> table can be created</li>
+<li>Check session expiration (default 24 hours)</li>
+</ol>
+<h4 id="redis-connection-errors"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#redis-connection-errors">Redis connection errors</a></h4>
+<p>If Redis is configured but not available:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Disable the Redis setting to use the SQLAlchemy fallback</span>
+<span class="nb">unset</span><span class="w"> </span>REDIS_URL
+<span class="nb">unset</span><span class="w"> </span>SESSION_REDIS_URL
+</code></pre></div>
+<h3 id="choosing-between-waitress-and-gunicorn"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#choosing-between-waitress-and-gunicorn">Choosing Between Waitress and Gunicorn</a></h3>
+<p>Both servers work well with NOW LMS and support the same session storage configuration:</p>
+<h4 id="use-waitress-when"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#use-waitress-when">Use Waitress When:</a></h4>
+<ul>
+<li>Running on Windows (Gunicorn not supported)</li>
+<li>Want simple, single-process deployment</li>
+<li>Prefer Python-only dependencies</li>
+<li>Need cross-platform compatibility</li>
+<li>Single server with moderate traffic</li>
+</ul>
+<h4 id="use-gunicorn-when"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#use-gunicorn-when">Use Gunicorn When:</a></h4>
+<ul>
+<li>Running on Linux/Unix</li>
+<li>Need multiple worker processes for better CPU utilization</li>
+<li>Want traditional Unix-style process management</li>
+<li>High-traffic production environment</li>
+<li>Need worker-local database connection pools</li>
+</ul>
+<h4 id="switching-between-servers"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#switching-between-servers">Switching Between Servers</a></h4>
+<p>The configuration is designed to work seamlessly with both:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># No configuration changes needed!</span>
+
+<span class="c1"># Using Waitress</span>
+lmsctl<span class="w"> </span>serve
+
+<span class="c1"># Using Gunicorn</span>
+lmsctl<span class="w"> </span>serve<span class="w"> </span>--wsgi-server<span class="w"> </span>gunicorn
+</code></pre></div>
+<p>Session storage configuration is shared and works identically with both servers.</p>
+<h3 id="performance"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#performance">Performance</a></h3>
+<h4 id="redis-vs-sqlalchemy"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#redis-vs-sqlalchemy">Redis vs SQLAlchemy</a></h4>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Redis</th>
+<th>SQLAlchemy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Speed</td>
+<td>Very Fast</td>
+<td>Database-dependent</td>
+</tr>
+<tr>
+<td>Scalability</td>
+<td>Excellent</td>
+<td>Good</td>
+</tr>
+<tr>
+<td>Multi-server</td>
+<td>Yes</td>
+<td>Yes, with a shared database</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>Configurable</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Setup</td>
+<td>Requires Redis</td>
+<td>Uses the NOW LMS database</td>
+</tr>
+<tr>
+<td>Concurrent workers</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h4 id="recommendations"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#recommendations">Recommendations</a></h4>
+<ul>
+<li><strong>Single server, low traffic</strong>: SQLAlchemy is sufficient</li>
+<li><strong>Single server, high traffic</strong>: Use Redis</li>
+<li><strong>Multiple servers</strong>: Use Redis (required)</li>
+<li><strong>Development</strong>: Either works</li>
+<li><strong>Testing</strong>: Automatic (no configuration needed)</li>
+</ul>
+<h3 id="security-notes"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#security-notes">Security Notes</a></h3>
+<ol>
+<li><strong>Always use HTTPS in production</strong> - sessions are transmitted in cookies</li>
+<li><strong>Set SECRET_KEY to a strong, random value</strong> - never use "dev"</li>
+<li><strong>Enable SESSION_USE_SIGNER</strong> (automatic) - prevents session tampering</li>
+<li><strong>Use Redis with authentication</strong> if exposed to network</li>
+<li><strong>Rotate SECRET_KEY periodically</strong> - invalidates all sessions</li>
+</ol>
+<h3 id="references"><a class="toclink" href="../../2025/10/10/wsgi-session-storage/#references">References</a></h3>
+<ul>
+<li><a href="https://flask-session.readthedocs.io/">Flask-Session Documentation</a></li>
+<li><a href="https://docs.gunicorn.org/">Gunicorn Documentation</a></li>
+<li><a href="https://redis.io/documentation">Redis Documentation</a></li>
+</ul>
+    
+    
+  </div>
+</article>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+      <nav class="md-post__authors md-typeset">
+        
+          <span class="md-author">
+            <img src="https://github.com/bmosoluciones.png" alt="NOW-LMS Team">
+          </span>
+        
+      </nav>
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
+          <time datetime="2025-10-05 00:00:00+00:00">Sunday, October 5, 2025</time></li>
+        
+          <li class="md-meta__item">
+            in
+            
+              <a href="../performance/" class="md-meta__link">Performance</a>, 
+              <a href="../system-administration/" class="md-meta__link">System Administration</a>, 
+              <a href="../deployment/" class="md-meta__link">Deployment</a>, 
+              <a href="../wsgi/" class="md-meta__link">WSGI</a>, 
+              <a href="../gunicorn/" class="md-meta__link">Gunicorn</a></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              6 min read
+            
+          </li>
+        
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="ram-optimization-guide-for-now-lms"><a class="toclink" href="../../2025/10/05/ram-optimization-guide/">RAM Optimization Guide for NOW LMS</a></h2>
+<p>This guide explains how NOW LMS automatically optimizes RAM usage through intelligent worker and thread configuration for production WSGI servers (Gunicorn and Waitress).</p>
+<h3 id="overview"><a class="toclink" href="../../2025/10/05/ram-optimization-guide/#overview">Overview</a></h3>
+<p>NOW LMS implements RAM-aware configuration that automatically calculates the optimal number of workers and threads based on:</p>
+<ul>
+<li>Available system RAM</li>
+<li>Number of CPU cores</li>
+<li>Estimated memory per worker/thread</li>
+<li>Thread configuration</li>
+<li>WSGI server being used</li>
+</ul>
+<p>This ensures the application doesn't consume more RAM than available, preventing crashes and performance issues.</p>
+
+    
+      <nav class="md-post__action">
+        <a href="../../2025/10/05/ram-optimization-guide/">
+          Continue reading
+        </a>
+      </nav>
+    
+    
+  </div>
+</article>
+      
+      
+        
+          
+
+
+
+<nav class="md-pagination">
+  
+</nav>
+        
+      
+    </div>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../wsgi/" class="md-footer__link md-footer__link--prev" aria-label="Previous: WSGI">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                WSGI
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../windows-support/" class="md-footer__link md-footer__link--next" aria-label="Next: Windows Support">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Windows Support
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2021 - 2024 BMO Soluciones
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/bmosoluciones/now-lms" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://quay.io/repository/bmosoluciones/now_lms" target="_blank" rel="noopener" title="quay.io" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+  
+
+
+<h4>Cookie consent</h4>
+<p></p>
+<input class="md-toggle" type="checkbox" id="__settings">
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+    
+      
+    
+    
+      
+        
+  
+  
+    
+    
+  
+  <li class="task-list-item">
+    <label class="task-list-control">
+      <input type="checkbox" name="github" checked>
+      <span class="task-list-indicator"></span>
+      GitHub
+    </label>
+  </li>
+
+      
+    
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["header.autohide", "announce.dismiss", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.footer"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../js/open_in_new_tab.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
