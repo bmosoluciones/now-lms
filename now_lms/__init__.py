@@ -516,6 +516,7 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
 
         # Register request handlers and error handlers
         _register_before_request_handlers(flask_app)
+        _register_after_request_handlers(flask_app)
         _register_error_handlers(flask_app)
 
     if DESARROLLO:
@@ -576,6 +577,43 @@ def _register_before_request_handlers(flask_app):
                 url = request.url.replace("http://", "https://", 1)
                 return redirect(url, code=301)
         return None
+
+
+def _register_after_request_handlers(flask_app):
+    """Register after_request handlers for the Flask application."""
+
+    @flask_app.after_request
+    def add_security_headers(response):
+        """Add HTTP security headers to all responses to ensure robust defense-in-depth."""
+        # 1. Prevent Clickjacking
+        if "X-Frame-Options" not in response.headers:
+            response.headers["X-Frame-Options"] = "SAMEORIGIN"
+
+        # 2. Prevent MIME-sniffing
+        if "X-Content-Type-Options" not in response.headers:
+            response.headers["X-Content-Type-Options"] = "nosniff"
+
+        # 3. Enable XSS filter in older browsers
+        if "X-XSS-Protection" not in response.headers:
+            response.headers["X-XSS-Protection"] = "1; mode=block"
+
+        # 4. Referrer Policy
+        if "Referrer-Policy" not in response.headers:
+            response.headers["Referrer-Policy"] = "no-referrer-when-downgrade"
+
+        # 5. Content Security Policy (CSP)
+        if "Content-Security-Policy" not in response.headers:
+            response.headers["Content-Security-Policy"] = (
+                "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; "
+                "frame-ancestors 'self';"
+            )
+
+        # 6. HTTP Strict Transport Security (HSTS)
+        # Apply only if FORCE_HTTPS is enabled or request is secure
+        if (flask_app.config.get("FORCE_HTTPS") or request.is_secure) and "Strict-Transport-Security" not in response.headers:
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+
+        return response
 
 
 def _register_error_handlers(flask_app):
