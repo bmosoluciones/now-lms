@@ -9,6 +9,27 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Added:
+ - Admin-managed custom pages with full CRUD (create, edit, activate/deactivate, delete).
+ - Direct access to custom pages from admin panel tools.
+ - Theme validation via `theme.yml` presence.
+ - Theme overrides for `course_take`, `resource_list`, `resource_view`.
+ - Contact form and footer links as separate blueprints.
+ - Alembic migration to rename `static_pages` table to `custom_pages`.
+ - Documentation for custom pages and static pages.
+ - Comprehensive tests for custom pages, contact, and footer links.
+
+### Changed:
+ - Renamed inverted nomenclature: DB-driven pages are now `custom_pages`, filesystem theme templates are now `static_pages`.
+ - Static page route changed from `/custom/<page>` to `/static/<page>`.
+ - `get_footer_pages()` renamed to `get_custom_pages()`.
+ - `StaticPage` model renamed to `CustomPage`.
+
+### Fixed:
+ - Custom pages now work correctly with default theme.
+ - Theme macro fallback works for all macros in `current_theme()`.
+ - Theme defaults to `now_lms` when NULL.
+
 ## [1.3.3] - 2026-07-25
 
 ### Fixed:
