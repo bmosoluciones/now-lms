@@ -3,7 +3,7 @@
 <html lang="{{ get_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _("Gestión de Páginas Estáticas") }}</title>
+        <title>{{ _("Gestión de Páginas Custom") }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -16,11 +16,15 @@
 
             <div class="container px-4 py-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>{{ _("Gestión de Páginas Estáticas") }}</h1>
+                    <h1>{{ _("Gestión de Páginas Custom") }}</h1>
+                    <a href="{{ url_for('custom_pages.create_page') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> {{ _("Nueva Página") }}
+                    </a>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
+                        {% if pages %}
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
@@ -28,6 +32,7 @@
                                         <th>{{ _("Título") }}</th>
                                         <th>{{ _("Slug") }}</th>
                                         <th>{{ _("Estado") }}</th>
+                                        <th>{{ _("Footer") }}</th>
                                         <th>{{ _("Última Modificación") }}</th>
                                         <th>{{ _("Acciones") }}</th>
                                     </tr>
@@ -36,12 +41,25 @@
                                     {% for page in pages %}
                                     <tr>
                                         <td>{{ page.title }}</td>
-                                        <td><code>{{ page.slug }}</code></td>
+                                        <td><code>/page/{{ page.slug }}</code></td>
                                         <td>
-                                            {% if page.is_active %}
-                                            <span class="badge bg-success">{{ _("Activa") }}</span>
+                                            <form method="POST" action="{{ url_for('custom_pages.toggle_page', page_id=page.id) }}" class="d-inline">
+                                                {% if page.is_active %}
+                                                <button type="submit" class="btn btn-sm btn-success" title="{{ _("Clic para desactivar") }}">
+                                                    <i class="bi bi-toggle-on"></i> {{ _("Activa") }}
+                                                </button>
+                                                {% else %}
+                                                <button type="submit" class="btn btn-sm btn-secondary" title="{{ _("Clic para activar") }}">
+                                                    <i class="bi bi-toggle-off"></i> {{ _("Inactiva") }}
+                                                </button>
+                                                {% endif %}
+                                            </form>
+                                        </td>
+                                        <td>
+                                            {% if page.mostrar_en_footer %}
+                                            <span class="badge bg-info">{{ _("Sí") }}</span>
                                             {% else %}
-                                            <span class="badge bg-secondary">{{ _("Inactiva") }}</span>
+                                            <span class="badge bg-light text-muted">{{ _("No") }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -49,25 +67,41 @@
                                             page.creado.strftime('%Y-%m-%d') }}
                                         </td>
                                         <td>
-                                            <a
-                                                href="{{ url_for('custom_pages.edit_page', page_id=page.id) }}"
-                                                class="btn btn-sm btn-primary"
-                                            >
-                                                <i class="bi bi-pencil"></i> {{ _("Editar") }}
-                                            </a>
-                                            <a
-                                                href="{{ url_for('custom_pages.view_page', slug=page.slug) }}"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                target="_blank"
-                                            >
-                                                <i class="bi bi-eye"></i> {{ _("Ver") }}
-                                            </a>
+                                            <div class="btn-group btn-group-sm">
+                                                <a
+                                                    href="{{ url_for('custom_pages.edit_page', page_id=page.id) }}"
+                                                    class="btn btn-primary"
+                                                    title="{{ _("Editar") }}"
+                                                >
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('custom_pages.view_page', slug=page.slug) }}"
+                                                    class="btn btn-outline-secondary"
+                                                    target="_blank"
+                                                    title="{{ _("Ver") }}"
+                                                >
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <form method="POST" action="{{ url_for('custom_pages.delete_page', page_id=page.id) }}" class="d-inline" onsubmit="return confirm('{{ _("¿Estás seguro de eliminar esta página?") }}')">
+                                                    <button type="submit" class="btn btn-outline-danger" title="{{ _("Eliminar") }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {{ _("No hay páginas custom creadas.") }}
+                            <a href="{{ url_for('custom_pages.create_page') }}">{{ _("Crear la primera página") }}</a>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
 

@@ -1113,6 +1113,16 @@ class CustomPageFooterForm(FlaskForm):
     mostrar_en_footer = BooleanField(_("Mostrar en el footer"), default=False, validators=[])
 
 
+class CustomPageForm(FlaskForm):
+    """Formulario para crear/editar páginas custom."""
+
+    title = StringField(_("Título"), validators=[DataRequired(), Length(min=1, max=200)])
+    slug = StringField(_("Slug (URL)"), validators=[DataRequired(), Length(min=1, max=50)])
+    content = TextAreaField(_("Contenido (HTML)"), validators=[DataRequired()])
+    is_active = BooleanField(_("Activa (visible públicamente)"), default=True, validators=[])
+    mostrar_en_footer = BooleanField(_("Mostrar en el footer del sitio"), default=False, validators=[])
+
+
 class ExternalApiKeyForm(FlaskForm):
     """Form to create a new external API key."""
 
