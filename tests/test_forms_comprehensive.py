@@ -90,8 +90,8 @@ from now_lms.forms import (
     BlogCommentForm,
     AdminCourseEnrollmentForm,
     AdminProgramEnrollmentForm,
+    CustomPageFooterForm,
     EnlaceUtilForm,
-    StaticPageFooterForm,
     ExternalApiKeyForm,
 )
 from now_lms.forms.masterclass import get_platform_choices
@@ -1021,7 +1021,7 @@ def test_admin_enrollment_forms(app):
 
 
 def test_footer_and_api_key_forms(app):
-    """Test EnlaceUtilForm, StaticPageFooterForm, and ExternalApiKeyForm validation."""
+    """Test EnlaceUtilForm, CustomPageFooterForm, and ExternalApiKeyForm validation."""
     with app.test_request_context():
         # EnlaceUtil
         form_link = EnlaceUtilForm(
@@ -1034,8 +1034,8 @@ def test_footer_and_api_key_forms(app):
         )
         assert form_link.validate()
 
-        # StaticPageFooter
-        form_footer = StaticPageFooterForm(MultiDict({"mostrar_en_footer": "y"}))
+        # CustomPageFooter
+        form_footer = CustomPageFooterForm(MultiDict({"mostrar_en_footer": "y"}))
         assert form_footer.validate()
 
         # ExternalApiKey

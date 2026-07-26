@@ -131,8 +131,8 @@ from now_lms.vistas._helpers import (
     favicon_personalizado,
     get_blog_post_cover_image,
     get_current_course_logo,
+    get_custom_pages,
     get_footer_enlaces,
-    get_footer_pages,
     get_site_favicon,
     get_site_logo,
     logo_personalizado,
@@ -164,7 +164,7 @@ from now_lms.vistas.programs import program
 from now_lms.vistas.public_api import public_api
 from now_lms.vistas.resources import resource_d
 from now_lms.vistas.settings import setting
-from now_lms.vistas.static_pages import static_pages
+from now_lms.vistas.custom_pages import custom_pages
 from now_lms.vistas.tags import tag
 from now_lms.vistas.users import user
 from now_lms.vistas.web_error_codes import web_error
@@ -256,7 +256,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(public_api)
         flask_app.register_blueprint(resource_d)
         flask_app.register_blueprint(setting)
-        flask_app.register_blueprint(static_pages)
+        flask_app.register_blueprint(custom_pages)
         flask_app.register_blueprint(tag)
         flask_app.register_blueprint(user)
         flask_app.register_blueprint(masterclass)
@@ -355,7 +355,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
     flask_app.jinja_env.globals["get_all_from_db"] = get_all_records
     flask_app.jinja_env.globals["get_course_sections"] = get_course_sections
-    flask_app.jinja_env.globals["get_footer_pages"] = get_footer_pages
+    flask_app.jinja_env.globals["get_custom_pages"] = get_custom_pages
     flask_app.jinja_env.globals["get_footer_enlaces"] = get_footer_enlaces
     flask_app.jinja_env.globals["get_locale"] = get_locale
     flask_app.jinja_env.globals["get_one_from_db"] = get_one_record

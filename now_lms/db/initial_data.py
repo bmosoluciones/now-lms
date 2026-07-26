@@ -2207,14 +2207,14 @@ def crear_paginas_estaticas_predeterminadas() -> None:
     privacy_title = privacy_policy_titles.get(lang, privacy_policy_titles["en"])
 
     # Check if pages already exist
-    from now_lms.db import StaticPage
+    from now_lms.db import CustomPage
 
     existing_about = database.session.execute(
-        database.select(StaticPage).filter(StaticPage.slug == "about-us")
+        database.select(CustomPage).filter(CustomPage.slug == "about-us")
     ).scalar_one_or_none()
 
     if not existing_about:
-        about_page = StaticPage(
+        about_page = CustomPage(
             slug="about-us",
             title=about_title,
             content=about_content,
@@ -2227,11 +2227,11 @@ def crear_paginas_estaticas_predeterminadas() -> None:
         log.debug("About Us page already exists.")
 
     existing_privacy = database.session.execute(
-        database.select(StaticPage).filter(StaticPage.slug == "privacy-policy")
+        database.select(CustomPage).filter(CustomPage.slug == "privacy-policy")
     ).scalar_one_or_none()
 
     if not existing_privacy:
-        privacy_page = StaticPage(
+        privacy_page = CustomPage(
             slug="privacy-policy",
             title=privacy_title,
             content=privacy_content,

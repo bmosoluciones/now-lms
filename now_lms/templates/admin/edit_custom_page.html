@@ -22,7 +22,7 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST" action="{{ url_for('static_pages.edit_page', page_id=page.id) }}">
+                        <form method="POST" action="{{ url_for('custom_pages.edit_page', page_id=page.id) }}">
                             <div class="mb-3">
                                 <label for="title" class="form-label">{{ _("Título") }}</label>
                                 <input
@@ -91,11 +91,11 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-save"></i> {{ _("Guardar Cambios") }}
                                 </button>
-                                <a href="{{ url_for('static_pages.list_pages') }}" class="btn btn-secondary">
+                                <a href="{{ url_for('custom_pages.list_pages') }}" class="btn btn-secondary">
                                     {{ _("Cancelar") }}
                                 </a>
                                 <a
-                                    href="{{ url_for('static_pages.view_page', slug=page.slug) }}"
+                                    href="{{ url_for('custom_pages.view_page', slug=page.slug) }}"
                                     class="btn btn-outline-secondary"
                                     target="_blank"
                                 >

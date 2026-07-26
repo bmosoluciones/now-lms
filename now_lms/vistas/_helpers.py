@@ -114,19 +114,19 @@ def favicon_personalizado() -> bool:
         return False
 
 
-def get_footer_pages():
-    """Get static pages to be shown in the footer."""
+def get_custom_pages():
+    """Get custom pages to be shown in the footer."""
     from now_lms.cache import cache
-    from now_lms.db import StaticPage, database
+    from now_lms.db import CustomPage, database
 
     @cache.memoize(timeout=300)
-    def _get_footer_pages():
+    def _get_custom_pages():
         try:
             pages = (
                 database.session.execute(
-                    database.select(StaticPage)
-                    .filter(StaticPage.is_active.is_(True), StaticPage.mostrar_en_footer.is_(True))
-                    .order_by(StaticPage.title)
+                    database.select(CustomPage)
+                    .filter(CustomPage.is_active.is_(True), CustomPage.mostrar_en_footer.is_(True))
+                    .order_by(CustomPage.title)
                 )
                 .scalars()
                 .all()
@@ -135,7 +135,7 @@ def get_footer_pages():
         except Exception:
             return []
 
-    return _get_footer_pages()
+    return _get_custom_pages()
 
 
 def get_footer_enlaces():

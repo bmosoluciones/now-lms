@@ -71,7 +71,7 @@
                         <h5>{{ _("Gestión del Mensaje") }}</h5>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ url_for('static_pages.view_contact_message', message_id=message.id) }}">
+                        <form method="POST" action="{{ url_for('custom_pages.view_contact_message', message_id=message.id) }}">
                             <div class="mb-3">
                                 <label for="status" class="form-label">{{ _("Estado") }}</label>
                                 <select name="status" id="status" class="form-select">
@@ -112,7 +112,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-save"></i> {{ _("Guardar Cambios") }}
                                 </button>
-                                <a href="{{ url_for('static_pages.list_contact_messages') }}" class="btn btn-secondary">
+                                <a href="{{ url_for('custom_pages.list_contact_messages') }}" class="btn btn-secondary">
                                     {{ _("Volver a Lista") }}
                                 </a>
                                 <a
