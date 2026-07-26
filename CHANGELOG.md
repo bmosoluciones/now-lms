@@ -9,7 +9,9 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-> **BREAKING: This release requires manual migration. Existing installations will fail at runtime if themes are not updated. See [Migration Guide](docs/blog/posts/page-refactoring-breaking-changes.md).**
+## [2.0.0] - 2026-07-26
+
+> **BREAKING: This release requires manual migration. Existing installations will fail at runtime if themes are not updated. See [Migration Guide](https://bmosoluciones.github.io/now-lms/blog/2026/07/26/page-refactoring-breaking-changes/).**
 
 ### Added:
  - Admin-managed custom pages with full CRUD (create, edit, activate/deactivate, delete).
