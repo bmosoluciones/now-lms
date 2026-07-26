@@ -20,14 +20,17 @@ All notable changes to this project will be documented in this file.
  - Comprehensive tests for custom pages, contact, and footer links.
 
 ### Breaking Changes:
- - Route `/custom/<page>` renamed to `/static/<page>`.
- - `StaticPage` model renamed to `CustomPage`.
+ - DB table `static_pages` renamed to `custom_pages` (Alembic migration included, must run `alembic upgrade head`).
+ - Admin-managed pages route changed from `/static/<slug>` to `/page/<slug>`.
+ - Theme-defined pages route changed to `/static/<page>`.
  - `get_footer_pages()` renamed to `get_custom_pages()`.
- - DB table `static_pages` renamed to `custom_pages` (Alembic migration included).
- - `StaticPageFooterForm` renamed to `CustomPageFooterForm`.
+ - Contact endpoint changed from `static_pages.contact` to `contact.contact_form`.
+ - Old themes using previous function names or endpoints will fail to render.
 
 ### Changed:
- - Renamed inverted nomenclature: DB-driven pages are now `custom_pages`, filesystem theme templates are now `static_pages`.
+ - Renamed inverted nomenclature: DB-driven admin pages are now `custom_pages`, filesystem theme templates are now `static_pages`.
+ - `StaticPage` model renamed to `CustomPage`.
+ - `StaticPageFooterForm` renamed to `CustomPageFooterForm`.
 
 ### Fixed:
  - Custom pages now work correctly with default theme.
