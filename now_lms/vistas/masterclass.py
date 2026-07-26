@@ -24,6 +24,7 @@ from werkzeug.wrappers import Response
 # ---------------------------------------------------------------------------------------
 from now_lms.db import MasterClass, MasterClassEnrollment, Usuario, database, select
 from now_lms.forms.masterclass import MasterClassEnrollmentForm, MasterClassForm
+from now_lms.i18n import _
 
 # ---------------------------------------------------------------------------------------
 # Blueprint definition
@@ -96,7 +97,7 @@ def enroll(slug: str) -> str | Response:
     )
 
     if existing_enrollment:
-        flash("Ya estás inscrito en esta clase magistral.", "info")
+        flash(_("Ya estás inscrito en esta clase magistral."), "info")
         return redirect(url_for("masterclass.detail_public", slug=slug))
 
     form = MasterClassEnrollmentForm()
@@ -113,7 +114,7 @@ def enroll(slug: str) -> str | Response:
         database.session.add(enrollment)
         database.session.commit()
 
-        flash("Te has inscrito exitosamente en la clase magistral.", "success")
+        flash(_("Te has inscrito exitosamente en la clase magistral."), "success")
         return redirect(url_for("masterclass.detail_public", slug=slug))
 
     return render_template(
@@ -189,10 +190,10 @@ def instructor_create() -> str | Response:
         database.session.add(master_class)
         database.session.commit()
 
-        flash("Clase magistral creada exitosamente.", "success")
+        flash(_("Clase magistral creada exitosamente."), "success")
         return redirect(url_for("masterclass.instructor_list"))
 
-    return render_template("masterclass/instructor_create.html", form=form, title="Crear Clase Magistral")
+    return render_template("masterclass/instructor_create.html", form=form, title=_("Crear Clase Magistral"))
 
 
 @masterclass.route("/instructor/<master_class_id>/edit", methods=["GET", "POST"])
@@ -254,11 +255,11 @@ def instructor_edit(master_class_id: int) -> str | Response:
 
         database.session.commit()
 
-        flash("Clase magistral actualizada exitosamente.", "success")
+        flash(_("Clase magistral actualizada exitosamente."), "success")
         return redirect(url_for("masterclass.instructor_list"))
 
     return render_template(
-        "masterclass/instructor_edit.html", form=form, master_class=master_class, title="Editar Clase Magistral"
+        "masterclass/instructor_edit.html", form=form, master_class=master_class, title=_("Editar Clase Magistral")
     )
 
 

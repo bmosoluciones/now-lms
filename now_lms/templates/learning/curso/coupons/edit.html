@@ -170,10 +170,10 @@
                 const discountValue = document.getElementById('discount_value');
                 
                 if (discountType === 'percentage') {
-                    helpText.textContent = 'Porcentaje de descuento (0-100)';
+                    helpText.textContent = '{{ _("Porcentaje de descuento (0-100)") }}';
                     discountValue.max = '100';
                 } else {
-                    helpText.textContent = `Cantidad fija de descuento (máximo $${coursePrice})`;
+                    helpText.textContent = `{{ _("Cantidad fija de descuento (máximo") }} $${coursePrice})`;
                     discountValue.max = coursePrice;
                 }
                 updatePreview();
@@ -222,7 +222,7 @@
             document.getElementById('max_uses').addEventListener('input', function() {
                 const value = parseInt(this.value);
                 if (value && value < currentUses) {
-                    this.setCustomValidity(`El máximo de usos no puede ser menor que los usos actuales (${currentUses})`);
+                    this.setCustomValidity(`{{ _("El máximo de usos no puede ser menor que los usos actuales") }} (${currentUses})`);
                 } else {
                     this.setCustomValidity('');
                 }

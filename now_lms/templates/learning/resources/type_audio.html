@@ -279,7 +279,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                 {% if recurso.subtitle_vtt_secondary %}
                 <track kind="subtitles"
                   src="{{ url_for('resources.recurso_vtt_secondary', recurso_code=recurso.id, course_code=recurso.curso) }}"
-                  srclang="es-sec" label="Secundario">
+                  srclang="es-sec" label="{{ _('Secundario') }}">
                 {% endif %}
                 {{_("Su navegador no soporta el elemento de audio")}}.
               </audio>

@@ -23,6 +23,7 @@ from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import Certificacion, Curso, DocenteCurso, EstudianteCurso, Usuario, database
 from now_lms.db.tools import elimina_imagen_usuario
 from now_lms.forms import ChangePasswordForm, UserForm
+from now_lms.i18n import _
 from now_lms.logs import log
 from now_lms.misc import GENEROS
 
@@ -47,7 +48,7 @@ def _update_profile_photo(usuario_: Usuario) -> None:
         if picture_file:
             usuario_.portada = True
             database.session.commit()
-            flash("Imagen de perfil actualizada.", "success")
+            flash(_("Imagen de perfil actualizada."), "success")
     except UploadNotAllowed:
         log.warning("Could not update profile image.")
 
@@ -164,17 +165,17 @@ def edit_perfil(ulid: str) -> str | Response:
 
         if email_changed:
             usuario_.correo_electronico_verificado = False
-            flash("Favor verifique su nuevo correo electronico.", "warning")
+            flash(_("Favor verifique su nuevo correo electronico."), "warning")
 
         try:
             database.session.commit()
             cache.delete("view/" + url_for("user_profile.perfil"))
-            flash("Pefil actualizado.", "success")
+            flash(_("Perfil actualizado."), "success")
             _update_profile_photo(usuario_)
         except OperationalError as e:
             database.session.rollback()
             log.error(f"OperationalError in edit_perfil: {e}")
-            flash("Error al editar el perfil.", "error")
+            flash(_("Error al editar el perfil."), "error")
 
         return redirect(PROFILE_ROUTE)
 
@@ -215,22 +216,22 @@ def cambiar_contrasena(ulid: str) -> str | Response:
 
         # Verificar contraseña actual
         if not validar_acceso(usuario_.usuario, form.current_password.data):
-            flash("La contraseña actual es incorrecta.", "error")
+            flash(_("La contraseña actual es incorrecta."), "error")
             return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)
 
         # Verificar que las nuevas contraseñas coincidan
         if form.new_password.data != form.confirm_password.data:
-            flash("Las nuevas contraseñas no coinciden.", "error")
+            flash(_("Las nuevas contraseñas no coinciden."), "error")
             return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)
 
         # Actualizar contraseña
         try:
             usuario_.acceso = proteger_passwd(form.new_password.data)
             database.session.commit()
-            flash("Contraseña actualizada exitosamente.", "success")
+            flash(_("Contraseña actualizada exitosamente."), "success")
             return redirect(PROFILE_ROUTE)
         except OperationalError:
-            flash("Error al actualizar la contraseña.", "error")
+            flash(_("Error al actualizar la contraseña."), "error")
 
     return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)
 
