@@ -35,7 +35,11 @@
         {% block contenido %}{% endblock %}
 
         <!-- Fin del bloque contenido -->
-        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <!-- No third-party CDN loads in this theme. The icon-library loaders that used
+             to sit below were dead code (nothing here renders their custom element;
+             icons are bootstrap-icons, self-hosted) and upstream's v2.0.0 CSP blocks
+             that CDN host anyway. If a JS library is ever actually adopted, vendor it
+             into static/themes/intent_learn/ — same rule as the fonts, and the
+             front-door tests enforce it. -->
     </body>
 </html>

@@ -1,4 +1,9 @@
 {% macro jslibs() -%}
-<!-- AlpineJS -->
-<script src="//unpkg.com/alpinejs" defer></script>
+{#- Intentionally empty. This used to load AlpineJS from a public CDN — unversioned,
+    protocol-relative, and used by nothing: no template in this theme (or in core)
+    carries a single Alpine directive. Upstream's v2.0.0 CSP blocks that host anyway.
+    The macro stays defined because the theme contract expects js.j2 to provide it
+    (course_view.j2 calls current_theme.jslibs()). If a JS library is ever actually
+    adopted, vendor it into static/themes/intent_learn/ — the front-door tests
+    enforce the no-CDN rule. -#}
 {% endmacro %}
