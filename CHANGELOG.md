@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+> **BREAKING: This release requires manual migration. Existing installations will fail at runtime if themes are not updated. See [Migration Guide](docs/blog/posts/page-refactoring-breaking-changes.md).**
+
 ### Added:
  - Admin-managed custom pages with full CRUD (create, edit, activate/deactivate, delete).
  - Direct access to custom pages from admin panel tools.
@@ -19,18 +21,44 @@ All notable changes to this project will be documented in this file.
  - Documentation for custom pages and static pages.
  - Comprehensive tests for custom pages, contact, and footer links.
 
-### Breaking Changes:
- - DB table `static_pages` renamed to `custom_pages` (Alembic migration included, must run `alembic upgrade head`).
- - Admin-managed pages route changed from `/static/<slug>` to `/page/<slug>`.
- - Theme-defined pages route changed to `/static/<page>`.
- - `get_footer_pages()` renamed to `get_custom_pages()`.
- - Contact endpoint changed from `static_pages.contact` to `contact.contact_form`.
- - Old themes using previous function names or endpoints will fail to render.
+### Breaking Changes — Database:
+ - DB table `static_pages` renamed to `custom_pages`.
+ - Alembic migration renames the table only — does **not** update templates, URLs, or custom themes.
+ - `StaticPage` model renamed to `CustomPage`.
+
+### Breaking Changes — Routes:
+ - Admin-managed pages: `/static/<slug>` → `/page/<slug>`.
+ - Theme-defined pages: new route `/static/<page>`.
+ - Contact endpoint: `static_pages.contact` → `contact.contact_form`.
+
+### Breaking Changes — Python API:
+ - `get_footer_pages()` → `get_custom_pages()`.
+ - `StaticPageFooterForm` → `CustomPageFooterForm`.
+ - Blueprint `static_pages` split into `custom_pages`, `contact`, `footer_links`.
+
+### Breaking Changes — Templates:
+ - `admin/static_pages.html` → `admin/custom_pages.html`.
+ - `admin/edit_static_page.html` → `admin/edit_custom_page.html`.
+ - `page_info/static_page.html` → `page_info/custom_page.html`.
+
+### Breaking Changes — Theme directories:
+ - `templates/themes/<theme>/custom_pages/` → `templates/themes/<theme>/static_pages/`.
+ - Every theme footer/navbar must update: `get_footer_pages()` → `get_custom_pages()`, `static_pages.view_page` → `custom_pages.view_page`, `static_pages.contact` → `contact.contact_form`.
+ - Old themes using previous function names or endpoints will fail at runtime (Jinja `UndefinedError`/`BuildError`).
+
+### Migration:
+ 1. Put the application in maintenance mode.
+ 2. Back up both databases and all theme directories.
+ 3. Run `flask db upgrade` (or `alembic upgrade head`).
+ 4. Rename theme `custom_pages/` directories to `static_pages/`.
+ 5. Update theme footer/navbar templates for new endpoints and helpers.
+ 6. Clear application and Redis caches.
+ 7. Restart application services.
+ 8. Verify: home, navbar, footer, `/page/<slug>`, `/static/<page>`, `/contact`, blog, courses, admin custom-page CRUD.
+ - Check logs for `BuildError`, `UndefinedError`, migration errors, missing-template errors.
 
 ### Changed:
  - Renamed inverted nomenclature: DB-driven admin pages are now `custom_pages`, filesystem theme templates are now `static_pages`.
- - `StaticPage` model renamed to `CustomPage`.
- - `StaticPageFooterForm` renamed to `CustomPageFooterForm`.
 
 ### Fixed:
  - Custom pages now work correctly with default theme.
