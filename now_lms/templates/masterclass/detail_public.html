@@ -220,7 +220,7 @@
 
                 if (distance < 0) {
                     clearInterval(countdown)
-                    document.getElementById("countdown").innerHTML = "¡El evento ha comenzado!"
+                    document.getElementById("countdown").innerHTML = "{{ _('¡El evento ha comenzado!') }}"
                     location.reload() // Reload to show live banner
                     return
                 }

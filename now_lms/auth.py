@@ -31,6 +31,7 @@ from flask_login import current_user
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import Configuracion, MailConfig, Usuario, database
+from now_lms.i18n import _
 from now_lms.logs import log
 
 ph = PasswordHasher()
@@ -114,7 +115,7 @@ def perfil_requerido(perfil_id: str | tuple[str, ...]) -> Callable[[Callable], C
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             if not current_user.is_authenticated:
-                flash("Favor iniciar sesión.", "warning")
+                flash(_("Favor iniciar sesión."), "warning")
                 return redirect(url_for("user.inicio_sesion"))
 
             log.trace(f"Verifying access for user {current_user.usuario} with profile {perfil_id}")
@@ -131,7 +132,7 @@ def perfil_requerido(perfil_id: str | tuple[str, ...]) -> Callable[[Callable], C
                 return func(*args, **kwargs)
 
             log.warning(f"Access denied for user {current_user.usuario} with profile {current_user.tipo}")
-            flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
+            flash(_("No se encuentra autorizado a acceder al recurso solicitado."), "error")
             return abort(403)
 
         return wrapper
@@ -153,7 +154,7 @@ def email_verificado_requerido(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         if not current_user.is_authenticated:
-            flash("Favor iniciar sesión.", "warning")
+            flash(_("Favor iniciar sesión."), "warning")
             return redirect(url_for("user.inicio_sesion"))
 
         # Admins bypass email verification requirement
@@ -163,8 +164,8 @@ def email_verificado_requerido(func: Callable) -> Callable:
         # Check if email verification is required
         if usuario_requiere_verificacion_email():
             flash(
-                "Debe verificar su correo electrónico para acceder a esta funcionalidad. "
-                "Revise su bandeja de entrada y confirme su dirección de correo.",
+                _("Debe verificar su correo electrónico para acceder a esta funcionalidad. "
+                "Revise su bandeja de entrada y confirme su dirección de correo."),
                 "warning",
             )
             return redirect(url_for("user_profile.usuario", id_usuario=current_user.usuario))

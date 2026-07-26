@@ -1031,7 +1031,7 @@ def nuevo_recurso_audio(course_code: str, seccion: str) -> str | Response:
         database.session.add(nuevo_recurso_)
         database.session.commit()
         invalidar_cache_curso(course_code)
-        flash("RECURSO_AGREGADO", "success")
+        flash(RECURSO_AGREGADO, "success")
     except OperationalError:
         flash(ERROR_AL_AGREGAR_CURSO, "warning")
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
