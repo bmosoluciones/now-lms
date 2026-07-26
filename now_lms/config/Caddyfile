@@ -1,11 +1,22 @@
 :8080 {
     encode gzip
 
+    # Global security headers for defense-in-depth
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "no-referrer-when-downgrade"
+        Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self';"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        # Remove Server header to prevent info disclosure
+        -Server
+    }
+
     handle_path /static/* {
         root * /app/now_lms/static
         file_server
         header Cache-Control "public, max-age=86400"
-        header -Server
     }
 
     reverse_proxy localhost:8000 {
