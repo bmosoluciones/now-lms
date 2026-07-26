@@ -17,7 +17,7 @@
             <div class="container px-4 py-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1>{{ _("Enlaces Útiles para el Footer") }}</h1>
-                    <a href="{{ url_for('custom_pages.create_enlace_util') }}" class="btn btn-primary">
+                    <a href="{{ url_for('footer_links.create_enlace_util') }}" class="btn btn-primary">
                         <i class="bi bi-plus-circle"></i> {{ _("Nuevo Enlace") }}
                     </a>
                 </div>
@@ -67,7 +67,7 @@
                                         <td>
                                             <div class="btn-group btn-group-sm">
                                                 <a
-                                                    href="{{ url_for('custom_pages.edit_enlace_util', enlace_id=enlace.id) }}"
+                                                    href="{{ url_for('footer_links.edit_enlace_util', enlace_id=enlace.id) }}"
                                                     class="btn btn-outline-primary"
                                                     title="{{ _('Editar') }}"
                                                 >
@@ -75,7 +75,7 @@
                                                 </a>
                                                 <form
                                                     method="POST"
-                                                    action="{{ url_for('custom_pages.delete_enlace_util', enlace_id=enlace.id) }}"
+                                                    action="{{ url_for('footer_links.delete_enlace_util', enlace_id=enlace.id) }}"
                                                     style="display: inline"
                                                     onsubmit="return confirm('{{ _('¿Está seguro de eliminar este enlace?') }}')"
                                                 >
@@ -100,7 +100,7 @@
                 <div class="alert alert-warning">
                     <i class="bi bi-exclamation-triangle"></i>
                     {{ _("No hay enlaces útiles configurados.") }}
-                    <a href="{{ url_for('custom_pages.create_enlace_util') }}">{{ _("Crear el primer enlace") }}</a>
+                    <a href="{{ url_for('footer_links.create_enlace_util') }}">{{ _("Crear el primer enlace") }}</a>
                 </div>
                 {% endif %}
 

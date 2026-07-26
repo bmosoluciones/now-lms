@@ -64,7 +64,7 @@
                 </li>
                 {% endif %} {% if is_contact_enabled() %}
                 <li>
-                    <a href="{{ url_for('custom_pages.contact') }}" class="nav-link px-2">✉️ Contact</a>
+                    <a href="{{ url_for('contact.contact_form') }}" class="nav-link px-2">✉️ Contact</a>
                 </li>
                 {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
                 == "instructor" or current_user.tipo == "admin" %}
