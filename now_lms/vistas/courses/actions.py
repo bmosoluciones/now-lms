@@ -27,6 +27,7 @@ from now_lms.bi import (
     reorganiza_indice_seccion,
 )
 from now_lms.db import CursoRecurso, CursoSeccion, database
+from now_lms.i18n import _
 from now_lms.vistas._helpers import safe_commit
 from now_lms.vistas.courses.base import course, VISTA_ADMINISTRAR_CURSO, VISTA_CURSOS
 
@@ -39,7 +40,7 @@ def incrementar_indice_seccion(course_code: str, indice: str) -> Response:
     try:
         indice_int = int(indice)
     except (ValueError, TypeError):
-        flash("Índice inválido.", "danger")
+        flash(_("Índice inválido."), "danger")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     modificar_indice_curso(
         codigo_curso=course_code,
@@ -58,7 +59,7 @@ def reducir_indice_seccion(course_code: str, indice: str) -> Response:
     try:
         indice_int = int(indice)
     except (ValueError, TypeError):
-        flash("Índice inválido.", "danger")
+        flash(_("Índice inválido."), "danger")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     modificar_indice_curso(
         codigo_curso=course_code,
@@ -77,7 +78,7 @@ def modificar_orden_recurso(cource_code: str, seccion_id: str, resource_index: s
     try:
         indice_int = int(resource_index)
     except (ValueError, TypeError):
-        flash("Índice inválido.", "danger")
+        flash(_("Índice inválido."), "danger")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=cource_code))
     modificar_indice_seccion(
         seccion_id=seccion_id,

@@ -247,7 +247,7 @@
                                     >
                                     <div class="text-end">
                                         {% if curso.duracion %}
-                                        <small class="text-muted d-block">⏱️ {{ curso.duracion }} minutos</small>
+                                        <small class="text-muted d-block">⏱️ {{ curso.duracion }} {{ _('minutos') }}</small>
                                         {% endif %} {% if curso.precio %}
                                         <small class="fw-bold" style="color: #7d9fb8"
                                             >{{ curso.precio | float }} {{ site_config.moneda }}</small

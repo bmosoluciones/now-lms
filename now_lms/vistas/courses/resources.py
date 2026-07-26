@@ -110,9 +110,9 @@ resources = Blueprint("resources", __name__, template_folder=DIRECTORIO_PLANTILL
 # Reused literals
 PAGINA_RECURSO_ENDPOINT = ".pagina_recurso"
 COURSE_LIBRARY_ENDPOINT = ".course_library"
-MSG_RECURSO_NO_ENCONTRADO = "Recurso no encontrado."
-MSG_RECURSO_ACTUALIZADO = "Recurso actualizado correctamente."
-MSG_RECURSO_ERROR_ACTUALIZAR = "Hubo un error al actualizar el recurso."
+MSG_RECURSO_NO_ENCONTRADO = _("Recurso no encontrado.")
+MSG_RECURSO_ACTUALIZADO = _("Recurso actualizado correctamente.")
+MSG_RECURSO_ERROR_ACTUALIZAR = _("Hubo un error al actualizar el recurso.")
 TEMPLATE_LIBRARY_UPLOAD = "learning/curso/library_upload.html"
 ICS_DATETIME_FORMAT = "%Y%m%dT%H%M%S"
 
@@ -255,7 +255,7 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
     else:
         database.session.add(CursoRecursoAvance(usuario=current_user.usuario, curso=curso_id, recurso=codigo, completado=True))
     database.session.commit()
-    flash("Recurso marcado como completado.", "success")
+    flash(_("Recurso marcado como completado."), "success")
     _actualizar_avance_curso(curso_id, current_user.usuario)
 
     indice = crear_indice_recurso(codigo)
@@ -727,7 +727,7 @@ def nuevo_recurso_pdf(course_code: str, seccion: str) -> str | Response:
             database.session.add(nuevo_recurso_)
             database.session.commit()
             invalidar_cache_curso(course_code)
-            flash("RECURSO_AGREGADO", "success")
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -822,7 +822,7 @@ def nuevo_recurso_meet(course_code: str, seccion: str) -> str | Response:
             database.session.add(nuevo_recurso_)
             database.session.commit()
             invalidar_cache_curso(course_code)
-            flash("RECURSO_AGREGADO", "success")
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -928,7 +928,7 @@ def nuevo_recurso_img(course_code: str, seccion: str) -> str | Response:
             database.session.add(nuevo_recurso_)
             database.session.commit()
             invalidar_cache_curso(course_code)
-            flash("RECURSO_AGREGADO", "success")
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -1101,7 +1101,7 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
 def nuevo_recurso_descargable(course_code: str, seccion: str) -> str | Response:
     site_config = get_site_config()
     if not site_config.enable_file_uploads:
-        flash("La subida de archivos descargables no está habilitada por el administrador.", "warning")
+        flash(_("La subida de archivos descargables no está habilitada por el administrador."), "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoArchivoDescargable()
@@ -1145,7 +1145,7 @@ def nuevo_recurso_descargable(course_code: str, seccion: str) -> str | Response:
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
         except UploadNotAllowed:
-            flash("Tipo de archivo no permitido.", "warning")
+            flash(_("Tipo de archivo no permitido."), "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -1178,7 +1178,7 @@ def _update_downloadable_file(recurso, course_code: str, site_config) -> None:
 def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str) -> str | Response:
     site_config = get_site_config()
     if not site_config.enable_file_uploads:
-        flash("La subida de archivos descargables no está habilitada por el administrador.", "warning")
+        flash(_("La subida de archivos descargables no está habilitada por el administrador."), "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     recurso = database.session.execute(select(CursoRecurso).filter_by(id=resource_id)).scalar_one_or_none()
@@ -1208,7 +1208,7 @@ def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str)
                 max_file_size=site_config.max_file_size,
             )
         except UploadNotAllowed:
-            flash("Tipo de archivo no permitido.", "warning")
+            flash(_("Tipo de archivo no permitido."), "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
@@ -1269,7 +1269,7 @@ def nuevo_recurso_slideshow(course_code: str, seccion: str) -> str | Response:
 
         except Exception as e:
             database.session.rollback()
-            flash(f"Error al crear la presentación: {str(e)}", "error")
+            flash(_("Error al crear la presentación: {}").format(str(e)), "error")
 
     return render_template(
         "learning/resources_new/nuevo_recurso_slides.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1325,7 +1325,7 @@ def _update_slideshow(slideshow: SlideShowResource, slideshow_id: str, slides: S
 def editar_slideshow(course_code: str, slideshow_id: str) -> str | Response:
     slideshow = database.session.get(SlideShowResource, slideshow_id)
     if not slideshow or slideshow.course_id != course_code:
-        flash("Presentación no encontrada.", "error")
+        flash(_("Presentación no encontrada."), "error")
         return abort(404)
 
     slides = (
@@ -1335,11 +1335,11 @@ def editar_slideshow(course_code: str, slideshow_id: str) -> str | Response:
     if request.method == "POST":
         try:
             _update_slideshow(slideshow, slideshow_id, slides)
-            flash("Presentación actualizada correctamente.", "success")
+            flash(_("Presentación actualizada correctamente."), "success")
 
         except Exception as e:
             database.session.rollback()
-            flash(f"Error al actualizar la presentación: {str(e)}", "error")
+            flash(_("Error al actualizar la presentación: {}").format(str(e)), "error")
 
         return redirect(url_for(".editar_slideshow", course_code=course_code, slideshow_id=slideshow_id))
 
@@ -1570,16 +1570,16 @@ def _store_library_file(course_code: str, uploaded_file: Any, form: Any) -> str:
     library_path = ensure_course_library_directory(course_code)
     sanitized_filename = sanitize_filename(uploaded_file.filename or "")
     if not sanitized_filename:
-        raise ValueError("Nombre de archivo inválido.")
+        raise ValueError(_("Nombre de archivo inválido."))
     existing_file = database.session.execute(
         database.select(CourseLibrary).filter_by(curso=course_code, filename=sanitized_filename)
     ).scalar_one_or_none()
     if existing_file:
-        raise ValueError(f"Ya existe un archivo con el nombre '{sanitized_filename}' en la biblioteca.")
+        raise ValueError(_("Ya existe un archivo con el nombre '{}' en la biblioteca.").format(sanitized_filename))
 
     destination_path = path.realpath(path.join(library_path, sanitized_filename))
     if not destination_path.startswith(path.realpath(library_path)):
-        raise ValueError("Ruta de destino inválida.")
+        raise ValueError(_("Ruta de destino inválida."))
     try:
         uploaded_file.save(destination_path)
         library_file = CourseLibrary(
@@ -1608,7 +1608,7 @@ def _store_library_file(course_code: str, uploaded_file: Any, form: Any) -> str:
 def upload_library_file(course_code: str) -> str | Response:
     site_config = get_site_config()
     if not site_config.enable_file_uploads:
-        flash("La subida de archivos no está habilitada por el administrador.", "warning")
+        flash(_("La subida de archivos no está habilitada por el administrador."), "warning")
         return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
 
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
@@ -1634,12 +1634,12 @@ def upload_library_file(course_code: str) -> str | Response:
 
         try:
             sanitized_filename = _store_library_file(course_code, uploaded_file, form)
-            flash(f"Archivo '{sanitized_filename}' subido exitosamente a la biblioteca del curso.", "success")
+            flash(_("Archivo '{}' subido exitosamente a la biblioteca del curso.").format(sanitized_filename), "success")
             return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
         except ValueError as e:
             flash(str(e), "warning")
         except Exception as e:
-            flash(f"Error al subir el archivo: {str(e)}", "error")
+            flash(_("Error al subir el archivo: {}").format(str(e)), "error")
 
     return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
@@ -1723,7 +1723,7 @@ def delete_library_file(course_code: str, file_id: str) -> Response:
 
     except Exception as e:
         database.session.rollback()
-        flash(f"Error al eliminar el archivo: {str(e)}", "error")
+        flash(_("Error al eliminar el archivo: {}").format(str(e)), "error")
 
     return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
 
@@ -1832,7 +1832,7 @@ def google_calendar_link(course_code: str, codigo: str) -> Response:
         )
         return redirect(google_url)
 
-    flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
+    flash(_("No se puede crear el evento: faltan datos de fecha/hora"), "error")
     return redirect(url_for(PAGINA_RECURSO_ENDPOINT, curso_id=course_code, resource_type=recurso.tipo, codigo=codigo))
 
 
@@ -1855,5 +1855,5 @@ def outlook_calendar_link(course_code: str, codigo: str) -> str | Response:
         )
         return redirect(outlook_url)
 
-    flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
+    flash(_("No se puede crear el evento: faltan datos de fecha/hora"), "error")
     return redirect(url_for(PAGINA_RECURSO_ENDPOINT, curso_id=course_code, resource_type=recurso.tipo, codigo=codigo))

@@ -827,7 +827,7 @@ def generate_template_choices_program():
 def generate_category_choices():
     """Generate choices for category selection fields."""
     categories = database.session.execute(database.select(Categoria)).all()
-    choices = [("", "-- Seleccionar categoría --")]  # Empty option
+    choices = [("", _("-- Seleccionar categoría --"))]  # Empty option
     for category in categories:
         choices.append((category[0].id, category[0].nombre))
     return choices
