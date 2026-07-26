@@ -19,11 +19,15 @@ All notable changes to this project will be documented in this file.
  - Documentation for custom pages and static pages.
  - Comprehensive tests for custom pages, contact, and footer links.
 
+### Breaking Changes:
+ - Route `/custom/<page>` renamed to `/static/<page>`.
+ - `StaticPage` model renamed to `CustomPage`.
+ - `get_footer_pages()` renamed to `get_custom_pages()`.
+ - DB table `static_pages` renamed to `custom_pages` (Alembic migration included).
+ - `StaticPageFooterForm` renamed to `CustomPageFooterForm`.
+
 ### Changed:
  - Renamed inverted nomenclature: DB-driven pages are now `custom_pages`, filesystem theme templates are now `static_pages`.
- - Static page route changed from `/custom/<page>` to `/static/<page>`.
- - `get_footer_pages()` renamed to `get_custom_pages()`.
- - `StaticPage` model renamed to `CustomPage`.
 
 ### Fixed:
  - Custom pages now work correctly with default theme.
