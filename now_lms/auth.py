@@ -365,7 +365,7 @@ def send_password_reset_email(user) -> bool:
     config = row[0]
 
     msg = Message(
-        subject="Recuperación de Contraseña - NOW LMS",
+        subject=_("Recuperación de Contraseña - NOW LMS"),
         recipients=[user.correo_electronico],
         sender=((config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), config.MAIL_DEFAULT_SENDER),
     )
@@ -374,21 +374,21 @@ def send_password_reset_email(user) -> bool:
     msg.html = f"""
     <div class="container">
         <div class="header">
-          <h1>Recuperación de Contraseña</h1>
+          <h1>{_("Recuperación de Contraseña")}</h1>
         </div>
         <div class="content">
-          <p>Hola {user.nombre},</p>
-          <p>Has solicitado recuperar tu contraseña. Haz clic en el siguiente enlace para establecer una nueva contraseña:</p>
+          <p>{_("Hola") + " " + user.nombre + ","}</p>
+          <p>{_("Has solicitado recuperar tu contraseña. Haz clic en el siguiente enlace para establecer una nueva contraseña:")}</p>
           <p>
-              <a href="{url}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Restablecer Contraseña</a>
+              <a href="{url}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">{_("Restablecer Contraseña")}</a>
           </p>
-          <p>Si no puedes hacer clic en el botón, copia y pega la siguiente URL en tu navegador:</p>
+          <p>{_("Si no puedes hacer clic en el botón, copia y pega la siguiente URL en tu navegador:")}</p>
           <p>{url}</p>
-          <p>Este enlace expirará en 1 hora por seguridad.</p>
-          <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
+          <p>{_("Este enlace expirará en 1 hora por seguridad.")}</p>
+          <p>{_("Si no solicitaste este cambio, puedes ignorar este correo.")}</p>
         </div>
         <div class="footer">
-          <p>Este es un mensaje automático. Por favor no respondas a este correo.</p>
+          <p>{_("Este es un mensaje automático. Por favor no respondas a este correo.")}</p>
         </div>
       </div>
     """

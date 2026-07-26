@@ -457,7 +457,7 @@ def new_question(evaluation_id: str) -> str | Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para editar esta evaluación.", "danger")
+        flash(_("No tiene permisos para editar esta evaluación."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     form = QuestionForm()
@@ -504,7 +504,7 @@ def new_question(evaluation_id: str) -> str | Response:
                 for i in range(4):  # Create 4 default options
                     option = QuestionOption(
                         question_id=question.id,
-                        text=f"Opción {i + 1}",
+                        text=_("Opción %(num)s", num=i + 1),
                         is_correct=False,
                         creado_por=current_user.usuario,
                     )
@@ -624,14 +624,14 @@ def new_question_option(question_id: str) -> str | Response:
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
-        flash("No tiene permisos para editar esta pregunta.", "danger")
+        flash(_("No tiene permisos para editar esta pregunta."), "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     # For boolean questions, limit to 2 options
     if question.type == "boolean":
         existing_options = database.session.execute(select(QuestionOption).filter_by(question_id=question_id)).scalars().all()
         if len(existing_options) >= 2:
-            flash("Las preguntas de verdadero/falso solo pueden tener 2 opciones.", "warning")
+            flash(_("Las preguntas de verdadero/falso solo pueden tener 2 opciones."), "warning")
             return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))
 
     from now_lms.forms import QuestionOptionForm
