@@ -7,8 +7,6 @@ Ensures zero regressions are introduced on form validation, choices, and process
 
 from __future__ import annotations
 import datetime
-import pytest
-from wtforms.validators import ValidationError
 from wtforms import Form
 from werkzeug.datastructures import MultiDict
 
@@ -197,8 +195,10 @@ def test_choice_generators(app):
 # Custom Fields Tests
 # ---------------------------------------------------------------------------
 
+
 class DummyForm(Form):
     """Form containing custom fields to test process_formdata."""
+
     date_field = MultiFormatDateField(formats=["%Y-%m-%d", "%d/%m/%Y"])
     decimal_field = FlexibleDecimalField()
     integer_field = FlexibleIntegerField()
@@ -292,17 +292,20 @@ def test_flexible_integer_field(app):
 # Forms defined in __init__.py Tests
 # ---------------------------------------------------------------------------
 
+
 def test_config_form(app):
     """Test ConfigForm initialization and validation."""
     with app.test_request_context():
         form = ConfigForm(
-            MultiDict({
-                "titulo": "NOW LMS",
-                "descripcion": "Plataforma de educación online",
-                "moneda": "USD",
-                "lang": "es",
-                "timezone": "UTC",
-            })
+            MultiDict(
+                {
+                    "titulo": "NOW LMS",
+                    "descripcion": "Plataforma de educación online",
+                    "moneda": "USD",
+                    "lang": "es",
+                    "timezone": "UTC",
+                }
+            )
         )
         assert form.validate()
         assert form.titulo.data == "NOW LMS"
@@ -343,12 +346,14 @@ def test_mail_form(app):
     """Test MailForm validation."""
     with app.test_request_context():
         form = MailForm(
-            MultiDict({
-                "MAIL_SERVER": "smtp.example.com",
-                "MAIL_PORT": "587",
-                "MAIL_USERNAME": "smtp_user",
-                "MAIL_PASSWORD": "smtp_password",
-            })
+            MultiDict(
+                {
+                    "MAIL_SERVER": "smtp.example.com",
+                    "MAIL_PORT": "587",
+                    "MAIL_USERNAME": "smtp_user",
+                    "MAIL_PASSWORD": "smtp_password",
+                }
+            )
         )
         assert form.validate()
 
@@ -361,13 +366,15 @@ def test_logon_form(app):
     """Test LogonForm validation."""
     with app.test_request_context():
         form = LogonForm(
-            MultiDict({
-                "usuario": "newuser",
-                "acceso": "password123",
-                "nombre": "Juan",
-                "apellido": "Perez",
-                "correo_electronico": "juan@example.com",
-            })
+            MultiDict(
+                {
+                    "usuario": "newuser",
+                    "acceso": "password123",
+                    "nombre": "Juan",
+                    "apellido": "Perez",
+                    "correo_electronico": "juan@example.com",
+                }
+            )
         )
         assert form.validate()
 
@@ -381,10 +388,12 @@ def test_grupo_form(app):
     """Test GrupoForm validation."""
     with app.test_request_context():
         form = GrupoForm(
-            MultiDict({
-                "nombre": "Grupo A",
-                "descripcion": "Descripción del grupo",
-            })
+            MultiDict(
+                {
+                    "nombre": "Grupo A",
+                    "descripcion": "Descripción del grupo",
+                }
+            )
         )
         assert form.validate()
 
@@ -394,42 +403,48 @@ def test_curse_form_validation(app):
     with app.test_request_context():
         # Valid: live modality with forum enabled
         form = CurseForm(
-            MultiDict({
-                "nombre": "Curso de Python",
-                "descripcion": "Aprende Python",
-                "codigo": "PY-101",
-                "descripcion_corta": "Python para principiantes",
-                "nivel": "1",
-                "modalidad": "live",
-                "foro_habilitado": "y",
-            })
+            MultiDict(
+                {
+                    "nombre": "Curso de Python",
+                    "descripcion": "Aprende Python",
+                    "codigo": "PY-101",
+                    "descripcion_corta": "Python para principiantes",
+                    "nivel": "1",
+                    "modalidad": "live",
+                    "foro_habilitado": "y",
+                }
+            )
         )
         assert form.validate()
 
         # Valid: self_paced modality with forum disabled
         form = CurseForm(
-            MultiDict({
-                "nombre": "Curso de Python",
-                "descripcion": "Aprende Python",
-                "codigo": "PY-101",
-                "descripcion_corta": "Python para principiantes",
-                "nivel": "1",
-                "modalidad": "self_paced",
-            })
+            MultiDict(
+                {
+                    "nombre": "Curso de Python",
+                    "descripcion": "Aprende Python",
+                    "codigo": "PY-101",
+                    "descripcion_corta": "Python para principiantes",
+                    "nivel": "1",
+                    "modalidad": "self_paced",
+                }
+            )
         )
         assert form.validate()
 
         # Invalid: self_paced modality with forum enabled (raises ValidationError)
         form = CurseForm(
-            MultiDict({
-                "nombre": "Curso de Python",
-                "descripcion": "Aprende Python",
-                "codigo": "PY-101",
-                "descripcion_corta": "Python para principiantes",
-                "nivel": "1",
-                "modalidad": "self_paced",
-                "foro_habilitado": "y",
-            })
+            MultiDict(
+                {
+                    "nombre": "Curso de Python",
+                    "descripcion": "Aprende Python",
+                    "codigo": "PY-101",
+                    "descripcion_corta": "Python para principiantes",
+                    "nivel": "1",
+                    "modalidad": "self_paced",
+                    "foro_habilitado": "y",
+                }
+            )
         )
         assert not form.validate()
         assert "foro_habilitado" in form.errors
@@ -439,10 +454,12 @@ def test_curso_seccion_form(app):
     """Test CursoSeccionForm validation."""
     with app.test_request_context():
         form = CursoSeccionForm(
-            MultiDict({
-                "nombre": "Sección 1",
-                "descripcion": "Intro",
-            })
+            MultiDict(
+                {
+                    "nombre": "Sección 1",
+                    "descripcion": "Intro",
+                }
+            )
         )
         assert form.validate()
 
@@ -452,106 +469,126 @@ def test_curso_recurso_forms(app):
     with app.test_request_context():
         # YouTube Recurso
         form = CursoRecursoVideoYoutube(
-            MultiDict({
-                "nombre": "Youtube",
-                "descripcion": "Desc",
-                "requerido": "required",
-                "youtube_url": "https://youtube.com/watch?v=123",
-            })
+            MultiDict(
+                {
+                    "nombre": "Youtube",
+                    "descripcion": "Desc",
+                    "requerido": "required",
+                    "youtube_url": "https://youtube.com/watch?v=123",
+                }
+            )
         )
         assert form.validate()
 
         form = CursoRecursoVideoYoutube(
-            MultiDict({
-                "nombre": "Youtube",
-                "descripcion": "Desc",
-                "requerido": "required",
-                "youtube_url": "",
-            })
+            MultiDict(
+                {
+                    "nombre": "Youtube",
+                    "descripcion": "Desc",
+                    "requerido": "required",
+                    "youtube_url": "",
+                }
+            )
         )
         assert not form.validate()
 
         # PDF Recurso
         form = CursoRecursoArchivoPDF(
-            MultiDict({
-                "nombre": "PDF",
-                "descripcion": "Desc",
-                "requerido": "optional",
-            })
+            MultiDict(
+                {
+                    "nombre": "PDF",
+                    "descripcion": "Desc",
+                    "requerido": "optional",
+                }
+            )
         )
         assert form.validate()
 
         # Audio Recurso
         form = CursoRecursoArchivoAudio(
-            MultiDict({
-                "nombre": "Audio",
-                "descripcion": "Desc",
-                "requerido": "optional",
-            })
+            MultiDict(
+                {
+                    "nombre": "Audio",
+                    "descripcion": "Desc",
+                    "requerido": "optional",
+                }
+            )
         )
         assert form.validate()
 
         # Image Recurso
         form = CursoRecursoArchivoImagen(
-            MultiDict({
-                "nombre": "Imagen",
-                "descripcion": "Desc",
-                "requerido": "optional",
-            })
+            MultiDict(
+                {
+                    "nombre": "Imagen",
+                    "descripcion": "Desc",
+                    "requerido": "optional",
+                }
+            )
         )
         assert form.validate()
 
         # Descargable Recurso
         form = CursoRecursoArchivoDescargable(
-            MultiDict({
-                "nombre": "Descargable",
-                "descripcion": "Desc",
-                "requerido": "optional",
-            })
+            MultiDict(
+                {
+                    "nombre": "Descargable",
+                    "descripcion": "Desc",
+                    "requerido": "optional",
+                }
+            )
         )
         assert form.validate()
 
         # Text Recurso
         form = CursoRecursoArchivoText(
-            MultiDict({
-                "nombre": "Texto",
-                "descripcion": "Desc",
-                "requerido": "optional",
-                "editor": "Contenido MDE",
-            })
+            MultiDict(
+                {
+                    "nombre": "Texto",
+                    "descripcion": "Desc",
+                    "requerido": "optional",
+                    "editor": "Contenido MDE",
+                }
+            )
         )
         assert form.validate()
 
         # External Code Recurso
         form = CursoRecursoExternalCode(
-            MultiDict({
-                "nombre": "Code",
-                "descripcion": "Desc",
-                "requerido": "optional",
-                "html_externo": "<div></div>",
-            })
+            MultiDict(
+                {
+                    "nombre": "Code",
+                    "descripcion": "Desc",
+                    "requerido": "optional",
+                    "html_externo": "<div></div>",
+                }
+            )
         )
         assert form.validate()
 
         # External Link Recurso
         form = CursoRecursoExternalLink(
-            MultiDict({
-                "nombre": "Link",
-                "descripcion": "Desc",
-                "requerido": "optional",
-                "url": "https://example.com",
-            })
+            MultiDict(
+                {
+                    "nombre": "Link",
+                    "descripcion": "Desc",
+                    "requerido": "optional",
+                    "url": "https://example.com",
+                }
+            )
         )
         assert form.validate()
 
         # Slides Recurso
         form = CursoRecursoSlides(
-            MultiDict({
-                "nombre": "Slides",
-                "descripcion": "Desc",
-                "requerido": "optional",
-                "notes": "beige",
-            })
+            MultiDict(
+                {
+                    "nombre": "Slides",
+                    "descripcion": "Desc",
+                    "requerido": "optional",
+                    "notes": "beige",
+                }
+            )
         )
         assert form.validate()
 
@@ -560,10 +597,12 @@ def test_curso_library_file_form(app):
     """Test CursoLibraryFileForm validation."""
     with app.test_request_context():
         form = CursoLibraryFileForm(
-            MultiDict({
-                "nombre": "Guia de estudio",
-                "descripcion": "Descripción de la guia de estudio",
-            })
+            MultiDict(
+                {
+                    "nombre": "Guia de estudio",
+                    "descripcion": "Descripción de la guia de estudio",
+                }
+            )
         )
         assert form.validate()
 
@@ -576,11 +615,13 @@ def test_slideshow_and_slide_forms(app):
     with app.test_request_context():
         # SlideShow
         form = SlideShowForm(
-            MultiDict({
-                "nombre": "Slides",
-                "descripcion": "Desc",
-                "theme": "night",
-            })
+            MultiDict(
+                {
+                    "nombre": "Slides",
+                    "descripcion": "Desc",
+                    "theme": "night",
+                }
+            )
         )
         assert form.validate()
 
@@ -589,11 +630,13 @@ def test_slideshow_and_slide_forms(app):
 
         # Slide
         slide_form = SlideForm(
-            MultiDict({
-                "title": "Slide 1",
-                "content": "Content",
-                "order": "1",
-            })
+            MultiDict(
+                {
+                    "title": "Slide 1",
+                    "content": "Content",
+                    "order": "1",
+                }
+            )
         )
         assert slide_form.validate()
 
@@ -605,16 +648,18 @@ def test_curso_recurso_meet(app):
     """Test CursoRecursoMeet validation."""
     with app.test_request_context():
         form = CursoRecursoMeet(
-            MultiDict({
-                "nombre": "Meet",
-                "descripcion": "Desc",
-                "requerido": "required",
-                "url": "https://zoom.us/meet",
-                "notes": "zoom",
-                "fecha": "2026-12-01",
-                "hora_inicio": "10:00",
-                "hora_fin": "11:00",
-            })
+            MultiDict(
+                {
+                    "nombre": "Meet",
+                    "descripcion": "Desc",
+                    "requerido": "required",
+                    "url": "https://zoom.us/meet",
+                    "notes": "zoom",
+                    "fecha": "2026-12-01",
+                    "hora_inicio": "10:00",
+                    "hora_fin": "11:00",
+                }
+            )
         )
         assert form.validate()
 
@@ -624,20 +669,24 @@ def test_categoria_and_etiqueta_forms(app):
     with app.test_request_context():
         # Categoria
         form_cat = CategoriaForm(
-            MultiDict({
-                "nombre": "Programación",
-                "descripcion": "Cursos de código",
-            })
+            MultiDict(
+                {
+                    "nombre": "Programación",
+                    "descripcion": "Cursos de código",
+                }
+            )
         )
         assert form_cat.validate()
 
         # Etiqueta
         form_tag = EtiquetaForm(
-            MultiDict({
-                "nombre": "Python",
-                "descripcion": "Etiqueta Python",
-                "color": "#ff0000",
-            })
+            MultiDict(
+                {
+                    "nombre": "Python",
+                    "descripcion": "Etiqueta Python",
+                    "color": "#ff0000",
+                }
+            )
         )
         assert form_tag.validate()
 
@@ -646,17 +695,19 @@ def test_programa_form(app):
     """Test ProgramaForm validation."""
     with app.test_request_context():
         form = ProgramaForm(
-            MultiDict({
-                "nombre": "Master en Python",
-                "descripcion": "Curso completo",
-                "codigo": "M-PY",
-                "precio": "99.99",
-                "publico": "y",
-                "estado": "open",
-                "promocionado": "y",
-                "pagado": "y",
-                "certificado": "y",
-            })
+            MultiDict(
+                {
+                    "nombre": "Master en Python",
+                    "descripcion": "Curso completo",
+                    "codigo": "M-PY",
+                    "precio": "99.99",
+                    "publico": "y",
+                    "estado": "open",
+                    "promocionado": "y",
+                    "pagado": "y",
+                    "certificado": "y",
+                }
+            )
         )
         assert form.validate()
 
@@ -665,16 +716,18 @@ def test_recurso_form(app):
     """Test RecursoForm validation."""
     with app.test_request_context():
         form = RecursoForm(
-            MultiDict({
-                "nombre": "Guia de Docker",
-                "descripcion": "Docker",
-                "codigo": "G-DOCKER",
-                "precio": "9.99",
-                "publico": "y",
-                "promocionado": "y",
-                "tipo": "ebook",
-                "pagado": "y",
-            })
+            MultiDict(
+                {
+                    "nombre": "Guia de Docker",
+                    "descripcion": "Docker",
+                    "codigo": "G-DOCKER",
+                    "precio": "9.99",
+                    "publico": "y",
+                    "promocionado": "y",
+                    "tipo": "ebook",
+                    "pagado": "y",
+                }
+            )
         )
         assert form.validate()
 
@@ -683,13 +736,15 @@ def test_user_form(app):
     """Test UserForm validation."""
     with app.test_request_context():
         form = UserForm(
-            MultiDict({
-                "nombre": "Alex",
-                "apellido": "Smith",
-                "correo_electronico": "alex@example.com",
-                "genero": "male",
-                "titulo": "ing",
-            })
+            MultiDict(
+                {
+                    "nombre": "Alex",
+                    "apellido": "Smith",
+                    "correo_electronico": "alex@example.com",
+                    "genero": "male",
+                    "titulo": "ing",
+                }
+            )
         )
         assert form.validate()
 
@@ -699,29 +754,35 @@ def test_messages_forms(app):
     with app.test_request_context():
         # Thread
         thread_form = MessageThreadForm(
-            MultiDict({
-                "subject": "Duda",
-                "content": "Tengo una duda",
-                "course_id": "PY-101",
-            })
+            MultiDict(
+                {
+                    "subject": "Duda",
+                    "content": "Tengo una duda",
+                    "course_id": "PY-101",
+                }
+            )
         )
         assert thread_form.validate()
 
         # Reply
         reply_form = MessageReplyForm(
-            MultiDict({
-                "content": "Respuesta",
-                "thread_id": "1",
-            })
+            MultiDict(
+                {
+                    "content": "Respuesta",
+                    "thread_id": "1",
+                }
+            )
         )
         assert reply_form.validate()
 
         # Report
         report_form = MessageReportForm(
-            MultiDict({
-                "reason": "Spam",
-                "thread_id": "1",
-            })
+            MultiDict(
+                {
+                    "reason": "Spam",
+                    "thread_id": "1",
+                }
+            )
         )
         assert report_form.validate()
 
@@ -730,15 +791,17 @@ def test_certificate_form_and_text_area_no_escape(app):
     """Test CertificateForm and TextAreaNoEscape custom widget."""
     with app.test_request_context():
         form = CertificateForm(
-            MultiDict({
-                "titulo": "Certificado",
-                "descripcion": "Otorgado por NOW LMS",
-                "habilitado": "y",
-                "publico": "y",
-                "html": "<h1>Certificado</h1>",
-                "css": "h1 { color: red; }",
-                "tipo": "course",
-            })
+            MultiDict(
+                {
+                    "titulo": "Certificado",
+                    "descripcion": "Otorgado por NOW LMS",
+                    "habilitado": "y",
+                    "publico": "y",
+                    "html": "<h1>Certificado</h1>",
+                    "css": "h1 { color: red; }",
+                    "tipo": "course",
+                }
+            )
         )
         assert form.validate()
 
@@ -753,11 +816,13 @@ def test_adsense_form(app):
     """Test AdSenseForm validation."""
     with app.test_request_context():
         form = AdSenseForm(
-            MultiDict({
-                "meta_tag": "<meta>",
-                "pub_id": "pub-12345",
-                "show_ads": "y",
-            })
+            MultiDict(
+                {
+                    "meta_tag": "<meta>",
+                    "pub_id": "pub-12345",
+                    "show_ads": "y",
+                }
+            )
         )
         assert form.validate()
 
@@ -766,12 +831,14 @@ def test_paypal_form(app):
     """Test PayaplForm validation."""
     with app.test_request_context():
         form = PayaplForm(
-            MultiDict({
-                "habilitado": "y",
-                "sandbox": "y",
-                "paypal_id": "id123",
-                "paypal_sandbox": "sandbox123",
-            })
+            MultiDict(
+                {
+                    "habilitado": "y",
+                    "sandbox": "y",
+                    "paypal_id": "id123",
+                    "paypal_sandbox": "sandbox123",
+                }
+            )
         )
         assert form.validate()
 
@@ -780,14 +847,16 @@ def test_emit_certificate_form(app):
     """Test EmitCertificateForm validation."""
     with app.test_request_context():
         form = EmitCertificateForm(
-            MultiDict({
-                "usuario": "user1",
-                "content_type": "course",
-                "curso": "PY-101",
-                "master_class": "",
-                "template": "tpl1",
-                "nota": "95.00",
-            })
+            MultiDict(
+                {
+                    "usuario": "user1",
+                    "content_type": "course",
+                    "curso": "PY-101",
+                    "master_class": "",
+                    "template": "tpl1",
+                    "nota": "95.00",
+                }
+            )
         )
         form.usuario.choices = [("user1", "User 1")]
         form.curso.choices = [("PY-101", "Python")]
@@ -806,11 +875,13 @@ def test_password_forms(app):
 
         # ChangePassword
         change_form = ChangePasswordForm(
-            MultiDict({
-                "current_password": "old",
-                "new_password": "new",
-                "confirm_password": "new",
-            })
+            MultiDict(
+                {
+                    "current_password": "old",
+                    "new_password": "new",
+                    "confirm_password": "new",
+                }
+            )
         )
         assert change_form.validate()
 
@@ -819,10 +890,12 @@ def test_password_forms(app):
 
         # ResetPassword
         reset_form = ResetPasswordForm(
-            MultiDict({
-                "new_password": "new",
-                "confirm_password": "new",
-            })
+            MultiDict(
+                {
+                    "new_password": "new",
+                    "confirm_password": "new",
+                }
+            )
         )
         assert reset_form.validate()
 
@@ -831,15 +904,17 @@ def test_pago_form(app):
     """Test PagoForm validation."""
     with app.test_request_context():
         form = PagoForm(
-            MultiDict({
-                "nombre": "Juan",
-                "apellido": "Perez",
-                "correo_electronico": "juan@example.com",
-                "direccion1": "Calle 123",
-                "pais": "Guatemala",
-                "provincia": "Guatemala",
-                "codigo_postal": "01001",
-            })
+            MultiDict(
+                {
+                    "nombre": "Juan",
+                    "apellido": "Perez",
+                    "correo_electronico": "juan@example.com",
+                    "direccion1": "Calle 123",
+                    "pais": "Guatemala",
+                    "provincia": "Guatemala",
+                    "codigo_postal": "01001",
+                }
+            )
         )
         assert form.validate()
 
@@ -849,40 +924,48 @@ def test_evaluation_forms(app):
     with app.test_request_context():
         # Evaluation
         form_eval = EvaluationForm(
-            MultiDict({
-                "title": "Examen Final",
-                "description": "Examen de salida",
-                "is_exam": "y",
-                "passing_score": "75.0",
-                "max_attempts": "3",
-            })
+            MultiDict(
+                {
+                    "title": "Examen Final",
+                    "description": "Examen de salida",
+                    "is_exam": "y",
+                    "passing_score": "75.0",
+                    "max_attempts": "3",
+                }
+            )
         )
         assert form_eval.validate()
 
         # Question
         form_q = QuestionForm(
-            MultiDict({
-                "text": "¿Qué es Python?",
-                "type": "multiple",
-                "explanation": "Lenguaje interpretado",
-            })
+            MultiDict(
+                {
+                    "text": "¿Qué es Python?",
+                    "type": "multiple",
+                    "explanation": "Lenguaje interpretado",
+                }
+            )
         )
         assert form_q.validate()
 
         # Option
         form_opt = QuestionOptionForm(
-            MultiDict({
-                "text": "Un lenguaje de programación",
-                "is_correct": "y",
-            })
+            MultiDict(
+                {
+                    "text": "Un lenguaje de programación",
+                    "is_correct": "y",
+                }
+            )
         )
         assert form_opt.validate()
 
         # Reopen
         form_reopen = EvaluationReopenRequestForm(
-            MultiDict({
-                "justification_text": "Se cortó la luz",
-            })
+            MultiDict(
+                {
+                    "justification_text": "Se cortó la luz",
+                }
+            )
         )
         assert form_reopen.validate()
 
@@ -904,35 +987,41 @@ def test_announcements_forms(app):
     with app.test_request_context():
         # Announcement
         form_ann = AnnouncementForm(
-            MultiDict({
-                "nombre": "Importante",
-                "descripcion": "Mensaje",
-                "title": "Importante",
-                "message": "No habrá clases mañana",
-                "expires_at": "2026-12-01",
-            })
+            MultiDict(
+                {
+                    "nombre": "Importante",
+                    "descripcion": "Mensaje",
+                    "title": "Importante",
+                    "message": "No habrá clases mañana",
+                    "expires_at": "2026-12-01",
+                }
+            )
         )
         assert form_ann.validate()
 
         # Global
         form_glob = GlobalAnnouncementForm(
-            MultiDict({
-                "nombre": "Global",
-                "descripcion": "Msg",
-                "title": "Mantenimiento",
-                "message": "Mantenimiento del servidor",
-                "is_sticky": "y",
-            })
+            MultiDict(
+                {
+                    "nombre": "Global",
+                    "descripcion": "Msg",
+                    "title": "Mantenimiento",
+                    "message": "Mantenimiento del servidor",
+                    "is_sticky": "y",
+                }
+            )
         )
         assert form_glob.validate()
 
         # Course
         form_course = CourseAnnouncementForm(
-            MultiDict({
-                "title": "Examen mañana",
-                "message": "Estudien mucho",
-                "course_id": "PY-101",
-            })
+            MultiDict(
+                {
+                    "title": "Examen mañana",
+                    "message": "Estudien mucho",
+                    "course_id": "PY-101",
+                }
+            )
         )
         form_course.course_id.choices = [("PY-101", "Python")]
         assert form_course.validate()
@@ -943,13 +1032,15 @@ def test_coupon_forms(app):
     with app.test_request_context():
         # Coupon
         form_coupon = CouponForm(
-            MultiDict({
-                "code": "DESCUENTO50",
-                "discount_type": "percentage",
-                "discount_value": "50.0",
-                "max_uses": "100",
-                "expires_at": "2026-12-31",
-            })
+            MultiDict(
+                {
+                    "code": "DESCUENTO50",
+                    "discount_type": "percentage",
+                    "discount_value": "50.0",
+                    "max_uses": "100",
+                    "expires_at": "2026-12-31",
+                }
+            )
         )
         assert form_coupon.validate()
 
@@ -963,35 +1054,41 @@ def test_blog_forms(app):
     with app.test_request_context():
         # Post
         form_post = BlogPostForm(
-            MultiDict({
-                "nombre": "Post 1",
-                "descripcion": "Desc",
-                "title": "Bienvenidos",
-                "content": "Este es nuestro primer post",
-                "allow_comments": "y",
-                "tags": "bienvenida, intro",
-                "status": "published",
-            })
+            MultiDict(
+                {
+                    "nombre": "Post 1",
+                    "descripcion": "Desc",
+                    "title": "Bienvenidos",
+                    "content": "Este es nuestro primer post",
+                    "allow_comments": "y",
+                    "tags": "bienvenida, intro",
+                    "status": "published",
+                }
+            )
         )
         assert form_post.validate()
 
         # Tag
         form_tag = BlogTagForm(
-            MultiDict({
-                "nombre": "Tech",
-                "descripcion": "Desc",
-                "name": "Tech",
-            })
+            MultiDict(
+                {
+                    "nombre": "Tech",
+                    "descripcion": "Desc",
+                    "name": "Tech",
+                }
+            )
         )
         assert form_tag.validate()
 
         # Comment
         form_comment = BlogCommentForm(
-            MultiDict({
-                "nombre": "Comentario",
-                "descripcion": "Desc",
-                "content": "Excelente artículo",
-            })
+            MultiDict(
+                {
+                    "nombre": "Comentario",
+                    "descripcion": "Desc",
+                    "content": "Excelente artículo",
+                }
+            )
         )
         assert form_comment.validate()
 
@@ -1001,21 +1098,25 @@ def test_admin_enrollment_forms(app):
     with app.test_request_context():
         # Course enrollment
         form_course = AdminCourseEnrollmentForm(
-            MultiDict({
-                "student_username": "estudiante1",
-                "bypass_payment": "y",
-                "notes": "Inscripción especial",
-            })
+            MultiDict(
+                {
+                    "student_username": "estudiante1",
+                    "bypass_payment": "y",
+                    "notes": "Inscripción especial",
+                }
+            )
         )
         assert form_course.validate()
 
         # Program enrollment
         form_prog = AdminProgramEnrollmentForm(
-            MultiDict({
-                "student_username": "estudiante1",
-                "bypass_payment": "y",
-                "notes": "Inscripción especial",
-            })
+            MultiDict(
+                {
+                    "student_username": "estudiante1",
+                    "bypass_payment": "y",
+                    "notes": "Inscripción especial",
+                }
+            )
         )
         assert form_prog.validate()
 
@@ -1025,12 +1126,14 @@ def test_footer_and_api_key_forms(app):
     with app.test_request_context():
         # EnlaceUtil
         form_link = EnlaceUtilForm(
-            MultiDict({
-                "titulo": "Google",
-                "url": "https://google.com",
-                "orden": "1",
-                "activo": "y",
-            })
+            MultiDict(
+                {
+                    "titulo": "Google",
+                    "url": "https://google.com",
+                    "orden": "1",
+                    "activo": "y",
+                }
+            )
         )
         assert form_link.validate()
 
@@ -1040,11 +1143,13 @@ def test_footer_and_api_key_forms(app):
 
         # ExternalApiKey
         form_key = ExternalApiKeyForm(
-            MultiDict({
-                "name": "Integracion 1",
-                "allowed_origin": "*",
-                "notes": "API Key",
-            })
+            MultiDict(
+                {
+                    "name": "Integracion 1",
+                    "allowed_origin": "*",
+                    "notes": "API Key",
+                }
+            )
         )
         assert form_key.validate()
 
@@ -1072,49 +1177,55 @@ def test_masterclass_forms(app, db_session):
 
         # 1. Valid MasterClassForm without certification
         form = MasterClassForm(
-            MultiDict({
-                "title": "AWS Cloud Practitioner",
-                "description_public": "Clase magistral completa sobre AWS con laboratorios.",
-                "description_private": "La clave de acceso zoom es 123456.",
-                "date": tomorrow,
-                "start_time": "14:00",
-                "end_time": "16:00",
-                "platform_name": "Zoom",
-                "platform_url": "https://zoom.us/j/123",
-                "is_certificate": "",
-                "diploma_template_id": "",
-            })
+            MultiDict(
+                {
+                    "title": "AWS Cloud Practitioner",
+                    "description_public": "Clase magistral completa sobre AWS con laboratorios.",
+                    "description_private": "La clave de acceso zoom es 123456.",
+                    "date": tomorrow,
+                    "start_time": "14:00",
+                    "end_time": "16:00",
+                    "platform_name": "Zoom",
+                    "platform_url": "https://zoom.us/j/123",
+                    "is_certificate": "",
+                    "diploma_template_id": "",
+                }
+            )
         )
         assert form.validate()
 
         # 2. Valid MasterClassForm with certification
         form_cert = MasterClassForm(
-            MultiDict({
-                "title": "AWS Cloud Practitioner",
-                "description_public": "Clase magistral completa sobre AWS con laboratorios.",
-                "description_private": "La clave de acceso zoom es 123456.",
-                "date": tomorrow,
-                "start_time": "14:00",
-                "end_time": "16:00",
-                "platform_name": "Zoom",
-                "platform_url": "https://zoom.us/j/123",
-                "is_certificate": "y",
-                "diploma_template_id": "test-cert-code",
-            })
+            MultiDict(
+                {
+                    "title": "AWS Cloud Practitioner",
+                    "description_public": "Clase magistral completa sobre AWS con laboratorios.",
+                    "description_private": "La clave de acceso zoom es 123456.",
+                    "date": tomorrow,
+                    "start_time": "14:00",
+                    "end_time": "16:00",
+                    "platform_name": "Zoom",
+                    "platform_url": "https://zoom.us/j/123",
+                    "is_certificate": "y",
+                    "diploma_template_id": "test-cert-code",
+                }
+            )
         )
         assert form_cert.validate()
 
         # 3. Invalid: end_time before/equal start_time
         form_invalid_time = MasterClassForm(
-            MultiDict({
-                "title": "AWS Cloud Practitioner",
-                "description_public": "Clase magistral completa sobre AWS con laboratorios.",
-                "date": tomorrow,
-                "start_time": "14:00",
-                "end_time": "13:00",
-                "platform_name": "Zoom",
-                "platform_url": "https://zoom.us/j/123",
-            })
+            MultiDict(
+                {
+                    "title": "AWS Cloud Practitioner",
+                    "description_public": "Clase magistral completa sobre AWS con laboratorios.",
+                    "date": tomorrow,
+                    "start_time": "14:00",
+                    "end_time": "13:00",
+                    "platform_name": "Zoom",
+                    "platform_url": "https://zoom.us/j/123",
+                }
+            )
         )
         assert not form_invalid_time.validate()
         assert "end_time" in form_invalid_time.errors
@@ -1123,15 +1234,17 @@ def test_masterclass_forms(app, db_session):
         # 4. Invalid: date in the past
         past_date = (datetime.date.today() - datetime.timedelta(days=5)).strftime("%Y-%m-%d")
         form_invalid_date = MasterClassForm(
-            MultiDict({
-                "title": "AWS Cloud Practitioner",
-                "description_public": "Clase magistral completa sobre AWS con laboratorios.",
-                "date": past_date,
-                "start_time": "14:00",
-                "end_time": "16:00",
-                "platform_name": "Zoom",
-                "platform_url": "https://zoom.us/j/123",
-            })
+            MultiDict(
+                {
+                    "title": "AWS Cloud Practitioner",
+                    "description_public": "Clase magistral completa sobre AWS con laboratorios.",
+                    "date": past_date,
+                    "start_time": "14:00",
+                    "end_time": "16:00",
+                    "platform_name": "Zoom",
+                    "platform_url": "https://zoom.us/j/123",
+                }
+            )
         )
         assert not form_invalid_date.validate()
         assert "date" in form_invalid_date.errors
@@ -1139,17 +1252,19 @@ def test_masterclass_forms(app, db_session):
 
         # 5. Invalid: certificate requested but no template chosen
         form_no_template = MasterClassForm(
-            MultiDict({
-                "title": "AWS Cloud Practitioner",
-                "description_public": "Clase magistral completa sobre AWS con laboratorios.",
-                "date": tomorrow,
-                "start_time": "14:00",
-                "end_time": "16:00",
-                "platform_name": "Zoom",
-                "platform_url": "https://zoom.us/j/123",
-                "is_certificate": "y",
-                "diploma_template_id": "",
-            })
+            MultiDict(
+                {
+                    "title": "AWS Cloud Practitioner",
+                    "description_public": "Clase magistral completa sobre AWS con laboratorios.",
+                    "date": tomorrow,
+                    "start_time": "14:00",
+                    "end_time": "16:00",
+                    "platform_name": "Zoom",
+                    "platform_url": "https://zoom.us/j/123",
+                    "is_certificate": "y",
+                    "diploma_template_id": "",
+                }
+            )
         )
         assert not form_no_template.validate()
         assert "diploma_template_id" in form_no_template.errors
