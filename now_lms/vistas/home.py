@@ -238,19 +238,19 @@ def panel() -> str | Response:
             return redirect("/")
 
 
-@home.route("/custom/<page>", methods=["GET"])
+@home.route("/static/<page>", methods=["GET"])
 @cache.cached(timeout=180)
-def custom_page(page: str) -> str | Response:
-    """Muestra páginas personalizadas por tema."""
+def static_page(page: str) -> str | Response:
+    """Muestra páginas estáticas definidas en el tema."""
     THEME = get_current_theme() or "now_lms"
 
     if any(c in page for c in ["/", "\\", ".", "$"]):
         return redirect("/")
 
     THEMES_DIRECTORY = "themes/"
-    custom_page_path = Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTORY, THEME, "custom_pages", f"{page}.j2"))
+    static_page_path = Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTORY, THEME, "static_pages", f"{page}.j2"))
 
-    if custom_page_path.exists():
-        template_path = f"{THEMES_DIRECTORY}{THEME}/custom_pages/{page}.j2"
+    if static_page_path.exists():
+        template_path = f"{THEMES_DIRECTORY}{THEME}/static_pages/{page}.j2"
         return render_template(template_path)
     return redirect("/")

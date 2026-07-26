@@ -21,6 +21,9 @@ now_lms/
 │   ├── course_take.j2 # Custom course taking page (enrolled student)
 │   ├── resource_list.j2   # Custom resource listing page
 │   └── resource_view.j2   # Custom resource detail page
+├── static_pages/      # Static pages directory (optional)
+│   ├── about.j2       # Custom static page accessible at /static/about
+│   └── team.j2        # Custom static page accessible at /static/team
 └── README.md
 ```
 

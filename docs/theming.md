@@ -235,30 +235,30 @@ The system includes several template override functions:
 - `get_resource_list_template()` - Resource listing override
 - `get_resource_view_template()` - Resource detail override
 
-## Custom Pages
+## Static Pages (Theme-defined)
 
-Create static custom pages for your theme in the `custom_pages/` directory. These pages can be accessed via `/custom/<page_name>`.
+Create static pages for your theme in the `static_pages/` directory. These pages are defined as Jinja2 templates within the theme and can be accessed via `/static/<page_name>`. They do not use the database.
 
-### Creating Custom Pages
+### Creating Static Pages
 
-1. Create a template in `templates/themes/your_theme/custom_pages/`:
+1. Create a template in `templates/themes/your_theme/static_pages/`:
 
 ```jinja2
-<!-- templates/themes/mytheme/custom_pages/contacto.j2 -->
+<!-- templates/themes/mytheme/static_pages/contacto.j2 -->
 {% set current_theme = current_theme() %}
 <!doctype html>
 <html lang="es">
     <head>
         {{ current_theme.headertags() }}
         {{ current_theme.local_style() }}
-        <title>Contacto - {{ site_config.nombre }}</title>
+        <title>Contacto - {{ config().titulo }}</title>
     </head>
     <body>
         {{ current_theme.navbar() }}
 
         <div class="container py-5">
             <h1>Contacto</h1>
-            <p>Esta es una página personalizada del tema.</p>
+            <p>Esta es una página estática definida por el tema.</p>
             <!-- Add your custom content here -->
         </div>
 
@@ -267,13 +267,13 @@ Create static custom pages for your theme in the `custom_pages/` directory. Thes
 </html>
 ```
 
-2. Access the page at: `/custom/contacto`
+2. Access the page at: `/static/contacto`
 
-### Custom Page Security
+### Static Page Security
 
-- Page names are validated to contain only alphanumeric characters, underscores, and hyphens
-- Only authenticated themes can serve custom pages
+- Page names are validated to prevent path traversal (rejects `/`, `\`, `.`, `$`)
 - Pages are cached for 180 seconds for performance
+- If the template file does not exist, the user is redirected to `/`
 
 ## Static Assets Management
 
