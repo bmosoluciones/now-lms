@@ -1,7 +1,8 @@
 # Upstream v2.0.0 sync — migration map
 
 **Status:** planning only. Nothing in this document has been executed.
-**Measured:** 2026-07-26, fork `deploy/now-lms-fixed` @ `4755503` vs `upstream/main` @ `3fec727` (`v2.0.0-1-g3fec727`).
+**Measured:** 2026-07-26, fork `deploy/now-lms-fixed` @ `4755503` vs `upstream/main` @ `0c9eb75`
+(re-measured after our four PRs merged upstream; the first pass used the then-current `3fec727`).
 **Tracking:** intent-solutions-io/now-lms#12. Deploy prerequisites: #14.
 
 Every number here was measured, not estimated. Where it contradicts the earlier
@@ -12,7 +13,9 @@ than silently corrected.
 
 ## 1. The headline: this sync is much smaller than it looks
 
-Divergence is **41 ahead / 100 behind** (35 of the 41 are non-merge commits).
+Divergence is **41 ahead / 107 behind** (35 of the 41 are non-merge commits). The 107 includes
+the four commits upstream took from us today, so the *surviving* fork set shrinks by three once
+they are dropped (§2).
 
 A test merge of `upstream/main` into `deploy/now-lms-fixed` produces **61
 conflicted files** — all content conflicts, no rename/delete conflicts.
@@ -70,13 +73,17 @@ want upstream's version verbatim.
 | `a3af0c4` | copy `package-lock.json` before `npm ci` | **Fixed upstream** — `Dockerfile:14` already copies the lockfile before the `npm ci` at line 16. ⚠️ *The earlier plan listed this hash as "compose — must survive". It is the docker lockfile fix and it dies.* |
 | — | *(no sixth: see the `55900ed` correction below)* | |
 
-### UPSTREAM FIRST, THEN DROP (3) — all four PRs are open and green
+### UPSTREAM FIRST, THEN DROP (3) — **all four PRs MERGED 2026-07-26; the drop is now unblocked**
 
 | Commit | Upstream PR | Status |
 |---|---|---|
-| `a5ae792` | [#214](https://github.com/bmosoluciones/now-lms/pull/214) — `ProxyFix` uses undefined `app` | 12/12 checks pass |
-| `ab7a1fe` | [#215](https://github.com/bmosoluciones/now-lms/pull/215) — `NOW_LMS_TRUSTED_PROXY` | 12/12 checks pass |
-| `ba1b5de` | [#216](https://github.com/bmosoluciones/now-lms/pull/216) — assets populate under custom data dir | 12/12 checks pass |
+| `a5ae792` | [#214](https://github.com/bmosoluciones/now-lms/pull/214) — `ProxyFix` uses undefined `app` | **merged** (12/12 checks passed) |
+| `ab7a1fe` | [#215](https://github.com/bmosoluciones/now-lms/pull/215) — `NOW_LMS_TRUSTED_PROXY` | **merged** (12/12) |
+| `ba1b5de` | [#216](https://github.com/bmosoluciones/now-lms/pull/216) — assets populate under custom data dir | **merged** (12/12) |
+
+Verified present in `upstream/main` @ `0c9eb75`: `now_lms/__init__.py:536` now reads
+`ProxyFix(flask_app.wsgi_app, …)`, `now_lms/db/initial_data.py:1653` carries the
+`node_modules` guard, and `dev/lint.sh` no longer calls the deleted script.
 
 ⚠️ *The earlier plan listed `e457135` as the third Track C commit. `e457135` is
 the docker-compose deploy wiring and **must survive**; the assets fix is
@@ -282,9 +289,34 @@ Reason it stays mandatory despite the guards: `20260725_120000` moves a live
 
 ## 7. Open items
 
-- **`static_pages` → `custom_pages` in fork code.** The fork's `intent_learn`
-  theme and any override referencing the old page route needs an audit; not yet
-  done, and worth doing before step 3 so cherry-picks land on a known surface.
+- **`static_pages` → `custom_pages` in fork code — audit done, fixes deferred to
+  sync time.** Four coupling points, all in files the theme copied verbatim from
+  the built-in theme and which therefore inherited merge-base-era names:
+
+  | File | Today (fork) | Required at v2.0.0 |
+  |---|---|---|
+  | `themes/intent_learn/footer.j2:1` | `get_footer_pages()` | `get_custom_pages()` |
+  | `themes/intent_learn/footer.j2:13` | `url_for('static_pages.view_page')` | `custom_pages.view_page` |
+  | `themes/intent_learn/footer.j2:43` | `url_for('static_pages.contact')` | `contact.contact_form` |
+  | `themes/intent_learn/navbar.j2:80` | `url_for('static_pages.contact')` | `contact.contact_form` |
+
+  ⛔ **These must land WITH the sync, not before it.** The fork registers
+  `static_pages` (`now_lms/__init__.py:258`) and defines `get_footer_pages()`
+  (`vistas/_helpers.py:97`); upstream v2.0.0 registers `custom_pages` (`:261`) and
+  `get_custom_pages()` (`_helpers.py:117`). Renaming today raises
+  `BuildError`/`UndefinedError` on every page load, because the new names do not
+  exist on this side yet. The theme customises neither file, so the fix at sync
+  time is simply to re-copy both from v2.0.0.
+
+- **`theme.yml` — DONE** (PR #16). Upstream v2.0.0 gates `list_themes()` on the
+  file's existence; without it `intent_learn` silently vanishes from admin →
+  Settings → Appearance. Added early because it is inert on the current branch.
+
+- **Favicon brand leak — DONE** (PR #16). The theme pointed its raster favicon
+  fallback at core `static/icons/favicon/*` and seven upstream binaries had been
+  overwritten in place, so all eight other bundled themes rendered the Intent
+  Solutions mark. Marks moved into the theme's own directory; core restored
+  byte-identical to upstream.
 - **Re-offer `ecc85d5` upstream** (§4) — the full PG bootstrap fix with tests.
 - **Offer gettext-wrapping for `auth.py` + `paypal.js`** (§3) so `a3f68fe` can
   eventually be retired legitimately.
