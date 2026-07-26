@@ -70,6 +70,6 @@ def test_contact_message_url_generation(app):
 
         assert isinstance(contact_msg.id, str), f"Message ID should be string, got {type(contact_msg.id)}"
 
-        view_url = url_for("custom_pages.view_contact_message", message_id=contact_msg.id)
+        view_url = url_for("contact.view_contact_message", message_id=contact_msg.id)
         assert view_url is not None
         assert f"/admin/contact-messages/{contact_msg.id}/view" in view_url

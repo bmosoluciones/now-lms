@@ -28,6 +28,15 @@ PAGE_NOT_FOUND_MESSAGE = _("Página no encontrada.")
 HOME_ROUTE = "home.pagina_de_inicio"
 
 
+def _invalidate_page_cache(*slugs: str) -> None:
+    """Invalidate cache for custom pages. Best-effort, never raises."""
+    for slug in slugs:
+        try:
+            cache.delete_memoized(view_page, slug)
+        except Exception:
+            pass
+
+
 def _slugify(text: str) -> str:
     """Generate a URL-safe slug from text."""
     text = text.lower().strip()
@@ -98,7 +107,7 @@ def create_page() -> str | Response:
         database.session.add(page)
         database.session.commit()
 
-        cache.delete_memoized(view_page, page.slug)
+        _invalidate_page_cache(page.slug)
 
         flash(_("Página creada correctamente."), "success")
         return redirect(url_for("custom_pages.list_pages"))
@@ -136,9 +145,9 @@ def edit_page(page_id: str) -> str | Response:
 
         database.session.commit()
 
-        cache.delete_memoized(view_page, old_slug)
+        _invalidate_page_cache(old_slug)
         if old_slug != new_slug:
-            cache.delete_memoized(view_page, new_slug)
+            _invalidate_page_cache(new_slug)
 
         flash(_("Página actualizada correctamente."), "success")
         return redirect(url_for("custom_pages.list_pages"))
@@ -157,7 +166,7 @@ def delete_page(page_id: str) -> Response:
         flash(PAGE_NOT_FOUND_MESSAGE, "danger")
         return redirect(url_for(HOME_ROUTE))
 
-    cache.delete_memoized(view_page, page.slug)
+    _invalidate_page_cache(page.slug)
 
     database.session.delete(page)
     database.session.commit()
@@ -181,7 +190,7 @@ def toggle_page(page_id: str) -> Response:
     page.modificado_por = current_user.usuario
     database.session.commit()
 
-    cache.delete_memoized(view_page, page.slug)
+    _invalidate_page_cache(page.slug)
 
     status = _("activada") if page.is_active else _("desactivada")
     flash(_("Página {status} correctamente.").format(status=status), "success")
