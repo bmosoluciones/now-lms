@@ -21,7 +21,7 @@
 
                 <div class="card mb-3">
                     <div class="card-body">
-                        <form method="GET" action="{{ url_for('custom_pages.list_contact_messages') }}" class="row g-3">
+                        <form method="GET" action="{{ url_for('contact.list_contact_messages') }}" class="row g-3">
                             <div class="col-auto">
                                 <label for="status" class="form-label">{{ _("Filtrar por estado:") }}</label>
                             </div>
@@ -78,7 +78,7 @@
                                         <td>{{ message.creado.strftime('%Y-%m-%d %H:%M') }}</td>
                                         <td>
                                             <a
-                                                href="{{ url_for('custom_pages.view_contact_message', message_id=message.id) }}"
+                                                href="{{ url_for('contact.view_contact_message', message_id=message.id) }}"
                                                 class="btn btn-sm btn-primary"
                                             >
                                                 <i class="bi bi-eye"></i> {{ _("Ver") }}

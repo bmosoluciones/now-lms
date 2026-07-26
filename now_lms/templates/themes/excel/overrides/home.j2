@@ -248,7 +248,7 @@ current_theme() %}
                                 <div class="excel-cta-actions">
                                     {% if is_contact_enabled() %}
                                     <a
-                                        href="{{ url_for('custom_pages.contact') }}"
+                                        href="{{ url_for('contact.contact_form') }}"
                                         class="btn excel-btn-primary excel-btn-lg me-3"
                                     >
                                         {{ _('Contáctanos') }}
@@ -274,7 +274,7 @@ current_theme() %}
                                         {{ _('Explorar Cursos') }}
                                     </a>
                                     {% if is_contact_enabled() %}
-                                    <a href="{{ url_for('custom_pages.contact') }}" class="btn excel-btn-outline excel-btn-lg">
+                                    <a href="{{ url_for('contact.contact_form') }}" class="btn excel-btn-outline excel-btn-lg">
                                         {{ _('Contáctanos') }}
                                     </a>
                                     {% endif %}

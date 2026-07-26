@@ -16,7 +16,7 @@ current_theme = current_theme() %} {{ current_theme.navbar() }}
         <div class="col-12 col-lg-6 mb-4">
             <div class="bg-white p-4 shadow-sm rounded h-100">
                 <h3 class="mb-4">{{ _("Envíenos un mensaje") }}</h3>
-                <form method="POST" action="{{ url_for('custom_pages.contact') }}">
+                <form method="POST" action="{{ url_for('contact.contact_form') }}">
                     <div class="mb-3">
                         <label for="name" class="form-label">{{ _("Nombre") }} <span class="text-danger">*</span></label>
                         <input
