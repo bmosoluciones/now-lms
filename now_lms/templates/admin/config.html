@@ -572,17 +572,23 @@
                             >
                                 <div class="accordion-body">
                                     <p class="text-muted">
-                                        {{_("Administre las páginas estáticas y mensajes de contacto del sitio web")}}.
+                                        {{_("Administre las páginas custom, mensajes de contacto y enlaces del sitio web")}}.
                                     </p>
                                     <div class="d-flex flex-column flex-sm-row gap-2 mb-3">
                                         <a href="{{ url_for('custom_pages.list_pages') }}" class="btn btn-outline-primary">
-                                            <i class="bi bi-file-text"></i> {{_("Gestionar Páginas Estáticas")}}
+                                            <i class="bi bi-file-text"></i> {{_("Gestionar Páginas Custom")}}
                                         </a>
                                         <a
                                             href="{{ url_for('contact.list_contact_messages') }}"
                                             class="btn btn-outline-primary"
                                         >
                                             <i class="bi bi-envelope"></i> {{_("Ver Mensajes de Contacto")}}
+                                        </a>
+                                        <a
+                                            href="{{ url_for('footer_links.list_enlaces_utiles') }}"
+                                            class="btn btn-outline-primary"
+                                        >
+                                            <i class="bi bi-link-45deg"></i> {{_("Enlaces Útiles")}}
                                         </a>
                                     </div>
                                     <hr />
@@ -800,10 +806,10 @@
                                         <div class="col-12">
                                             <h6>{{_("Sección 'Acerca de'")}}</h6>
                                             <p class="text-muted">
-                                                {{_("Configure qué páginas estáticas se mostrarán en la sección 'Acerca de' del\nfooter")}}. {{_("Edite cada página y active la opción 'Mostrar en el\nfooter'.")}}.
+                                                {{_("Configure qué páginas custom se mostrarán en la sección 'Acerca de' del\nfooter")}}. {{_("Edite cada página y active la opción 'Mostrar en el\nfooter'.")}}.
                                             </p>
                                             <a href="{{ url_for('custom_pages.list_pages') }}" class="btn btn-outline-primary">
-                                                <i class="bi bi-file-text"></i> {{_("Gestionar Páginas Estáticas")}}
+                                                <i class="bi bi-file-text"></i> {{_("Gestionar Páginas Custom")}}
                                             </a>
                                         </div>
                                     </div>
