@@ -604,13 +604,19 @@ def _register_after_request_handlers(flask_app):
         # 5. Content Security Policy (CSP)
         if "Content-Security-Policy" not in response.headers:
             response.headers["Content-Security-Policy"] = (
-                "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; "
-                "frame-ancestors 'self';"
+                "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; "
+                "form-action 'self'; img-src 'self' data: blob: https:; font-src 'self' data:; "
+                "style-src 'self' 'unsafe-inline'; "
+                "script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.paypalobjects.com "
+                "https://cdnjs.cloudflare.com; "
+                "connect-src 'self' https://www.paypal.com https://www.paypalobjects.com; "
+                "frame-src 'self' https:; worker-src 'self' blob: https://cdnjs.cloudflare.com; "
+                "media-src 'self' blob: https:;"
             )
 
         # 6. HTTP Strict Transport Security (HSTS)
         # Apply only if FORCE_HTTPS is enabled or request is secure
-        if (flask_app.config.get("FORCE_HTTPS") or request.is_secure) and "Strict-Transport-Security" not in response.headers:
+        if (FORCE_HTTPS or request.is_secure) and "Strict-Transport-Security" not in response.headers:
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
 
         return response

@@ -23,17 +23,28 @@ def test_standard_security_headers(client):
     # Check Referrer-Policy
     assert response.headers.get("Referrer-Policy") == "no-referrer-when-downgrade"
 
-    # Check Content-Security-Policy
-    assert "default-src 'self'" in response.headers.get("Content-Security-Policy", "")
+    # Check Content-Security-Policy. Third-party sources are explicitly scoped
+    # to the integrations the application uses rather than allowing all HTTP(S).
+    csp = response.headers.get("Content-Security-Policy", "")
+    assert "default-src 'self'" in csp
+    assert "object-src 'none'" in csp
+    assert "http:" not in csp
+    assert "'unsafe-eval'" not in csp
+    assert "https://www.paypal.com" in csp
+    assert "https://cdnjs.cloudflare.com" in csp
 
 
-def test_hsts_header_when_force_https(client, app):
+def test_hsts_header_when_force_https(client):
     """Verify that Strict-Transport-Security is present when FORCE_HTTPS is enabled."""
-    with patch.dict(app.config, {"FORCE_HTTPS": True}):
-        # Mock request is secure or config FORCE_HTTPS is true.
-        # Since we patched app.config["FORCE_HTTPS"] to True, HSTS header should be added.
+    with patch("now_lms.FORCE_HTTPS", True):
         response = client.get("/")
         assert response.headers.get("Strict-Transport-Security") == "max-age=31536000; includeSubDomains"
+
+
+def test_hsts_header_when_request_is_secure(client):
+    """Verify that HTTPS requests receive HSTS without the force flag."""
+    response = client.get("/", base_url="https://localhost.localdomain")
+    assert response.headers.get("Strict-Transport-Security") == "max-age=31536000; includeSubDomains"
 
 
 def test_hsts_header_not_present_by_default(client):
