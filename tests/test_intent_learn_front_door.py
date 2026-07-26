@@ -13,6 +13,7 @@ TEMPLATE_PATH = Path("now_lms/templates/themes/intent_learn/overrides/home.j2")
 CSS_PATH = Path("now_lms/static/themes/intent_learn/front-door.css")
 HEADER_PATH = Path("now_lms/templates/themes/intent_learn/header.j2")
 BASE_PATH = Path("now_lms/templates/themes/intent_learn/base.j2")
+JS_PATH = Path("now_lms/templates/themes/intent_learn/js.j2")
 
 
 def _template() -> str:
@@ -105,8 +106,16 @@ def test_front_door_uses_the_composition_reset_and_canonical_legal_footer() -> N
 
     assert "--paper: #f3f6f4" in css
     assert "fonts.googleapis.com" not in css
-    for path in (HEADER_PATH, BASE_PATH):
-        assert "fonts.googleapis.com" not in path.read_text(encoding="utf-8")
+    for path in (HEADER_PATH, BASE_PATH, JS_PATH):
+        chrome = path.read_text(encoding="utf-8")
+        assert "fonts.googleapis.com" not in chrome
+        # Same privacy/CSP boundary as the fonts: no third-party CDN loads, ever.
+        # Both prior offenders were dead code -- ionicons in base.j2 (nothing renders
+        # <ion-icon>; icons are self-hosted bootstrap-icons) and an unversioned AlpineJS
+        # in js.j2 (no Alpine directive exists in any template, theme or core). Upstream's
+        # v2.0.0 Content-Security-Policy blocks unpkg.com anyway. Vendor, don't hotlink.
+        assert "unpkg.com" not in chrome
+        assert "cdn.jsdelivr.net" not in chrome
     assert "font-size: clamp(3rem, 5.1vw, 4.65rem)" in css
     assert ".isl-standard-step .n { display: none; }" in css
     assert "border-radius: 0;" in css
