@@ -1755,7 +1755,7 @@ def _generate_meet_ics_content(recurso: Any) -> str:
                 f"DTEND:{end_str}",
                 f"SUMMARY:{recurso.nombre}",
                 f"DESCRIPTION:{recurso.descripcion or ''}",
-                f"LOCATION:{recurso.notes or 'En línea'}",
+                "LOCATION:{}".format(recurso.notes or _("En línea")),
                 "END:VEVENT",
             ]
         )
@@ -1803,7 +1803,7 @@ def _meet_calendar_details(recurso: Any, course_obj: Any):
 @resources.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics", methods=["GET"])
 @login_required
 def download_meet_calendar(course_code: str, codigo: str) -> Response:
-    recurso, _ = _meet_resource_context(course_code, codigo)
+    recurso, _rc = _meet_resource_context(course_code, codigo)
 
     ics_content = _generate_meet_ics_content(recurso)
     filename = f"meet-{recurso.nombre[:20].replace(' ', '-')}-{recurso.id}.ics"
@@ -1828,7 +1828,7 @@ def google_calendar_link(course_code: str, codigo: str) -> Response:
             f"&text={quote(recurso.nombre)}"
             f"&dates={start_str}/{end_str}"
             f"&details={quote(description)}"
-            f"&location={quote(recurso.notes or 'En línea')}"
+            "&location={}".format(quote(recurso.notes or _("En línea")))
         )
         return redirect(google_url)
 
@@ -1851,7 +1851,7 @@ def outlook_calendar_link(course_code: str, codigo: str) -> str | Response:
             f"&startdt={start_str}"
             f"&enddt={end_str}"
             f"&body={quote(description)}"
-            f"&location={quote(recurso.notes or 'En línea')}"
+            "&location={}".format(quote(recurso.notes or _("En línea")))
         )
         return redirect(outlook_url)
 

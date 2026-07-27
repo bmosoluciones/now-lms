@@ -275,14 +275,14 @@ class Curso(database.Model, BaseTabla):
     def validar_foro_habilitado(self):
         """Valida que el foro solo pueda habilitarse en cursos no self-paced."""
         if self.foro_habilitado and self.modalidad == "self_paced":
-            return False, "El foro no puede habilitarse en cursos con modalidad self-paced"
+            return False, _("El foro no puede habilitarse en cursos con modalidad self-paced")
         return True, ""
 
     @database.validates("foro_habilitado")
     def validate_foro_habilitado(self, key, value):
         """Validación de SQLAlchemy para foro_habilitado."""
         if value and self.modalidad == "self_paced":
-            raise ValueError("El foro no puede habilitarse en cursos con modalidad self-paced")
+            raise ValueError(_("El foro no puede habilitarse en cursos con modalidad self-paced"))
         return value
 
     def is_self_paced(self):

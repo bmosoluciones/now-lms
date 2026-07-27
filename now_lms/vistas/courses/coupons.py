@@ -211,7 +211,7 @@ def edit_coupon(course_code: str, coupon_id: int) -> str | Response:
 @perfil_requerido("instructor")
 def delete_coupon(course_code: str, coupon_id: int) -> Response:
     """Eliminar cupón."""
-    _, error = _validate_coupon_permissions(course_code, current_user)
+    _valid, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))

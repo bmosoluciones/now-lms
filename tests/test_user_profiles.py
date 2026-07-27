@@ -153,7 +153,7 @@ def test_edit_perfil(client_student, profile_users, db_session):
     }
     resp_post = client_student.post(f"/perfil/edit/{student_id}", data=edit_data, follow_redirects=True)
     assert resp_post.status_code == 200
-    assert b"Pefil actualizado" in resp_post.data
+    assert b"Perfil actualizado" in resp_post.data
 
     # Verify updates in DB
     db_session.expire(profile_users["student"])

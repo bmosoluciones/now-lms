@@ -164,8 +164,10 @@ def email_verificado_requerido(func: Callable) -> Callable:
         # Check if email verification is required
         if usuario_requiere_verificacion_email():
             flash(
-                _("Debe verificar su correo electrónico para acceder a esta funcionalidad. "
-                "Revise su bandeja de entrada y confirme su dirección de correo."),
+                _(
+                    "Debe verificar su correo electrónico para acceder a esta funcionalidad. "
+                    "Revise su bandeja de entrada y confirme su dirección de correo."
+                ),
                 "warning",
             )
             return redirect(url_for("user_profile.usuario", id_usuario=current_user.usuario))
@@ -308,8 +310,8 @@ def send_confirmation_email(user) -> None:
             msg,
             background=False,
             no_config=True,
-            _log="Correo de confirmación enviado",
-            _flush="Correo de confirmación enviado.",
+            _log=_("Correo de confirmación enviado"),
+            _flush=_("Correo de confirmación enviado."),
         )
         log.info(f"Confirmation email sent to user {user.usuario}")
     except Exception as e:  # noqa: E722
@@ -397,8 +399,8 @@ def send_password_reset_email(user) -> bool:
             msg,
             background=False,
             no_config=True,
-            _log="Correo de recuperación de contraseña enviado",
-            _flush="Correo de recuperación de contraseña enviado.",
+            _log=_("Correo de recuperación de contraseña enviado"),
+            _flush=_("Correo de recuperación de contraseña enviado."),
         )
         log.info(f"Recovery email sent to user {user.usuario}")
         return True

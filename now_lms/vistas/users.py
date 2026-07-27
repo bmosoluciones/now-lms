@@ -102,8 +102,10 @@ def inicio_sesion() -> str | Response:
                         database.session.commit()
                         login_user(identidad)
                         flash(
-                            _("Su correo electrónico no ha sido verificado. Su acceso a la plataforma está limitado. "
-                            "Por favor, verifique su correo electrónico para acceder a todas las funcionalidades."),
+                            _(
+                                "Su correo electrónico no ha sido verificado. Su acceso a la plataforma está limitado. "
+                                "Por favor, verifique su correo electrónico para acceder a todas las funcionalidades."
+                            ),
                             "warning",
                         )
                         return PANEL_DE_USUARIO

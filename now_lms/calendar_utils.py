@@ -21,6 +21,7 @@ from flask import current_app
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import CursoRecurso, CursoSeccion, Evaluation, UserEvent, database
+from now_lms.i18n import _
 from now_lms.logs import log
 
 
@@ -96,7 +97,7 @@ def create_events_for_student_enrollment(user_id: str, course_id: str) -> None:
                     section_id=evaluation.section_id,
                     evaluation_id=evaluation.id,
                     resource_type="evaluation",
-                    title=f"Fecha límite: {evaluation.title}",
+                    title=_("Fecha límite: {title}").format(title=evaluation.title),
                     description=evaluation.description,
                     start_time=evaluation.available_until,
                     timezone=_get_app_timezone(),
@@ -187,7 +188,7 @@ def update_evaluation_events(evaluation_id: str) -> None:
                 updates_made = 0
                 for event in events:
                     # Update event details
-                    event.title = f"Fecha límite: {evaluation.title}"
+                    event.title = _("Fecha límite: {title}").format(title=evaluation.title)
                     event.description = evaluation.description
                     event.start_time = evaluation.available_until
                     event.timezone = _get_app_timezone()
