@@ -36,7 +36,13 @@ services:
     restart: unless-stopped
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        # Refuses to build without the commit SHA -- deploy via scripts/deploy-vps.sh,
+        # which sets it from the checkout. An image that cannot say which commit it is
+        # is how the July checkout/image/volume drift happened (fork issue #14).
+        BUILD_SHA: ${BUILD_SHA:?run the deploy via scripts/deploy-vps.sh, which sets BUILD_SHA}
     image: now-lms:intent-bootfix   # tag the locally-built image so redeploys reuse it
     depends_on:
       db:
