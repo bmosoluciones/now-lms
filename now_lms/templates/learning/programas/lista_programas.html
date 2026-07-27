@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Lista de {{ _("Programas") }}.</title>
+        <title>{{ _("Lista de Programas") }}.</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -165,7 +165,7 @@
                         <h5 class="text-muted mt-3">{{ _('No hay programas disponibles') }}</h5>
                         <p class="text-muted">{{ _('Usted no ha creado ningún programa todavía.') }}</p>
                         <a href="{{ url_for('program.nuevo_programa') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear") }} Primer {{ _("Programa") }}
+                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear Primer Programa") }}
                         </a>
                     </div>
                 </div>

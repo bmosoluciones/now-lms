@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ programa.nombre }} - Progreso del {{ _("Programa") }}</title>
+        <title>{{ programa.nombre }} - {{ _("Progreso del Programa") }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -24,7 +24,7 @@
                                 <div class="col-md-8">
                                     <div class="card mb-4">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">{{ _("Descripción") }} del {{ _("Programa") }}</h5>
+                                            <h5 class="card-title mb-0">{{ _("Descripción del Programa") }}</h5>
                                         </div>
                                         <div class="card-body">{{ markdown2html(programa.descripcion) | safe }}</div>
                                     </div>
@@ -32,7 +32,7 @@
                                     {% if cursos_programa %}
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">{{ _("Cursos") }} del {{ _("Programa") }}</h5>
+                                            <h5 class="card-title mb-0">{{ _("Cursos del Programa") }}</h5>
                                         </div>
                                         <div class="card-body">
                                             <div class="list-group">

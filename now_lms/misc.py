@@ -21,6 +21,7 @@ from markdown import markdown
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
+from now_lms.i18n import _
 
 
 # <------------------------------------------------------------------------------------->
@@ -99,22 +100,24 @@ HTML_TAGS = [
 ]
 
 CURSO_NIVEL: dict[int, str] = {
-    0: """<i class="bi bi-circle" aria-hidden="true"></i> Nivel Introductorio""",
-    1: """<i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Principiante""",
-    2: """<i class="bi bi-circle-fill" aria-hidden="true"></i> <i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Intermedio""",
-    3: """
+    0: _("""<i class="bi bi-circle" aria-hidden="true"></i> Nivel Introductorio"""),
+    1: _("""<i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Principiante"""),
+    2: _(
+        """<i class="bi bi-circle-fill" aria-hidden="true"></i> <i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Intermedio"""
+    ),
+    3: _("""
     <i class="bi bi-circle-fill" aria-hidden="true">
     </i> <i class="bi bi-circle-fill" aria-hidden="true">
     </i> <i class="bi bi-circle-fill" aria-hidden="true"></i>
     Nivel Avanzado
-    """,
+    """),
 }
 
 GENEROS: dict[str, str] = {
     "male": """<i class="bi bi-gender-male" aria-hidden="true"></i>""",
     "female": """<i class="bi bi-gender-female" aria-hidden="true"></i>""",
     "other": """<i class="bi bi-gender-ambiguous" aria-hidden="true"></i>""",
-    "none": """No espeficicado.""",
+    "none": _("No especificado."),
 }
 
 TIPOS_RECURSOS: dict[str, str] = {
