@@ -29,7 +29,7 @@ from 'macros/form_buttons.j2' import render_form_buttons %}
                     {{ form.hidden_tag() }}
 
                     <div class="col-md-12">
-                        <label for="nombre" class="form-label">{{ _("Nombre") }} del recurso *</label>
+                        <label for="nombre" class="form-label">{{ _("Nombre del recurso") }} *</label>
                         {{ form.nombre(class="form-control", required=true) }} {{ render_field_errors(form.nombre) }}
                         <div class="invalid-feedback">{{ _('Por favor, ingrese un nombre para el recurso.') }}</div>
                     </div>

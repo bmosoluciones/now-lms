@@ -4,7 +4,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _("Inscripción") }} al {{ _("Programa") }} - {{ programa.nombre }}</title>
+        <title>{{ _("Inscripción al Programa") }} - {{ programa.nombre }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -17,7 +17,7 @@
                 <div class="container">
                     <div class="py-5 text-center">
                         <h1 class="h2">
-                            {{ _("Inscripción") }} al {{ _("Programa") }} {{ programa.codigo | upper}} - {{ programa.nombre |
+                            {{ _("Inscripción al Programa") }} {{ programa.codigo | upper}} - {{ programa.nombre |
                             upper }}
                         </h1>
                         <p class="lead">{{ _('Complete la inscripción para acceder al programa.') }}</p>
@@ -25,7 +25,7 @@
                     <div class="row g-5 justify-content-center">
                         <div class="col-md-8 col-lg-6">
                             <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="text-primary">{{ _("Resumen") }} del {{ _("Programa") }}</span>
+                                <span class="text-primary">{{ _("Resumen del Programa") }}</span>
                             </h4>
                             <ul class="list-group mb-3">
                                 <li class="list-group-item d-flex justify-content-between lh-sm">

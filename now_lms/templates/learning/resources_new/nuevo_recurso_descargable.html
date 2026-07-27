@@ -29,7 +29,7 @@
                     {{ form.hidden_tag() }}
 
                     <div class="col-md-12">
-                        <label for="nombre" class="form-label">{{ _("Nombre") }} del recurso *</label>
+                        <label for="nombre" class="form-label">{{ _("Nombre del recurso") }} *</label>
                         {{ form.nombre(class="form-control", required=true) }} {{ render_field_errors(form.nombre) }}
                         <div class="invalid-feedback">{{ _('Por favor, ingrese un nombre para el recurso.') }}</div>
                     </div>
@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="col-md-12">
-                        <label for="requerido" class="form-label">{{ _("Tipo") }} de recurso</label>
+                        <label for="requerido" class="form-label">{{ _("Tipo de recurso") }}</label>
                         {{ form.requerido(class="form-select") }} {{ render_field_errors(form.requerido) }}
                     </div>
 
