@@ -197,6 +197,21 @@
                         </article>
                         {% endfor %}
                     </div>
+                    <div class="isl-cred">
+                        {# Credly's official embedded_badge iframe — deliberately NOT their
+                           script-based embed: that loader comes from Credly's CDN host, which
+                           violates the theme's no-CDN-script rule and is blocked by upstream
+                           v2.0.0's CSP (script-src). A plain https iframe passes both
+                           (frame-src 'self' https:) and renders identically. The front-door
+                           tests enforce this. #}
+                        <iframe
+                            src="https://www.credly.com/embedded_badge/ddf22fb4-0aa6-46b3-a93b-0b45b509e471"
+                            width="150"
+                            height="270"
+                            loading="lazy"
+                            title="{{ _('Anthropic Claude Partner badge — Claude Code, verified on Credly') }}"></iframe>
+                        <p class="isl-cred-note">{{ _('Verified Anthropic partner credential') }}</p>
+                    </div>
                 </div>
             </section>
 

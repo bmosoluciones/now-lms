@@ -350,6 +350,11 @@
 .isl-team-name { margin: 0 0 0.2rem; color: var(--graphite); font-family: var(--font-display); font-size: 0.86rem; font-weight: 650; line-height: 1.25; }
 .isl-team-role { margin: 0; color: rgb(var(--ink-dim)); font-size: 0.68rem; line-height: 1.35; }
 
+/* Verified partner credential (Credly iframe) under the team grid. */
+.isl-cred { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; margin-top: clamp(2rem, 4vw, 3rem); padding-top: 1.25rem; border-top: 1px solid rgb(var(--line)); }
+.isl-cred iframe { max-width: 100%; border: 0; }
+.isl-cred-note { margin: 0; color: rgb(var(--ink-dim)); font-size: 0.68rem; line-height: 1.35; }
+
 .isl-final {
     position: relative;
     overflow: hidden;
