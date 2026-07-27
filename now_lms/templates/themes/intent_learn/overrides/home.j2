@@ -4,7 +4,7 @@
     {% set current_theme = current_theme() %}
     {% set site_config = config() %}
     {% set S = url_for('static', filename='themes/intent_learn') %}
-    {% set access_contact = (site_config.contact_email or 'hello@intentsolutions.io') | urlencode %}
+    {% set access_contact = site_config.contact_email or 'hello@intentsolutions.io' %}
     {% set access_subject = _('Intent Solutions Practice — Access Request') | urlencode %}
     {% set access_email = 'mailto:' ~ access_contact ~ '?subject=' ~ access_subject %}
     {% set team = [
