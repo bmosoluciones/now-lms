@@ -43,6 +43,8 @@ msgid ""
 "Debe verificar su correo electrónico para acceder a esta funcionalidad. "
 "Revise su bandeja de entrada y confirme su dirección de correo."
 msgstr ""
+"You must verify your email to access this feature. Please check your inbox "
+"and confirm your email address."
 
 #: /home/runner/workspace/now_lms/auth.py:313
 msgid "Correo de confirmación enviado"
@@ -58,11 +60,11 @@ msgstr "Password Recovery - NOW LMS"
 
 #: /home/runner/workspace/now_lms/auth.py:402
 msgid "Correo de recuperación de contraseña enviado"
-msgstr ""
+msgstr "Password recovery email sent"
 
 #: /home/runner/workspace/now_lms/auth.py:403
 msgid "Correo de recuperación de contraseña enviado."
-msgstr ""
+msgstr "Password recovery email sent."
 
 #: /home/runner/workspace/now_lms/bi.py:220
 msgid "Curso finalizado. Todos los mensajes del foro han sido cerrados."
@@ -80,7 +82,7 @@ msgstr "Course cannot be published"
 #: /home/runner/workspace/now_lms/calendar_utils.py:191
 #, python-brace-format
 msgid "Fecha límite: {title}"
-msgstr ""
+msgstr "Deadline: {title}"
 
 #: /home/runner/workspace/now_lms/cli.py:43
 msgid "Interfaz de linea de comandos para la administración de NOW LMS."
@@ -223,7 +225,7 @@ msgstr "Coupon expired"
 
 #: /home/runner/workspace/now_lms/db/__init__.py:1221
 msgid "Cupón ha alcanzado el límite de usos"
-msgstr ""
+msgstr "Coupon has reached the usage limit"
 
 #: /home/runner/workspace/now_lms/db/tools.py:127
 msgid "Sistema de aprendizaje en linea."
@@ -2058,7 +2060,7 @@ msgstr "Last Modification"
 
 #: /home/runner/workspace/now_lms/templates/admin/custom_pages.html:48
 msgid "Clic para desactivar"
-msgstr ""
+msgstr "Click to deactivate"
 
 #: /home/runner/workspace/now_lms/templates/admin/custom_pages.html:52
 msgid "Clic para activar"
@@ -2181,11 +2183,11 @@ msgstr "New Custom Page"
 
 #: /home/runner/workspace/now_lms/templates/admin/edit_custom_page.html:41
 msgid "Puede modificar el slug. Se actualizarán los enlaces."
-msgstr ""
+msgstr "You can modify the slug. Links will be updated."
 
 #: /home/runner/workspace/now_lms/templates/admin/edit_custom_page.html:44
 msgid "Identificador único para la URL. Ej: about-us, mi-pagina"
-msgstr ""
+msgstr "Unique identifier for the URL. E.g.: about-us, my-page"
 
 #: /home/runner/workspace/now_lms/templates/admin/edit_custom_page.html:56
 msgid "Puede usar HTML para dar formato al contenido."
@@ -6666,27 +6668,27 @@ msgstr "Processing payment..."
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:14
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:20
 msgid "¡Pago completado exitosamente! Redirigiendo..."
-msgstr ""
+msgstr "Payment completed successfully! Redirecting..."
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:15
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:21
 msgid "Error: PayPal no está disponible. Por favor recargue la página."
-msgstr ""
+msgstr "Error: PayPal is not available. Please refresh the page."
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:16
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:22
 msgid "Error: Parámetros de pago inválidos."
-msgstr ""
+msgstr "Error: Invalid payment parameters."
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:17
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:23
 msgid "Error al crear la orden de pago. Por favor intente nuevamente."
-msgstr ""
+msgstr "Error creating payment order. Please try again."
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:18
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:24
 msgid "Error al capturar el pago. Por favor contacte soporte."
-msgstr ""
+msgstr "Error capturing payment. Please contact support."
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:19
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:25
@@ -6696,7 +6698,7 @@ msgstr "PayPal Error"
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:20
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:26
 msgid "Error desconocido"
-msgstr ""
+msgstr "Unknown error"
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:21
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:27
@@ -6706,12 +6708,12 @@ msgstr "Payment cancelled by user."
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:22
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:28
 msgid "Error al cargar los botones de PayPal. Por favor recargue la página."
-msgstr ""
+msgstr "Error loading PayPal buttons. Please refresh the page."
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:23
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:29
 msgid "Error al inicializar PayPal. Por favor recargue la página."
-msgstr ""
+msgstr "Error initializing PayPal. Please refresh the page."
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:24
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:30
@@ -6720,6 +6722,8 @@ msgid ""
 "Error al confirmar el pago después de %(max)s intentos. Por favor contacte "
 "soporte con el ID de orden: %(order)s"
 msgstr ""
+"Error confirming payment after %(max)s attempts. Please contact support with"
+" the order ID: %(order)s"
 
 #: /home/runner/workspace/now_lms/templates/learning/paypal_payment.html:25
 #: /home/runner/workspace/now_lms/templates/learning/programas/program_payment.html:31
@@ -8033,11 +8037,11 @@ msgstr "Discount percentage (0-100)"
 
 #: /home/runner/workspace/now_lms/templates/learning/curso/coupons/edit.html:176
 msgid "Cantidad fija de descuento (máximo"
-msgstr ""
+msgstr "Fixed discount amount (maximum"
 
 #: /home/runner/workspace/now_lms/templates/learning/curso/coupons/edit.html:225
 msgid "El máximo de usos no puede ser menor que los usos actuales"
-msgstr ""
+msgstr "The maximum usage cannot be less than current usage"
 
 #: /home/runner/workspace/now_lms/templates/learning/curso/coupons/list.html:17
 msgid "Cupones del Curso"
@@ -9874,7 +9878,7 @@ msgstr "Important:"
 
 #: /home/runner/workspace/now_lms/templates/masterclass/detail_public.html:223
 msgid "¡El evento ha comenzado!"
-msgstr ""
+msgstr "The event has started!"
 
 #: /home/runner/workspace/now_lms/templates/masterclass/enroll.html:76
 msgid "Costo"
@@ -11358,7 +11362,7 @@ msgstr "Discover More Elegant Courses"
 
 #: /home/runner/workspace/now_lms/vistas/_helpers.py:40
 msgid "Error de base de datos. Intente de nuevo."
-msgstr ""
+msgstr "Database error. Please try again."
 
 #: /home/runner/workspace/now_lms/vistas/blog.py:166
 msgid "Los comentarios están deshabilitados para esta entrada."
@@ -11399,16 +11403,16 @@ msgstr "Blog post updated successfully."
 #: /home/runner/workspace/now_lms/vistas/blog.py:415
 #, python-brace-format
 msgid "Entrada '{title}' aprobada y publicada."
-msgstr ""
+msgstr "Post '{title}' approved and published."
 
 #: /home/runner/workspace/now_lms/vistas/blog.py:435
 #, python-brace-format
 msgid "Entrada '{title}' ha sido baneada."
-msgstr ""
+msgstr "Post '{title}' has been banned."
 
 #: /home/runner/workspace/now_lms/vistas/blog.py:477
 msgid "Una etiqueta con ese nombre ya existe."
-msgstr ""
+msgstr "A tag with that name already exists."
 
 #: /home/runner/workspace/now_lms/vistas/blog.py:482
 msgid "Etiqueta creada exitosamente."
@@ -11509,7 +11513,7 @@ msgstr "Message updated successfully."
 #: /home/runner/workspace/now_lms/vistas/custom_pages.py:96
 #: /home/runner/workspace/now_lms/vistas/custom_pages.py:135
 msgid "Ya existe una página con ese slug."
-msgstr ""
+msgstr "A page with that slug already exists."
 
 #: /home/runner/workspace/now_lms/vistas/custom_pages.py:112
 msgid "Página creada correctamente."
@@ -11542,6 +11546,8 @@ msgid ""
 "Debe aprobar todas las evaluaciones. %(failed)d de %(total)d evaluaciones no"
 " aprobadas."
 msgstr ""
+"You must pass all evaluations. %(failed)d of %(total)d evaluations not "
+"passed."
 
 #: /home/runner/workspace/now_lms/vistas/evaluation_helpers.py:186
 msgid "Debe completar todos los recursos del curso."
@@ -11589,19 +11595,19 @@ msgstr "Evaluation reopen request submitted."
 
 #: /home/runner/workspace/now_lms/vistas/evaluations.py:59
 msgid "Solicitud aprobada. El estudiante puede realizar un nuevo intento."
-msgstr ""
+msgstr "Request approved. The student may take a new attempt."
 
 #: /home/runner/workspace/now_lms/vistas/evaluations.py:60
 msgid "Solicitud rechazada."
-msgstr ""
+msgstr "Request rejected."
 
 #: /home/runner/workspace/now_lms/vistas/evaluations.py:219
 msgid "No tiene acceso a esta evaluación."
-msgstr ""
+msgstr "You do not have access to this evaluation."
 
 #: /home/runner/workspace/now_lms/vistas/evaluations.py:223
 msgid "No puede realizar más intentos en esta evaluación."
-msgstr ""
+msgstr "You cannot make any further attempts on this assessment."
 
 #: /home/runner/workspace/now_lms/vistas/evaluations.py:282
 msgid "Aún tiene intentos disponibles."
@@ -11613,7 +11619,7 @@ msgstr "You have already passed this evaluation."
 
 #: /home/runner/workspace/now_lms/vistas/evaluations.py:317
 msgid "Ya tiene una solicitud pendiente para esta evaluación."
-msgstr ""
+msgstr "You already have a pending request for this evaluation."
 
 #: /home/runner/workspace/now_lms/vistas/footer_links.py:53
 msgid "Enlace útil creado correctamente."
@@ -11706,7 +11712,7 @@ msgstr "Message sent successfully."
 
 #: /home/runner/workspace/now_lms/vistas/messages.py:334
 msgid "No se puede responder a un hilo cerrado."
-msgstr ""
+msgstr "You cannot reply to a closed thread."
 
 #: /home/runner/workspace/now_lms/vistas/messages.py:349
 msgid "Respuesta enviada correctamente."
@@ -11714,12 +11720,12 @@ msgstr "Reply sent successfully."
 
 #: /home/runner/workspace/now_lms/vistas/messages.py:376
 msgid "Transición de estado no válida."
-msgstr ""
+msgstr "Invalid state transition."
 
 #: /home/runner/workspace/now_lms/vistas/messages.py:385
 #, python-brace-format
 msgid "Estado del hilo cambiado a {status}."
-msgstr ""
+msgstr "Thread status changed to {status}."
 
 #: /home/runner/workspace/now_lms/vistas/messages.py:417
 msgid "Mensaje reportado correctamente."
@@ -11743,7 +11749,7 @@ msgstr "Conversation thread not found."
 
 #: /home/runner/workspace/now_lms/vistas/messages.py:496
 msgid "Mensaje reportado correctamente. El administrador será notificado."
-msgstr ""
+msgstr "Message reported correctly. The administrator will be notified."
 
 #: /home/runner/workspace/now_lms/vistas/paypal.py:89
 msgid "Configuración de PayPal válida"
@@ -11762,7 +11768,7 @@ msgstr "Error validating configuration: {}"
 #: /home/runner/workspace/now_lms/vistas/paypal.py:324
 #: /home/runner/workspace/now_lms/vistas/paypal.py:355
 msgid "Pago ya procesado anteriormente"
-msgstr ""
+msgstr "Payment already processed"
 
 #: /home/runner/workspace/now_lms/vistas/paypal.py:475
 #, python-format
@@ -11771,7 +11777,7 @@ msgstr "Payment Receipt - %(curso_nombre)s"
 
 #: /home/runner/workspace/now_lms/vistas/paypal.py:503
 msgid "Error en la base de datos. Por favor contacte soporte."
-msgstr ""
+msgstr "Database error. Please contact support."
 
 #: /home/runner/workspace/now_lms/vistas/paypal.py:524
 msgid "Pago completado exitosamente"
@@ -11779,7 +11785,7 @@ msgstr "Payment completed successfully"
 
 #: /home/runner/workspace/now_lms/vistas/paypal.py:547
 msgid "Error interno del servidor. Por favor contacte soporte."
-msgstr ""
+msgstr "Internal server error. Please contact support."
 
 #: /home/runner/workspace/now_lms/vistas/paypal.py:566
 msgid "Pago no encontrado o ya procesado."
@@ -11843,7 +11849,7 @@ msgstr "I cannot edit the program."
 #: /home/runner/workspace/now_lms/vistas/programs.py:443
 #, python-format
 msgid "Inscripción al curso como parte del programa '%(name)s'"
-msgstr ""
+msgstr "Enrollment in course as part of program '%(name)s'"
 
 #: /home/runner/workspace/now_lms/vistas/programs.py:488
 msgid "Ya estás inscrito en este programa."
@@ -11930,13 +11936,13 @@ msgstr "User '{}' does not exist in the system."
 #: /home/runner/workspace/now_lms/vistas/programs.py:854
 #, python-format
 msgid "Inscripción administrativa al programa '%(name)s' por %(user)s"
-msgstr ""
+msgstr "Administrative enrollment in program '%(name)s' by %(user)s"
 
 #: /home/runner/workspace/now_lms/vistas/courses/base.py:643
 #: /home/runner/workspace/now_lms/vistas/programs.py:856
 #, python-format
 msgid " - Notas: %(notes)s"
-msgstr ""
+msgstr " - Notes: %(notes)s"
 
 #: /home/runner/workspace/now_lms/vistas/programs.py:885
 #, python-brace-format
@@ -11988,7 +11994,7 @@ msgstr "You have been enrolled in {}"
 
 #: /home/runner/workspace/now_lms/vistas/public_api.py:283
 msgid "Este curso cuenta con certificación al finalizar exitosamente."
-msgstr ""
+msgstr "This course offers certification upon successful completion."
 
 #: /home/runner/workspace/now_lms/vistas/resources.py:96
 msgid "Nuevo Recurso creado correctamente."
@@ -12064,7 +12070,7 @@ msgstr "API Key successfully revoked."
 #: /home/runner/workspace/now_lms/vistas/settings.py:641
 #, python-format
 msgid "Error en la configuración de PayPal: %(message)s"
-msgstr ""
+msgstr "PayPal configuration error: %(message)s"
 
 #: /home/runner/workspace/now_lms/vistas/settings.py:660
 msgid "Configuración de Paypal actualizada exitosamente."
@@ -12092,7 +12098,7 @@ msgstr "Could not edit the tag."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:38
 msgid "Su usuario ya tiene una sesión iniciada."
-msgstr ""
+msgstr "Your user already has an active session."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:39
 msgid "Error al crear la cuenta."
@@ -12101,7 +12107,7 @@ msgstr "Error creating account."
 #: /home/runner/workspace/now_lms/vistas/users.py:71
 msgid ""
 "Demasiados intentos de inicio de sesión. Intente nuevamente en un minuto."
-msgstr ""
+msgstr "Too many login attempts. Please try again in one minute."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:106
 msgid ""
@@ -12109,16 +12115,19 @@ msgid ""
 "limitado. Por favor, verifique su correo electrónico para acceder a todas "
 "las funcionalidades."
 msgstr ""
+"Your email has not been verified. Your access to the platform is limited. "
+"Please verify your email to access all features."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:112
 msgid "Su cuenta esta inactiva."
-msgstr ""
+msgstr "Your account is inactive."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:121
 msgid ""
 "Su correo electrónico no ha sido verificado. Su acceso a algunas "
 "funcionalidades está limitado."
 msgstr ""
+"Your email has not been verified. Your access to some features is limited."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:127
 msgid "Inicio de Sesion Incorrecto."
@@ -12142,7 +12151,7 @@ msgstr "User created successfully."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:235
 msgid "Correo verificado exitosamente. Ya puede iniciar sesión en el sistema"
-msgstr ""
+msgstr "Email successfully verified. You can now log in to the system"
 
 #: /home/runner/workspace/now_lms/vistas/users.py:237
 msgid "Token de verificación invalido."
@@ -12161,13 +12170,13 @@ msgstr "Error sending recovery email. Please try again later."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:253
 msgid "El sistema de correo no está configurado. Contacte al administrador."
-msgstr ""
+msgstr "The mail system is not configured. Contact the administrator."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:268
 msgid ""
 "Demasiadas solicitudes de recuperación de contraseña. Intente nuevamente en "
 "un minuto."
-msgstr ""
+msgstr "Too many password recovery requests. Please try again in one minute."
 
 #: /home/runner/workspace/now_lms/vistas/users.py:281
 msgid "Recuperar Contraseña - NOW LMS"
@@ -12175,7 +12184,7 @@ msgstr "Recover Password - NOW LMS"
 
 #: /home/runner/workspace/now_lms/vistas/users.py:295
 msgid "El enlace de recuperación es inválido o ha expirado."
-msgstr ""
+msgstr "The recovery link is invalid or has expired."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/user.py:224
 #: /home/runner/workspace/now_lms/vistas/users.py:306
@@ -12222,7 +12231,7 @@ msgstr "You have no courses assigned to create announcements."
 
 #: /home/runner/workspace/now_lms/vistas/announcements/instructor.py:102
 msgid "No tienes permisos para crear anuncios en ese curso."
-msgstr ""
+msgstr "You do not have permissions to create ads in that course."
 
 #: /home/runner/workspace/now_lms/vistas/announcements/instructor.py:117
 msgid "Anuncio de curso creado exitosamente."
@@ -12239,11 +12248,12 @@ msgstr "Announcement not found or not a course announcement."
 
 #: /home/runner/workspace/now_lms/vistas/announcements/instructor.py:138
 msgid "No tienes permisos para editar este anuncio."
-msgstr ""
+msgstr "You do not have permissions to edit this ad."
 
 #: /home/runner/workspace/now_lms/vistas/announcements/instructor.py:147
 msgid "No tienes permisos para asignar este anuncio a ese curso."
 msgstr ""
+"You do not have permissions to assign this announcement to that course."
 
 #: /home/runner/workspace/now_lms/vistas/announcements/instructor.py:158
 msgid "Anuncio de curso actualizado exitosamente."
@@ -12255,7 +12265,7 @@ msgstr "Edit Course Announcement"
 
 #: /home/runner/workspace/now_lms/vistas/announcements/instructor.py:181
 msgid "No tienes permisos para eliminar este anuncio."
-msgstr ""
+msgstr "You do not have permissions to remove this ad."
 
 #: /home/runner/workspace/now_lms/vistas/announcements/instructor.py:187
 msgid "Anuncio de curso eliminado exitosamente."
@@ -12269,7 +12279,7 @@ msgstr "You do not have access to this course announcements."
 #: /home/runner/workspace/now_lms/vistas/courses/actions.py:62
 #: /home/runner/workspace/now_lms/vistas/courses/actions.py:81
 msgid "Índice inválido."
-msgstr ""
+msgstr "Invalid index."
 
 #: /home/runner/workspace/now_lms/vistas/courses/base.py:84
 msgid "Recurso agregado correctamente al curso."
@@ -12297,7 +12307,7 @@ msgstr "An error occurred while updating the course."
 
 #: /home/runner/workspace/now_lms/vistas/courses/base.py:440
 msgid "El formulario tiene errores. Revisa los campos marcados."
-msgstr ""
+msgstr "The form has errors. Review the marked fields."
 
 #: /home/runner/workspace/now_lms/vistas/courses/base.py:472
 msgid "Sección agregada correctamente al curso."
@@ -12347,7 +12357,7 @@ msgstr "Student '{}' is not enrolled in this course."
 #: /home/runner/workspace/now_lms/vistas/courses/base.py:761
 #, python-brace-format
 msgid "Estudiante '{}' desinscrito del curso exitosamente."
-msgstr ""
+msgstr "Student '{}' unenrolled from course successfully."
 
 #: /home/runner/workspace/now_lms/vistas/courses/base.py:765
 #, python-brace-format
@@ -12364,7 +12374,7 @@ msgstr "Coupons are only available for paid courses"
 
 #: /home/runner/workspace/now_lms/vistas/courses/coupons.py:35
 msgid "Solo el instructor del curso puede gestionar cupones"
-msgstr ""
+msgstr "Only the course instructor can manage coupons"
 
 #: /home/runner/workspace/now_lms/vistas/courses/coupons.py:45
 msgid "No se proporcionó código de cupón"
@@ -12389,11 +12399,11 @@ msgstr "A coupon with this code already exists for this course"
 
 #: /home/runner/workspace/now_lms/vistas/courses/coupons.py:83
 msgid "El descuento porcentual no puede ser mayor al 100%"
-msgstr ""
+msgstr "The percentage discount cannot be greater than 100%"
 
 #: /home/runner/workspace/now_lms/vistas/courses/coupons.py:85
 msgid "El descuento fijo no puede ser mayor al precio del curso"
-msgstr ""
+msgstr "The fixed discount cannot be greater than the course price"
 
 #: /home/runner/workspace/now_lms/vistas/courses/coupons.py:151
 msgid "Cupón creado exitosamente"
@@ -12427,7 +12437,7 @@ msgstr "Error deleting coupon"
 #: /home/runner/workspace/now_lms/vistas/courses/enrollment.py:78
 #, python-brace-format
 msgid "¡Cupón aplicado exitosamente! Inscripción gratuita con código {}"
-msgstr ""
+msgstr "Coupon applied successfully! Free enrollment with code {}"
 
 #: /home/runner/workspace/now_lms/vistas/courses/enrollment.py:80
 #, python-brace-format
@@ -12447,11 +12457,13 @@ msgid ""
 "Debe verificar su correo electrónico para inscribirse en cursos de pago o "
 "usar cupones. Los cursos gratuitos están disponibles sin verificación."
 msgstr ""
+"You must verify your email to enroll in paid courses or use coupons. Free "
+"courses are available without verification."
 
 #: /home/runner/workspace/now_lms/vistas/courses/enrollment.py:199
 #, python-format
 msgid "Cupón aplicado: %(code)s (Descuento: %(discount)s)"
-msgstr ""
+msgstr "Coupon applied: %(code)s (Discount: %(discount)s)"
 
 #: /home/runner/workspace/now_lms/vistas/courses/enrollment.py:262
 #, python-brace-format
@@ -12460,12 +12472,12 @@ msgstr "Enrollment - {}"
 
 #: /home/runner/workspace/now_lms/vistas/courses/helpers.py:60
 msgid "No se ha seleccionado ningún archivo"
-msgstr ""
+msgstr "No file selected"
 
 #: /home/runner/workspace/now_lms/vistas/courses/helpers.py:66
 #, python-brace-format
 msgid "Tipo de archivo no permitido por seguridad: {}"
-msgstr ""
+msgstr "File type not allowed for security: {}"
 
 #: /home/runner/workspace/now_lms/vistas/courses/helpers.py:69
 #, python-brace-format
@@ -12475,7 +12487,7 @@ msgstr "Unsupported file type: {}"
 #: /home/runner/workspace/now_lms/vistas/courses/helpers.py:82
 #, python-brace-format
 msgid "El archivo es demasiado grande. Máximo permitido: {}MB"
-msgstr ""
+msgstr "File is too large. Maximum allowed: {}MB"
 
 #: /home/runner/workspace/now_lms/vistas/courses/helpers.py:217
 msgid "Certificado de finalización emitido."
@@ -12501,7 +12513,7 @@ msgstr "Resource marked as completed."
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1181
 msgid ""
 "La subida de archivos descargables no está habilitada por el administrador."
-msgstr ""
+msgstr "Uploading downloadable files is not enabled by the administrator."
 
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1148
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1211
@@ -12525,7 +12537,7 @@ msgstr "Presentation updated successfully."
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1342
 #, python-brace-format
 msgid "Error al actualizar la presentación: {}"
-msgstr ""
+msgstr "Error updating presentation: {}"
 
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1573
 msgid "Nombre de archivo inválido."
@@ -12538,11 +12550,11 @@ msgstr "A file named '{}' already exists in the library."
 
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1582
 msgid "Ruta de destino inválida."
-msgstr ""
+msgstr "Invalid destination path."
 
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1611
 msgid "La subida de archivos no está habilitada por el administrador."
-msgstr ""
+msgstr "File upload is not enabled by the administrator."
 
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1637
 #, python-brace-format
@@ -12576,7 +12588,7 @@ msgstr "Online"
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1835
 #: /home/runner/workspace/now_lms/vistas/courses/resources.py:1858
 msgid "No se puede crear el evento: faltan datos de fecha/hora"
-msgstr ""
+msgstr "Cannot create event: missing date/time data"
 
 #: /home/runner/workspace/now_lms/vistas/profiles/admin.py:122
 msgid "Usuario definido como activo"
@@ -12584,7 +12596,7 @@ msgstr "User set as active"
 
 #: /home/runner/workspace/now_lms/vistas/profiles/admin.py:124
 msgid "Usuario ya se encuentra definido como activo"
-msgstr ""
+msgstr "User is already defined as active"
 
 #: /home/runner/workspace/now_lms/vistas/profiles/admin.py:141
 msgid "Usuario definido como inactivo"
@@ -12592,7 +12604,7 @@ msgstr "User set as inactive"
 
 #: /home/runner/workspace/now_lms/vistas/profiles/admin.py:143
 msgid "Usuario ya se encuentra definido como inactivo"
-msgstr ""
+msgstr "User is already defined as inactive"
 
 #: /home/runner/workspace/now_lms/vistas/profiles/admin.py:156
 msgid "Usuario eliminado correctamente."
@@ -12616,11 +12628,11 @@ msgstr "User {user} rejected and deactivated."
 #: /home/runner/workspace/now_lms/vistas/profiles/admin.py:261
 #, python-brace-format
 msgid "Error al rechazar el usuario: {error}"
-msgstr ""
+msgstr "Error rejecting user: {error}"
 
 #: /home/runner/workspace/now_lms/vistas/profiles/admin.py:317
 msgid "El rango de fechas no es válido."
-msgstr ""
+msgstr "The date range is not valid."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:54
 msgid "Evaluación no encontrada."
@@ -12654,7 +12666,7 @@ msgstr "Error creating evaluation."
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:369
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:460
 msgid "No tiene permisos para editar esta evaluación."
-msgstr ""
+msgstr "You do not have permissions to edit this review."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:389
 msgid "Error al actualizar la evaluación."
@@ -12662,7 +12674,7 @@ msgstr "Error updating evaluation."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:421
 msgid "No tiene permisos para modificar esta evaluación."
-msgstr ""
+msgstr "You do not have permissions to modify this review."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:433
 msgid "Evaluación deshabilitada."
@@ -12679,7 +12691,7 @@ msgstr "Error changing evaluation status."
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:507
 #, python-format
 msgid "Opción %(num)s"
-msgstr ""
+msgstr "Option %(num)s"
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:514
 msgid "Pregunta creada correctamente."
@@ -12696,11 +12708,11 @@ msgstr "You do not have permission to edit this question."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:555
 msgid "Error al actualizar la pregunta."
-msgstr ""
+msgstr "Error updating question."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:572
 msgid "No tiene permisos para ver los resultados de esta evaluación."
-msgstr ""
+msgstr "You do not have permissions to view the results of this assessment."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:634
 msgid "Las preguntas de verdadero/falso solo pueden tener 2 opciones."
@@ -12721,7 +12733,7 @@ msgstr "Option not found."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:683
 msgid "No tiene permisos para editar esta opción."
-msgstr ""
+msgstr "You do not have permissions to edit this option."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:697
 msgid "Opción actualizada correctamente."
@@ -12733,13 +12745,13 @@ msgstr "Error updating option."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:730
 msgid "No tiene permisos para eliminar esta opción."
-msgstr ""
+msgstr "You do not have permissions to remove this option."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:739
 msgid ""
 "No se puede eliminar esta opción. Las preguntas necesitan al menos 2 "
 "opciones."
-msgstr ""
+msgstr "This option cannot be removed. Questions need at least 2 options."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:745
 msgid "Opción eliminada correctamente."
@@ -12751,7 +12763,7 @@ msgstr "Error deleting option."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:770
 msgid "No tiene permisos para eliminar esta pregunta."
-msgstr ""
+msgstr "You do not have permissions to delete this question."
 
 #: /home/runner/workspace/now_lms/vistas/profiles/instructor.py:779
 msgid "Error al eliminar la pregunta."
@@ -12784,6 +12796,1051 @@ msgstr "Password updated successfully."
 #: /home/runner/workspace/now_lms/vistas/profiles/user.py:234
 msgid "Error al actualizar la contraseña."
 msgstr "Error updating password."
+
+msgid ""
+"</i>\n"
+"                                                <strong>Fecha:"
+msgstr ""
+"</i>\n"
+"                                                <strong>Date:"
+
+msgid ""
+"</i>\n"
+"                                                <strong>Horario:"
+msgstr ""
+"</i>\n"
+"                                                <strong>Schedule:"
+
+msgid "</i> <strong>Fecha:"
+msgstr "</i> <strong>Date:"
+
+msgid "</i> <strong>Horario:"
+msgstr "</i> <strong>Schedule:"
+
+msgid "<i class=\"fas fa-info-circle\"></i> Información de Pago"
+msgstr "<i class=\"fas fa-info-circle\"></i> Payment Information"
+
+msgid "<i class=\"fas fa-lock-open\"></i> Información para Participantes"
+msgstr "<i class=\"fas fa-lock-open\"></i> Participant Information"
+
+msgid "<i class=\"fas fa-play-circle\"></i> ¡En vivo ahora!"
+msgstr "<i class=\"fas fa-play-circle\"></i> Live now!"
+
+msgid "<i class=\"fas fa-video\"></i> Grabación Disponible"
+msgstr "<i class=\"fas fa-video\"></i> Recording Available"
+
+msgid "A ocurrido un error al intentar atender su solicitud."
+msgstr "An error occurred while trying to process your request."
+
+msgid "Academia"
+msgstr "Academy"
+
+msgid "Academia Financiera"
+msgstr "Financial Academy"
+
+msgid "Academia Financiera en Línea - Cursos que transforman tus finanzas"
+msgstr "Online Financial Academy - Courses that transform your finances"
+
+msgid ""
+"Accede a una amplia variedad de cursos diseñados por expertos en cada área de\n"
+"                      conocimiento."
+msgstr ""
+"Access a wide variety of courses designed by experts in every field of\n"
+"                      knowledge."
+
+msgid ""
+"Accede a una amplia variedad de cursos diseñados por expertos en cada área "
+"de conocimiento."
+msgstr ""
+"Access a wide variety of courses designed by experts in every field of "
+"knowledge."
+
+msgid ""
+"Accede a una biblioteca curada de cursos diseñados por expertos académicos, con contenido\n"
+"          riguroso y metodologías probadas."
+msgstr ""
+"Access a curated library of courses designed by academic experts, with rigorous content\n"
+"          and proven methodologies."
+
+msgid "Acceder"
+msgstr "Access"
+
+msgid "Acceder al sistema"
+msgstr "Access the system"
+
+msgid "Accion"
+msgstr "Action"
+
+msgid "Actualizar Categoria"
+msgstr "Update Category"
+
+msgid "Adeptus"
+msgstr "Adeptus"
+
+msgid "Admin. Programa"
+msgstr "Program Admin"
+
+msgid "Administrar"
+msgstr "Manage"
+
+msgid "Administre las páginas estáticas y mensajes de contacto del sitio web"
+msgstr "Manage the site's static pages and contact messages"
+
+msgid ""
+"Agregue enlaces personalizados que se mostrarán en la sección 'Enlaces\n"
+"                             Útiles' del footer"
+msgstr ""
+"Add custom links that will be displayed in the 'Useful Links\n"
+"                             ' section of the footer"
+
+msgid ""
+"Al usar la inscripción administrativa, puedes omitir el pago para dar acceso"
+" completo al estudiante."
+msgstr ""
+"When using administrative enrollment, you can skip payment to give full "
+"access to the student."
+
+msgid "Analiza."
+msgstr "Analyze."
+
+msgid "Analizar Caso"
+msgstr "Analyze Case"
+
+msgid "Aprende a dominar tus finanzas personales con nuestros cursos."
+msgstr "Learn to master your personal finances with our courses."
+
+msgid "Aprende a tu ritmo, en tu horario, desde cualquier lugar del mundo."
+msgstr "Learn at your pace, on your schedule, from anywhere in the world."
+
+msgid ""
+"Aprende de instructores distinguidos y profesionales reconocidos en sus campos, con años\n"
+"           de experiencia académica y profesional."
+msgstr ""
+"Learn from distinguished instructors and recognized professionals in their fields, with years\n"
+"           of academic and professional experience."
+
+msgid "Aprende inglés"
+msgstr "Learn English"
+
+msgid ""
+"Aprendizaje elegante y moderno con un toque de sofisticación rosada. Nuestra plataforma\n"
+"            está diseñada para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Elegant and modern learning with a touch of pink sophistication. Our platform\n"
+"            is designed to provide an exceptional learning experience."
+
+msgid ""
+"Aprendizaje elegante y moderno con un toque de sofisticación rosada. Nuestra plataforma está\n"
+"       diseñada para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Elegant and modern learning with a touch of pink sophistication. Our platform is\n"
+"       designed to provide an exceptional learning experience."
+
+msgid "Básico"
+msgstr "Basic"
+
+msgid ""
+"Capacitación\n"
+"                    que impulsa tu negocio."
+msgstr ""
+"Training\n"
+"                    that drives your business."
+
+msgid "Capacitación que impulsa tu negocio."
+msgstr "Training that drives your business."
+
+msgid "Casos reales. Debates auténticos. Soluciones transformadoras."
+msgstr "Real cases. Authentic debates. Transformative solutions."
+
+msgid "Certificaciones Reconocidas"
+msgstr "Recognized Certifications"
+
+msgid "Certificación Prestigiosa"
+msgstr "Prestigious Certification"
+
+msgid "Comienza ahora"
+msgstr "Start now"
+
+msgid "Configuración del Correo Electronico"
+msgstr "Email Configuration"
+
+msgid ""
+"Configure el contenido y las características que se mostrarán en la página\n"
+"                         principal del sitio"
+msgstr ""
+"Configure the content and features that will be displayed on the main\n"
+"                         page of the site"
+
+msgid ""
+"Configure los enlaces a las redes sociales de su organización. Estos enlaces se\n"
+"                    mostrarán en el pie de página del sitio web."
+msgstr ""
+"Configure links to your organization's social media. These links will be\n"
+"                    displayed on the website footer."
+
+msgid ""
+"Configure qué elementos del menú de navegación estarán visibles para los\n"
+"                           usuarios"
+msgstr ""
+"Configure which navigation menu elements will be visible to\n"
+"                           users"
+
+msgid ""
+"Configure qué elementos del menú de navegación estarán visibles para los "
+"usuarios"
+msgstr "Configure which navigation menu elements will be visible to users"
+
+msgid ""
+"Configure qué páginas estáticas se mostrarán en la sección 'Acerca de' del\n"
+"                         footer"
+msgstr ""
+"Configure which static pages will be displayed in the 'About' section of\n"
+"                         the footer"
+
+msgid "Consultar el Manuscrito"
+msgstr "View the Manuscript"
+
+msgid ""
+"Continúa tu viaje académico y explora nuevas oportunidades de aprendizaje."
+msgstr ""
+"Continue your academic journey and explore new learning opportunities."
+
+msgid "Crecimiento Profesional"
+msgstr "Professional Growth"
+
+msgid "Cursos Destacados"
+msgstr "Featured Courses"
+
+msgid "Cursos de Élite"
+msgstr "Elite Courses"
+
+msgid ""
+"Cursos dinámicos, prácticos y divertidos — Clases online en vivo y material "
+"interactivo."
+msgstr ""
+"Dynamic, practical, and fun courses — Live online classes and interactive "
+"material."
+
+msgid ""
+"Cursos dinámicos, prácticos y divertidos — Clases online en vivo, profesores nativos y\n"
+"             material interactivo."
+msgstr ""
+"Dynamic, practical, and fun courses — Live online classes, native teachers, and\n"
+"             interactive material."
+
+msgid ""
+"Cursos profesionales que generan resultados — Desarrolla tus habilidades y alcanza tus\n"
+"             metas."
+msgstr ""
+"Professional courses that deliver results — Develop your skills and achieve your\n"
+"             goals."
+
+msgid "Datos del Certicado"
+msgstr "Certificate Data"
+
+msgid ""
+"Debe ser un segmento de HTML valido que se integre en su plantilla\n"
+"                                 actual."
+msgstr ""
+"Must be a valid HTML segment that integrates into your current\n"
+"                                 template."
+
+msgid ""
+"Debe ser un segmento de HTML valido que se integre en su plantilla actual."
+msgstr ""
+"Must be a valid HTML segment that integrates into your current template."
+
+msgid ""
+"Desarrolla habilidades que impulsan tu carrera y aumentan tu valor en el mercado\n"
+"                   laboral."
+msgstr ""
+"Develop skills that boost your career and increase your value in the\n"
+"                   job market."
+
+msgid "Descripción de la nueva Sección."
+msgstr "Description of the new Section."
+
+msgid "Descubre Nuestros Cursos"
+msgstr "Discover Our Courses"
+
+msgid "Descuento fijo"
+msgstr "Fixed discount"
+
+msgid ""
+"Discover new skills from countless in-depth topics taught by passionate experts in their\n"
+"           fields."
+msgstr ""
+"Discover new skills from countless in-depth topics taught by passionate experts in their\n"
+"           fields."
+
+msgid "Discute."
+msgstr "Discuss."
+
+msgid "Dive Into Knowledge"
+msgstr "Dive Into Knowledge"
+
+msgid "Doctoratus"
+msgstr "Doctoratus"
+
+msgid "Editar apaciencia del sitio web"
+msgstr "Edit website appearance"
+
+msgid ""
+"Edite cada página y active la opción 'Mostrar en el\n"
+"                                                footer'."
+msgstr ""
+"Edit each page and activate the 'Show in the\n"
+"                                                footer' option."
+
+msgid ""
+"El\n"
+"                                conocimiento no se memoriza, se debate."
+msgstr ""
+"Knowledge\n"
+"                                is not memorized, it is debated."
+
+msgid "El conocimiento no se memoriza, se debate."
+msgstr "Knowledge is not memorized, it is debated."
+
+msgid ""
+"El hero es el elemento que se muestra debajo de la barra de\n"
+"                                        navegación."
+msgstr ""
+"The hero is the element displayed below the navigation\n"
+"                                        bar."
+
+msgid ""
+"El hero es el elemento que se muestra debajo de la barra de navegación."
+msgstr "The hero is the element displayed below the navigation bar."
+
+msgid ""
+"El uso de HTML preformateado puede presentar riesgos de seguridad. Solo\n"
+"                            habilite esta opción si confía en todos los instructores que pueden crear\n"
+"                            recursos."
+msgstr ""
+"Using preformatted HTML may present security risks. Only enable\n"
+"                            this option if you trust all instructors who can create\n"
+"                            resources."
+
+msgid ""
+"El uso de HTML preformateado puede presentar riesgos de seguridad. Solo habilite\n"
+"                   esta opción si confía en todos los instructores que pueden crear recursos."
+msgstr ""
+"Using preformatted HTML may present security risks. Only enable\n"
+"                   this option if you trust all instructors who can create resources."
+
+msgid "Esta opción no afecta cursos gratuitos."
+msgstr "This option does not affect free courses."
+
+msgid "Este curso es gratuito para todos los estudiantes."
+msgstr "This course is free for all students."
+
+msgid "Estudiantes Activos"
+msgstr "Active Students"
+
+msgid "Excelencia Académica Digital"
+msgstr "Digital Academic Excellence"
+
+msgid ""
+"Experimenta el aprendizaje en su forma más pura y elegante con nuestro diseño clásico.\n"
+"             Nuestra plataforma está diseñada para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Experience learning in its purest and most elegant form with our classic design.\n"
+"             Our platform is designed to provide an exceptional learning experience."
+
+msgid "Experto"
+msgstr "Expert"
+
+msgid ""
+"Explora nuestra selección de cursos diseñados para tu crecimiento "
+"profesional."
+msgstr ""
+"Explore our selection of courses designed for your professional growth."
+
+msgid ""
+"Explora una nueva forma de aprender con nuestra plataforma educativa moderna"
+" y eficiente."
+msgstr ""
+"Explore a new way to learn with our modern and efficient educational "
+"platform."
+
+msgid "Explorar Biblioteca"
+msgstr "Explore Library"
+
+msgid "Explorar Biblioteca Completa"
+msgstr "Explore Full Library"
+
+msgid "Explorar Biblioteca de Casos"
+msgstr "Explore Case Library"
+
+msgid "Explorar Casos"
+msgstr "Explore Cases"
+
+msgid "Explorar Laboratorio"
+msgstr "Explore Laboratory"
+
+msgid "Explorar Todo el Laboratorio"
+msgstr "Explore Full Laboratory"
+
+msgid "Favor revise su correo electronico"
+msgstr "Please check your email"
+
+msgid "Favor revise su correo electronico."
+msgstr "Please check your email."
+
+msgid "Favor verifique su correo electronico."
+msgstr "Please verify your email."
+
+msgid "Filosofía Educativa"
+msgstr "Educational Philosophy"
+
+msgid "Flexibilidad Total"
+msgstr "Total Flexibility"
+
+msgid "Full Scholarship"
+msgstr "Full Scholarship"
+
+msgid ""
+"Gestiona los mensajes reportados por los usuarios del sistema para mantener "
+"un ambiente seguro."
+msgstr ""
+"Manage messages reported by system users to maintain a safe environment."
+
+msgid "Gestionar Páginas Estáticas"
+msgstr "Manage Static Pages"
+
+msgid "Gestión de Páginas Estáticas"
+msgstr "Static Pages Management"
+
+msgid ""
+"Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está diseñada\n"
+"                 para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Thank you for visiting our educational platform. Our platform is designed\n"
+"                 to provide an exceptional learning experience."
+
+msgid ""
+"Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está "
+"diseñada para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Thank you for visiting our educational platform. Our platform is designed to"
+" provide an exceptional learning experience."
+
+msgid ""
+"Habilitar usuarios sin haber verificado su correo electrónico solo permite\n"
+"                         el acceso a un conjunto limitado de opciones del sistema. El administrador debe\n"
+"                         verificar periódicamente estos registros para mantener la seguridad e\n"
+"                         integridad de la plataforma"
+msgstr ""
+"Enabling users without verified email only allows\n"
+"                         access to a limited set of system options. The administrator must\n"
+"                         periodically review these records to maintain the security and\n"
+"                         integrity of the platform"
+
+msgid "Inglés"
+msgstr "English"
+
+msgid "Iniciar Experimentación"
+msgstr "Start Experimentation"
+
+msgid "Invierte en tu"
+msgstr "Invest in your"
+
+msgid ""
+"La configuración de correo\n"
+"                                        electrónico ha sido verificada correctamente."
+msgstr ""
+"Email configuration\n"
+"                                        has been verified successfully."
+
+msgid ""
+"La configuración de correo\n"
+"                                electrónico ha sido verificada correctamente."
+msgstr ""
+"Email configuration\n"
+"                                has been verified successfully."
+
+msgid ""
+"La configuración de correo\n"
+"                                electrónico no ha sido verificada."
+msgstr ""
+"Email configuration\n"
+"                                has not been verified."
+
+msgid ""
+"La educación es el arma más poderosa que puedes usar para cambiar el mundo. En\n"
+"                     Harvard LMS, forjamos mentes brillantes para el futuro."
+msgstr ""
+"Education is the most powerful weapon you can use to change the world. At\n"
+"                     Harvard LMS, we forge brilliant minds for the future."
+
+msgid "La plataforma que maximiza tu inversión educativa"
+msgstr "The platform that maximizes your educational investment"
+
+msgid "Laboratorio de Investigación"
+msgstr "Research Laboratory"
+
+msgid "Le hemos enviado un correo electronico de verificación desde el correo"
+msgstr "We have sent a verification email from the email"
+
+msgid "Leer Manuscrito"
+msgstr "Read Manuscript"
+
+msgid "Libertas"
+msgstr "Libertas"
+
+msgid "Lista de {{ _(\"Cursos\") }} Disponibles"
+msgstr "List of {{ _(\"Cursos\") }} Available"
+
+msgid ""
+"Los usuarios verán la opción Clases Magistrales en el menú de navegación"
+msgstr "Users will see the Master Classes option in the navigation menu"
+
+msgid "MUESTRA"
+msgstr "SAMPLE"
+
+msgid "Magistratus"
+msgstr "Magistratus"
+
+msgid "Manuscritos iluminados para mentes ilustradas"
+msgstr "Illuminated manuscripts for enlightened minds"
+
+msgid ""
+"Maximiza tus retornos educativos con nuestra plataforma de aprendizaje financiero de\n"
+"               alto rendimiento."
+msgstr ""
+"Maximize your educational returns with our high-performance financial learning\n"
+"               platform."
+
+msgid "Mentores Expertos"
+msgstr "Expert Mentors"
+
+msgid "Mi Academia"
+msgstr "My Academy"
+
+msgid "Mi Códice"
+msgstr "My Codex"
+
+msgid "Mi Laboratorio"
+msgstr "My Laboratory"
+
+msgid ""
+"Muestra un pie de página con enlaces a páginas estáticas (Sobre Nosotros,\n"
+"                          Política de Privacidad, Contacto) en páginas públicas. Recomendado para cumplir\n"
+"                          con requisitos de Google AdSense."
+msgstr ""
+"Displays a footer with links to static pages (About Us,\n"
+"                          Privacy Policy, Contact) on public pages. Recommended to meet\n"
+"                          Google AdSense requirements."
+
+msgid "Novicius"
+msgstr "Novicius"
+
+msgid ""
+"Nuestra plataforma combina los más altos estándares académicos con tecnología de vanguardia\n"
+"        para crear una experiencia educativa transformadora."
+msgstr ""
+"Our platform combines the highest academic standards with cutting-edge technology\n"
+"        to create a transformative educational experience."
+
+msgid ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y abran puertas en tu\n"
+"                carrera profesional y académica."
+msgstr ""
+"Obtain recognized certifications that validate your knowledge and open doors in your\n"
+"                professional and academic career."
+
+msgid ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera\n"
+"                profesional."
+msgstr ""
+"Obtain recognized certifications that validate your knowledge and boost your\n"
+"                professional career."
+
+msgid ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu "
+"carrera profesional."
+msgstr ""
+"Obtain recognized certifications that validate your knowledge and boost your"
+" professional career."
+
+msgid ""
+"Obtén certificados profesionales que validan tus conocimientos y "
+"habilidades."
+msgstr ""
+"Obtain professional certificates that validate your knowledge and skills."
+
+msgid "Panel de Estudiante - {{ config.sitio_nombre }}"
+msgstr "Student Panel - {{ config.sitio_nombre }}"
+
+msgid ""
+"Permite a los instructores subir archivos descargables como recursos del\n"
+"                           curso"
+msgstr ""
+"Allows instructors to upload downloadable files as course\n"
+"                           resources"
+
+msgid ""
+"Permite a los instructores subir archivos descargables como recursos del "
+"curso"
+msgstr "Allows instructors to upload downloadable files as course resources"
+
+msgid ""
+"Permite que los usuarios inicien sesión aunque no hayan verificado su\n"
+"                              correo electrónico."
+msgstr ""
+"Allows users to log in even if they have not verified their\n"
+"                              email."
+
+msgid "Permitir Correo Electronico"
+msgstr "Allow Email"
+
+msgid "Permitir a nuevos usuarios verificarse vía correo electronico"
+msgstr "Allow new users to verify via email"
+
+msgid ""
+"Por favor espere mientras lo redirigimos a PayPal para completar su pago de "
+"forma segura."
+msgstr ""
+"Please wait while we redirect you to PayPal to complete your payment "
+"securely."
+
+msgid "Protocolos experimentales para el aprendizaje avanzado"
+msgstr "Experimental protocols for advanced learning"
+
+msgid ""
+"Puede agregar información adicional para que los diseñadores de plantillas\n"
+"                         puedan incluirlo en el sitio web"
+msgstr ""
+"You can add additional information for template designers to\n"
+"                         include on the website"
+
+msgid "Registrarse Ahora"
+msgstr "Register Now"
+
+msgid "Reserva tu clase gratis"
+msgstr "Book your free class"
+
+msgid "Satisfacción Estudiantil"
+msgstr "Student Satisfaction"
+
+msgid "Seleccione el idioma de su sitio web"
+msgstr "Select your website language"
+
+msgid ""
+"Seleccione la moneda predeterminada para procesar pagos y mostrar\n"
+"                                  precios en todo el sitio"
+msgstr ""
+"Select the default currency for processing payments and displaying\n"
+"                                  prices throughout the site"
+
+msgid ""
+"Si está marcado, el estudiante tendrá acceso completo sin realizar el pago."
+msgstr ""
+"If checked, the student will have full access without making the payment."
+
+msgid "Su cuenta a sido creada correctamente."
+msgstr "Your account has been created successfully."
+
+msgid "Tasa de Finalización"
+msgstr "Completion Rate"
+
+msgid "Transforma."
+msgstr "Transform."
+
+msgid ""
+"Un estudiante puede auditar el curso pero no recibir un certificado al final"
+" si no cancela el valor del curso."
+msgstr ""
+"A student can audit the course but not receive a certificate at the end if "
+"they do not pay the course fee."
+
+msgid "Unirse al Debate"
+msgstr "Join the Debate"
+
+msgid "Usuarios inativos"
+msgstr "Inactive users"
+
+msgid "Ver Casos"
+msgstr "View Cases"
+
+msgid "Ver Protocolo"
+msgstr "View Protocol"
+
+msgid "Ver Protocolos"
+msgstr "View Protocols"
+
+msgid "Ver Textos"
+msgstr "View Texts"
+
+msgid "Ver Todos los Cursos"
+msgstr "View All Courses"
+
+msgid "con confianza"
+msgstr "with confidence"
+
+msgid "de experimento"
+msgstr "of experiment"
+
+msgid "educación"
+msgstr "education"
+
+msgid "elementos encontrados"
+msgstr "items found"
+
+msgid "ha completado satisfactoriamente el curso"
+msgstr "has successfully completed the course"
+
+msgid "s"
+msgstr "s"
+
+msgid "{{ _(\"Crear\") }} Cupón"
+msgstr "{{ _(\"Crear\") }} Coupon"
+
+msgid "{{ _(\"Crear\") }} Etiqueta"
+msgstr "{{ _(\"Crear\") }} Tag"
+
+msgid "{{ _(\"Crear\") }} nueva Etiqueta"
+msgstr "{{ _(\"Crear\") }} new Tag"
+
+msgid "{{ _(\"Crear\") }} {{ _(\"Nuevo\") }} Cupón"
+msgstr "{{ _(\"Crear\") }} {{ _(\"Nuevo\") }} Coupon"
+
+msgid "{{ _(\"Curso\") }}:"
+msgstr "{{ _(\"Curso\") }}:"
+
+msgid "{{ _(\"Cursos\") }}"
+msgstr "{{ _(\"Cursos\") }}"
+
+msgid ""
+"{{ _(\"Descripción\")\n"
+"                            }}"
+msgstr ""
+"{{ _(\"Descripción\")\n"
+"                            }}"
+
+msgid "{{ _(\"Descripción\") }}"
+msgstr "{{ _(\"Descripción\") }}"
+
+msgid "{{ _(\"Editar\") }} Categoria"
+msgstr "{{ _(\"Editar\") }} Category"
+
+msgid "{{ _(\"Inicio\") }}"
+msgstr "{{ _(\"Inicio\") }}"
+
+msgid "{{ _(\"Mensajes\") }}"
+msgstr "{{ _(\"Mensajes\") }}"
+
+msgid "{{ _(\"Nueva\") }} Etiqueta"
+msgstr "{{ _(\"Nueva\") }} Tag"
+
+msgid "{{ _(\"Nuevo\") }} Certificado"
+msgstr "{{ _(\"Nuevo\") }} Certificate"
+
+msgid "{{ _(\"Nuevo\") }} {{ _(\"Curso\") }}"
+msgstr "{{ _(\"Nuevo\") }} {{ _(\"Curso\") }}"
+
+msgid "{{ _(\"Nuevo\") }} {{ _(\"Mensaje\") }}"
+msgstr "{{ _(\"Nuevo\") }} {{ _(\"Mensaje\") }}"
+
+msgid "{{ _(\"Nuevo\") }} {{ _(\"Recurso\") }} - Documento"
+msgstr "{{ _(\"Nuevo\") }} {{ _(\"Recurso\") }} - Document"
+
+msgid "{{ _(\"Precio\") }}"
+msgstr "{{ _(\"Precio\") }}"
+
+msgid "{{ error }}"
+msgstr "{{ error }}"
+
+msgid "{{ inactivos }}"
+msgstr "Inactive"
+
+msgid "{{ master_class.instructor.usuario }}"
+msgstr "{{ master_class.instructor.usuario }}"
+
+msgid "{{ master_class.title }}"
+msgstr "{{ master_class.title }}"
+
+msgid "¡Comienza tu transformación hoy!"
+msgstr "Start your transformation today!"
+
+msgid "¿Listo para Comenzar tu Viaje Académico?"
+msgstr "Ready to Start Your Academic Journey?"
+
+msgid "¿Por qué elegir NOW LMS?"
+msgstr "Why choose NOW LMS?"
+
+msgid "Únete a miles de estudiantes que ya están invirtiendo en su futuro."
+msgstr "Join thousands of students who are already investing in their future."
+
+msgid ""
+"Únete a nuestra comunidad de estudiantes excepcionales y descubre el poder del aprendizaje de\n"
+"      calidad."
+msgstr ""
+"Join our community of exceptional students and discover the power of quality\n"
+"      learning."
+
+msgid ""
+"Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y\n"
+"                 objetivos."
+msgstr ""
+"Join a community of students and professionals who share your interests and\n"
+"                 goals."
+
+msgid ""
+"Únete a una comunidad de estudiantes y profesionales que comparten tus "
+"intereses y objetivos."
+msgstr ""
+"Join a community of students and professionals who share your interests and "
+"goals."
+
+msgid ""
+"Únete a nuestra comunidad de estudiantes excepcionales y descubre el poder del aprendizaje de\n"
+"                            calidad."
+msgstr ""
+"Únete a nuestra comunidad de estudiantes excepcionales y descubre el poder del aprendizaje de\n"
+"                            calidad."
+
+msgid ""
+"Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está diseñada\n"
+"                                    para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está diseñada\n"
+"                                    para brindar una experiencia de aprendizaje excepcional."
+
+msgid ""
+"Aprendizaje elegante y moderno con un toque de sofisticación rosada. Nuestra plataforma está\n"
+"                                diseñada para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Aprendizaje elegante y moderno con un toque de sofisticación rosada. Nuestra plataforma está\n"
+"                                diseñada para brindar una experiencia de aprendizaje excepcional."
+
+msgid ""
+"Configure qué páginas estáticas se mostrarán en la sección 'Acerca de' del\n"
+"                                                footer"
+msgstr ""
+"Configure qué páginas estáticas se mostrarán en la sección 'Acerca de' del\n"
+"                                                footer"
+
+msgid ""
+"El uso de HTML preformateado puede presentar riesgos de seguridad. Solo\n"
+"                                                habilite esta opción si confía en todos los instructores que pueden crear\n"
+"                                                recursos."
+msgstr ""
+"El uso de HTML preformateado puede presentar riesgos de seguridad. Solo\n"
+"                                                habilite esta opción si confía en todos los instructores que pueden crear\n"
+"                                                recursos."
+
+msgid ""
+"Experimenta el aprendizaje en su forma más pura y elegante con nuestro diseño clásico.\n"
+"                                Nuestra plataforma está diseñada para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Experimenta el aprendizaje en su forma más pura y elegante con nuestro diseño clásico.\n"
+"                                Nuestra plataforma está diseñada para brindar una experiencia de aprendizaje excepcional."
+
+msgid ""
+"Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y\n"
+"                                objetivos."
+msgstr ""
+"Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y\n"
+"                                objetivos."
+
+msgid ""
+"La educación es el arma más poderosa que puedes usar para cambiar el mundo. En\n"
+"                                    Harvard LMS, forjamos mentes brillantes para el futuro."
+msgstr ""
+"La educación es el arma más poderosa que puedes usar para cambiar el mundo. En\n"
+"                                    Harvard LMS, forjamos mentes brillantes para el futuro."
+
+msgid ""
+"Configure los enlaces a las redes sociales de su organización. Estos enlaces se\n"
+"                                        mostrarán en el pie de página del sitio web."
+msgstr ""
+"Configure los enlaces a las redes sociales de su organización. Estos enlaces se\n"
+"                                        mostrarán en el pie de página del sitio web."
+
+msgid ""
+"Accede a una biblioteca curada de cursos diseñados por expertos académicos, con contenido\n"
+"                                riguroso y metodologías probadas."
+msgstr ""
+"Accede a una biblioteca curada de cursos diseñados por expertos académicos, con contenido\n"
+"                                riguroso y metodologías probadas."
+
+msgid ""
+"Agregue enlaces personalizados que se mostrarán en la sección 'Enlaces\n"
+"                                                Útiles' del footer"
+msgstr ""
+"Agregue enlaces personalizados que se mostrarán en la sección 'Enlaces\n"
+"                                                Útiles' del footer"
+
+msgid ""
+"Cursos dinámicos, prácticos y divertidos — Clases online en vivo, profesores nativos y\n"
+"                                material interactivo."
+msgstr ""
+"Cursos dinámicos, prácticos y divertidos — Clases online en vivo, profesores nativos y\n"
+"                                material interactivo."
+
+msgid ""
+"Aprende de instructores distinguidos y profesionales reconocidos en sus campos, con años\n"
+"                                de experiencia académica y profesional."
+msgstr ""
+"Aprende de instructores distinguidos y profesionales reconocidos en sus campos, con años\n"
+"                                de experiencia académica y profesional."
+
+msgid ""
+"Aprendizaje elegante y moderno con un toque de sofisticación rosada. Nuestra plataforma\n"
+"                                está diseñada para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+"Aprendizaje elegante y moderno con un toque de sofisticación rosada. Nuestra plataforma\n"
+"                                está diseñada para brindar una experiencia de aprendizaje excepcional."
+
+msgid ""
+"Permite a los instructores subir archivos descargables como recursos del\n"
+"                                        curso"
+msgstr ""
+"Permite a los instructores subir archivos descargables como recursos del\n"
+"                                        curso"
+
+msgid ""
+"Debe ser un segmento de HTML valido que se integre en su plantilla\n"
+"                                                actual."
+msgstr ""
+"Debe ser un segmento de HTML valido que se integre en su plantilla\n"
+"                                                actual."
+
+msgid ""
+"El uso de HTML preformateado puede presentar riesgos de seguridad. Solo habilite\n"
+"                                        esta opción si confía en todos los instructores que pueden crear recursos."
+msgstr ""
+"El uso de HTML preformateado puede presentar riesgos de seguridad. Solo habilite\n"
+"                                        esta opción si confía en todos los instructores que pueden crear recursos."
+
+msgid ""
+"Cursos profesionales que generan resultados — Desarrolla tus habilidades y alcanza tus\n"
+"                                metas."
+msgstr ""
+"Cursos profesionales que generan resultados — Desarrolla tus habilidades y alcanza tus\n"
+"                                metas."
+
+msgid ""
+"Seleccione la moneda predeterminada para procesar pagos y mostrar\n"
+"                                                precios"
+msgstr ""
+"Seleccione la moneda predeterminada para procesar pagos y mostrar\n"
+"                                                precios"
+
+msgid ""
+"Accede a una amplia variedad de cursos diseñados por expertos en cada área de\n"
+"                                conocimiento."
+msgstr ""
+"Accede a una amplia variedad de cursos diseñados por expertos en cada área de\n"
+"                                conocimiento."
+
+msgid ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y abran puertas en tu\n"
+"                                carrera profesional y académica."
+msgstr ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y abran puertas en tu\n"
+"                                carrera profesional y académica."
+
+msgid ""
+"Discover new skills from countless in-depth topics taught by passionate experts in their\n"
+"                                fields."
+msgstr ""
+"Discover new skills from countless in-depth topics taught by passionate experts in their\n"
+"                                fields."
+
+msgid ""
+"Maximiza tus retornos educativos con nuestra plataforma de aprendizaje financiero de\n"
+"                                alto rendimiento. Diversifica tu portafolio de conocimientos con cursos premium del mercado\n"
+"                                educativo."
+msgstr ""
+"Maximiza tus retornos educativos con nuestra plataforma de aprendizaje financiero de\n"
+"                                alto rendimiento. Diversifica tu portafolio de conocimientos con cursos premium del mercado\n"
+"                                educativo."
+
+msgid ""
+"El hero es el elemento que se muestra debajo de la barra de\n"
+"                                                navegación."
+msgstr ""
+"El hero es el elemento que se muestra debajo de la barra de\n"
+"                                                navegación."
+
+msgid ""
+"Desarrolla habilidades que impulsan tu carrera y aumentan tu valor en el mercado\n"
+"                                laboral."
+msgstr ""
+"Desarrolla habilidades que impulsan tu carrera y aumentan tu valor en el mercado\n"
+"                                laboral."
+
+msgid ""
+"Nuestra plataforma combina los más altos estándares académicos con tecnología de vanguardia\n"
+"                            para crear una experiencia educativa transformadora."
+msgstr ""
+"Nuestra plataforma combina los más altos estándares académicos con tecnología de vanguardia\n"
+"                            para crear una experiencia educativa transformadora."
+
+msgid ""
+"Puede agregar información adicional para que los diseñadores de plantillas\n"
+"                                                puedan incluirlo en el sitio web"
+msgstr ""
+"Puede agregar información adicional para que los diseñadores de plantillas\n"
+"                                                puedan incluirlo en el sitio web"
+
+msgid ""
+"Habilitar usuarios sin haber verificado su correo electrónico solo permite\n"
+"                                                el acceso a un conjunto limitado de opciones del sistema. El administrador debe\n"
+"                                                verificar periódicamente estos registros para mantener la seguridad e\n"
+"                                                integridad de la plataforma"
+msgstr ""
+"Habilitar usuarios sin haber verificado su correo electrónico solo permite\n"
+"                                                el acceso a un conjunto limitado de opciones del sistema. El administrador debe\n"
+"                                                verificar periódicamente estos registros para mantener la seguridad e\n"
+"                                                integridad de la plataforma"
+
+msgid ""
+"Configure el contenido y las características que se mostrarán en la página\n"
+"                                        principal del sitio"
+msgstr ""
+"Configure el contenido y las características que se mostrarán en la página\n"
+"                                        principal del sitio"
+
+msgid ""
+"Permite que los usuarios inicien sesión aunque no hayan verificado su\n"
+"                                                correo electrónico."
+msgstr ""
+"Permite que los usuarios inicien sesión aunque no hayan verificado su\n"
+"                                                correo electrónico."
+
+msgid ""
+"Configure qué elementos del menú de navegación estarán visibles para los\n"
+"                                        usuarios"
+msgstr ""
+"Configure qué elementos del menú de navegación estarán visibles para los\n"
+"                                        usuarios"
+
+msgid ""
+"Muestra un pie de página con enlaces a páginas estáticas (Sobre Nosotros,\n"
+"                                                Política de Privacidad, Contacto) en páginas públicas. Recomendado para cumplir\n"
+"                                                con requisitos de Google AdSense."
+msgstr ""
+"Muestra un pie de página con enlaces a páginas estáticas (Sobre Nosotros,\n"
+"                                                Política de Privacidad, Contacto) en páginas públicas. Recomendado para cumplir\n"
+"                                                con requisitos de Google AdSense."
+
+msgid ""
+"Permite a los instructores subir archivos descargables como recursos del\n"
+"                                                curso"
+msgstr ""
+"Permite a los instructores subir archivos descargables como recursos del\n"
+"                                                curso"
+
+msgid ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera\n"
+"                                profesional."
+msgstr ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera\n"
+"                                profesional."
 
 #~ msgid "Porcentaje"
 #~ msgstr "Percentage"
