@@ -95,6 +95,15 @@ COPY --from=frontend /build/now_lms/static/node_modules /app/now_lms/static/node
 # Copy Caddy configuration file
 COPY now_lms/config/Caddyfile /etc/caddy/Caddyfile
 
+# Record exactly which commit produced this image, two ways: a file the app or an
+# operator can read at runtime, and a label docker can query without starting a
+# container. No default on purpose -- a build that forgets BUILD_SHA must FAIL
+# rather than mint another unidentifiable image (that blind spot is how the July
+# checkout/image/volume three-way drift happened; see fork issue #14).
+ARG BUILD_SHA
+RUN test -n "${BUILD_SHA}" && echo "${BUILD_SHA}" > /app/BUILD_SHA
+LABEL io.intentsolutions.commit="${BUILD_SHA}"
+
 # Compile application translations
 RUN pybabel compile -d /app/now_lms/translations
 
