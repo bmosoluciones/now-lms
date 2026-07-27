@@ -18,35 +18,36 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
+from now_lms.i18n import _
 
-CERTIFICADO_HORIZONTAL_TITULO = "Basico Horizontal"
+CERTIFICADO_HORIZONTAL_TITULO = _("Basico Horizontal")
 
-CERTIFICADO_HORIZONTAL_DESCRIPCION = "Certificado básico en formato horizontal."
+CERTIFICADO_HORIZONTAL_DESCRIPCION = _("Certificado básico en formato horizontal.")
 
 CERTIFICADO_HORIZONTAL_HTML = """
 <!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <title>Certificado de Finalización</title>
+        <title>{{ _('Certificado de Finalización') }}</title>
     </head>
     <body>
         <div class="certificado">
-            <div class="titulo">Certificado de Finalización</div>
-            <div class="subtitulo">Otorgado a</div>
+            <div class="titulo">{{ _('Certificado de Finalización') }}</div>
+            <div class="subtitulo">{{ _('Otorgado a') }}</div>
             <div class="nombre">{{ usuario.nombre }} {{ usuario.apellido }}</div>
             <div class="curso">
-                Por haber completado satisfactoriamente el curso<br /><strong
+                {{ _('Por haber completado satisfactoriamente el curso') }}<br /><strong
                     >{{ curso.nombre }}</strong
                 >
             </div>
             <div class="footer">
                 <div class="firma">
-                    Fecha: {{ certificacion.fecha }}<br />
+                    {{ _('Fecha:') }} {{ certificacion.fecha }}<br />
                 </div>
             </div>
             <div>
-            <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+            <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="{{ _('QR Code') }}" width="50" height="50">
             </div>
         </div>
     </body>
@@ -131,34 +132,34 @@ img {
 """
 
 
-CERTIFICADO_VERTICAL_TITULO = "Basico Vertical"
+CERTIFICADO_VERTICAL_TITULO = _("Basico Vertical")
 
-CERTIFICADO_VERTICAL_DESCRIPCION = "Certificado basico vertical"
+CERTIFICADO_VERTICAL_DESCRIPCION = _("Certificado basico vertical")
 
 CERTIFICADO_VERTICAL_HTML = """
 <!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <title>Certificado de Finalización</title>
+        <title>{{ _('Certificado de Finalización') }}</title>
     </head>
     <body>
         <div class="certificado">
-            <div class="titulo">Certificado de Finalización</div>
-            <div class="subtitulo">Otorgado a</div>
+            <div class="titulo">{{ _('Certificado de Finalización') }}</div>
+            <div class="subtitulo">{{ _('Otorgado a') }}</div>
             <div class="nombre">{{ usuario.nombre }} {{ usuario.apellido }}</div>
             <div class="curso">
-                Por haber completado satisfactoriamente el curso<br /><strong
+                {{ _('Por haber completado satisfactoriamente el curso') }}<br /><strong
                     >{{ curso.nombre }}</strong
                 >
             </div>
             <div class="footer">
                 <div class="firma">
-                    Fecha: {{ certificacion.fecha }}<br />
+                    {{ _('Fecha:') }} {{ certificacion.fecha }}<br />
                 </div>
             </div>
             <div>
-            <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+            <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="{{ _('QR Code') }}" width="50" height="50">
             </div>
         </div>
     </body>
@@ -244,35 +245,35 @@ img {
 # Plantilla Elegante
 # ---------------------------------------------------------------------------------------
 
-CERTIFICADO_ELEGANTE_TITULO = "Elegante"
+CERTIFICADO_ELEGANTE_TITULO = _("Elegante")
 
-CERTIFICADO_ELEGANTE_DESCRIPCION = "Certificado elegante con bordes decorativos y tipografía sofisticada."
+CERTIFICADO_ELEGANTE_DESCRIPCION = _("Certificado elegante con bordes decorativos y tipografía sofisticada.")
 
 CERTIFICADO_ELEGANTE_HTML = """
 <!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <title>Certificado de Finalización</title>
+        <title>{{ _('Certificado de Finalización') }}</title>
     </head>
     <body>
         <div class="certificado">
             <div class="border-decorativo"></div>
             <div class="header">
-                <div class="titulo">CERTIFICADO</div>
-                <div class="subtitulo">DE FINALIZACIÓN</div>
+                <div class="titulo">{{ _('CERTIFICADO') }}</div>
+                <div class="subtitulo">{{ _('DE FINALIZACIÓN') }}</div>
             </div>
             <div class="contenido">
-                <div class="otorgado">Se otorga el presente certificado a</div>
+                <div class="otorgado">{{ _('Se otorga el presente certificado a') }}</div>
                 <div class="nombre">{{ usuario.nombre }} {{ usuario.apellido }}</div>
                 <div class="reconocimiento">
-                    En reconocimiento por haber completado exitosamente el curso
+                    {{ _('En reconocimiento por haber completado exitosamente el curso') }}
                 </div>
                 <div class="curso">{{ curso.nombre }}</div>
                 <div class="fecha-firma">
-                    <div class="fecha">Fecha: {{ certificacion.fecha }}</div>
+                    <div class="fecha">{{ _('Fecha:') }} {{ certificacion.fecha }}</div>
                     <div class="qr-container">
-                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="60" height="60">
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="{{ _('QR Code') }}" width="60" height="60">
                     </div>
                 </div>
             </div>
@@ -412,38 +413,38 @@ body {
 # Plantilla Moderna
 # ---------------------------------------------------------------------------------------
 
-CERTIFICADO_MODERNO_TITULO = "Moderno"
+CERTIFICADO_MODERNO_TITULO = _("Moderno")
 
-CERTIFICADO_MODERNO_DESCRIPCION = "Certificado con diseño minimalista y tipografía moderna."
+CERTIFICADO_MODERNO_DESCRIPCION = _("Certificado con diseño minimalista y tipografía moderna.")
 
 CERTIFICADO_MODERNO_HTML = """
 <!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <title>Certificado de Finalización</title>
+        <title>{{ _('Certificado de Finalización') }}</title>
     </head>
     <body>
         <div class="certificado">
             <div class="header-section">
                 <div class="logo-area"></div>
-                <div class="titulo">CERTIFICADO</div>
+                <div class="titulo">{{ _('CERTIFICADO') }}</div>
             </div>
             <div class="main-content">
-                <div class="achievement-text">Logro Académico</div>
+                <div class="achievement-text">{{ _('Logro Académico') }}</div>
                 <div class="nombre">{{ usuario.nombre }} {{ usuario.apellido }}</div>
                 <div class="completion-text">
-                    Ha completado satisfactoriamente el programa de formación
+                    {{ _('Ha completado satisfactoriamente el programa de formación') }}
                 </div>
                 <div class="curso">{{ curso.nombre }}</div>
                 <div class="metrics">
                     <div class="metric">
-                        <div class="metric-label">Fecha de finalización</div>
+                        <div class="metric-label">{{ _('Fecha de finalización') }}</div>
                         <div class="metric-value">{{ certificacion.fecha }}</div>
                     </div>
                     <div class="qr-section">
-                        <div class="qr-label">Verificación</div>
-                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+                        <div class="qr-label">{{ _('Verificación') }}</div>
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="{{ _('QR Code') }}" width="50" height="50">
                     </div>
                 </div>
             </div>
@@ -610,43 +611,43 @@ body {
 # Plantilla Clásica
 # ---------------------------------------------------------------------------------------
 
-CERTIFICADO_CLASICO_TITULO = "Clásico"
+CERTIFICADO_CLASICO_TITULO = _("Clásico")
 
-CERTIFICADO_CLASICO_DESCRIPCION = "Certificado con estilo tradicional formal y académico."
+CERTIFICADO_CLASICO_DESCRIPCION = _("Certificado con estilo tradicional formal y académico.")
 
 CERTIFICADO_CLASICO_HTML = """
 <!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <title>Certificado de Finalización</title>
+        <title>{{ _('Certificado de Finalización') }}</title>
     </head>
     <body>
         <div class="certificado">
             <div class="header-ornament"></div>
             <div class="institution">
-                <div class="institution-name">INSTITUCIÓN EDUCATIVA</div>
-                <div class="institution-subtitle">Centro de Excelencia Académica</div>
+                <div class="institution-name">{{ _('INSTITUCIÓN EDUCATIVA') }}</div>
+                <div class="institution-subtitle">{{ _('Centro de Excelencia Académica') }}</div>
             </div>
             <div class="certificate-title">
-                <div class="main-title">CERTIFICADO</div>
-                <div class="subtitle">DE FINALIZACIÓN EXITOSA</div>
+                <div class="main-title">{{ _('CERTIFICADO') }}</div>
+                <div class="subtitle">{{ _('DE FINALIZACIÓN EXITOSA') }}</div>
             </div>
             <div class="content">
-                <div class="present-text">Por la presente se certifica que</div>
+                <div class="present-text">{{ _('Por la presente se certifica que') }}</div>
                 <div class="student-name">{{ usuario.nombre }} {{ usuario.apellido }}</div>
                 <div class="completion-text">
-                    ha completado satisfactoriamente todos los requisitos del programa de estudios
+                    {{ _('ha completado satisfactoriamente todos los requisitos del programa de estudios') }}
                 </div>
                 <div class="course-name">{{ curso.nombre }}</div>
                 <div class="footer-section">
                     <div class="date-section">
-                        <div class="date-label">Expedido el día</div>
+                        <div class="date-label">{{ _('Expedido el día') }}</div>
                         <div class="date-value">{{ certificacion.fecha }}</div>
                     </div>
                     <div class="verification">
-                        <div class="verification-label">Código de verificación</div>
-                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="55" height="55">
+                        <div class="verification-label">{{ _('Código de verificación') }}</div>
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="{{ _('QR Code') }}" width="55" height="55">
                     </div>
                 </div>
             </div>
@@ -838,31 +839,31 @@ body {
 # Plantilla Corporativa
 # ---------------------------------------------------------------------------------------
 
-CERTIFICADO_CORPORATIVO_TITULO = "Corporativo"
+CERTIFICADO_CORPORATIVO_TITULO = _("Corporativo")
 
-CERTIFICADO_CORPORATIVO_DESCRIPCION = "Certificado profesional con estilo empresarial moderno."
+CERTIFICADO_CORPORATIVO_DESCRIPCION = _("Certificado profesional con estilo empresarial moderno.")
 
 CERTIFICADO_CORPORATIVO_HTML = """
 <!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <title>Certificado de Finalización</title>
+        <title>{{ _('Certificado de Finalización') }}</title>
     </head>
     <body>
         <div class="certificado">
             <div class="header">
                 <div class="company-logo"></div>
                 <div class="header-text">
-                    <div class="certificate-type">CERTIFICADO PROFESIONAL</div>
-                    <div class="certificate-number">Nº {{ certificacion.id }}</div>
+                    <div class="certificate-type">{{ _('CERTIFICADO PROFESIONAL') }}</div>
+                    <div class="certificate-number">{{ _('Nº') }} {{ certificacion.id }}</div>
                 </div>
             </div>
             <div class="main-section">
-                <div class="certifies">CERTIFICA QUE</div>
+                <div class="certifies">{{ _('CERTIFICA QUE') }}</div>
                 <div class="recipient-name">{{ usuario.nombre }} {{ usuario.apellido }}</div>
                 <div class="achievement">
-                    Ha completado exitosamente el programa de capacitación profesional
+                    {{ _('Ha completado exitosamente el programa de capacitación profesional') }}
                 </div>
                 <div class="course-title">{{ curso.nombre }}</div>
                 <div class="completion-details">
@@ -873,12 +874,12 @@ CERTIFICADO_CORPORATIVO_HTML = """
             <div class="footer">
                 <div class="credentials">
                     <div class="date-issued">
-                        <strong>Fecha de emisión:</strong><br>
+                        <strong>{{ _('Fecha de emisión:') }}</strong><br>
                         {{ certificacion.fecha }}
                     </div>
                     <div class="validation">
-                        <strong>Validación digital:</strong><br>
-                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+                        <strong>{{ _('Validación digital:') }}</strong><br>
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="{{ _('QR Code') }}" width="50" height="50">
                     </div>
                 </div>
                 <div class="signature-line"></div>
@@ -1058,9 +1059,9 @@ body {
 # Default Certificate Template (English)
 # ---------------------------------------------------------------------------------------
 
-CERTIFICADO_DEFAULT_TITULO = "Default"
+CERTIFICADO_DEFAULT_TITULO = _("Default")
 
-CERTIFICADO_DEFAULT_DESCRIPCION = "Professional default certificate template in English with comprehensive features including QR verification, security elements, and multi-language support."
+CERTIFICADO_DEFAULT_DESCRIPCION = _("Professional default certificate template in English with comprehensive features including QR verification, security elements, and multi-language support.")
 
 CERTIFICADO_DEFAULT_HTML = """
 <!doctype html>
@@ -1068,7 +1069,7 @@ CERTIFICADO_DEFAULT_HTML = """
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Certificate of Completion</title>
+        <title>{{ _('Certificate of Completion') }}</title>
     </head>
     <body>
         <div class="certificate-container">
@@ -1078,8 +1079,8 @@ CERTIFICADO_DEFAULT_HTML = """
                     <div class="logo-placeholder">🎓</div>
                 </div>
                 <div class="institution-info">
-                    <h1 class="institution-name">NOW - Learning Management System</h1>
-                    <p class="institution-subtitle">Center of Excellence in Education</p>
+                    <h1 class="institution-name">{{ _('NOW - Learning Management System') }}</h1>
+                    <p class="institution-subtitle">{{ _('Center of Excellence in Education') }}</p>
                 </div>
                 <div class="certificate-seal">
                     <div class="seal-inner">LMS</div>
@@ -1088,49 +1089,49 @@ CERTIFICADO_DEFAULT_HTML = """
 
             <!-- Certificate Title -->
             <div class="certificate-title-section">
-                <h2 class="certificate-title">CERTIFICATE</h2>
-                <p class="certificate-subtitle">OF COMPLETION</p>
+                <h2 class="certificate-title">{{ _('CERTIFICATE') }}</h2>
+                <p class="certificate-subtitle">{{ _('OF COMPLETION') }}</p>
             </div>
 
             <!-- Main Content -->
             <main class="certificate-content">
                 <!-- Achievement Statement -->
                 <div class="achievement-statement">
-                    <p class="certify-text">This is to certify that</p>
+                    <p class="certify-text">{{ _('This is to certify that') }}</p>
 
                     <!-- Learner Identification -->
                     <div class="recipient-section">
                         <h3 class="recipient-name">{{ usuario.nombre }} {{ usuario.apellido }}</h3>
                         <div class="recipient-details">
-                            <p class="student-id">Student ID: {{ usuario.id }}</p>
+                            <p class="student-id">{{ _('Student ID:') }} {{ usuario.id }}</p>
                         </div>
                     </div>
 
                     <!-- Course Information -->
                     <div class="course-section">
-                        <p class="completion-text">has successfully completed the course</p>
+                        <p class="completion-text">{{ _('has successfully completed the course') }}</p>
                         <h4 class="course-title">{{ curso.nombre }}</h4>
                         <div class="course-details">
-                            <p class="course-type">Course Type:
+                            <p class="course-type">{{ _('Course Type:') }}
                                 {% if content_type == 'masterclass' %}
-                                    Master Class
+                                    {{ _('Master Class') }}
                                 {% else %}
                                     Course
                                 {% endif %}
                             </p>
                             {% if curso.instructor %}
-                            <p class="instructor-name">Instructor: {{ curso.instructor }}</p>
+                            <p class="instructor-name">{{ _('Instructor:') }} {{ curso.instructor }}</p>
                             {% endif %}
                         </div>
                     </div>
 
                     <!-- Completion Details -->
                     <div class="completion-section">
-                        <p class="completion-date">Completion Date: {{ certificacion.fecha.strftime('%B %d, %Y') }}</p>
+                        <p class="completion-date">{{ _('Completion Date:') }} {{ certificacion.fecha.strftime('%B %d, %Y') }}</p>
                         {% if certificacion.nota %}
                             <p class="grade-info">
                                 Grade: {{ certificacion.nota }}
-                                {% if certificacion.nota >= 90 %} with distinction{% endif %}
+                                {% if certificacion.nota >= 90 %} {{ _('with distinction') }}{% endif %}
                             </p>
                         {% endif %}
                     </div>
@@ -1142,16 +1143,16 @@ CERTIFICADO_DEFAULT_HTML = """
                 <div class="signatures-section">
                     <div class="signature-block">
                         <div class="signature-line"></div>
-                        <p class="signature-title">Academic Director</p>
+                        <p class="signature-title">{{ _('Academic Director') }}</p>
                         <p class="signature-date">{{ certificacion.fecha.strftime('%B %d, %Y') }}</p>
                     </div>
 
                     <div class="validation-section">
                         <div class="qr-code-container">
                             <img src="{{ url_for('certificate.certificacion_qr', cert_id=certificacion.id) }}"
-                                 alt=QR Code for certificate verification"
+                                 alt="{{ _('QR Code for certificate verification') }}"
                                  class="qr-code">
-                            <p class="qr-label">Scan to verify</p>
+                            <p class="qr-label">{{ _('Scan to verify') }}</p>
                         </div>
                     </div>
                 </div>
@@ -1159,22 +1160,22 @@ CERTIFICADO_DEFAULT_HTML = """
                 <!-- Certificate Metadata -->
                 <div class="certificate-metadata">
                     <div class="metadata-item">
-                        <span class="metadata-label">Certificate ID:</span>
+                        <span class="metadata-label">{{ _('Certificate ID:') }}</span>
                         <span class="metadata-value">{{ certificacion.id }}</span>
                     </div>
                     <div class="metadata-item">
-                        <span class="metadata-label">Issue Date:</span>
+                        <span class="metadata-label">{{ _('Issue Date:') }}</span>
                         <span class="metadata-value">{{ certificacion.fecha.strftime('%Y-%m-%d') }}</span>
                     </div>
                     <div class="metadata-item">
-                        <span class="metadata-label">Verification URL:</span>
+                        <span class="metadata-label">{{ _('Verification URL:') }}</span>
                         <span class="metadata-value verification-url">{{ url_for('certificate.certificado', ulid=certificacion.id, _external=True) }}</span>
                     </div>
                 </div>
             </footer>
 
             <!-- Security Watermark -->
-            <div class="security-watermark" aria-hidden="true">AUTHENTIC</div>
+            <div class="security-watermark" aria-hidden="true">{{ _('AUTHENTIC') }}</div>
         </div>
     </body>
 </html>
@@ -1629,9 +1630,9 @@ body {
 # Professional Course Certificate Template (Inspired by Safety Training Design)
 # ---------------------------------------------------------------------------------------
 
-CERTIFICADO_PROFESIONAL_TITULO = "Profesional"
+CERTIFICADO_PROFESIONAL_TITULO = _("Profesional")
 
-CERTIFICADO_PROFESIONAL_DESCRIPCION = "Certificado profesional moderno inspirado en diseños corporativos de alta calidad con elementos de seguridad y verificación."
+CERTIFICADO_PROFESIONAL_DESCRIPCION = _("Certificado profesional moderno inspirado en diseños corporativos de alta calidad con elementos de seguridad y verificación.")
 
 CERTIFICADO_PROFESIONAL_HTML = """
 <!doctype html>
@@ -1639,7 +1640,7 @@ CERTIFICADO_PROFESIONAL_HTML = """
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Certificado Profesional</title>
+        <title>{{ _('Certificado Profesional') }}</title>
     </head>
     <body>
         <div class="certificate-container">
@@ -1648,43 +1649,43 @@ CERTIFICADO_PROFESIONAL_HTML = """
                 <div class="brand-section">
                     <div class="brand-logo">🎓</div>
                     <div class="provider-info">
-                        <div class="provider-text">Your CE Provider Logo</div>
+                        <div class="provider-text">{{ _('Your CE Provider Logo') }}</div>
                     </div>
                 </div>
             </header>
 
             <!-- Title Section -->
             <div class="title-section">
-                <h1 class="certificate-title">Certificate of Safety Training</h1>
+                <h1 class="certificate-title">{{ _('Certificate of Safety Training') }}</h1>
             </div>
 
             <!-- Content Section -->
             <main class="content-section">
-                <div class="proudly-text">Proudly presented to</div>
+                <div class="proudly-text">{{ _('Proudly presented to') }}</div>
 
                 <div class="recipient-name">{{ usuario.nombre }} {{ usuario.apellido }}</div>
 
                 <div class="completion-statement">
-                    <span class="completion-text">Successfully completed a</span>
+                    <span class="completion-text">{{ _('Successfully completed a') }}</span>
                     <span class="course-name">{{ curso.nombre }}</span>
                 </div>
 
                 <!-- Metrics Section -->
                 <div class="metrics-section">
                     <div class="metric-item">
-                        <div class="metric-label">Credits earned:</div>
+                        <div class="metric-label">{{ _('Credits earned:') }}</div>
                         <div class="metric-value">{{ curso.creditos or '4.6' }}</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Certificate ID:</div>
+                        <div class="metric-label">{{ _('Certificate ID:') }}</div>
                         <div class="metric-value">{{ certificacion.id }}</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Certified on:</div>
+                        <div class="metric-label">{{ _('Certified on:') }}</div>
                         <div class="metric-value">{{ certificacion.fecha.strftime('%d.%m.%Y') }}</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Expiry Date:</div>
+                        <div class="metric-label">{{ _('Expiry Date:') }}</div>
                         <div class="metric-value">{{ (certificacion.fecha.replace(year=certificacion.fecha.year + 2)).strftime('%d.%m.%Y') }}</div>
                     </div>
                 </div>
@@ -1696,12 +1697,12 @@ CERTIFICADO_PROFESIONAL_HTML = """
                     <div class="signature-block">
                         <div class="signature-line"></div>
                         <div class="signature-name">{{ curso.instructor or 'Bonnie Wilson' }}</div>
-                        <div class="signature-title">Course Instructor</div>
+                        <div class="signature-title">{{ _('Course Instructor') }}</div>
                     </div>
                     <div class="signature-block">
                         <div class="signature-line"></div>
                         <div class="signature-name">Mark Allford</div>
-                        <div class="signature-title">Program Director</div>
+                        <div class="signature-title">{{ _('Program Director') }}</div>
                     </div>
                 </div>
 
@@ -1710,13 +1711,13 @@ CERTIFICADO_PROFESIONAL_HTML = """
                     <div class="accreditation-badge">
                         <div class="badge-icon">🛡️</div>
                         <div class="badge-text">
-                            <div class="association-name">Safety Association</div>
-                            <div class="accreditation-text">ACCREDITED<br>TRAINING<br>PROVIDER</div>
+                            <div class="association-name">{{ _('Safety Association') }}</div>
+                            <div class="accreditation-text">{{ _('ACCREDITED') }}<br>{{ _('TRAINING') }}<br>{{ _('PROVIDER') }}</div>
                         </div>
                     </div>
                     <div class="qr-section">
                         <img src="{{ url_for('certificate.certificacion_qr', cert_id=certificacion.id) }}"
-                             alt="QR Code"
+                             alt="{{ _('QR Code') }}"
                              class="qr-code">
                     </div>
                 </div>
@@ -2037,9 +2038,9 @@ body {
 # Professional Program Certificate Template
 # ---------------------------------------------------------------------------------------
 
-CERTIFICADO_PROGRAMA_PROFESIONAL_TITULO = "Programa Profesional"
+CERTIFICADO_PROGRAMA_PROFESIONAL_TITULO = _("Programa Profesional")
 
-CERTIFICADO_PROGRAMA_PROFESIONAL_DESCRIPCION = (
+CERTIFICADO_PROGRAMA_PROFESIONAL_DESCRIPCION = _(
     "Certificado de programa profesional con diseño corporativo moderno y elementos de verificación avanzados."
 )
 
@@ -2049,7 +2050,7 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Certificado de Programa Profesional</title>
+        <title>{{ _('Certificado de Programa Profesional') }}</title>
     </head>
     <body>
         <div class="certificate-container">
@@ -2058,35 +2059,35 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
                 <div class="brand-section">
                     <div class="brand-logo">🏆</div>
                     <div class="provider-info">
-                        <div class="provider-text">Your CE Provider Logo</div>
+                        <div class="provider-text">{{ _('Your CE Provider Logo') }}</div>
                     </div>
                 </div>
             </header>
 
             <!-- Title Section -->
             <div class="title-section">
-                <h1 class="certificate-title">Certificate of Professional Program</h1>
+                <h1 class="certificate-title">{{ _('Certificate of Professional Program') }}</h1>
             </div>
 
             <!-- Content Section -->
             <main class="content-section">
-                <div class="proudly-text">Proudly presented to</div>
+                <div class="proudly-text">{{ _('Proudly presented to') }}</div>
 
                 <div class="recipient-name">{{ usuario.nombre }} {{ usuario.apellido }}</div>
 
                 <div class="completion-statement">
-                    <span class="completion-text">Successfully completed the comprehensive program</span>
+                    <span class="completion-text">{{ _('Successfully completed the comprehensive program') }}</span>
                     <span class="program-name">{{ programa.nombre }}</span>
                 </div>
 
                 <!-- Program Description -->
                 <div class="program-description">
-                    {{ programa.descripcion or 'A comprehensive professional development program designed to enhance skills and knowledge in the specified field of study.' }}
+                    {{ programa.descripcion or {{ _('A comprehensive professional development program designed to enhance skills and knowledge in the specified field of study.') }} }}
                 </div>
 
                 <!-- Courses Summary -->
                 <div class="courses-summary">
-                    <div class="courses-header">Including completion of the following courses:</div>
+                    <div class="courses-header">{{ _('Including completion of the following courses:') }}</div>
                     <div class="courses-grid">
                         {% set cursos_completados = certificacion_programa.get_cursos_completados() %}
                         {% for curso_codigo in cursos_completados[:6] %}
@@ -2096,7 +2097,7 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
                             {% endif %}
                         {% endfor %}
                         {% if cursos_completados|length > 6 %}
-                        <div class="course-item more-courses">+{{ cursos_completados|length - 6 }} more courses</div>
+                        <div class="course-item more-courses">+{{ cursos_completados|length - 6 }} {{ _('more courses') }}</div>
                         {% endif %}
                     </div>
                 </div>
@@ -2104,19 +2105,19 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
                 <!-- Metrics Section -->
                 <div class="metrics-section">
                     <div class="metric-item">
-                        <div class="metric-label">Total Credits:</div>
+                        <div class="metric-label">{{ _('Total Credits:') }}</div>
                         <div class="metric-value">{{ cursos_completados|length * 4.6 }}</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Certificate ID:</div>
+                        <div class="metric-label">{{ _('Certificate ID:') }}</div>
                         <div class="metric-value">{{ certificacion_programa.id }}</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Certified on:</div>
+                        <div class="metric-label">{{ _('Certified on:') }}</div>
                         <div class="metric-value">{{ certificacion_programa.fecha.strftime('%d.%m.%Y') }}</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Expiry Date:</div>
+                        <div class="metric-label">{{ _('Expiry Date:') }}</div>
                         <div class="metric-value">{{ (certificacion_programa.fecha.replace(year=certificacion_programa.fecha.year + 3)).strftime('%d.%m.%Y') }}</div>
                     </div>
                 </div>
@@ -2128,12 +2129,12 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
                     <div class="signature-block">
                         <div class="signature-line"></div>
                         <div class="signature-name">Dr. Sarah Johnson</div>
-                        <div class="signature-title">Academic Director</div>
+                        <div class="signature-title">{{ _('Academic Director') }}</div>
                     </div>
                     <div class="signature-block">
                         <div class="signature-line"></div>
                         <div class="signature-name">Mark Allford</div>
-                        <div class="signature-title">Program Director</div>
+                        <div class="signature-title">{{ _('Program Director') }}</div>
                     </div>
                 </div>
 
@@ -2142,13 +2143,13 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
                     <div class="accreditation-badge">
                         <div class="badge-icon">🎖️</div>
                         <div class="badge-text">
-                            <div class="association-name">Professional Association</div>
-                            <div class="accreditation-text">ACCREDITED<br>PROGRAM<br>PROVIDER</div>
+                            <div class="association-name">{{ _('Professional Association') }}</div>
+                            <div class="accreditation-text">{{ _('ACCREDITED') }}<br>{{ _('PROGRAM') }}<br>{{ _('PROVIDER') }}</div>
                         </div>
                     </div>
                     <div class="qr-section">
                         <img src="{{ url_for('certificate.certificacion_programa_qr', certificate_id=certificacion_programa.id) }}"
-                             alt="QR Code"
+                             alt="{{ _('QR Code') }}"
                              class="qr-code">
                     </div>
                 </div>
@@ -2521,9 +2522,9 @@ body {
 # Program Certificate Template
 # ---------------------------------------------------------------------------------------
 
-CERTIFICADO_PROGRAMA_TITULO = "Programa"
+CERTIFICADO_PROGRAMA_TITULO = _("Programa")
 
-CERTIFICADO_PROGRAMA_DESCRIPCION = "Certificado de finalización de programa con lista de cursos completados."
+CERTIFICADO_PROGRAMA_DESCRIPCION = _("Certificado de finalización de programa con lista de cursos completados.")
 
 CERTIFICADO_PROGRAMA_HTML = """
 <!doctype html>
@@ -2531,7 +2532,7 @@ CERTIFICADO_PROGRAMA_HTML = """
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Certificado de Programa</title>
+        <title>{{ _('Certificado de Programa') }}</title>
     </head>
     <body>
         <div class="certificate-container">
@@ -2541,8 +2542,8 @@ CERTIFICADO_PROGRAMA_HTML = """
                     <div class="logo-placeholder">🏆</div>
                 </div>
                 <div class="institution-info">
-                    <h1 class="institution-name">NOW Learning Management System</h1>
-                    <p class="institution-subtitle">Centro de Excelencia en Educación</p>
+                    <h1 class="institution-name">{{ _('NOW Learning Management System') }}</h1>
+                    <p class="institution-subtitle">{{ _('Centro de Excelencia en Educación') }}</p>
                 </div>
                 <div class="certificate-seal">
                     <div class="seal-inner">PROG</div>
@@ -2551,14 +2552,14 @@ CERTIFICADO_PROGRAMA_HTML = """
 
             <!-- Certificate Title -->
             <div class="certificate-title-section">
-                <h2 class="certificate-title">CERTIFICADO</h2>
-                <p class="certificate-subtitle">DE FINALIZACIÓN DE PROGRAMA</p>
+                <h2 class="certificate-title">{{ _('CERTIFICADO') }}</h2>
+                <p class="certificate-subtitle">{{ _('DE FINALIZACIÓN DE PROGRAMA') }}</p>
             </div>
 
             <!-- Main Content -->
             <main class="certificate-content">
                 <div class="achievement-statement">
-                    <p class="certify-text">Se certifica que</p>
+                    <p class="certify-text">{{ _('Se certifica que') }}</p>
 
                     <!-- Recipient Name -->
                     <div class="recipient-section">
@@ -2567,14 +2568,14 @@ CERTIFICADO_PROGRAMA_HTML = """
 
                     <!-- Program Information -->
                     <div class="program-section">
-                        <p class="completion-text">ha completado exitosamente el programa</p>
+                        <p class="completion-text">{{ _('ha completado exitosamente el programa') }}</p>
                         <h4 class="program-title">{{ programa.nombre }}</h4>
                         <p class="program-description">{{ programa.descripcion }}</p>
                     </div>
 
                     <!-- Courses List -->
                     <div class="courses-section">
-                        <p class="courses-header">completando los siguientes cursos:</p>
+                        <p class="courses-header">{{ _('completando los siguientes cursos:') }}</p>
                         <div class="courses-list">
                             {% set cursos_completados = certificacion_programa.get_cursos_completados() %}
                             {% for curso_codigo in cursos_completados %}
@@ -2591,7 +2592,7 @@ CERTIFICADO_PROGRAMA_HTML = """
 
                     <!-- Completion Date -->
                     <div class="completion-section">
-                        <p class="completion-date">Fecha de Finalización: {{ certificacion_programa.fecha.strftime('%d de %B de %Y') }}</p>
+                        <p class="completion-date">{{ _('Fecha de Finalización:') }} {{ certificacion_programa.fecha.strftime('%d de %B de %Y') }}</p>
                     </div>
                 </div>
             </main>
@@ -2601,16 +2602,16 @@ CERTIFICADO_PROGRAMA_HTML = """
                 <div class="signatures-section">
                     <div class="signature-block">
                         <div class="signature-line"></div>
-                        <p class="signature-title">Director Académico</p>
+                        <p class="signature-title">{{ _('Director Académico') }}</p>
                         <p class="signature-date">{{ certificacion_programa.fecha.strftime('%d/%m/%Y') }}</p>
                     </div>
 
                     <div class="validation-section">
                         <div class="qr-code-container">
                             <img src="{{ url_for('certificate.certificacion_programa_qr', certificate_id=certificacion_programa.id) }}"
-                                 alt="Código QR para verificación"
+                                 alt="{{ _('Código QR para verificación') }}"
                                  class="qr-code">
-                            <p class="qr-label">Escanear para verificar</p>
+                            <p class="qr-label">{{ _('Escanear para verificar') }}</p>
                         </div>
                     </div>
                 </div>
@@ -2618,18 +2619,18 @@ CERTIFICADO_PROGRAMA_HTML = """
                 <!-- Certificate Metadata -->
                 <div class="certificate-metadata">
                     <div class="metadata-item">
-                        <span class="metadata-label">ID Certificado:</span>
+                        <span class="metadata-label">{{ _('ID Certificado:') }}</span>
                         <span class="metadata-value">{{ certificacion_programa.id }}</span>
                     </div>
                     <div class="metadata-item">
-                        <span class="metadata-label">Fecha de Emisión:</span>
+                        <span class="metadata-label">{{ _('Fecha de Emisión:') }}</span>
                         <span class="metadata-value">{{ certificacion_programa.fecha.strftime('%Y-%m-%d') }}</span>
                     </div>
                 </div>
             </footer>
 
             <!-- Security Watermark -->
-            <div class="security-watermark" aria-hidden="true">COMPLETADO</div>
+            <div class="security-watermark" aria-hidden="true">{{ _('COMPLETADO') }}</div>
         </div>
     </body>
 </html>

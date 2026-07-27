@@ -24,6 +24,7 @@ from ulid import ULID
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import proteger_passwd
 from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_BASE_ARCHIVOS_USUARIO
+from now_lms.i18n import _
 from now_lms.db import (
     BlogPost,
     BlogTag,
@@ -97,10 +98,10 @@ def crear_etiquetas() -> None:
 def crear_categorias() -> None:
     """Crea categorias de demostración."""
     log.trace("Creating demonstration categories.")
-    cat1 = Categoria(nombre="Learning", descripcion="Cursos sobre aprendizaje")
-    cat2 = Categoria(nombre="Programing", descripcion=DESCRIPCION_CURSOS_PROGRAMACION)
-    cat3 = Categoria(nombre="Python", descripcion=DESCRIPCION_CURSOS_PROGRAMACION)
-    cat4 = Categoria(nombre="Databases", descripcion=DESCRIPCION_CURSOS_PROGRAMACION)
+    cat1 = Categoria(nombre="Learning", descripcion=_("Cursos sobre aprendizaje"))
+    cat2 = Categoria(nombre="Programing", descripcion=_(DESCRIPCION_CURSOS_PROGRAMACION))
+    cat3 = Categoria(nombre="Python", descripcion=_(DESCRIPCION_CURSOS_PROGRAMACION))
+    cat4 = Categoria(nombre="Databases", descripcion=_(DESCRIPCION_CURSOS_PROGRAMACION))
 
     for i in cat1, cat2, cat3, cat4:
         database.session.add(i)
@@ -445,7 +446,7 @@ def crear_certificados() -> None:
         html=HTML,
         css=CSS,
         titulo="Demo Certificado",
-        descripcion="Puede verificar la generación de PDF con este certificado.",
+        descripcion=_("Puede verificar la generación de PDF con este certificado."),
         code="demo",
         habilitado=False,
         publico=False,
@@ -715,8 +716,8 @@ def crear_evaluacion_predeterminada() -> None:
     question1 = Question(
         evaluation_id=evaluacion.id,
         type="multiple",
-        text="¿Cuál es una de las principales ventajas de la enseñanza en línea?",
-        explanation="La flexibilidad es una de las características más importantes de la educación en línea, permitiendo a estudiantes e instructores adaptar horarios.",
+        text=_("¿Cuál es una de las principales ventajas de la enseñanza en línea?"),
+        explanation=_("La flexibilidad es una de las características más importantes de la educación en línea, permitiendo a estudiantes e instructores adaptar horarios."),
         order=1,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -727,25 +728,25 @@ def crear_evaluacion_predeterminada() -> None:
     options1 = [
         QuestionOption(
             question_id=question1.id,
-            text="Mayor costo de implementación",
+            text=_("Mayor costo de implementación"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=question1.id,
-            text="Flexibilidad de horarios",
+            text=_("Flexibilidad de horarios"),
             is_correct=True,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=question1.id,
-            text="Menos interacción con estudiantes",
+            text=_("Menos interacción con estudiantes"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=question1.id,
-            text="Mayor dificultad técnica",
+            text=_("Mayor dificultad técnica"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
@@ -757,8 +758,8 @@ def crear_evaluacion_predeterminada() -> None:
     question2 = Question(
         evaluation_id=evaluacion.id,
         type="boolean",
-        text="Los cursos en línea requieren mayor autodisciplina por parte de los estudiantes.",
-        explanation="Verdadero. Los estudiantes en línea deben gestionar su tiempo y motivación de manera más independiente.",
+        text=_("Los cursos en línea requieren mayor autodisciplina por parte de los estudiantes."),
+        explanation=_("Verdadero. Los estudiantes en línea deben gestionar su tiempo y motivación de manera más independiente."),
         order=2,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -769,13 +770,13 @@ def crear_evaluacion_predeterminada() -> None:
     options2 = [
         QuestionOption(
             question_id=question2.id,
-            text="Verdadero",
+            text=_("Verdadero"),
             is_correct=True,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=question2.id,
-            text="Falso",
+            text=_("Falso"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
@@ -787,8 +788,8 @@ def crear_evaluacion_predeterminada() -> None:
     question3 = Question(
         evaluation_id=evaluacion.id,
         type="multiple",
-        text="¿Qué elemento es esencial para estructurar un curso en línea efectivo?",
-        explanation="Los objetivos claros de aprendizaje son fundamentales para guiar tanto al instructor como a los estudiantes.",
+        text=_("¿Qué elemento es esencial para estructurar un curso en línea efectivo?"),
+        explanation=_("Los objetivos claros de aprendizaje son fundamentales para guiar tanto al instructor como a los estudiantes."),
         order=3,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -799,25 +800,25 @@ def crear_evaluacion_predeterminada() -> None:
     options3 = [
         QuestionOption(
             question_id=question3.id,
-            text="Videos de larga duración",
+            text=_("Videos de larga duración"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=question3.id,
-            text="Objetivos de aprendizaje claros",
+            text=_("Objetivos de aprendizaje claros"),
             is_correct=True,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=question3.id,
-            text="Múltiples exámenes",
+            text=_("Múltiples exámenes"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=question3.id,
-            text="Contenido exclusivamente textual",
+            text=_("Contenido exclusivamente textual"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
@@ -1699,10 +1700,10 @@ def crear_curso_autoaprendizaje() -> None:
 
     # Crear el curso principal
     curso_training = Curso(
-        nombre="Guía Completa de NOW LMS",
+        nombre=_("Guía Completa de NOW LMS"),
         codigo="lms-training",
-        descripcion_corta="Curso completo para aprender a usar NOW LMS como administrador e instructor.",
-        descripcion="""# Guía Completa de NOW LMS
+        descripcion_corta=_("Curso completo para aprender a usar NOW LMS como administrador e instructor."),
+        descripcion=_("""# Guía Completa de NOW LMS
 
 Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de NOW LMS tanto para administradores como para instructores.
 
@@ -1715,7 +1716,7 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
 - **Análisis y reportes**: Cómo interpretar las métricas del sistema
 - **Mejores prácticas**: Consejos para maximizar el valor de tu LMS
 
-¡Empecemos este viaje de aprendizaje juntos!""",
+¡Empecemos este viaje de aprendizaje juntos!"""),
         portada=False,  # No logo needed for training course
         nivel=1,  # Principiante
         duracion=120,  # 2 horas estimadas
@@ -1748,12 +1749,12 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
 
     # Crear secciones básicas del curso
     secciones_data = [
-        {"nombre": "Introducción a NOW LMS", "descripcion": "Conoce las características principales del sistema"},
-        {"nombre": "Administración de Usuarios", "descripcion": "Aprende a gestionar usuarios, roles y permisos"},
-        {"nombre": "Gestión de Cursos", "descripcion": "Cómo crear, configurar y administrar cursos"},
-        {"nombre": "Sistema de Evaluaciones", "descripcion": "Configurar exámenes, cuestionarios y certificaciones"},
-        {"nombre": "Análisis y Reportes", "descripcion": "Interpretar métricas y generar reportes útiles"},
-        {"nombre": "Mejores Prácticas", "descripcion": "Consejos avanzados para maximizar el valor educativo"},
+        {"nombre": _("Introducción a NOW LMS"), "descripcion": _("Conoce las características principales del sistema")},
+        {"nombre": _("Administración de Usuarios"), "descripcion": _("Aprende a gestionar usuarios, roles y permisos")},
+        {"nombre": _("Gestión de Cursos"), "descripcion": _("Cómo crear, configurar y administrar cursos")},
+        {"nombre": _("Sistema de Evaluaciones"), "descripcion": _("Configurar exámenes, cuestionarios y certificaciones")},
+        {"nombre": _("Análisis y Reportes"), "descripcion": _("Interpretar métricas y generar reportes útiles")},
+        {"nombre": _("Mejores Prácticas"), "descripcion": _("Consejos avanzados para maximizar el valor educativo")},
     ]
 
     secciones_creadas = []
@@ -1773,25 +1774,25 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
     # Crear algunos recursos básicos de ejemplo
     recursos_ejemplo: list[Dict[str, Any]] = [
         {
-            "seccion": secciones_creadas[0],  # Introducción
-            "nombre": "¿Qué es NOW LMS?",
-            "descripcion": "Introducción al sistema LMS",
+            "seccion": secciones_creadas[0],
+            "nombre": _("¿Qué es NOW LMS?"),
+            "descripcion": _("Introducción al sistema LMS"),
             "tipo": "text",
-            "contenido": "# ¿Qué es NOW LMS?\n\nNOW LMS es un sistema de gestión de aprendizaje diseñado para ser simple, potente y fácil de usar.\n\n## Características principales:\n- Fácil instalación\n- Interfaz intuitiva\n- Gestión completa de usuarios y cursos\n- Sistema de evaluaciones\n- Reportes detallados\n- Configuración flexible para administradores",
+            "contenido": _("# ¿Qué es NOW LMS?\n\nNOW LMS es un sistema de gestión de aprendizaje diseñado para ser simple, potente y fácil de usar.\n\n## Características principales:\n- Fácil instalación\n- Interfaz intuitiva\n- Gestión completa de usuarios y cursos\n- Sistema de evaluaciones\n- Reportes detallados\n- Configuración flexible para administradores"),
         },
         {
-            "seccion": secciones_creadas[1],  # Usuarios
-            "nombre": "Tipos de Usuario",
-            "descripcion": "Roles y permisos en el sistema",
+            "seccion": secciones_creadas[1],
+            "nombre": _("Tipos de Usuario"),
+            "descripcion": _("Roles y permisos en el sistema"),
             "tipo": "text",
-            "contenido": "# Tipos de Usuario\n\n## Roles disponibles:\n1. **admin**: Control total del sistema\n2. **instructor**: Crear y gestionar cursos\n3. **moderator**: Moderar contenido\n4. **student**: Acceso básico de estudiante\n\nCada rol tiene permisos específicos para garantizar la seguridad y organización del sistema. Los administradores tienen acceso completo.",
+            "contenido": _("# Tipos de Usuario\n\n## Roles disponibles:\n1. **admin**: Control total del sistema\n2. **instructor**: Crear y gestionar cursos\n3. **moderator**: Moderar contenido\n4. **student**: Acceso básico de estudiante\n\nCada rol tiene permisos específicos para garantizar la seguridad y organización del sistema. Los administradores tienen acceso completo."),
         },
         {
-            "seccion": secciones_creadas[2],  # Cursos
-            "nombre": "Modalidades de Curso",
-            "descripcion": "Diferentes modalidades disponibles",
+            "seccion": secciones_creadas[2],
+            "nombre": _("Modalidades de Curso"),
+            "descripcion": _("Diferentes modalidades disponibles"),
             "tipo": "text",
-            "contenido": "# Modalidades de Curso\n\n## 1. Self-paced\n- Estudiantes aprenden a su ritmo\n- Sin fechas fijas\n\n## 2. Time-based\n- Fechas de inicio y fin\n- Aprendizaje en cohort\n\n## 3. Live\n- Sesiones en tiempo real\n- Interacción directa\n\nCada modalidad tiene sus ventajas según el tipo de contenido y audiencia. Los instructores pueden elegir la modalidad apropiada.",
+            "contenido": _("# Modalidades de Curso\n\n## 1. Self-paced\n- Estudiantes aprenden a su ritmo\n- Sin fechas fijas\n\n## 2. Time-based\n- Fechas de inicio y fin\n- Aprendizaje en cohort\n\n## 3. Live\n- Sesiones en tiempo real\n- Interacción directa\n\nCada modalidad tiene sus ventajas según el tipo de contenido y audiencia. Los instructores pueden elegir la modalidad apropiada."),
         },
     ]
 
@@ -1822,8 +1823,8 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     # Evaluación básica para la sección de usuarios
     evaluacion_usuarios = Evaluation(
         section_id=secciones[1].id,  # Sección de usuarios
-        title="Evaluación: Gestión de Usuarios",
-        description="Evalúa tu comprensión sobre la gestión de usuarios en NOW LMS",
+        title=_("Evaluación: Gestión de Usuarios"),
+        description=_("Evalúa tu comprensión sobre la gestión de usuarios en NOW LMS"),
         is_exam=False,
         passing_score=70.0,
         max_attempts=3,  # REQUERIMIENTO: máximo 3 intentos
@@ -1836,8 +1837,8 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     pregunta1 = Question(
         evaluation_id=evaluacion_usuarios.id,
         type="multiple",
-        text="¿Cuáles son los cuatro tipos de usuario disponibles en NOW LMS?",
-        explanation="NOW LMS maneja cuatro roles principales para organizar permisos y funcionalidades.",
+        text=_("¿Cuáles son los cuatro tipos de usuario disponibles en NOW LMS?"),
+        explanation=_("NOW LMS maneja cuatro roles principales para organizar permisos y funcionalidades."),
         order=1,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -1848,19 +1849,19 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     opciones1 = [
         QuestionOption(
             question_id=pregunta1.id,
-            text="admin, instructor, student, guest",
+            text=_("admin, instructor, student, guest"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=pregunta1.id,
-            text="admin, instructor, moderator, student",
+            text=_("admin, instructor, moderator, student"),
             is_correct=True,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=pregunta1.id,
-            text="admin, teacher, moderator, student",
+            text=_("admin, teacher, moderator, student"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
@@ -1872,8 +1873,8 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     pregunta2 = Question(
         evaluation_id=evaluacion_usuarios.id,
         type="boolean",
-        text="Los instructores pueden crear y gestionar cualquier curso en el sistema.",
-        explanation="Falso. Los instructores solo pueden gestionar los cursos que han creado o a los que han sido asignados.",
+        text=_("Los instructores pueden crear y gestionar cualquier curso en el sistema."),
+        explanation=_("Falso. Los instructores solo pueden gestionar los cursos que han creado o a los que han sido asignados."),
         order=2,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -1884,13 +1885,13 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     opciones2 = [
         QuestionOption(
             question_id=pregunta2.id,
-            text="Verdadero",
+            text=_("Verdadero"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=pregunta2.id,
-            text="Falso",
+            text=_("Falso"),
             is_correct=True,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
@@ -1901,8 +1902,8 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     # Evaluación para modalidades de curso
     evaluacion_cursos = Evaluation(
         section_id=secciones[2].id,  # Sección de cursos
-        title="Evaluación: Modalidades de Curso",
-        description="Verifica tu conocimiento sobre las diferentes modalidades de curso",
+        title=_("Evaluación: Modalidades de Curso"),
+        description=_("Verifica tu conocimiento sobre las diferentes modalidades de curso"),
         is_exam=False,
         passing_score=70.0,
         max_attempts=3,  # REQUERIMIENTO: máximo 3 intentos
@@ -1915,8 +1916,8 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     pregunta3 = Question(
         evaluation_id=evaluacion_cursos.id,
         type="multiple",
-        text="¿Cuál es la principal característica de un curso con modalidad 'self_paced'?",
-        explanation="Los cursos self-paced permiten flexibilidad total en el ritmo de aprendizaje.",
+        text=_("¿Cuál es la principal característica de un curso con modalidad 'self_paced'?"),
+        explanation=_("Los cursos self-paced permiten flexibilidad total en el ritmo de aprendizaje."),
         order=1,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -1927,19 +1928,19 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     opciones3 = [
         QuestionOption(
             question_id=pregunta3.id,
-            text="Tiene fechas fijas de inicio y fin",
+            text=_("Tiene fechas fijas de inicio y fin"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=pregunta3.id,
-            text="Los estudiantes aprenden a su propio ritmo",
+            text=_("Los estudiantes aprenden a su propio ritmo"),
             is_correct=True,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),
         QuestionOption(
             question_id=pregunta3.id,
-            text="Requiere sesiones en vivo",
+            text=_("Requiere sesiones en vivo"),
             is_correct=False,
             creado_por=ADMIN_USER_WITH_FALLBACK,
         ),

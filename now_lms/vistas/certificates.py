@@ -265,6 +265,7 @@ def certificacion(ulid: str) -> str | Response:
         "certificado": certificado_obj,
         "url_for": url_for,
         "content_type": content_type,
+        "_": _,
     }
 
     if content_type == "course":
@@ -312,6 +313,7 @@ def certificate_serve_pdf(ulid: str) -> Response:
         "certificado": certificado_obj,
         "url_for": url_for,
         "content_type": content_type,
+        "_": _,
     }
 
     if content_type == "course":
@@ -656,6 +658,7 @@ def certificacion_programa(ulid: str) -> str:
         "id": ulid,  # Keep backward compatibility for templates using id
         "url_for": url_for,
         "database": db_ctx,  # For accessing Curso model in template
+        "_": _,
     }
 
     return template.render(**context)
@@ -716,6 +719,7 @@ def certificate_programa_serve_pdf(ulid: str) -> Any:
         "programa": programa,
         "url_for": url_for,
         "database": db_ctx,  # For accessing Curso model in template
+        "_": _,
     }
 
     return render_pdf(
