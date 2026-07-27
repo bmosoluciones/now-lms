@@ -53,7 +53,7 @@ def list_public() -> str:
         error_out=False,
     )
 
-    return render_template("masterclass/list_public.html", master_classes=master_classes, title="Clases Magistrales")
+    return render_template("masterclass/list_public.html", master_classes=master_classes, title=_("Clases Magistrales"))
 
 
 @masterclass.route("/<slug>", methods=["GET"])
@@ -118,7 +118,10 @@ def enroll(slug: str) -> str | Response:
         return redirect(url_for("masterclass.detail_public", slug=slug))
 
     return render_template(
-        "masterclass/enroll.html", master_class=master_class, form=form, title=f"Inscribirse en {master_class.title}"
+        "masterclass/enroll.html",
+        master_class=master_class,
+        form=form,
+        title=_("Inscribirse en %(title)s", title=master_class.title),
     )
 
 
@@ -144,7 +147,9 @@ def instructor_list() -> str:
         error_out=False,
     )
 
-    return render_template("masterclass/instructor_list.html", master_classes=master_classes, title="Mis Clases Magistrales")
+    return render_template(
+        "masterclass/instructor_list.html", master_classes=master_classes, title=_("Mis Clases Magistrales")
+    )
 
 
 @masterclass.route("/instructor/create", methods=["GET", "POST"])
@@ -296,7 +301,7 @@ def instructor_students(master_class_id: int) -> str:
         "masterclass/instructor_students.html",
         master_class=master_class,
         enrollments=enrollments,
-        title=f"Estudiantes - {master_class.title}",
+        title=_("Estudiantes - %(title)s", title=master_class.title),
     )
 
 
@@ -323,7 +328,7 @@ def my_enrollments() -> str:
         error_out=False,
     )
 
-    return render_template("masterclass/my_enrollments.html", enrollments=enrollments, title="Mis Clases Magistrales")
+    return render_template("masterclass/my_enrollments.html", enrollments=enrollments, title=_("Mis Clases Magistrales"))
 
 
 # ---------------------------------------------------------------------------------------
@@ -350,5 +355,5 @@ def admin_list() -> str:
     )
 
     return render_template(
-        "masterclass/admin_list.html", master_classes=master_classes, title="Administrar Clases Magistrales"
+        "masterclass/admin_list.html", master_classes=master_classes, title=_("Administrar Clases Magistrales")
     )

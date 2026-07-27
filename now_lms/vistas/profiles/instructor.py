@@ -487,13 +487,13 @@ def new_question(evaluation_id: str) -> str | Response:
                 # Create True/False options for boolean questions
                 true_option = QuestionOption(
                     question_id=question.id,
-                    text="Verdadero",
+                    text=_("Verdadero"),
                     is_correct=False,  # Default to false, user needs to set correct answer
                     creado_por=current_user.usuario,
                 )
                 false_option = QuestionOption(
                     question_id=question.id,
-                    text="Falso",
+                    text=_("Falso"),
                     is_correct=False,
                     creado_por=current_user.usuario,
                 )
