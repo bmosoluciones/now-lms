@@ -415,12 +415,13 @@ def _save_payment_enrollment(pago: Any, course_code: str) -> None:
 
 def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
     """Increment coupon usage after a successful payment."""
-    if not pago.descripcion or "Cupón aplicado:" not in pago.descripcion:
+    coupon_prefix = _("Cupón aplicado: ")
+    if not pago.descripcion or coupon_prefix not in pago.descripcion:
         return
     try:
         from now_lms.db import Coupon
 
-        coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
+        coupon_code = pago.descripcion.split(coupon_prefix)[1].split(" ")[0]
         coupon = (
             database.session.execute(
                 database.select(Coupon).filter_by(course_id=course_code, code=coupon_code).with_for_update()

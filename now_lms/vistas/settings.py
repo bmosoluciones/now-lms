@@ -406,7 +406,7 @@ def mail_check() -> str | Response:
                 background=False,
                 no_config=True,
                 _log="Correo de prueba enviado desde NOW LMS",
-                _flush="Correo de prueba enviado.",
+                _flush=_("Correo de prueba enviado."),
             )
             config.email_verificado = True
             database.session.commit()
@@ -638,7 +638,7 @@ def _validate_paypal_enabled(form: PayaplForm, config: PaypalConfig) -> bool:
     if validation["valid"]:
         return True
 
-    flash(_("Error en la configuración de PayPal: %(message)s", message=validation['message']), "error")
+    flash(_("Error en la configuración de PayPal: %(message)s", message=validation["message"]), "error")
     return False
 
 

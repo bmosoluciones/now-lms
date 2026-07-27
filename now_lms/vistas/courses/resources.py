@@ -1792,11 +1792,11 @@ def _meet_calendar_details(recurso: Any, course_obj: Any):
         return None
     start = datetime.combine(recurso.fecha, recurso.hora_inicio)
     end = datetime.combine(recurso.fecha, recurso.hora_fin) if recurso.hora_fin else start + timedelta(hours=1)
-    description_parts = [f"Curso: {course_obj.nombre}"]
+    description_parts = [_("Curso: %(name)s", name=course_obj.nombre)]
     if recurso.descripcion:
         description_parts.extend(["", recurso.descripcion])
     if recurso.url:
-        description_parts.extend(["", f"Enlace: {recurso.url}"])
+        description_parts.extend(["", _("Enlace: %(url)s", url=recurso.url)])
     return start.strftime(ICS_DATETIME_FORMAT), end.strftime(ICS_DATETIME_FORMAT), "\n".join(description_parts)
 
 
