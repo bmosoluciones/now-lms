@@ -26,6 +26,7 @@ from now_lms.config import DESARROLLO
 from now_lms.db import database as db
 from now_lms.db import eliminar_base_de_datos_segura
 from now_lms.db.info import config_info, course_info
+from now_lms.i18n import _
 from now_lms.logs import log
 from now_lms.version import CODE_NAME, VERSION
 
@@ -39,7 +40,7 @@ NOT_CONFIGURED_LABEL = "Not configured"
 # Interfaz de linea de comandos.
 # ---------------------------------------------------------------------------------------
 @click.group(
-    cls=FlaskGroup, create_app=lambda: lms_app, help="Interfaz de linea de comandos para la administración de NOW LMS."
+    cls=FlaskGroup, create_app=lambda: lms_app, help=_("Interfaz de linea de comandos para la administración de NOW LMS.")
 )
 def command() -> None:
     """Linea de comandos para administración de la aplicacion."""

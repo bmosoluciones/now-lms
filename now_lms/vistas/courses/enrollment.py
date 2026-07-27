@@ -174,8 +174,10 @@ def _check_unverified_email_restriction(course_obj: Curso) -> bool:
     """
     if course_obj.pagado and usuario_requiere_verificacion_email():
         flash(
-            _("Debe verificar su correo electrónico para inscribirse en cursos de pago o usar cupones. "
-            "Los cursos gratuitos están disponibles sin verificación."),
+            _(
+                "Debe verificar su correo electrónico para inscribirse en cursos de pago o usar cupones. "
+                "Los cursos gratuitos están disponibles sin verificación."
+            ),
             "warning",
         )
         return True

@@ -43,9 +43,9 @@ def is_testing_mode() -> bool:
 # ---------------------------------------------------------------------------------------
 # Translation functions
 # ---------------------------------------------------------------------------------------
-def _(text: str) -> str:
+def _(text: str, **kwargs: object) -> str:
     """Mark text for translation."""
-    return gettext(text)
+    return gettext(text, **kwargs)
 
 
 def _n(singular: str, plural: str, n: int) -> str:
