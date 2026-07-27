@@ -170,3 +170,11 @@ def test_front_door_uses_the_composition_reset_and_canonical_legal_footer() -> N
     for label, url in legal_links.items():
         assert label in template
         assert url in template
+
+    # The Anthropic Claude Partner credential embeds as Credly's plain https iframe,
+    # never their embed.js: that script loads from cdn.credly.com, which breaks the
+    # theme's no-CDN-script rule and is refused by upstream v2.0.0's CSP script-src.
+    # The iframe passes both (frame-src 'self' https:) and renders identically.
+    assert "www.credly.com/embedded_badge/ddf22fb4-0aa6-46b3-a93b-0b45b509e471" in template
+    assert "cdn.credly.com" not in template
+    assert "embed.js" not in template
