@@ -40,8 +40,9 @@ get_footer_enlaces() %}
                 {% else %}
                 <ul class="list-unstyled">
                     <li>
-                        <a href="{{ url_for('static_pages.contact') }}" class="text-white-50 text-decoration-none"
-                            >{{ _("Contacto") }}</a
+                        {# /contact 404s while disabled; the always-alive door is the intake. #}
+                        <a href="{{ url_for('request_access.request_access') }}" class="text-white-50 text-decoration-none"
+                            >{{ _("Request access") }}</a
                         >
                     </li>
                 </ul>

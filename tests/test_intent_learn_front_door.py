@@ -15,6 +15,7 @@ CSS_PATH = Path("now_lms/static/themes/intent_learn/front-door.css")
 HEADER_PATH = Path("now_lms/templates/themes/intent_learn/header.j2")
 BASE_PATH = Path("now_lms/templates/themes/intent_learn/base.j2")
 JS_PATH = Path("now_lms/templates/themes/intent_learn/js.j2")
+REQUEST_ACCESS_PATH = Path("now_lms/templates/themes/intent_learn/pages/request_access.html")
 
 
 def _template() -> str:
@@ -48,29 +49,25 @@ def test_front_door_renders_through_the_flask_route(client, db_session) -> None:
     # from current_locale() rather than hardcoding "en" -- which never held on the real route.
     assert re.search(rb'<html lang="[a-z]{2}(-[A-Za-z]{2,8})?">', response.data)
     assert b'class="isl-hero-copy"' in response.data
-    assert b"mailto:" in response.data
 
-    # RFC 6068 §2: the addr-spec in a mailto: URI carries a literal "@". Percent-encoding it
-    # produced "hello%40intentsolutions.io", which mail clients treat as a local-part-only
-    # address and refuse to send to. The query string after "?" is a separate matter -- see
-    # test_front_door_encodes_the_mailto_subject_but_not_the_address.
+    # The access CTA lands on the stored intake, not a raw mailto. The mailto lives
+    # on /request-access as the secondary "prefer email?" path -- its RFC 6068
+    # guards moved to test_request_access_page_keeps_the_rfc6068_mailto_split and
+    # tests/test_request_access.py.
     body = response.data.decode("utf-8")
-    hrefs = re.findall(r'href="(mailto:[^"]*)"', body)
-    assert hrefs, "the access-request CTA should render at least one mailto: link"
-    for href in hrefs:
-        address = href[len("mailto:") :].split("?", 1)[0]
-        assert "@" in address, f"mailto: address lost its literal @: {href}"
-        assert "%40" not in address, f"mailto: address percent-encoded its @: {href}"
+    assert 'href="/request-access"' in body, "the access-request CTA should land on the intake"
 
 
-def test_front_door_encodes_the_mailto_subject_but_not_the_address() -> None:
+def test_request_access_page_keeps_the_rfc6068_mailto_split() -> None:
     """Keep the RFC 6068 split: literal @ in the address, percent-encoded subject after ?.
 
     Runs without the full app so the guard still fires wherever the render-path test skips.
     Applying ``| urlencode`` to the address turned it into ``hello%40intentsolutions.io``,
     which shipped to production; applying it to the subject is correct and must stay.
+    The mailto assembly moved from home.j2 to the request-access page when the
+    front-door CTA became the stored intake.
     """
-    template = _template()
+    template = REQUEST_ACCESS_PATH.read_text(encoding="utf-8")
     setup = "\n".join(line for line in template.splitlines() if "{% set access_" in line)
     assert "access_email" in setup, "the mailto: assembly moved -- update this test"
 
@@ -133,12 +130,15 @@ def test_front_door_carries_mobile_overflow_and_accessibility_guards() -> None:
     assert "prefers-reduced-motion: reduce" in css
     assert ".isl-btn-sm { min-height: 44px" in css
     assert '<html lang="{{ current_locale() }}">' in template
-    assert "site_config.contact_email" in template
-    assert "_('Intent Solutions Practice — Access Request') | urlencode" in template
-    # The subject is encoded; the address deliberately is not (RFC 6068 §2).
-    assert "contact_email or 'hello@intentsolutions.io') | urlencode" not in template
     assert 'loading="lazy"' in template
     assert "isl-team-initials" in template
+
+    # The mailto assembly lives on the request-access page now; same guards there.
+    ra_template = REQUEST_ACCESS_PATH.read_text(encoding="utf-8")
+    assert "site_config.contact_email" in ra_template
+    assert "_('Intent Solutions Practice — Access Request') | urlencode" in ra_template
+    # The subject is encoded; the address deliberately is not (RFC 6068 §2).
+    assert "contact_email or 'hello@intentsolutions.io') | urlencode" not in ra_template
 
 
 def test_front_door_uses_the_composition_reset_and_canonical_legal_footer() -> None:

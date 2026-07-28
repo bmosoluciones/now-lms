@@ -257,10 +257,11 @@ def test_e2e_contact_disabled_configuration(app, db_session):
     # 3) Cliente público
     client = app.test_client()
 
-    # 4) El formulario de contacto sigue siendo accesible directamente en /contact
-    # Solo el enlace en la navbar no se muestra
+    # 4) Con la opción deshabilitada el formulario NO debe servirse: la ruta
+    # honra enable_contact y responde 404 (antes servía un formulario zombi
+    # cuyos mensajes nadie leía).
     resp_contact = client.get("/contact")
-    assert resp_contact.status_code == 200
+    assert resp_contact.status_code == 404
 
     # 5) Verificar que el enlace NO está en la página principal
     resp_home = client.get("/")
