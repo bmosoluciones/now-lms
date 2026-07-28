@@ -6,6 +6,14 @@ row graph (course -> section -> text lesson -> evaluation -> questions ->
 options), map ``answerIndex`` to the correct option's ``is_correct``, preserve
 the ``source`` attribution in the explanation, and be idempotent (a second run
 for an existing course code is a no-op).
+
+**These tests need the curriculum, which is not in this repository.** Teaching
+content lives in the private ``intent-solutions-io/intent-curriculum`` repo (see
+``scripts/seed_cca_courses.py``), so every test that reads a bank or a lesson is
+skipped unless ``CCA_CONTENT_DIR`` points at a checkout of it. Public CI has no
+access to that content and therefore skips this module — deliberately: coupling
+the public fork's test suite to private content would either leak the content or
+permanently red the build.
 """
 
 import importlib.util
@@ -28,6 +36,16 @@ _SEED_PATH = pathlib.Path(__file__).resolve().parent.parent / "scripts" / "seed_
 _spec = importlib.util.spec_from_file_location("seed_cca_courses", _SEED_PATH)
 seed = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(seed)
+
+# The whole module is content-dependent: without a curriculum checkout there is
+# nothing to shape, so skip rather than fail.
+pytestmark = pytest.mark.skipif(
+    not (seed.BANKS_DIR.is_dir() and seed.LESSONS_DIR.is_dir()),
+    reason=(
+        "curriculum content not present; set CCA_CONTENT_DIR to a checkout of "
+        "the private intent-curriculum repo to run these"
+    ),
+)
 
 MODELS = {
     "Curso": Curso,
@@ -176,7 +194,10 @@ def test_create_course_builds_full_graph(cca_db, sample_questions):
 
     curso = database.session.execute(database.select(Curso).filter_by(codigo="CCA-T1")).scalar_one_or_none()
     assert curso is not None
-    assert curso.estado == "open" and curso.publico is True and curso.modalidad == "self_paced"
+    # publico is False by design since the 2026-07-27 gating: the public catalog
+    # is a doctrine teaser and members reach courses through enrollment, so a
+    # reseed must never resurrect a publicly-listed course.
+    assert curso.estado == "open" and curso.publico is False and curso.modalidad == "self_paced"
 
     secs = database.session.execute(database.select(CursoSeccion).filter_by(curso="CCA-T1")).scalars().all()
     assert len(secs) == 1 and secs[0].estado is True
