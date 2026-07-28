@@ -86,12 +86,25 @@ noted — when upstream accepts it, we drop the fork-local copy and let `main` c
 | `intent_learn` theme (home, course-list, **course-detail**, auth pages — Charcoal-Slate branding) | Native theme layer (`now_lms/templates/themes/intent_learn/`), **no core edit** | Permitted permanently — branding is data, not a core patch. |
 | English internationalization: `_()`/`_l()` wrapping of ~62 templates + 83 WTForms labels + ~190 view messages, and the completed `en` catalog | **Core source** (the one intentional core patch) | Offered upstream via **#181** (Crowdin + wrapping PR-if-wanted). Retire from the fork once upstream accepts. |
 | Healthcheck fix — send `X-Forwarded-Proto: https` so `NOW_LMS_FORCE_HTTPS` doesn't 301-hang the probe | Deploy manifest (`docker-compose.yml`) | Fork-local deploy wiring; not core. Stays. |
+| `/request-access` intake — new blueprint (`now_lms/vistas/request_access.py`) storing to the native `contact_messages` table, plus themed page (`themes/intent_learn/pages/request_access.html`) | Fork blueprint + theme layer; zero imports from `static_pages.py` so it survives the v2.0.0 split | Positioning/page is fork-permanent (like the theme). The ~40-line Slack ping inside it retires when a generic `CONTACT_WEBHOOK_URL` feature is accepted upstream. |
+| Practice-tracks teaser replacing the anonymous course catalog (`overrides/course_list.j2`) | Native theme layer, no core edit | Permitted permanently — branding is data. |
+| `contact` route honors `enable_contact` (404 while disabled) | Core edit in `vistas/static_pages.py` (file dies at v2.0.0 — upstream split it into `contact.py`, which carries the same bug) | Offered upstream (U1 in `000-docs/002`); at the sync, re-apply against upstream `contact.py` unless merged. |
+| Anonymous GET on a gated course 302s to `/request-access` instead of a bare 403 (`vistas/courses/base.py`) | Core edit, 4 lines | Fork conversion path; re-apply at sync. Not offered upstream (product decision, not a bug). |
+| Admin contact list accepts a `?q=` subject filter (`vistas/static_pages.py`) | Core edit, 3 lines | Candidate for upstream once the contact-webhook PR lands; until then re-apply at sync. |
 
 ## Fork changelog
 
 Fork-relevant, most recent first. (Upstream feature history lives in the root `CHANGELOG.md`; this
 section records only what is Intent-Solutions-fork-specific.)
 
+- **2026-07-27** — Gated the practice surfaces and opened a real waiting list. New `/request-access`
+  intake (vetting-grade work-sample form → native `contact_messages` rows with an `[ACCESS] `
+  subject discriminator, best-effort Slack ping, CSRF + honeypot + timed-token + rate-limit +
+  length-cap defenses); anonymous `/course/explore` now serves a doctrine-voice practice-tracks
+  teaser (zero course/vendor names); landing CTAs moved from raw `mailto:` to the intake (mailto
+  stays as the secondary path on the intake page); `/contact` honors `enable_contact` (404 while
+  disabled); anonymous gated-course links 302 to the intake; deploy smoke extended to enforce all
+  of it. Full plan + security audit: `000-docs/002-OD-PLAN-waiting-list-and-gated-practice-surfaces.md`.
 - **2026-07-23** — Reset the `intent_learn` front-door composition after real iPad review: replaced
   the oversized black/orange poster treatment with a bright working-studio system, restrained the
   type scale, removed decorative numbering/card shells, restored continuous reading flow, and
