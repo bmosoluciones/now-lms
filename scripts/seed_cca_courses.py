@@ -49,8 +49,12 @@ from os import environ
 from pathlib import Path
 
 # The curriculum lives in the private intent-curriculum repo, not here, so the
-# content root is supplied at run time. Falls back to the historical in-repo
-# path so a checkout that still has content/cca (e.g. an old tag) keeps working;
+# content root is supplied at run time. The fallback to the historical in-repo
+# path is kept ONLY so an old tag (or a local gitignored checkout at
+# content/cca) still seeds — it must never again resolve to tracked files:
+# they were removed 2026-07-28 and content/cca is gitignored, because this fork
+# is public and answer keys beside the courses that grade them is an
+# assessment-integrity failure (ADR 000-docs/008-AT-ADEC).
 # _require_content_dir() below turns a missing directory into a clear message
 # instead of a confusing FileNotFoundError deep in the import.
 REPO_ROOT = Path(__file__).resolve().parent.parent

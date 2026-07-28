@@ -298,3 +298,9 @@ notes.txtcookies.txt
 .beads/
 .dolt/
 .beads-credential-key
+# Teaching content lives in the private intent-solutions-io/intent-curriculum
+# repo and must never be committed here (ADR 000-docs/008-AT-ADEC): this fork is
+# public, and answer keys beside the courses that grade them is an
+# assessment-integrity failure. A local checkout for seeding is fine — that is
+# what CCA_CONTENT_DIR is for; this line stops it becoming a commit.
+content/cca/
