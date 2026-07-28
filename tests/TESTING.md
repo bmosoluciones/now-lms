@@ -46,7 +46,9 @@ engineering standard — never offered upstream (see `FORK.md`).
   git-ignored): run the installer once after `bd init`; `bd hooks list` must
   still report 5 beads hooks.
 - L2: ruff + flake8 + `pylint --fail-under=9.5` blocking in
-  `deploy-line-ci.yml`; mypy in `dev/test.sh` (local only).
+  `deploy-line-ci.yml`; mypy advisory in the same workflow (3 pre-existing
+  `coupons.py` errors — flips blocking when fixed); CodeQL (python) + gitleaks
+  full-history secret scan in `security-scans.yml` (2026-07-28).
 - L3: pytest, 51 test files; coverage measured via `--cov=now_lms` (CI +
   `dev/test.sh`), not gated.
 - L4: PostgreSQL-backed pytest in CI, advisory (`continue-on-error`) until

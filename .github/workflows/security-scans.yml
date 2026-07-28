@@ -1,0 +1,71 @@
+# Security scanning for the fork's deploy line.
+#
+# WHY THIS EXISTS
+# The deploy line had no static security scanning at all: upstream ships none,
+# and the fork's gate (deploy-line-ci.yml) is lint + tests only. TEST_AUDIT.md
+# (2026-07-28) logged this as P2; this workflow closes it. Fork-local — like
+# deploy-line-ci.yml it exists because upstream's workflows never fire on
+# deploy/now-lms-fixed, and it is NOT offered upstream (their CI posture is
+# their call).
+#
+# Two jobs:
+#   - CodeQL (python): GitHub's semantic analysis, results land in the repo's
+#     Security tab and as PR check annotations.
+#   - gitleaks: secret scan over the full git history via the MIT-licensed CLI
+#     run from its container image (the gitleaks GitHub App/Action requires an
+#     org license key; the CLI does not).
+name: Security scans
+
+on:
+    pull_request:
+        branches: [deploy/now-lms-fixed]
+    push:
+        branches: [deploy/now-lms-fixed]
+    schedule:
+        # Weekly sweep so a quiet repo still gets fresh CodeQL query packs.
+        - cron: "17 6 * * 1"
+
+permissions:
+    contents: read
+
+concurrency:
+    group: security-scans-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    codeql:
+        name: CodeQL (python)
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        permissions:
+            contents: read
+            security-events: write
+
+        steps:
+            - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.7
+
+            - name: Initialize CodeQL
+              uses: github/codeql-action/init@4187e74d05793876e9989daffde9c3e66b4acd07 # v3
+              with:
+                  languages: python
+
+            - name: Analyze
+              uses: github/codeql-action/analyze@4187e74d05793876e9989daffde9c3e66b4acd07 # v3
+              with:
+                  category: "/language:python"
+
+    gitleaks:
+        name: Secret scan (gitleaks)
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.7
+              with:
+                  # Full history: a secret committed and later deleted is still leaked.
+                  fetch-depth: 0
+
+            - name: Run gitleaks over the full history
+              run: |
+                  docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest \
+                      detect --source /repo --no-banner --redact -v
