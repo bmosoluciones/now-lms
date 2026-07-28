@@ -6,15 +6,22 @@ recursive scan of this tree, highest `NNN` + 1. Per §3.1 this tree stays
 **flat** — nesting into `NNN-CC-cluster-name/` folders applies only past ~50
 files with an 8+ doc cluster, and we are far under both thresholds.
 
+> **`NNN` is append-only from 2026-07-28 onward.** The 2026-07-28 backfill
+> renumbered the tree **once**, chronologically, because every file then in it
+> had been filed the same night — the numbers carried no historical meaning to
+> preserve, and the backfilled PRD + ADRs record decisions made *before* the
+> docs that already sat at low numbers. That was a one-time correction, not a
+> precedent: new documents take the next free number, never a backdated slot.
+
 ## Documents
 
 | File | What it is |
 |---|---|
-| [001-OD-CHNG-upstream-v2-sync-map.md](001-OD-CHNG-upstream-v2-sync-map.md) | Upstream v2.0.0 sync migration map: commit triage (MUST-SURVIVE set), corrections, DB migration analysis, sequencing, open items. Read before any upstream sync. |
-| [002-PP-PLAN-waiting-list-gated-surfaces.md](002-PP-PLAN-waiting-list-gated-surfaces.md) | Waiting-list + gated practice surfaces execution plan (locked 2026-07-27): /request-access intake, practice-tracks teaser, contact fix, course gating, security ship-gate, upstream PR queue U1–U10, founder-locked copy and decisions. |
 | [003-DR-REFF-live-auth-flow.md](003-DR-REFF-live-auth-flow.md) | Verified login / roles / admin flow of the live deployment (verified 2026-07-21 against the running container). The getting-started lessons were written from it. |
 | [004-BL-POLI-cca-source-reuse.md](004-BL-POLI-cca-source-reuse.md) | CCA-F prep source map & reuse policy: license-tiered reuse rules (NC/unlicensed = link only), question banks are Intent Solutions IP, Rick Hightower reuse grant context. |
 | [005-BL-LICN-cca-attributions.md](005-BL-LICN-cca-attributions.md) | Attribution record for the CCA-F curriculum: MIT-licensed projects that informed structure, credited per license; lesson prose originally authored by Intent Solutions. |
+| [007-OD-CHNG-upstream-v2-sync-map.md](007-OD-CHNG-upstream-v2-sync-map.md) | Upstream v2.0.0 sync migration map (2026-07-26): commit triage (MUST-SURVIVE set), corrections, DB migration analysis, sequencing, open items. Read before any upstream sync. |
+| [011-PP-PLAN-waiting-list-gated-surfaces.md](011-PP-PLAN-waiting-list-gated-surfaces.md) | Waiting-list + gated practice surfaces execution plan (locked 2026-07-27): /request-access intake, practice-tracks teaser, contact fix, course gating, security ship-gate, upstream PR queue U1–U10, founder-locked copy and decisions. |
 
 ## Renames & moves (references in old commit messages resolve here)
 
@@ -25,6 +32,8 @@ files with an 8+ doc cluster, and we are far under both thresholds.
 | `content/cca/AUTH-FLOW.md` | `003-DR-REFF-live-auth-flow.md` | 2026-07-27 — fork-local document filed; nothing in code consumed it. |
 | `content/cca/SOURCES.md` | `004-BL-POLI-cca-source-reuse.md` | 2026-07-27 — same pass. |
 | `content/cca/ATTRIBUTIONS.md` | `005-BL-LICN-cca-attributions.md` | 2026-07-27 — same pass; internal cross-reference updated. |
+| `001-OD-CHNG-upstream-v2-sync-map.md` | `007-OD-CHNG-upstream-v2-sync-map.md` | 2026-07-28 — one-time chronological backfill (see the append-only note above): the sync map is a 07-26 document and slots after the 07-21 block and the backfilled ADRs it postdates. `FORK.md` citations updated in the same commit. |
+| `002-PP-PLAN-waiting-list-gated-surfaces.md` | `011-PP-PLAN-waiting-list-gated-surfaces.md` | 2026-07-28 — same backfill: the newest document (07-27) takes the highest slot. `FORK.md` citations updated in the same commit. |
 
 ## md files that deliberately stay OUTSIDE this tree (the fork boundary)
 
