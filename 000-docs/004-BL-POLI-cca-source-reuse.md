@@ -24,8 +24,8 @@ into course lesson content or question banks.
 
 | Source | License | What we use | Attribution |
 |---|---|---|---|
-| [`hamzafarooq/claude-certified-architect`](https://github.com/hamzafarooq/claude-certified-architect) | **MIT** | Practice-exam structure, per-domain cheat sheets, sample question shapes — as *reference to inform* our own originally-authored prose | `ATTRIBUTIONS.md` |
-| [`timothywarner-org/claude-architect`](https://github.com/timothywarner-org/claude-architect) | **MIT** | Study-material structure, code-example patterns, per-domain scenarios — *to inform*, not copy verbatim | `ATTRIBUTIONS.md` |
+| [`hamzafarooq/claude-certified-architect`](https://github.com/hamzafarooq/claude-certified-architect) | **MIT** | Practice-exam structure, per-domain cheat sheets, sample question shapes — as *reference to inform* our own originally-authored prose | `000-docs/005-BL-LICN-cca-attributions.md` |
+| [`timothywarner-org/claude-architect`](https://github.com/timothywarner-org/claude-architect) | **MIT** | Study-material structure, code-example patterns, per-domain scenarios — *to inform*, not copy verbatim | `000-docs/005-BL-LICN-cca-attributions.md` |
 | **Intent Solutions question banks** — `content/cca/banks/*.json` (vendored from `learn-intent-solutions-hub/public/questions*.json`) | Intent Solutions IP | The **only** source of graded questions in every course | in-bank `source` field, preserved into each question's explanation |
 
 Even for MIT sources: lesson prose is **authored in our own words**, informed
