@@ -212,7 +212,7 @@ heads-up, then the PRs). Rules: one PR per fix, regression test each,
 - `scripts/deploy-smoke.sh` asserts `/request-access` 200, so a sync deploy physically
   cannot pass without the route.
 - Append the new fork commit hashes to migration map §2
-  (`000-docs/001-OD-PLAN-upstream-v2-sync-migration-map.md`).
+  (`000-docs/001-OD-CHNG-upstream-v2-sync-map.md`).
 
 ## Operational loop (G7)
 

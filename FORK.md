@@ -104,7 +104,7 @@ section records only what is Intent-Solutions-fork-specific.)
   teaser (zero course/vendor names); landing CTAs moved from raw `mailto:` to the intake (mailto
   stays as the secondary path on the intake page); `/contact` honors `enable_contact` (404 while
   disabled); anonymous gated-course links 302 to the intake; deploy smoke extended to enforce all
-  of it. Full plan + security audit: `000-docs/002-OD-PLAN-waiting-list-and-gated-practice-surfaces.md`.
+  of it. Full plan + security audit: `000-docs/002-PP-PLAN-waiting-list-gated-surfaces.md`.
 - **2026-07-23** — Reset the `intent_learn` front-door composition after real iPad review: replaced
   the oversized black/orange poster treatment with a bright working-studio system, restrained the
   type scale, removed decorative numbering/card shells, restored continuous reading flow, and
