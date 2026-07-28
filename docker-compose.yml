@@ -59,6 +59,11 @@ services:
       NOW_LMS_THEMES_DIR: /app/themes
       NOW_LMS_FORCE_HTTPS: "1"        # behind the Caddy TLS terminator
       WSGI_SERVER: waitress          # single-process — avoids multi-worker session loss (no Redis in v1)
+      FLASK_ENV: production          # flips SESSION_COOKIE_SECURE on (session_config.py keys off this)
+      # Optional: best-effort Slack ping for /request-access submissions. The
+      # :- default means a deploy never fails on a notification var; unset just
+      # logs a warning and the DB row remains the source of truth.
+      SLACK_WEBHOOK_LEADS_CONTACT: ${SLACK_WEBHOOK_LEADS_CONTACT:-}
     volumes:
       - nowlms-data:/app/data
       - nowlms-themes:/app/themes

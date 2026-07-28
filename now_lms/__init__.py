@@ -162,6 +162,7 @@ from now_lms.vistas.profiles.moderator import moderator_profile
 from now_lms.vistas.profiles.user import user_profile
 from now_lms.vistas.programs import program
 from now_lms.vistas.public_api import public_api
+from now_lms.vistas.request_access import request_access_bp
 from now_lms.vistas.resources import resource_d
 from now_lms.vistas.settings import setting
 from now_lms.vistas.custom_pages import custom_pages
@@ -256,6 +257,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(page_info)
         flask_app.register_blueprint(program)
         flask_app.register_blueprint(public_api)
+        flask_app.register_blueprint(request_access_bp)
         flask_app.register_blueprint(resource_d)
         flask_app.register_blueprint(setting)
         flask_app.register_blueprint(custom_pages)

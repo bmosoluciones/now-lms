@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="{{ current_locale() }}">
+    {% set current_theme = current_theme() %}
+    {% set site_config = config() %}
+    {% set S = url_for('static', filename='themes/intent_learn') %}
+    {% set access_contact = site_config.contact_email or 'hello@intentsolutions.io' %}
+    {% set access_subject = _('Intent Solutions Practice — Access Request') | urlencode %}
+    {% set access_email = 'mailto:' ~ access_contact ~ '?subject=' ~ access_subject %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ _('Request Access · Intent Solutions Learn') }}</title>
+        <link rel="stylesheet" href="{{ S }}/front-door.css" />
+    </head>
+
+    <body class="isl-root">
+        <header class="isl-header">
+            <div class="isl-wrap">
+                <a class="isl-brand" href="/" aria-label="{{ _('Intent Solutions Learn — home') }}">
+                    <img src="{{ S }}/logo-mark.png" alt="" width="30" height="30" />
+                    <span class="word">{{ _('Intent') }}<span class="s">{{ _('Solutions') }}</span></span>
+                </a>
+                <nav class="isl-nav" aria-label="{{ _('Primary navigation') }}">
+                    <a class="link" href="/#practice">{{ _('The practice') }}</a>
+                    <a class="link" href="/#method">{{ _('House method') }}</a>
+                    <a class="link" href="/#paths">{{ _('Proof paths') }}</a>
+                    <span class="isl-nav-actions">
+                        {% if current_user.is_authenticated %}
+                        <a class="isl-btn isl-btn-primary isl-btn-sm" href="{{ url_for('home.panel') }}">{{ _('Dashboard') }}</a>
+                        {% else %}
+                        <a class="isl-btn isl-btn-secondary isl-btn-sm" href="{{ url_for('user.inicio_sesion') }}">{{ _('Sign in') }}</a>
+                        {% endif %}
+                    </span>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <section class="isl-section isl-ra" aria-labelledby="ra-title">
+                <div class="isl-wrap isl-ra-grid">
+                    <div class="isl-ra-copy">
+                        <p class="isl-kicker">{{ _('The public door') }}</p>
+                        <h1 id="ra-title">{{ _('Request') }} <span class="isl-hl">{{ _('Access') }}</span></h1>
+                        <p class="isl-ra-lede">
+                            {{ _('Show us one system you’ve shipped and where you want sharper production judgment. A person reads every request. When the room has space, we reach out — until then your request holds its place on the waiting list.') }}
+                        </p>
+                        <p class="isl-ra-wave">
+                            {{ _('Admissions run in small waves. If the room is full, your request joins the waiting list and holds its place — we’ll reach out when a seat opens.') }}
+                        </p>
+                        <p class="isl-ra-alt">
+                            {{ _('Prefer email?') }} <a href="{{ access_email }}">{{ access_contact }}</a>
+                        </p>
+                    </div>
+
+                    <div class="isl-ra-panel">
+                        {% if sent %}
+                        <div class="isl-ra-confirm" role="status">
+                            <p class="isl-kicker">{{ _('Request received') }}</p>
+                            <h2>{{ _('Got it — you’re on the list.') }}</h2>
+                            <p>
+                                {{ _('A person reads every request; no timelines promised, because fit beats speed.') }}
+                                {{ _('If email suits you better:') }} <a href="{{ access_email }}">{{ access_contact }}</a>.
+                            </p>
+                            <a class="isl-btn isl-btn-secondary" href="/">{{ _('Back to the front door') }}</a>
+                        </div>
+                        {% else %}
+                        <form class="isl-ra-form" method="post" action="{{ url_for('request_access.request_access') }}" novalidate>
+                            {{ form.csrf_token }}
+                            {{ form.ts }}
+
+                            {% if form_error %}
+                            <p class="isl-ra-error" role="alert">{{ form_error }}</p>
+                            {% endif %}
+
+                            <div class="isl-ra-field">
+                                <label for="ra-name">{{ _('Your name') }}</label>
+                                {{ form.name(id='ra-name', placeholder=_('Full name'), required=True, autocomplete='name') }}
+                                {% for error in form.name.errors %}<p class="isl-ra-error">{{ error }}</p>{% endfor %}
+                            </div>
+
+                            <div class="isl-ra-field">
+                                <label for="ra-email">{{ _('Email') }}</label>
+                                {{ form.email(id='ra-email', type='email', placeholder='you@yourdomain.com', required=True, autocomplete='email') }}
+                                {% for error in form.email.errors %}<p class="isl-ra-error">{{ error }}</p>{% endfor %}
+                            </div>
+
+                            <div class="isl-ra-field">
+                                <label for="ra-links">{{ _('Links to your work') }}</label>
+                                {{ form.links(id='ra-links', rows=3, placeholder=_('GitHub, portfolio, a product you shipped, writing — one per line'), required=True) }}
+                                {% for error in form.links.errors %}<p class="isl-ra-error">{{ error }}</p>{% endfor %}
+                            </div>
+
+                            <div class="isl-ra-field">
+                                <label for="ra-building">{{ _('What are you building? Where do you want sharper production judgment?') }}</label>
+                                {{ form.building(id='ra-building', rows=5, placeholder=_('Describe the work — be specific.'), required=True) }}
+                                {% for error in form.building.errors %}<p class="isl-ra-error">{{ error }}</p>{% endfor %}
+                            </div>
+
+                            <div class="isl-ra-field">
+                                <label for="ra-role">{{ _('Current role or company') }} <span class="opt">{{ _('(optional)') }}</span></label>
+                                {{ form.role_context(id='ra-role', placeholder=_('e.g. Staff engineer, founder, consultant'), autocomplete='organization-title') }}
+                            </div>
+
+                            <div class="isl-ra-field">
+                                <label for="ra-source">{{ _('How did you find us?') }} <span class="opt">{{ _('(optional)') }}</span></label>
+                                {{ form.source(id='ra-source', placeholder=_('Referral, search, a post, a person')) }}
+                            </div>
+
+                            <div class="isl-ra-hp" aria-hidden="true">
+                                <label for="ra-website">Website</label>
+                                {{ form.website(id='ra-website', tabindex='-1', autocomplete='off') }}
+                            </div>
+
+                            <button class="isl-btn isl-btn-primary" type="submit">{{ _('Request access') }}</button>
+                            <p class="isl-ra-privacy">
+                                {{ _('We store what you submit and use it only to review your request.') }}
+                                <a href="https://intentsolutions.io/privacy">{{ _('Privacy Policy') }}</a>
+                            </p>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="isl-footer">
+            <div class="isl-wrap">
+                <div class="isl-footer-main">
+                    <div>
+                        <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> {{ _('Intent Solutions Learn') }}</span>
+                        <p class="isl-footer-note">{{ _('A model-agnostic implementation practice built around judgment, evidence, and production standards.') }}</p>
+                    </div>
+                    <nav class="isl-legal" aria-label="{{ _('Legal') }}">
+                        <a href="https://intentsolutions.io/terms">{{ _('Terms of Service') }}</a>
+                        <a href="https://intentsolutions.io/privacy">{{ _('Privacy Policy') }}</a>
+                        <a href="https://intentsolutions.io/acceptable-use">{{ _('Acceptable Use') }}</a>
+                    </nav>
+                </div>
+                <div class="isl-footer-bottom">
+                    <span>{{ _('© Intent Solutions. All rights reserved.') }}</span>
+                    <a href="https://intentsolutions.io">{{ _('intentsolutions.io') }}</a>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
