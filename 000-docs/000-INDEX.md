@@ -77,7 +77,12 @@ do not "fix" them into 000-docs:
   it never returns here. `now_lms/templates/themes/intent_learn/README.md`
   documents the theme package in place.
 - **Tool artifacts** — `.beads/README.md`, `.pytest_cache/README.md`
-  (generated; the latter is gitignored).
+  (generated; the latter is gitignored), `.audit-harness/*.md` (vendored
+  harness).
+- **Testing traceability** — `tests/{TESTING,RTM,PERSONAS,JOURNEYS}.md` and
+  the transient `TEST_AUDIT.md` are owned by the testing SOP
+  (`/audit-tests` / `/implement-tests`) and live beside the tests they
+  govern; filing them here would break the tooling's contract.
 
 ## Quick reference
 
