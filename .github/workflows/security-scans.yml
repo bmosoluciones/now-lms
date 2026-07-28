@@ -65,7 +65,11 @@ jobs:
                   # Full history: a secret committed and later deleted is still leaked.
                   fetch-depth: 0
 
+            # Digest-pinned, not :latest — a scanner that silently changes under
+            # you can start passing for the wrong reason, and an image tag is
+            # mutable by anyone who can push it. Digest is v8.30.1.
             - name: Run gitleaks over the full history
               run: |
-                  docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest \
+                  docker run --rm -v "$PWD:/repo" \
+                      zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f \
                       detect --source /repo --no-banner --redact -v
