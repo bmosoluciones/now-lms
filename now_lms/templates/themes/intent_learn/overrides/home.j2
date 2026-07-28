@@ -4,9 +4,9 @@
     {% set current_theme = current_theme() %}
     {% set site_config = config() %}
     {% set S = url_for('static', filename='themes/intent_learn') %}
-    {% set access_contact = site_config.contact_email or 'hello@intentsolutions.io' %}
-    {% set access_subject = _('Intent Solutions Practice — Access Request') | urlencode %}
-    {% set access_email = 'mailto:' ~ access_contact ~ '?subject=' ~ access_subject %}
+    {# The access CTA now lands on the stored intake at /request-access; the
+       mailto path lives there as the secondary "prefer email?" channel. #}
+    {% set access_url = url_for('request_access.request_access') %}
     {% set team = [
         {'photo': 'jeremy-longshore.jpeg', 'name': _('Jeremy Longshore'), 'role': _('Founder & CEO')},
         {'photo': 'opeyemi-ariyo.jpeg',    'name': _('Opeyemi Ariyo'),    'role': _('Co-Founder & Chief Technical Officer')},
@@ -39,7 +39,7 @@
                         <a class="isl-btn isl-btn-primary isl-btn-sm" href="{{ url_for('home.panel') }}">{{ _('Dashboard') }}</a>
                         {% else %}
                         <a class="isl-btn isl-btn-secondary isl-btn-sm" href="{{ url_for('user.inicio_sesion') }}">{{ _('Sign in') }}</a>
-                        <a class="isl-btn isl-btn-primary isl-btn-sm" href="{{ access_email }}">{{ _('Request access') }}</a>
+                        <a class="isl-btn isl-btn-primary isl-btn-sm" href="{{ access_url }}">{{ _('Request access') }}</a>
                         {% endif %}
                     </span>
                 </nav>
@@ -60,7 +60,7 @@
                             {% if current_user.is_authenticated %}
                             <a class="isl-btn isl-btn-primary" href="{{ url_for('home.panel') }}">{{ _('Enter your practice') }} <span aria-hidden="true">→</span></a>
                             {% else %}
-                            <a class="isl-btn isl-btn-primary" href="{{ access_email }}">{{ _('Request access') }} <span aria-hidden="true">→</span></a>
+                            <a class="isl-btn isl-btn-primary" href="{{ access_url }}">{{ _('Request access') }} <span aria-hidden="true">→</span></a>
                             {% endif %}
                             <a class="isl-btn isl-btn-secondary" href="#practice">{{ _('See how the practice works') }}</a>
                         </div>
@@ -224,7 +224,7 @@
                         {% if current_user.is_authenticated %}
                         <a class="isl-btn isl-btn-primary" href="{{ url_for('home.panel') }}">{{ _('Go to your dashboard') }} <span aria-hidden="true">→</span></a>
                         {% else %}
-                        <a class="isl-btn isl-btn-primary" href="{{ access_email }}">{{ _('Request access') }} <span aria-hidden="true">→</span></a>
+                        <a class="isl-btn isl-btn-primary" href="{{ access_url }}">{{ _('Request access') }} <span aria-hidden="true">→</span></a>
                         <a class="isl-btn isl-btn-secondary" href="{{ url_for('user.inicio_sesion') }}">{{ _('Member sign in') }}</a>
                         {% endif %}
                     </div>

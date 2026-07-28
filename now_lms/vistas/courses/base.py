@@ -273,7 +273,7 @@ course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 @course.route("/course/<course_code>/view", methods=["GET"])
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
-def curso(course_code: str) -> str:
+def curso(course_code: str) -> str | Response:
     """Pagina principal del curso."""
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
     acceso, editable = _check_course_access(_curso, course_code)
@@ -303,6 +303,10 @@ def curso(course_code: str) -> str:
             markdown2html=markdown2html,
         )
 
+    if not current_user.is_authenticated:
+        # Courses are gated: an anonymous visitor holding a course link is the
+        # one most primed to convert, so land them on the intake, not a 403.
+        return redirect(url_for("request_access.request_access"))
     abort(403)
 
 
