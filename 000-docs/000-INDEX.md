@@ -17,6 +17,7 @@ files with an 8+ doc cluster, and we are far under both thresholds.
 
 | File | What it is |
 |---|---|
+| [001-PP-PROD-now-lms-fork-prd.md](001-PP-PROD-now-lms-fork-prd.md) | Baseline PRD (backfilled 2026-07-28): what Intent Solutions Learn is — vision, users, shipped scope, non-functional requirements, standing risks, release strategy. The document future work diffs against. |
 | [003-DR-REFF-live-auth-flow.md](003-DR-REFF-live-auth-flow.md) | Verified login / roles / admin flow of the live deployment (verified 2026-07-21 against the running container). The getting-started lessons were written from it. |
 | [004-BL-POLI-cca-source-reuse.md](004-BL-POLI-cca-source-reuse.md) | CCA-F prep source map & reuse policy: license-tiered reuse rules (NC/unlicensed = link only), question banks are Intent Solutions IP, Rick Hightower reuse grant context. |
 | [005-BL-LICN-cca-attributions.md](005-BL-LICN-cca-attributions.md) | Attribution record for the CCA-F curriculum: MIT-licensed projects that informed structure, credited per license; lesson prose originally authored by Intent Solutions. |
@@ -60,5 +61,6 @@ do not "fix" them into 000-docs:
 
 Category codes (CC) and document types (ABCD) come from the canonical standard —
 `~/.claude/skills/doc-filing/references/000-DR-STND-document-filing-system.md`.
-Used here: `PP-PLAN` (plans), `OD-CHNG` (ops change management), `DR-REFF`
-(reference docs), `BL-POLI` (policy), `BL-LICN` (licensing/attribution).
+Used here: `PP-PROD` (PRD), `PP-PLAN` (plans), `AT-ADEC` (architecture
+decision records), `OD-CHNG` (ops change management), `DR-REFF` (reference
+docs), `BL-POLI` (policy), `BL-LICN` (licensing/attribution).
