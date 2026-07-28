@@ -7,6 +7,27 @@ import pytest
 from flask import url_for
 
 
+@pytest.fixture(autouse=True)
+def _enable_contact(app):
+    """Fork-local: the fork's /contact honors enable_contact (404 while
+    disabled — offered upstream as U1). These tests exercise the form itself,
+    so enable the toggle for each test and restore the previous value after.
+    Re-evaluate when U1 lands upstream with its own tests.
+    """
+    from now_lms.db import Configuracion, database
+
+    with app.app_context():
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        previous = bool(config.enable_contact)
+        config.enable_contact = True
+        database.session.commit()
+    yield
+    with app.app_context():
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        config.enable_contact = previous
+        database.session.commit()
+
+
 @pytest.fixture
 def admin_user(app):
     """Create and return an admin user for testing."""

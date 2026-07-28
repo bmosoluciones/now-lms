@@ -164,9 +164,14 @@ def test_invalid_email_does_not_store(client, db_session, fast_ok):
     assert _stored_rows(db_session) == []
 
 
-def test_csrf_is_enforced_when_enabled(app, db_session, fast_ok):
+def test_csrf_is_enforced_when_enabled(app, db_session, fast_ok, monkeypatch):
     # TESTING config disables CSRF, which would make a naive test vacuous.
-    app.config["WTF_CSRF_ENABLED"] = True
+    # monkeypatch.setitem (not a bare assignment) so the flag RESTORES after
+    # this test: v2.0.0's conftest builds the function-scoped `app` on a
+    # session-scoped shared app, and a leaked WTF_CSRF_ENABLED=True made every
+    # later token-less POST in the process re-render as a 200 (found on the
+    # sync branch's first PG run).
+    monkeypatch.setitem(app.config, "WTF_CSRF_ENABLED", True)
     client = app.test_client()
 
     page = client.get("/request-access").data.decode("utf-8")

@@ -93,6 +93,25 @@ def _assert_response(route: str, role: str, allow_redirects: bool, response):
     assert "html" in content_type, f"{route} para {role} devolvió Content-Type {content_type}"
 
 
+@pytest.fixture(autouse=True)
+def _enable_contact(app):
+    """Fork-local: the fork's /contact honors enable_contact (404 while
+    disabled — offered upstream as U1). This walk visits /contact for every
+    role, so enable the toggle per test and restore it after."""
+    from now_lms.db import Configuracion, database
+
+    with app.app_context():
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        previous = bool(config.enable_contact)
+        config.enable_contact = True
+        database.session.commit()
+    yield
+    with app.app_context():
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        config.enable_contact = previous
+        database.session.commit()
+
+
 @pytest.mark.parametrize("role, credentials, allow_redirects", ROLE_MATRIX)
 def test_all_registered_routes_return_html(app, db_session, role, credentials, allow_redirects):
     # Seed the database once per test run with predictable users and content.

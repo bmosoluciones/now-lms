@@ -169,21 +169,25 @@ def cca_db():
         database.create_all()
         # Curso.plantilla_certificado defaults to 'default' and PostgreSQL
         # enforces the FK to certificado.code (SQLite silently tolerates the
-        # dangling reference) — seed the template the model implicitly needs.
-        # This was the documented pre-existing PG failure for this module
-        # (000-docs/007-OD-CHNG §7: "references a default certificate it never
-        # seeds").
-        database.session.add(
-            Certificado(
-                code="default",
-                titulo="Default template",
-                descripcion="Certificate template required by Curso's FK default.",
-                tipo="course",
-                habilitado=False,
-                publico=False,
+        # dangling reference) — ensure the template the model implicitly needs
+        # exists. Get-or-create, not insert: v2.0.0's initial data can seed a
+        # 'default' certificate itself, and a blind insert then violates
+        # ix_certificado_code (found on the sync branch's first PG run).
+        existing_default = database.session.execute(
+            database.select(Certificado).filter_by(code="default")
+        ).scalar_one_or_none()
+        if existing_default is None:
+            database.session.add(
+                Certificado(
+                    code="default",
+                    titulo="Default template",
+                    descripcion="Certificate template required by Curso's FK default.",
+                    tipo="course",
+                    habilitado=False,
+                    publico=False,
+                )
             )
-        )
-        database.session.commit()
+            database.session.commit()
         try:
             yield database.session
         finally:
