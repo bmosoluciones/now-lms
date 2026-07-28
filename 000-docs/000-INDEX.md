@@ -36,12 +36,14 @@ do not "fix" them into 000-docs:
   being discoverable at their conventional names/paths.
 - **Upstream-owned material** — everything under `docs/` (upstream's mkdocs
   site source), `replit.md`, `.github/copilot-instructions.md`,
-  `tests/README.md`, and the 9 upstream theme `README.md` files. Moving any of
+  `tests/README.md`, and the 8 upstream theme `README.md` files. Moving any of
   it is permanent sync-conflict surface against `bmosoluciones/now-lms`.
-- **Application data consumed by code** — `content/cca/lessons/**/*.md` is
-  read by `scripts/seed_cca_courses.py`; these are curriculum content, not
-  documents. `now_lms/templates/themes/intent_learn/README.md` documents the
-  theme package in place.
+- **Curriculum** — teaching content (question banks + lesson prose) is **not in
+  this repository**. It lives in the private `intent-solutions-io/intent-curriculum`
+  repo and is read at seed time via `CCA_CONTENT_DIR`
+  (see `scripts/seed_cca_courses.py`). It is program input, not documentation, and
+  it never returns here. `now_lms/templates/themes/intent_learn/README.md`
+  documents the theme package in place.
 - **Tool artifacts** — `.beads/README.md`, `.pytest_cache/README.md`
   (generated; the latter is gitignored).
 
