@@ -52,6 +52,45 @@ This repo uses **bd (beads)**. Run `bd prime` for the full workflow, and prefer
 Issues are prefixed `now-lms` (e.g. `now-lms-0oy`). The database is **local only**
 — see below before pushing anything.
 
+### The three-way circle: bead ↔ GitHub issue ↔ Plane issue (MANDATORY)
+
+Every tracked unit of work exists in **three** places, and **each record carries
+the other two IDs**. Not a chain — a circle. Given any one of the three you can
+reach the other two without searching.
+
+| Layer | Where | Must contain |
+|---|---|---|
+| **Bead** (source of truth) | local `bd`, prefix `now-lms` | `GitHub:` line + `Plane:` line |
+| **GitHub issue** | `intent-solutions-io/now-lms` | `**Beads:**` line + `**Plane:**` line |
+| **Plane issue** | project **LEARN** (`projects.intentsolutions.io`) | `Beads:` line + `GitHub:` line |
+
+Current set (verified 2026-07-27):
+
+| Bead | GitHub | Plane |
+|---|---|---|
+| `now-lms-bdv` | #22 | LEARN-1 |
+| `now-lms-wy6` | #23 | LEARN-2 |
+| `now-lms-maa` | #24 | LEARN-3 |
+| `now-lms-xvr` | #27 | LEARN-4 |
+
+**Creating work:** (1) `bd create` → (2) `gh issue create` with the `**Beads:**`
+line → (3) Plane issue in LEARN with `Beads:` + `GitHub:` → (4)
+`bd-sync link <bead> --gh intent-solutions-io/now-lms#N --plane LEARN-N` to plant
+the cross-refs. `bd-sync link` **requires `--gh`** — `--plane` alone is rejected,
+so create the GitHub issue even when the work feels Plane-shaped.
+
+**Changing state:** always `bd-sync note` / `bd-sync close`, never raw `bd close`
+— raw closes are mirror-blind and leave GitHub and Plane stale-open.
+
+**Granularity:** one GitHub issue per logical cluster (an epic), never one per
+task bead. Task beads live under their parent epic and get no issue of their own.
+
+**Plane structure** follows the Kobiton pattern: **modules are dated milestones**
+(M1…M4), each grouping its issues, and each module's description carries the
+*reasoning* — why this approach over the alternative — not just a title. Modules
+are off by default on API-created projects; enable with a REST
+`PATCH {"module_view": true}` (the Plane MCP has no `update_project`).
+
 ### ⚠️ Do NOT run `bd dolt push` from this repository yet
 
 The database is now clean, but no sync route has been chosen. Until one is,
