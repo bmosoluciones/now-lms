@@ -70,7 +70,12 @@ for code in CCA-A CCA-B CCA-F free IS-START now postgresql python resources deta
     course_code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -H 'X-Forwarded-Proto: https' "http://127.0.0.1:8080/course/${code}/view")"
     case "${course_code}" in
         302) : ;;
-        404) : ;;  # course absent on this deploy — absence also does not leak
+        # No 404 arm, deliberately: a course that does not exist ALSO 302s here
+        # (_public_course_access returns (False, False) for a missing code, so it
+        # takes the same redirect as a gated one). That means a 404 can only come
+        # from the blueprint failing to register or the route changing shape —
+        # exactly the regression this smoke exists to catch. Accepting 404 would
+        # let a broken deploy pass green.
         *) fail "/course/${code}/view returned ${course_code} anonymously, expected 302 to the intake" ;;
     esac
 done
