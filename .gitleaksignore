@@ -1,0 +1,14 @@
+# gitleaks false-positive allowlist (fingerprint = commit:file:rule:line).
+#
+# All three findings are upstream's throwaway Flask SECRET_KEY
+# ("ASD123klj+aAddS") set as an env value for ephemeral CI test runs in
+# historical versions of release.yml. It is a session-signing key for a
+# database that exists only for the duration of a CI job — a credential to
+# nothing. Verified 2026-07-28 (PR #32) by reading both commits.
+#
+# Rule for future entries: only add a fingerprint after reading the flagged
+# commit and recording WHY it is not a real secret. A real leak is never
+# allowlisted — it gets rotated and purged instead.
+c686cf6534c23f2a2d8547400e70f7bd25ef1c41:.github/workflows/release.yml:generic-api-key:58
+9aff04d3f0c24b101549e271ebab0005d1fe443d:.github/workflows/release.yml:generic-api-key:31
+9aff04d3f0c24b101549e271ebab0005d1fe443d:.github/workflows/release.yml:generic-api-key:38

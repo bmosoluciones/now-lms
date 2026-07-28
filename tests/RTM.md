@@ -17,14 +17,15 @@ behavior is deliberately NOT enumerated here — this matrix traces the
 | REQ-007 | Landing CTAs point at `/request-access`, never a raw `mailto:` (mailto stays as the secondary path on the intake page) | MUST | 011-PP-PLAN §C | `tests/test_intent_learn_front_door.py`, `scripts/deploy-smoke.sh` |
 | REQ-008 | Curriculum seeds idempotently from `CCA_CONTENT_DIR` (private checkout); a reseed cannot resurrect `publico=true` | MUST | ADR-3, PRD F8 | `tests/test_cca_seed.py` |
 | REQ-009 | Fresh-PostgreSQL boot succeeds (`create_all()` + `alembic.stamp(head)` — fork commit `55900ed`) | MUST | AGENTS.md §fresh-DB | `tests/test_alembic_upgrade.py`; fuller test preserved on `fix/postgresql-fresh-database-bootstrap` |
-| REQ-010 | Theme serves no external CDN assets (fonts self-hosted; ionicons vendoring due before the CSP change at sync) | SHOULD | 007-OD-CHNG §7 | front-door contract tests (fonts); ionicons **uncovered** — bead `now-lms-fzl` |
+| REQ-010 | Theme serves no external CDN assets (fonts self-hosted; ionicons/Alpine CDN loads removed as dead code 2026-07-26, commit `a63a47c`) | SHOULD | 007-OD-CHNG §7, bead `now-lms-fzl` (closed) | front-door contract tests: no-CDN guards over `header.j2`/`base.j2`/`js.j2` + `scripts/deploy-smoke.sh` CDN grep |
 | REQ-011 | Deploy smoke hard-fails unless the gated front door is intact (intake serves, teaser live, contact 404) | MUST | ADR-5, PRD §8 | `scripts/deploy-smoke.sh` (runs at deploy) |
 | REQ-012 | Members reach enrolled courses via dashboard + native enrollment checks | MUST | PRD F6 | inherited suite (courses/enrollment tests), `features/gating_boundary.feature` |
 
 ## Uncovered / partial
 
-- REQ-010 (SHOULD): ionicons still loads from unpkg.com — becomes a hard break
-  at the sync's CSP; tracked as bead `now-lms-fzl`. P1 advisory.
+None. (The scaffold-time entry here claimed REQ-010/ionicons was uncovered —
+stale: it was resolved 2026-07-26 by removing the dead CDN loads, commit
+`a63a47c`, with two-direction no-CDN test guards. Corrected 2026-07-28.)
 
 ## Orphans
 
