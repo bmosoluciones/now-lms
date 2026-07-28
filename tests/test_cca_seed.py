@@ -7,13 +7,15 @@ options), map ``answerIndex`` to the correct option's ``is_correct``, preserve
 the ``source`` attribution in the explanation, and be idempotent (a second run
 for an existing course code is a no-op).
 
-**These tests need the curriculum, which is not in this repository.** Teaching
-content lives in the private ``intent-solutions-io/intent-curriculum`` repo (see
-``scripts/seed_cca_courses.py``), so every test that reads a bank or a lesson is
-skipped unless ``CCA_CONTENT_DIR`` points at a checkout of it. Public CI has no
-access to that content and therefore skips this module — deliberately: coupling
-the public fork's test suite to private content would either leak the content or
-permanently red the build.
+**Only the bank-shape tests need the curriculum, which is not in this
+repository.** Teaching content lives in the private
+``intent-solutions-io/intent-curriculum`` repo (see
+``scripts/seed_cca_courses.py``), so tests that read a real bank or lesson are
+individually marked ``_content_required`` and skip unless ``CCA_CONTENT_DIR``
+points at a checkout. Everything else — the pure helpers and the whole
+``_create_course`` integration surface (graph build, idempotency, visibility
+gating) — runs on synthetic bank-shaped fixtures so public CI keeps regression
+coverage without touching private content.
 """
 
 import importlib.util
@@ -22,6 +24,7 @@ import pathlib
 import pytest
 
 from now_lms.db import (
+    Certificado,
     Curso,
     CursoRecurso,
     CursoSeccion,
@@ -37,9 +40,9 @@ _spec = importlib.util.spec_from_file_location("seed_cca_courses", _SEED_PATH)
 seed = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(seed)
 
-# The whole module is content-dependent: without a curriculum checkout there is
-# nothing to shape, so skip rather than fail.
-pytestmark = pytest.mark.skipif(
+# Applied per-test, NOT module-wide: only tests that read a real bank or lesson
+# are content-dependent; the rest must keep running in public CI.
+_content_required = pytest.mark.skipif(
     not (seed.BANKS_DIR.is_dir() and seed.LESSONS_DIR.is_dir()),
     reason=(
         "curriculum content not present; set CCA_CONTENT_DIR to a checkout of "
@@ -80,6 +83,7 @@ def test_group_by_domain_orders_and_buckets():
     assert len(grouped[0][3]) == 2 and len(grouped[1][3]) == 1
 
 
+@_content_required
 def test_load_bank_counts():
     assert len(seed._load_bank("questions-associate.json")) == 36
     assert len(seed._load_bank("questions-developer.json")) == 41
@@ -87,6 +91,7 @@ def test_load_bank_counts():
     assert len(seed._load_bank("questions.json")) == 103
 
 
+@_content_required
 def test_weighted_mock_matches_cca_f_blueprint():
     general = seed._load_bank("questions.json")
     weights = {"agentic": 27, "claudecode": 20, "prompt": 20, "tools": 18, "context": 15}
@@ -98,6 +103,7 @@ def test_weighted_mock_matches_cca_f_blueprint():
     assert dist == {"agentic": 16, "claudecode": 12, "prompt": 12, "tools": 11, "context": 9}
 
 
+@_content_required
 def test_build_specs_shapes():
     specs = seed._build_specs()
     by_code = {s["codigo"]: s for s in specs}
@@ -126,6 +132,7 @@ def test_weighted_exam_series_non_overlapping():
     assert len(ids) == len(set(ids))  # no question reused across exams
 
 
+@_content_required
 def test_build_specs_includes_rick_practice_exams():
     """When Rick's bank is vendored, Course C gains full-length practice exams."""
     if not seed._load_bank_optional("rick-practice-exams.json"):
@@ -160,6 +167,23 @@ def cca_db():
     app = now_lms.lms_app
     with app.app_context():
         database.create_all()
+        # Curso.plantilla_certificado defaults to 'default' and PostgreSQL
+        # enforces the FK to certificado.code (SQLite silently tolerates the
+        # dangling reference) — seed the template the model implicitly needs.
+        # This was the documented pre-existing PG failure for this module
+        # (000-docs/007-OD-CHNG §7: "references a default certificate it never
+        # seeds").
+        database.session.add(
+            Certificado(
+                code="default",
+                titulo="Default template",
+                descripcion="Certificate template required by Curso's FK default.",
+                tipo="course",
+                habilitado=False,
+                publico=False,
+            )
+        )
+        database.session.commit()
         try:
             yield database.session
         finally:
@@ -169,9 +193,29 @@ def cca_db():
 
 @pytest.fixture
 def sample_questions():
-    """Two associate-bank questions with distinct answer positions."""
-    bank = seed._load_bank("questions-associate.json")
-    return bank[:2]
+    """Two synthetic bank-shaped questions with distinct answer positions.
+
+    Synthetic rather than read from the associate bank so the integration tests
+    run without the private curriculum checkout — the importer only cares about
+    the bank SHAPE (text / options / answerIndex / rationale / source), which
+    these reproduce.
+    """
+    return [
+        {
+            "text": "Which option is correct for the first question?",
+            "options": ["alpha", "beta", "gamma", "delta"],
+            "answerIndex": 1,
+            "rationale": "beta is correct because of the documented behavior.",
+            "source": "Synthetic fixture A",
+        },
+        {
+            "text": "Which option is correct for the second question?",
+            "options": ["alpha", "beta", "gamma", "delta"],
+            "answerIndex": 3,
+            "rationale": "delta is correct per the reference.",
+            "source": "Synthetic fixture B",
+        },
+    ]
 
 
 def _spec_for(code, questions):
@@ -233,3 +277,28 @@ def test_create_course_is_idempotent(cca_db, sample_questions):
     assert first == second
     secs = database.session.execute(database.select(CursoSeccion).filter_by(curso="CCA-T2")).scalars().all()
     assert len(secs) == 1  # not duplicated
+
+
+def test_create_course_gates_pre_gating_public_course(cca_db, sample_questions):
+    """A reseed against a pre-gating database enforces publico=False.
+
+    Simulates a database restored from a backup taken before the 2026-07-27
+    gating SQL ran: the course (and a free-preview resource, which leaks the
+    outline) sit at publico=True. Re-running the importer must flip both to
+    False while leaving the structure untouched.
+    """
+    seed._create_course(database, MODELS, _spec_for("CCA-T3", sample_questions))
+    curso = database.session.execute(database.select(Curso).filter_by(codigo="CCA-T3")).scalar_one()
+    recurso = database.session.execute(database.select(CursoRecurso).filter_by(curso="CCA-T3")).scalars().first()
+    curso.publico = True
+    recurso.publico = True
+    database.session.commit()
+
+    seed._create_course(database, MODELS, _spec_for("CCA-T3", sample_questions))
+
+    curso = database.session.execute(database.select(Curso).filter_by(codigo="CCA-T3")).scalar_one()
+    assert curso.publico is False
+    resources = database.session.execute(database.select(CursoRecurso).filter_by(curso="CCA-T3")).scalars().all()
+    assert all(r.publico is False for r in resources)
+    secs = database.session.execute(database.select(CursoSeccion).filter_by(curso="CCA-T3")).scalars().all()
+    assert len(secs) == 1  # structure untouched — visibility only

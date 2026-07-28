@@ -271,7 +271,31 @@ def _create_course(db, models, spec: dict) -> None:
         db.select(Curso).filter_by(codigo=spec["codigo"])
     ).scalar_one_or_none()
     if existing is not None:
-        print(f"  [skip] course '{spec['codigo']}' already exists — no changes")
+        # Belt-and-braces for pre-gating databases (e.g. a backup restored from
+        # before the 2026-07-27 gating SQL ran): an existing course is left
+        # structurally untouched, but its VISIBILITY is enforced — a reseed must
+        # never leave a CCA course (or its free-preview resources, which leak
+        # the outline) publicly listed. Idempotent: no-op when already gated.
+        flipped = []
+        if existing.publico:
+            existing.publico = False
+            flipped.append("curso")
+        public_resources = (
+            db.session.execute(
+                db.select(models["CursoRecurso"]).filter_by(curso=spec["codigo"], publico=True)
+            )
+            .scalars()
+            .all()
+        )
+        for recurso in public_resources:
+            recurso.publico = False
+        if public_resources:
+            flipped.append(f"{len(public_resources)} recurso(s)")
+        if flipped:
+            db.session.commit()
+            print(f"  [gate] course '{spec['codigo']}' exists — publico=False enforced on {', '.join(flipped)}")
+        else:
+            print(f"  [skip] course '{spec['codigo']}' already exists — no changes")
         return
 
     curso = Curso(
