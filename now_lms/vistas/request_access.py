@@ -82,6 +82,9 @@ _RATE_LIMIT_POSTS = 5
 _RATE_LIMIT_WINDOW = 900  # seconds
 _RATE_LOCK = threading.Lock()
 _RATE_BUCKETS: dict[str, deque] = {}
+_RATE_MAX_BUCKETS = 10_000  # hard cap; oldest-touched evicted past this
+_RATE_SWEEP_INTERVAL = 60  # seconds between expiry sweeps (not per request)
+_RATE_LAST_SWEEP = 0.0
 
 
 class RequestAccessForm(FlaskForm):
@@ -138,16 +141,33 @@ def _rate_limited(ip: str) -> bool:
         if len(bucket) >= _RATE_LIMIT_POSTS:
             return True
         bucket.append(now)
-        # Bounded memory: expire other IPs' stale entries, then drop drained
-        # buckets. Without the expiry pass, one-shot IPs that never return
-        # would hold their timestamps (and their bucket) forever.
-        if len(_RATE_BUCKETS) > 1000:
+        # Bounded memory + bounded work. Two rules, both needed:
+        #  1. Sweep on a TIME interval, not on every call. The old
+        #     size-triggered sweep walked every bucket while holding the lock,
+        #     so an attacker holding N live buckets (a single IPv6 /64 is
+        #     enough) made every later POST an O(N) critical section —
+        #     the anti-spam control becomes the amplifier.
+        #  2. Hard-cap the dict. If the sweep cannot free enough (all buckets
+        #     live), evict the oldest-touched entries so memory cannot grow
+        #     without limit. Evicting an active bucket only forgives that IP's
+        #     history early — the Caddy rate_limit outer wall still applies.
+        global _RATE_LAST_SWEEP
+        if now - _RATE_LAST_SWEEP > _RATE_SWEEP_INTERVAL:
+            _RATE_LAST_SWEEP = now
             for key, other in list(_RATE_BUCKETS.items()):
                 if key == ip:
                     continue
                 while other and now - other[0] > _RATE_LIMIT_WINDOW:
                     other.popleft()
                 if not other:
+                    del _RATE_BUCKETS[key]
+        if len(_RATE_BUCKETS) > _RATE_MAX_BUCKETS:
+            # Not `for key, _ in ...`: `_` is the gettext callable imported at
+            # module scope, and shadowing it here would break translation in
+            # this function (flake8 F402 catches exactly this).
+            oldest_first = sorted(_RATE_BUCKETS.items(), key=lambda kv: kv[1][-1] if kv[1] else 0)
+            for key, _bucket in oldest_first[: len(_RATE_BUCKETS) - _RATE_MAX_BUCKETS]:
+                if key != ip:
                     del _RATE_BUCKETS[key]
         return False
 
@@ -182,6 +202,13 @@ def _notify_slack(name: str, building_snippet: str) -> None:
     webhook = environ.get("SLACK_WEBHOOK_LEADS_CONTACT")
     if not webhook:
         log.warning("SLACK_WEBHOOK_LEADS_CONTACT is not set; access request stored without a Slack ping.")
+        return
+    # Scheme allow-list before urlopen: the `# nosec B310` below suppresses
+    # exactly the check that would otherwise catch a misconfigured file:// or
+    # ftp:// value, so assert it here. Operator-controlled input, but a typo in
+    # a deploy env should not turn a notification into a local file read.
+    if not webhook.startswith("https://"):
+        log.warning("SLACK_WEBHOOK_LEADS_CONTACT is not an https URL; skipping the Slack ping.")
         return
     try:
         # Path only, never _external=True: an external URL would be derived from

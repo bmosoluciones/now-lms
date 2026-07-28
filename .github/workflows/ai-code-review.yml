@@ -26,7 +26,10 @@ jobs:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
       - name: Review
-        uses: jeremylongshore/minimax-code-review@v0.5.0
+        # SHA-pinned (v0.5.0): this is the one action that receives a secret
+        # (MINIMAX_API_KEY) and has pull-requests: write. A tag is mutable —
+        # including on our own fork — so pin the commit, not the label.
+        uses: jeremylongshore/minimax-code-review@bcaa65182e52183f14746663aa2049641c0dbca5
         with:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_MODEL: MiniMax-M3
