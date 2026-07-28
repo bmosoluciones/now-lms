@@ -137,7 +137,10 @@ Also must survive: **`ce1d2cb`** (the `mailto:` address fix, fork PR #13) — ne
 than this triage, on `fix/mailto-address-encoding`.
 
 **Also must survive: the `feat/request-access` series (2026-07-27, waiting list +
-gated practice surfaces — record the merge hashes here when the PR lands).** It
+gated practice surfaces — merged as `346c1fb`, fork PR #25; branch commits
+`811eca6` intake, `b366c4a` gating+teaser, `1ba2e8c` plan+governance docs,
+`bee2cdd` + `f892b22` doc-filing compliance, `85ad707` Greptile P1 security
+fixes).** It
 adds `now_lms/vistas/request_access.py` (a NEW file with zero imports from
 `static_pages.py`, so the split cannot orphan it), the themed intake page, the
 practice-tracks teaser override, the gated-course 302, and the extended deploy
