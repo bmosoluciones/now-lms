@@ -18,11 +18,33 @@ files with an 8+ doc cluster, and we are far under both thresholds.
 | File | What it is |
 |---|---|
 | [001-PP-PROD-now-lms-fork-prd.md](001-PP-PROD-now-lms-fork-prd.md) | Baseline PRD (backfilled 2026-07-28): what Intent Solutions Learn is — vision, users, shipped scope, non-functional requirements, standing risks, release strategy. The document future work diffs against. |
+| [002-AT-ADEC-adopt-and-mature-upstream.md](002-AT-ADEC-adopt-and-mature-upstream.md) | ADR-1 (2026-07-21, Accepted): adopt NOW-LMS as-is and mature it upstream — no private forks of behavior. The governing rule everything else follows. |
 | [003-DR-REFF-live-auth-flow.md](003-DR-REFF-live-auth-flow.md) | Verified login / roles / admin flow of the live deployment (verified 2026-07-21 against the running container). The getting-started lessons were written from it. |
 | [004-BL-POLI-cca-source-reuse.md](004-BL-POLI-cca-source-reuse.md) | CCA-F prep source map & reuse policy: license-tiered reuse rules (NC/unlicensed = link only), question banks are Intent Solutions IP, Rick Hightower reuse grant context. |
 | [005-BL-LICN-cca-attributions.md](005-BL-LICN-cca-attributions.md) | Attribution record for the CCA-F curriculum: MIT-licensed projects that informed structure, credited per license; lesson prose originally authored by Intent Solutions. |
-| [007-OD-CHNG-upstream-v2-sync-map.md](007-OD-CHNG-upstream-v2-sync-map.md) | Upstream v2.0.0 sync migration map (2026-07-26): commit triage (MUST-SURVIVE set), corrections, DB migration analysis, sequencing, open items. Read before any upstream sync. |
+| [006-AT-ADEC-rebuild-on-v2-sync.md](006-AT-ADEC-rebuild-on-v2-sync.md) | ADR-2 (2026-07-26, Accepted): execute the upstream v2.0.0 sync by cherry-picking the measured MUST-SURVIVE set rather than merging — 98% of conflicts eliminated by construction. |
+| [007-OD-CHNG-upstream-v2-sync-map.md](007-OD-CHNG-upstream-v2-sync-map.md) | Upstream v2.0.0 sync migration map (2026-07-26): commit triage (MUST-SURVIVE set), corrections, DB migration analysis, sequencing, open items. Read before any upstream sync. ADR-2 is its decision record. |
+| [008-AT-ADEC-curriculum-private-fork-public.md](008-AT-ADEC-curriculum-private-fork-public.md) | ADR-3 (2026-07-26, Accepted): teaching content moves to the private intent-curriculum repo; the fork stays public so the upstream lane survives. Split by content, never by repo visibility. |
+| [009-AT-ADEC-native-contact-message-storage.md](009-AT-ADEC-native-contact-message-storage.md) | ADR-4 (2026-07-27, Accepted): access requests store in the native ContactMessage table with an `[ACCESS]` subject discriminator — no bespoke model, no migration, native admin surface. |
+| [010-AT-ADEC-gate-courses-doctrine-teaser.md](010-AT-ADEC-gate-courses-doctrine-teaser.md) | ADR-5 (2026-07-27, Accepted): gate all courses/resources/programs; `/course/explore` becomes a doctrine-voice practice-tracks teaser; anonymous gated-course hits 302 to the intake. |
 | [011-PP-PLAN-waiting-list-gated-surfaces.md](011-PP-PLAN-waiting-list-gated-surfaces.md) | Waiting-list + gated practice surfaces execution plan (locked 2026-07-27): /request-access intake, practice-tracks teaser, contact fix, course gating, security ship-gate, upstream PR queue U1–U10, founder-locked copy and decisions. |
+
+## Architecture Decisions (the ADR log)
+
+One immutable file per decision (Nygard pattern): an accepted ADR is never
+edited — it is superseded by a new one and the old stays readable. Two number
+sequences coexist and mean different things: `NNN` is the document's position
+in the project's global timeline; `ADR-N` (in each file's metadata table) is
+the decision number, contiguous within the ADR set. This section is the log's
+table of contents, in decision order.
+
+| ADR | Doc | Decided | Status | Decision |
+|---|---|---|---|---|
+| ADR-1 | [002](002-AT-ADEC-adopt-and-mature-upstream.md) | 2026-07-21 | Accepted | Adopt NOW-LMS as-is; mature it upstream; no private forks of behavior |
+| ADR-2 | [006](006-AT-ADEC-rebuild-on-v2-sync.md) | 2026-07-26 | Accepted | Rebuild on upstream v2.0.0 by cherry-picking the must-survive set, not merging |
+| ADR-3 | [008](008-AT-ADEC-curriculum-private-fork-public.md) | 2026-07-26 | Accepted | Curriculum moves to a private repo; the fork stays public |
+| ADR-4 | [009](009-AT-ADEC-native-contact-message-storage.md) | 2026-07-27 | Accepted | Store access requests in the native ContactMessage table, not a bespoke model |
+| ADR-5 | [010](010-AT-ADEC-gate-courses-doctrine-teaser.md) | 2026-07-27 | Accepted | Gate the courses; the public catalog becomes a doctrine teaser |
 
 ## Renames & moves (references in old commit messages resolve here)
 
