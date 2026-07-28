@@ -91,12 +91,21 @@ noted — when upstream accepts it, we drop the fork-local copy and let `main` c
 | `contact` route honors `enable_contact` (404 while disabled) | Core edit in `vistas/static_pages.py` (file dies at v2.0.0 — upstream split it into `contact.py`, which carries the same bug) | Offered upstream (U1 in `000-docs/011-PP-PLAN-waiting-list-gated-surfaces.md`); at the sync, re-apply against upstream `contact.py` unless merged. |
 | Anonymous GET on a gated course 302s to `/request-access` instead of a bare 403 (`vistas/courses/base.py`) | Core edit, 4 lines | Fork conversion path; re-apply at sync. Not offered upstream (product decision, not a bug). |
 | Admin contact list accepts a `?q=` subject filter (`vistas/static_pages.py`) | Core edit, 3 lines | Candidate for upstream once the contact-webhook PR lands; until then re-apply at sync. |
+| Testing enforcement layer — vendored `@intentsolutions/audit-harness` (`.audit-harness/` + `scripts/audit-harness` + `.harness-hash`), L1 pre-commit lint gate (`scripts/pre-commit-lint.sh` chained into the beads hook by `scripts/install-git-hooks.sh`), acceptance specs (`features/*.feature`), traceability (`tests/{TESTING,RTM,PERSONAS,JOURNEYS}.md`), coverage visibility in `deploy-line-ci.yml` | Fork tooling + fork CI, **zero core edits** | **Permanent fork-local, deliberately.** This is Intent Solutions' engineering standard, not a platform bug — it has NO upstream path. At the v2.0.0 sync these files carry over on purpose; do not treat them as drift. |
 
 ## Fork changelog
 
 Fork-relevant, most recent first. (Upstream feature history lives in the root `CHANGELOG.md`; this
 section records only what is Intent-Solutions-fork-specific.)
 
+- **2026-07-28** — Backfilled the blueprint baseline docs and installed the fork's testing
+  enforcement layer. Docs: baseline PRD + five accepted ADRs filed chronologically in `000-docs/`
+  (one-time renumber: sync map `001→007`, waiting-list plan `002→011`; `NNN` append-only from
+  here). Testing: vendored audit-harness v1.3.1, L1 pre-commit lint gate chained with the beads
+  hooks (beads' 5 hooks untouched), coverage made visible (not gated) on the deploy-line CI,
+  engineer-owned `features/*.feature` acceptance specs for the intake and the gating boundary,
+  and RTM/personas/journeys traceability. All fork-local with no upstream path — see the
+  fork-local table above.
 - **2026-07-27** — Gated the practice surfaces and opened a real waiting list. New `/request-access`
   intake (vetting-grade work-sample form → native `contact_messages` rows with an `[ACCESS] `
   subject discriminator, best-effort Slack ping, CSRF + honeypot + timed-token + rate-limit +

@@ -91,6 +91,13 @@ jobs:
             # work the sync deletes. Until the sync lands: lint is BLOCKING, tests are
             # visible but advisory. Flip this to blocking at the sync -- tracked with the
             # deploy-integrity work in issue #14.
+            # Coverage is MEASURED here, deliberately not GATED: no --cov-fail-under,
+            # no Codecov upload on the deploy line. This is the first time coverage is
+            # visible on the branch's real gate (dev/test.sh measures it locally, but
+            # release.yml — which owns the Codecov gate — never fires here). A blocking
+            # threshold in the same change as the first measurement would redden the
+            # line on a number nobody has seen yet; ratcheting is a separate, deliberate
+            # decision once a baseline exists (tracked with the sync work in #14).
             - name: Tests (PostgreSQL — advisory until the v2.0.0 sync repairs the suite)
               continue-on-error: true
               env:
@@ -108,4 +115,4 @@ jobs:
                   sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
                   sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
                   sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
-                  pytest --tb=short -q
+                  pytest --tb=short -q --cov=now_lms --cov-report=term
