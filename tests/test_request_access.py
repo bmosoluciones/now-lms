@@ -258,6 +258,10 @@ def test_slack_ping_sends_name_but_never_email(client, db_session, fast_ok, monk
     assert "Ada Lovelace" in sent["body"]
     assert "ada@example.com" not in sent["body"], "the ping must not carry the applicant's email"
     assert '"unfurl_links": false' in sent["body"]
+    # The admin link is a path, never a host-derived external URL: a crafted
+    # Host header on the public POST must not be able to poison the staff link.
+    assert "/admin/contact-messages" in sent["body"]
+    assert "localhost" not in sent["body"]
 
 
 def test_slack_failure_never_breaks_the_submission(client, db_session, fast_ok, monkeypatch):
