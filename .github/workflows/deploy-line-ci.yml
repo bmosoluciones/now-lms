@@ -64,6 +64,16 @@ jobs:
             - name: Lint (pylint)
               run: python -m pylint now_lms --score=yes --fail-under=9.5
 
+            # ADVISORY, deliberately. dev/test.sh runs mypy but has no `set -e`, so
+            # its exit code has never actually gated anything — and the codebase
+            # carries 3 pre-existing mypy errors ("object" not callable, all in
+            # vistas/courses/coupons.py). Blocking here would redden the deploy line
+            # on findings no PR introduced. Flip to blocking once those are fixed
+            # (candidate upstream contribution — they look like real typing bugs).
+            - name: Typecheck (mypy — advisory until the 3 pre-existing coupons.py errors are fixed)
+              continue-on-error: true
+              run: python -m mypy now_lms --ignore-missing-imports
+
             # Tests run against REAL PostgreSQL, matching production (Postgres 16 on the
             # VPS) and release.yml's proven recipe -- the runner's built-in postgresql
             # service, same user/database setup, same pg8000 driver.

@@ -91,10 +91,17 @@ task bead. Task beads live under their parent epic and get no issue of their own
 are off by default on API-created projects; enable with a REST
 `PATCH {"module_view": true}` (the Plane MCP has no `update_project`).
 
-### ⚠️ Do NOT run `bd dolt push` from this repository yet
+### Beads sync route — CHOSEN and live (2026-07-28): `refs/dolt/data` on origin
 
-The database is now clean, but no sync route has been chosen. Until one is,
-there is nowhere correct to push.
+`bd dolt remote list` → `origin  git+ssh://git@github.com/intent-solutions-io/now-lms.git`.
+`bd dolt push` / `bd dolt pull` sync the Dolt history through the git remote's
+`refs/dolt/data` (verify: `git ls-remote origin 'refs/dolt/*'`). World-readability
+was the open question — accepted, because the three-way circle already mirrors
+every bead note into public GitHub issues, so this route adds no new exposure.
+Bead `now-lms-7e4` closed with the evidence.
+
+The history below is retained because it explains why the remote was ever
+missing, and what must never be repeated:
 
 **What was wrong (fixed 2026-07-26):**
 
@@ -117,12 +124,10 @@ there is nowhere correct to push.
 configured"); the epic and its children were migrated with descriptions intact;
 the old clone is preserved, not deleted.
 
-**What is still needed:** pick a sync route — a dedicated DoltHub database, or
-`refs/dolt/data` on the git remote. ⚠️ This repository is **public**, so option
-two makes every bead world-readable. Nothing is pushed today:
-`git ls-remote origin 'refs/dolt/*'` is empty.
-
-Tracked as bead `now-lms-7e4`. Update this section once the route is chosen.
+**Resolution (2026-07-28):** the `refs/dolt/data`-on-origin route was chosen
+and executed (see the header of this section). The world-readable caveat was
+weighed and accepted — bead content is already public by design via the
+three-way circle's GitHub mirroring.
 
 ### Regenerating boilerplate
 
