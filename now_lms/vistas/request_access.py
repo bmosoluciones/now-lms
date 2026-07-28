@@ -187,7 +187,7 @@ def _notify_slack(name: str, building_snippet: str) -> None:
         # Path only, never _external=True: an external URL would be derived from
         # the request Host header, letting a crafted POST poison the staff-facing
         # link (Greptile P1 on PR #25). Staff open it against the admin origin.
-        admin_path = url_for("static_pages.list_contact_messages") + "?q=%5BACCESS%5D"
+        admin_path = url_for("contact.list_contact_messages") + "?q=%5BACCESS%5D"
         payload = {
             "text": f"New access request: {name}",
             "unfurl_links": False,
