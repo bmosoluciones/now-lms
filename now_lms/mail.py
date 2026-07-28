@@ -64,18 +64,27 @@ def _load_mail_config_from_env() -> SimpleNamespace:
     # Default sender
     mail_default_sender = environ.get("MAIL_DEFAULT_SENDER")
 
-    # String to boolean conversion using pattern matching
+    # String to boolean conversion using pattern matching.
+    # str.capitalize() yields "True"/"False", so the arms must match that exact
+    # casing — the previous all-caps arms ("TRUE"/"FALSE") never matched, the
+    # values stayed non-empty strings, and both flags read as enabled
+    # simultaneously (every non-empty string is truthy). The wildcard arm makes
+    # any unrecognized value an explicit False instead of a truthy string.
     match mail_use_ssl:
-        case "FALSE":
+        case "False":
             mail_use_ssl = False  # type: ignore[assignment]
-        case "TRUE":
+        case "True":
             mail_use_ssl = True  # type: ignore[assignment]
+        case _:
+            mail_use_ssl = False  # type: ignore[assignment]
 
     match mail_use_tls:
-        case "FALSE":
+        case "False":
             mail_use_tls = False  # type: ignore[assignment]
-        case "TRUE":
+        case "True":
             mail_use_tls = True  # type: ignore[assignment]
+        case _:
+            mail_use_tls = False  # type: ignore[assignment]
 
     return SimpleNamespace(
         mail_configured=is_mail_configured,
