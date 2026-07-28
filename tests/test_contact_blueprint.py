@@ -22,10 +22,18 @@ def _enable_contact(app):
         config.enable_contact = True
         database.session.commit()
     yield
+    # Defensive teardown, matching conftest's own pattern: fixture teardown runs
+    # BEFORE the app fixture's rollback, so a test that died mid-transaction
+    # leaves the session aborted and this restore would raise a second, unrelated
+    # error that masks the real failure. The next test's TRUNCATE resets state
+    # regardless, so swallowing here loses nothing.
     with app.app_context():
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        config.enable_contact = previous
-        database.session.commit()
+        try:
+            config = database.session.execute(database.select(Configuracion)).scalars().first()
+            config.enable_contact = previous
+            database.session.commit()
+        except Exception:  # pragma: no cover - only on an already-failing test
+            database.session.rollback()
 
 
 @pytest.fixture

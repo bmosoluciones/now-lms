@@ -106,10 +106,15 @@ def _enable_contact(app):
         config.enable_contact = True
         database.session.commit()
     yield
+    # Defensive teardown, matching conftest's own pattern — see the twin fixture
+    # in tests/test_contact_blueprint.py for the full rationale.
     with app.app_context():
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        config.enable_contact = previous
-        database.session.commit()
+        try:
+            config = database.session.execute(database.select(Configuracion)).scalars().first()
+            config.enable_contact = previous
+            database.session.commit()
+        except Exception:  # pragma: no cover - only on an already-failing test
+            database.session.rollback()
 
 
 @pytest.mark.parametrize("role, credentials, allow_redirects", ROLE_MATRIX)
