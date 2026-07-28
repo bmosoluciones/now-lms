@@ -11,6 +11,7 @@ or vendor names to anonymous visitors.
 """
 
 import re
+from collections import deque
 from pathlib import Path
 
 import pytest
@@ -39,8 +40,10 @@ VALID_DATA = {
 def _reset_rate_buckets():
     """The limiter is module state; isolate it between tests."""
     ra_module._RATE_BUCKETS.clear()
+    ra_module._RATE_LAST_SWEEP = 0.0
     yield
     ra_module._RATE_BUCKETS.clear()
+    ra_module._RATE_LAST_SWEEP = 0.0
 
 
 @pytest.fixture()
@@ -207,6 +210,77 @@ def test_rate_limit_returns_429_after_the_window_fills(client, db_session, fast_
     resp = _post(client, ts_token)
     assert resp.status_code == 429
     assert len(_stored_rows(db_session)) == ra_module._RATE_LIMIT_POSTS
+
+
+# --------------------------------------------------------------------------- #
+# Limiter bounding: the sweep interval and the hard cap.
+#
+# These exercise _rate_limited() directly rather than through HTTP, because the
+# behavior under test is what happens across THOUSANDS of distinct client IPs —
+# which is the abuse case, and is not reachable from a test client.
+# --------------------------------------------------------------------------- #
+
+
+def test_sweep_is_interval_gated_not_per_request(monkeypatch):
+    """A drained bucket survives until the sweep interval elapses.
+
+    The point of the interval is that the O(n) pass does NOT run on every
+    request; proving it is skipped is how we know the lock is not held for a
+    full walk each time.
+    """
+    clock = {"now": 1_000.0}
+    monkeypatch.setattr(ra_module, "time", lambda: clock["now"])
+    ra_module._RATE_LAST_SWEEP = clock["now"]
+
+    # A stale bucket from an IP that never returns.
+    ra_module._RATE_BUCKETS["10.0.0.9"] = deque([clock["now"] - ra_module._RATE_LIMIT_WINDOW - 10])
+
+    # Well inside the interval: the stale bucket must still be there.
+    clock["now"] += ra_module._RATE_SWEEP_INTERVAL / 2
+    ra_module._rate_limited("10.0.0.1")
+    assert "10.0.0.9" in ra_module._RATE_BUCKETS
+
+    # Past the interval: the same call now reaps it.
+    clock["now"] += ra_module._RATE_SWEEP_INTERVAL
+    ra_module._rate_limited("10.0.0.1")
+    assert "10.0.0.9" not in ra_module._RATE_BUCKETS
+
+
+def test_hard_cap_evicts_oldest_first_and_keeps_the_caller(monkeypatch):
+    """Past the cap, the oldest-touched buckets go and the caller's stays."""
+    clock = {"now": 5_000.0}
+    monkeypatch.setattr(ra_module, "time", lambda: clock["now"])
+    monkeypatch.setattr(ra_module, "_RATE_MAX_BUCKETS", 10)
+    ra_module._RATE_LAST_SWEEP = clock["now"]  # suppress the sweep; isolate the cap
+
+    # 12 live buckets (recent enough that the sweep would not drop them),
+    # each touched at a distinct, increasing time.
+    for index in range(12):
+        ra_module._RATE_BUCKETS[f"10.1.0.{index}"] = deque([clock["now"] - (12 - index)])
+    assert len(ra_module._RATE_BUCKETS) == 12
+
+    ra_module._rate_limited("10.9.9.9")
+
+    # Back within the cap, the caller is present, and the survivors are the
+    # most recently touched — eviction is oldest-first, not arbitrary.
+    assert len(ra_module._RATE_BUCKETS) <= ra_module._RATE_MAX_BUCKETS
+    assert "10.9.9.9" in ra_module._RATE_BUCKETS
+    assert "10.1.0.0" not in ra_module._RATE_BUCKETS  # oldest, evicted
+    assert "10.1.0.11" in ra_module._RATE_BUCKETS  # newest, kept
+
+
+def test_limit_still_enforced_for_a_single_ip_after_bounding(monkeypatch):
+    """Bounding must not weaken the actual limit for one client."""
+    clock = {"now": 9_000.0}
+    monkeypatch.setattr(ra_module, "time", lambda: clock["now"])
+
+    for _attempt in range(ra_module._RATE_LIMIT_POSTS):
+        assert ra_module._rate_limited("10.2.0.1") is False
+    assert ra_module._rate_limited("10.2.0.1") is True
+
+    # And the window still expires.
+    clock["now"] += ra_module._RATE_LIMIT_WINDOW + 1
+    assert ra_module._rate_limited("10.2.0.1") is False
 
 
 def test_crlf_is_stripped_from_header_shaped_fields(app, db_session):
