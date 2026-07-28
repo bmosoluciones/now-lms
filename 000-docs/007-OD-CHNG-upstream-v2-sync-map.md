@@ -3,8 +3,47 @@
 **Status:** planning only. Nothing in this document has been executed.
 **Measured:** 2026-07-26, fork `deploy/now-lms-fixed` @ `4755503` vs `upstream/main` @ `b7bc8cf`
 (third pass — first used `3fec727`, second `0c9eb75` after our four PRs merged, third after
-upstream's security-headers series landed the same day).
-**Tracking:** intent-solutions-io/now-lms#12. Deploy prerequisites: #14.
+upstream's security-headers series landed the same day). **Fourth pass 2026-07-28 — see §0
+below; it supersedes the third pass's numbers and reverses one §3 correction.**
+**Tracking:** intent-solutions-io/now-lms#12. Deploy prerequisites: #14 — **RESOLVED
+2026-07-28** (provable pipeline shipped and proven end-to-end; §6 step 1 is cleared).
+
+---
+
+## 0. Fourth-pass re-measure (2026-07-28)
+
+Fork `deploy/now-lms-fixed` @ `25fc5d8` vs `upstream/main` @ `a0c57d8`. Method:
+`git merge-tree --write-tree` conflict listing (no working-tree merge), file
+attribution via `git show --name-only` over the droppable commit set.
+
+| Metric | Third pass (07-26) | Fourth pass (07-28) |
+|---|---:|---:|
+| Divergence (ahead / behind) | 41 / 111 | **85 / 122** |
+| Non-merge fork commits | 35 | **66** |
+| Test-merge conflicted files | 61 | **82** |
+| Conflicts explained by the droppable i18n layer | 60 (98%) | **80 (98%)** |
+| Residual conflicts needing hands | 1 (`Dockerfile`) | **2** (`Dockerfile`, `vistas/static_pages.py`) |
+
+**What moved and why it changes nothing strategic:**
+
+- **Upstream's 11 new commits are ALL i18n** — wrapping hardcoded Spanish
+  strings in `_()` and resyncing the `en`/`pt_BR` catalogs. They re-touch the
+  same files our dead i18n layer touched, which is the entire conflict growth
+  (61 → 82). Every one of those conflicts still vanishes by construction under
+  the ADR-2 rebuild (`006-AT-ADEC`), because the dead commits are never
+  replayed. The strategy is *more* right than it was, not less.
+- **The two residual conflicts are both already planned:** `Dockerfile` (the
+  fork's provable-deploy `BUILD_SHA` block — must-survive, re-applies as part
+  of its own cherry-pick) and `vistas/static_pages.py` (dies at v2.0.0 anyway;
+  the `enable_contact` + `?q=` edits re-apply against upstream's `contact.py`
+  per §7).
+- **`a3f68fe` is NOW superseded — the §3 correction reverses** (see the §3
+  addendum below).
+- **`55900ed` re-verified still fork-only** at `a0c57d8`: `alembic.stamp`
+  appears nowhere in upstream `now_lms/**`. It must survive, unchanged.
+- The fork-ahead growth (41 → 85) is the 2026-07-28 work: docs backfill +
+  testing layer (PR #29), security scans + CI (PR #32), the mail coercion fix
+  (PR #33), and their merges. All must survive — hashes appended to §2.
 
 Every number here was measured, not estimated. Where it contradicts the earlier
 plan, the earlier figure is quoted alongside so the difference is visible rather
@@ -151,6 +190,30 @@ ContactMessage` path still resolves under v2.0.0 and that the two small core
 edits (enable_contact 404 in the contact route; anonymous 302 in
 `vistas/courses/base.py::curso`) are re-applied against their v2 successors.
 
+**Also must survive — the 2026-07-27→28 series (appended at the fourth pass, §0).**
+All 12 non-merge commits after `346c1fb`, none of which conflict with upstream
+(new files, fork CI, and one small `mail.py` fix outside the conflict set):
+
+| Commit | What |
+|---|---|
+| `a3d323f` | seeder reads the private intent-curriculum repo (`CCA_CONTENT_DIR`) |
+| `f9da677` | docs drift fixes (CI gate, seeder paths, curriculum pointers) |
+| `dcb4a96` | three-way tracking contract in `CLAUDE.md` |
+| `4350182` | chronological doc renumber (001→007, 002→011 + rename table) |
+| `f1375b3` | baseline PRD (`001-PP-PROD`) |
+| `b237afd` | ADR log (ADRs 1–5) |
+| `7ec475b` | testing enforcement layer (audit-harness, L1 hook chain, coverage visibility, `.feature` specs, RTM/personas/journeys) |
+| `5bdb127` | seeder enforces `publico=False` on existing rows; curriculum-free seeder tests; cert-FK fixture fix |
+| `067b7bb` | `security-scans.yml` (CodeQL + gitleaks) + mypy advisory in CI + dolt-route record |
+| `63baa18` | `.gitleaksignore` (3 verified false positives, with the read-the-commit rule) |
+| `46078e7` | `MAIL_USE_TLS`/`MAIL_USE_SSL` boolean coercion fix + 14 regression tests (upstream offer U4) |
+| `dbb7c32` | the third-pass map addendum itself |
+
+Also in this window but arriving via `deploy`-line merges rather than the list
+above: the provable-deploy work referenced by #14 (Dockerfile `BUILD_SHA`
+block, `scripts/deploy-vps.sh`, volinit, extended smoke) — it is the source of
+the `Dockerfile` residual conflict and must survive as a unit.
+
 ---
 
 ## 3. Correction: Max's PR #6 is *not* superseded
@@ -185,6 +248,20 @@ email and every PayPal payment message to Spanish. It must survive.
 so the catalogs can translate them, rather than hardcoding English as the fork
 did. That is a clean, small upstream contribution and would let us drop
 `a3f68fe` legitimately later. Worth offering.
+
+> **§3 addendum (fourth pass, 2026-07-28): the correction reverses — `a3f68fe`
+> now DIES at the sync.** Upstream did the wrapping themselves in their July
+> i18n sweep: `auth.py:370` now reads `subject=_("Recuperación de Contraseña -
+> NOW LMS")` (gettext-wrapped, catalog-translatable) and `paypal.js` now routes
+> every message through `t('processingPayment') || 'Processing payment...'` —
+> a JS translation mechanism whose fallbacks are already English. Both files
+> are therefore reachable by catalogs, which is exactly the condition §3 said
+> would retire `a3f68fe`. **One sync-time gate before dropping it:** verify the
+> `en` catalog actually carries the newly wrapped `auth.py` strings (upstream's
+> catalog resync commits suggest yes; confirm with `pybabel`-compiled output or
+> a rendered password-reset email in English). If the `en` msgstr is missing,
+> the string falls back to Spanish — then either translate via Crowdin (#181
+> lane) or keep `a3f68fe` one more cycle.
 
 ---
 
@@ -288,9 +365,11 @@ Reason it stays mandatory despite the guards: `20260725_120000` moves a live
 
 ## 6. Sequencing
 
-1. **Do not start until #14 is resolved.** The deploy is currently unprovable and
-   theme files are shadowed by a stale Docker volume — shipping a sync through
-   that blind spot means being unable to tell whether it worked.
+1. **Do not start until #14 is resolved. → RESOLVED 2026-07-28.** The deploy is
+   provable end-to-end: `BUILD_SHA` enforced at build, `scripts/deploy-vps.sh`
+   refreshes the volume-shadowed templates from the image on every deploy, and
+   the smoke fails unless container, checkout, and served bytes agree (proven
+   live deploying `25fc5d8`). The sync no longer ships through a blind spot.
 2. Land upstream PRs #214 / #215 / #216 (#217 is independent), then drop
    `a5ae792`, `ab7a1fe`, `ba1b5de` from the fork.
 3. Build `sync/v2.0.0` from `upstream/main` by cherry-picking the 26-commit
