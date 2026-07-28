@@ -88,15 +88,24 @@ noted — when upstream accepts it, we drop the fork-local copy and let `main` c
 | Healthcheck fix — send `X-Forwarded-Proto: https` so `NOW_LMS_FORCE_HTTPS` doesn't 301-hang the probe | Deploy manifest (`docker-compose.yml`) | Fork-local deploy wiring; not core. Stays. |
 | `/request-access` intake — new blueprint (`now_lms/vistas/request_access.py`) storing to the native `contact_messages` table, plus themed page (`themes/intent_learn/pages/request_access.html`) | Fork blueprint + theme layer; zero imports from `static_pages.py` so it survives the v2.0.0 split | Positioning/page is fork-permanent (like the theme). The ~40-line Slack ping inside it retires when a generic `CONTACT_WEBHOOK_URL` feature is accepted upstream. |
 | Practice-tracks teaser replacing the anonymous course catalog (`overrides/course_list.j2`) | Native theme layer, no core edit | Permitted permanently — branding is data. |
-| `contact` route honors `enable_contact` (404 while disabled) | Core edit in `vistas/static_pages.py` (file dies at v2.0.0 — upstream split it into `contact.py`, which carries the same bug) | Offered upstream (U1 in `000-docs/002`); at the sync, re-apply against upstream `contact.py` unless merged. |
+| `contact` route honors `enable_contact` (404 while disabled) | Core edit in `vistas/static_pages.py` (file dies at v2.0.0 — upstream split it into `contact.py`, which carries the same bug) | Offered upstream (U1 in `000-docs/011-PP-PLAN-waiting-list-gated-surfaces.md`); at the sync, re-apply against upstream `contact.py` unless merged. |
 | Anonymous GET on a gated course 302s to `/request-access` instead of a bare 403 (`vistas/courses/base.py`) | Core edit, 4 lines | Fork conversion path; re-apply at sync. Not offered upstream (product decision, not a bug). |
 | Admin contact list accepts a `?q=` subject filter (`vistas/static_pages.py`) | Core edit, 3 lines | Candidate for upstream once the contact-webhook PR lands; until then re-apply at sync. |
+| Testing enforcement layer — vendored `@intentsolutions/audit-harness` (`.audit-harness/` + `scripts/audit-harness` + `.harness-hash`), L1 pre-commit lint gate (`scripts/pre-commit-lint.sh` chained into the beads hook by `scripts/install-git-hooks.sh`), acceptance specs (`features/*.feature`), traceability (`tests/{TESTING,RTM,PERSONAS,JOURNEYS}.md`), coverage visibility in `deploy-line-ci.yml` | Fork tooling + fork CI, **zero core edits** | **Permanent fork-local, deliberately.** This is Intent Solutions' engineering standard, not a platform bug — it has NO upstream path. At the v2.0.0 sync these files carry over on purpose; do not treat them as drift. |
 
 ## Fork changelog
 
 Fork-relevant, most recent first. (Upstream feature history lives in the root `CHANGELOG.md`; this
 section records only what is Intent-Solutions-fork-specific.)
 
+- **2026-07-28** — Backfilled the blueprint baseline docs and installed the fork's testing
+  enforcement layer. Docs: baseline PRD + five accepted ADRs filed chronologically in `000-docs/`
+  (one-time renumber: sync map `001→007`, waiting-list plan `002→011`; `NNN` append-only from
+  here). Testing: vendored audit-harness v1.3.1, L1 pre-commit lint gate chained with the beads
+  hooks (beads' 5 hooks untouched), coverage made visible (not gated) on the deploy-line CI,
+  engineer-owned `features/*.feature` acceptance specs for the intake and the gating boundary,
+  and RTM/personas/journeys traceability. All fork-local with no upstream path — see the
+  fork-local table above.
 - **2026-07-27** — Gated the practice surfaces and opened a real waiting list. New `/request-access`
   intake (vetting-grade work-sample form → native `contact_messages` rows with an `[ACCESS] `
   subject discriminator, best-effort Slack ping, CSRF + honeypot + timed-token + rate-limit +
@@ -104,7 +113,7 @@ section records only what is Intent-Solutions-fork-specific.)
   teaser (zero course/vendor names); landing CTAs moved from raw `mailto:` to the intake (mailto
   stays as the secondary path on the intake page); `/contact` honors `enable_contact` (404 while
   disabled); anonymous gated-course links 302 to the intake; deploy smoke extended to enforce all
-  of it. Full plan + security audit: `000-docs/002-PP-PLAN-waiting-list-gated-surfaces.md`.
+  of it. Full plan + security audit: `000-docs/011-PP-PLAN-waiting-list-gated-surfaces.md`.
 - **2026-07-23** — Reset the `intent_learn` front-door composition after real iPad review: replaced
   the oversized black/orange poster treatment with a bright working-studio system, restrained the
   type scale, removed decorative numbering/card shells, restored continuous reading flow, and

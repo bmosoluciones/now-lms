@@ -22,7 +22,7 @@ Do not rename the `now_lms` package, do not edit core views for branding. Brandi
 - **Models**: `now_lms/db/__init__.py`.
 - **Themes**: `now_lms/templates/themes/<name>/`. The `intent_learn` theme is the fork-local one.
 - **Migrations**: `now_lms/migrations/` — flat filename pattern `<unix_ts>_<slug>.py`. New ones: `alembic revision --autogenerate -m "..."`, then stamp head if needed (see "Fresh-DB gotcha" below).
-- **Fork-local seeder**: `scripts/seed_cca_courses.py` — idempotent curriculum seeder for the CCA-F prep cohort, reads `content/cca/banks/*.json` + `content/cca/lessons/**/*.md`. Run in the container: `docker compose exec -T app python3.12 scripts/seed_cca_courses.py`.
+- **Fork-local seeder**: `scripts/seed_cca_courses.py` — idempotent curriculum seeder for the CCA-F prep cohort. **The curriculum is NOT in this repo**: it lives in the private `intent-solutions-io/intent-curriculum` repo (publishing graded answer keys beside the courses that grade them is an assessment-integrity problem, and this fork stays public so platform fixes can go upstream). The seeder reads `<CCA_CONTENT_DIR>/banks/*.json` + `<CCA_CONTENT_DIR>/lessons/**/*.md`; point it at a checkout: `docker compose exec -T -e CCA_CONTENT_DIR=/path/to/intent-curriculum/cca app python3.12 scripts/seed_cca_courses.py`. Production is already seeded and the seeder is idempotent, so this is only for a reseed or DR rebuild.
 
 ## Dev commands (the ones that matter)
 
@@ -44,9 +44,10 @@ bash dev/server.sh
 # Full pipeline (lint + typecheck + test). CI splits these — see CI section.
 bash dev/test.sh
 
-# Identical lint+typecheck, no tests. (Previously broken: it called a missing
-# dev/ensure_headers.py. Fixed upstream 2026-07-26 via bmosoluciones/now-lms#217,
-# which removed the orphaned call.)
+# Identical lint+typecheck, no tests. ⚠️ STILL BROKEN ON THIS BRANCH — it calls a
+# missing dev/ensure_headers.py and dies on its first line. Upstream #217 removed
+# the orphaned call, but that commit is NOT an ancestor of this branch; the fix
+# arrives with the v2.0.0 sync. Use dev/test.sh until then.
 bash dev/lint.sh
 
 # Run a single test
@@ -97,12 +98,14 @@ When adding a new migration to a populated DB, do `alembic upgrade` not `create_
 
 ## CI vs `dev/test.sh` — these are NOT the same
 
-- **`python.yml`** (`push` + `PR` to `main`/`development`, Py 3.11–3.14): `pip install --require-hashes -r test.lock` → `python -m build` + `twine check` → `pybabel compile` → `pytest`. **No lint.**
+- **`deploy-line-ci.yml` — the gate that actually fires on this branch** (`push` + `PR` to `deploy/now-lms-fixed`, Py 3.12): ruff + flake8 + `pylint --fail-under=9.5` are **blocking**; the PostgreSQL pytest run is **advisory** (`continue-on-error: true`) until the v2.0.0 sync repairs the suite. It exists because upstream's `python.yml` never runs here. **A green deploy-line PR proves lint, not tests** — run the Postgres pytest path locally before trusting one.
+- **`ai-code-review.yml`**: the MiniMax reviewer on deploy-line PRs (fork-local, commit `c897582`). Greptile reviews via its GitHub App.
+- **`python.yml`** (`push` + `PR` to `main`/`development`, Py 3.11–3.14): `pip install --require-hashes -r test.lock` → `python -m build` + `twine check` → `pybabel compile` → `pytest`. **No lint.** ⚠️ Never fires on the deploy line, and half its trigger is dead — this fork has no `development` branch.
 - **`release.yml`** (PR to `main` + `workflow_run` after CI): `test.lock` install → SQLite + Postgres + MySQL pytest runs (multi-DB paths NOT covered locally) → lint gate (`flake8`, `mypy`, `ruff`, `pylint --fail-under=9`). Codecov gate.
 - **`dev/test.sh`**: flake8 + ruff + pylint (9.5) + mypy + pybabel compile + pytest. Stricter pylint than `release.yml` — expects 9.5 not 9.0.
-- **`dev/lint.sh`**: black + pylint (9.5) + prettier + (broken) `ensure_headers.py`. Not run in CI.
+- **`dev/lint.sh`**: black + pylint (9.5) + prettier + (broken) `ensure_headers.py`. Not run in CI, and broken on this branch — see the dev-commands note.
 
-A green `python.yml` is **not** enough — Postgres/MySQL paths are only exercised in `release.yml` against live containers.
+A green `python.yml` is **not** enough — Postgres/MySQL paths are only exercised in `release.yml` against live containers. On the deploy line, `python.yml` does not run at all; `deploy-line-ci.yml` is the gate, and its test half is advisory.
 
 ## Testing
 
@@ -130,7 +133,7 @@ A green `python.yml` is **not** enough — Postgres/MySQL paths are only exercis
 
 - **Spanish identifiers everywhere in source**: `inicializa_extenciones_terceros`, `cargar_sesion`, `registrar_modulos_en_la_aplicacion_principal`. Don't rename "to English" — that is a permanent merge-conflict tax against upstream.
 - **Headers**: every Python file gets `SPDX-License-Identifier: Apache-2.0` + `SPDX-FileCopyrightText: 2025 - 2026 BMO Soluciones, S.A.`. `dev/lint.sh` was supposed to enforce this via `dev/ensure_headers.py`, but the script is missing — this is a real gap; add or upstream the enforcer. **Do not** put intent-solutions attribution in source files — only `FORK.md` is the fork's voice.
-- **Commit messages**: conventional commits (`type(scope): imperative subject`), signed (`git commit -s`). See `dev/CONTRIBUTING.md` and `FORK.md`.
+- **Commit messages**: conventional commits (`type(scope): imperative subject`), signed (`git commit -s`). See `docs/CONTRIBUTING.md` and `FORK.md`.
 - **CHANGELOG.md is upstream's** — do not add fork entries. Fork changelog lives in `FORK.md`.
 - **i18n**: all user-facing strings go through `_()` / `_l()` (flask-babel). Source-of-truth language is Spanish; English catalog lives in `now_lms/translations/en/`. See upstream #181 for translation status.
 - **Migrations**: filename `<unix_ts>_<slug>.py` (e.g. `1780403775_add_public_api_*.py`). Use `alembic revision --autogenerate` and inspect the generated file before committing.

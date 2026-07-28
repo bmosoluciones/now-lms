@@ -2,7 +2,7 @@
 
 The documented, **verified** authentication and administration flow for
 `learn.intentsolutions.io` (our NOW-LMS fork). The onboarding lessons in
-`content/cca/lessons/getting-started/` are written from this file. Routes are
+`cca/lessons/getting-started/` are written from this file. Routes are
 from the fork source (`now_lms/vistas/`); config values are read from the live
 database.
 

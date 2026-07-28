@@ -26,7 +26,7 @@ into course lesson content or question banks.
 |---|---|---|---|
 | [`hamzafarooq/claude-certified-architect`](https://github.com/hamzafarooq/claude-certified-architect) | **MIT** | Practice-exam structure, per-domain cheat sheets, sample question shapes — as *reference to inform* our own originally-authored prose | `000-docs/005-BL-LICN-cca-attributions.md` |
 | [`timothywarner-org/claude-architect`](https://github.com/timothywarner-org/claude-architect) | **MIT** | Study-material structure, code-example patterns, per-domain scenarios — *to inform*, not copy verbatim | `000-docs/005-BL-LICN-cca-attributions.md` |
-| **Intent Solutions question banks** — `content/cca/banks/*.json` (vendored from `learn-intent-solutions-hub/public/questions*.json`) | Intent Solutions IP | The **only** source of graded questions in every course | in-bank `source` field, preserved into each question's explanation |
+| **Intent Solutions question banks** — `cca/banks/*.json` (vendored from `learn-intent-solutions-hub/public/questions*.json`) | Intent Solutions IP | The **only** source of graded questions in every course | in-bank `source` field, preserved into each question's explanation |
 
 Even for MIT sources: lesson prose is **authored in our own words**, informed
 by the cheat sheets, with attribution. We do not paste MIT prose verbatim into
@@ -50,7 +50,7 @@ organized around the exact five official domains this curriculum targets, plus a
   exams for the curriculum (Jeremy confirmed, 2026-07-21). Ingest path once the
   file is on the box: convert each exam to the bank shape (`{id, domain,
   domainName, domainKey, text, options[], answerIndex, rationale, source}`), save
-  as `content/cca/banks/rick-practice-*.json` with `source` crediting Rick
+  as `cca/banks/rick-practice-*.json` with `source` crediting Rick
   Hightower, add it as a Course C section / mock pool in `seed_cca_courses.py`,
   and re-run the importer. **Still required before ingest:** a quick originality
   check that the items are Rick's own authored questions, not reverse-engineered
@@ -94,7 +94,7 @@ Per-domain "Further reading" links (Towards AI / Medium — link only):
 
 **Hard rule:** never ingest exam-dump or reverse-engineered official questions
 into any course bank. Graded questions come only from the Intent Solutions banks
-(`content/cca/banks/`) and future originally-authored items.
+(`cca/banks/`) and future originally-authored items.
 
 ---
 

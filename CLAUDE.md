@@ -35,9 +35,14 @@ fork's voice. Branding belongs in the theme layer
 - `deploy/now-lms-fixed` — the deployed line. Base PRs here.
 - `main` — tracks upstream (currently well behind; see `FORK.md`).
 
-⚠️ PRs into `deploy/now-lms-fixed` currently run **no test job** — `python.yml`
-triggers only on `main`/`development`. Run `dev/test.sh` locally before trusting
-a green PR.
+⚠️ PRs into `deploy/now-lms-fixed` are gated by `deploy-line-ci.yml` ("Deploy line
+CI"), which exists precisely because upstream's `python.yml` never runs on this
+branch. **Lint is blocking** there (ruff + flake8 + `pylint --fail-under=9.5`);
+the PostgreSQL pytest run is **advisory** (`continue-on-error: true`) until the
+v2.0.0 sync repairs the suite. So a green PR proves lint, not tests — run the
+Postgres pytest path locally before trusting one. Note `dev/lint.sh` is itself
+broken on this branch (it calls the missing `dev/ensure_headers.py`; upstream
+#217 fixed that, and the fix arrives with the sync) — use `dev/test.sh`.
 
 ## Task tracking — beads
 
@@ -46,6 +51,45 @@ This repo uses **bd (beads)**. Run `bd prime` for the full workflow, and prefer
 
 Issues are prefixed `now-lms` (e.g. `now-lms-0oy`). The database is **local only**
 — see below before pushing anything.
+
+### The three-way circle: bead ↔ GitHub issue ↔ Plane issue (MANDATORY)
+
+Every tracked unit of work exists in **three** places, and **each record carries
+the other two IDs**. Not a chain — a circle. Given any one of the three you can
+reach the other two without searching.
+
+| Layer | Where | Must contain |
+|---|---|---|
+| **Bead** (source of truth) | local `bd`, prefix `now-lms` | `GitHub:` line + `Plane:` line |
+| **GitHub issue** | `intent-solutions-io/now-lms` | `**Beads:**` line + `**Plane:**` line |
+| **Plane issue** | project **LEARN** (`projects.intentsolutions.io`) | `Beads:` line + `GitHub:` line |
+
+Current set (verified 2026-07-27):
+
+| Bead | GitHub | Plane |
+|---|---|---|
+| `now-lms-bdv` | #22 | LEARN-1 |
+| `now-lms-wy6` | #23 | LEARN-2 |
+| `now-lms-maa` | #24 | LEARN-3 |
+| `now-lms-xvr` | #27 | LEARN-4 |
+
+**Creating work:** (1) `bd create` → (2) `gh issue create` with the `**Beads:**`
+line → (3) Plane issue in LEARN with `Beads:` + `GitHub:` → (4)
+`bd-sync link <bead> --gh intent-solutions-io/now-lms#N --plane LEARN-N` to plant
+the cross-refs. `bd-sync link` **requires `--gh`** — `--plane` alone is rejected,
+so create the GitHub issue even when the work feels Plane-shaped.
+
+**Changing state:** always `bd-sync note` / `bd-sync close`, never raw `bd close`
+— raw closes are mirror-blind and leave GitHub and Plane stale-open.
+
+**Granularity:** one GitHub issue per logical cluster (an epic), never one per
+task bead. Task beads live under their parent epic and get no issue of their own.
+
+**Plane structure** follows the Kobiton pattern: **modules are dated milestones**
+(M1…M4), each grouping its issues, and each module's description carries the
+*reasoning* — why this approach over the alternative — not just a title. Modules
+are off by default on API-created projects; enable with a REST
+`PATCH {"module_view": true}` (the Plane MCP has no `update_project`).
 
 ### ⚠️ Do NOT run `bd dolt push` from this repository yet
 

@@ -1,11 +1,11 @@
 # Attributions — CCA-F prep curriculum
 
-The lesson prose in `content/cca/lessons/` is originally authored by Intent
+The lesson prose in `cca/lessons/` is originally authored by Intent
 Solutions. Where it was *informed by* MIT-licensed open-source study materials,
 those projects are credited below per their license terms. No MIT-licensed prose
 is copied verbatim; we cite the projects as references that informed structure
 and coverage. Graded questions come only from Intent Solutions' own banks
-(`content/cca/banks/`).
+(`cca/banks/`).
 
 ---
 
@@ -84,7 +84,7 @@ SOFTWARE.
 
 ## Intent Solutions question banks
 
-`content/cca/banks/*.json` are Intent Solutions IP (authored in-house from the
+`cca/banks/*.json` are Intent Solutions IP (authored in-house from the
 official CCA-F Exam Guide blueprint; no question reproduced from Anthropic's exam
 or any third-party bank). Each question carries its own `source` field, which the
 importer preserves into the question's explanation as attribution.

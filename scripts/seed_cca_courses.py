@@ -1,9 +1,9 @@
 #!/usr/bin/env python3.12
 """Idempotent seeder for the preliminary CCA-F prep curriculum on NOW-LMS.
 
-Builds four courses (see ``COURSES`` below) from the vendored Intent Solutions
-question banks (``content/cca/banks/*.json``) and the authored lesson prose
-(``content/cca/lessons/<course-dir>/<domainKey>.md``):
+Builds four courses (see ``COURSES`` below) from the Intent Solutions question
+banks (``<content>/banks/*.json``) and the authored lesson prose
+(``<content>/lessons/<course-dir>/<domainKey>.md``):
 
   * Course 0 — Getting Started on Intent Solutions Learn (onboarding, no exam)
   * Course A — Claude Foundations (Associate onramp)
@@ -21,9 +21,19 @@ The importer is a pure DB operation and is **idempotent**: it guards on the
 course ``codigo`` already existing and skips that whole course, so re-running
 adds nothing. Each course is committed independently.
 
-Run it in the app container exactly like the demo-course seed::
+**The curriculum is not in this repository.** Teaching content (banks + lesson
+prose) lives in the private ``intent-solutions-io/intent-curriculum`` repo:
+publishing graded answer keys beside the courses that grade them is an
+assessment-integrity problem, and this fork is public so it can carry platform
+fixes upstream. Point ``CCA_CONTENT_DIR`` at a checkout of that repo's ``cca/``
+directory::
 
-    docker compose exec -T app python3.12 scripts/seed_cca_courses.py
+    git clone git@github.com:intent-solutions-io/intent-curriculum.git
+    docker compose exec -T -e CCA_CONTENT_DIR=/path/to/intent-curriculum/cca \\
+        app python3.12 scripts/seed_cca_courses.py
+
+Production is already seeded and the importer is idempotent, so this is needed
+only for a reseed or a disaster-recovery rebuild.
 
 Question shape (per bank item): ``{id, domain, domainName, domainKey, text,
 options[], answerIndex, rationale, source}``. Mapping onto NOW-LMS:
@@ -35,13 +45,18 @@ from __future__ import annotations
 
 import json
 import sys
+from os import environ
 from pathlib import Path
 
-# Repo root is scripts/.. — resolve content paths relative to it, not cwd, so
-# the script works from any working directory inside the container.
+# The curriculum lives in the private intent-curriculum repo, not here, so the
+# content root is supplied at run time. Falls back to the historical in-repo
+# path so a checkout that still has content/cca (e.g. an old tag) keeps working;
+# _require_content_dir() below turns a missing directory into a clear message
+# instead of a confusing FileNotFoundError deep in the import.
 REPO_ROOT = Path(__file__).resolve().parent.parent
-BANKS_DIR = REPO_ROOT / "content" / "cca" / "banks"
-LESSONS_DIR = REPO_ROOT / "content" / "cca" / "lessons"
+CONTENT_DIR = Path(environ.get("CCA_CONTENT_DIR") or (REPO_ROOT / "content" / "cca"))
+BANKS_DIR = CONTENT_DIR / "banks"
+LESSONS_DIR = CONTENT_DIR / "lessons"
 
 # Column limits from now_lms/db/__init__.py (Question.text 1000, explanation
 # 1000, QuestionOption.text 500). The current banks fit, but guard anyway so a
@@ -256,7 +271,31 @@ def _create_course(db, models, spec: dict) -> None:
         db.select(Curso).filter_by(codigo=spec["codigo"])
     ).scalar_one_or_none()
     if existing is not None:
-        print(f"  [skip] course '{spec['codigo']}' already exists — no changes")
+        # Belt-and-braces for pre-gating databases (e.g. a backup restored from
+        # before the 2026-07-27 gating SQL ran): an existing course is left
+        # structurally untouched, but its VISIBILITY is enforced — a reseed must
+        # never leave a CCA course (or its free-preview resources, which leak
+        # the outline) publicly listed. Idempotent: no-op when already gated.
+        flipped = []
+        if existing.publico:
+            existing.publico = False
+            flipped.append("curso")
+        public_resources = (
+            db.session.execute(
+                db.select(models["CursoRecurso"]).filter_by(curso=spec["codigo"], publico=True)
+            )
+            .scalars()
+            .all()
+        )
+        for recurso in public_resources:
+            recurso.publico = False
+        if public_resources:
+            flipped.append(f"{len(public_resources)} recurso(s)")
+        if flipped:
+            db.session.commit()
+            print(f"  [gate] course '{spec['codigo']}' exists — publico=False enforced on {', '.join(flipped)}")
+        else:
+            print(f"  [skip] course '{spec['codigo']}' already exists — no changes")
         return
 
     curso = Curso(
@@ -520,8 +559,27 @@ def _delete_course(db, models, code: str) -> bool:
     return True
 
 
+def _require_content_dir() -> None:
+    """Fail fast, and explain where the curriculum actually lives."""
+    if BANKS_DIR.is_dir() and LESSONS_DIR.is_dir():
+        return
+    print(
+        f"ERROR: curriculum content not found at {CONTENT_DIR}\n"
+        "\n"
+        "The teaching content is NOT in this repository — it lives in the private\n"
+        "intent-solutions-io/intent-curriculum repo. Clone it and point this script\n"
+        "at its cca/ directory:\n"
+        "\n"
+        "    git clone git@github.com:intent-solutions-io/intent-curriculum.git\n"
+        "    CCA_CONTENT_DIR=/path/to/intent-curriculum/cca python3.12 scripts/seed_cca_courses.py\n",
+        file=sys.stderr,
+    )
+    raise SystemExit(2)
+
+
 def main() -> int:
     """Seed all four courses inside the app context. Returns a shell exit code."""
+    _require_content_dir()
     # When run as a script, sys.path[0] is this file's directory (scripts/), not
     # the repo root, so the ``now_lms`` package next to it isn't importable.
     # Put the repo root first so ``import now_lms`` resolves regardless of cwd.
