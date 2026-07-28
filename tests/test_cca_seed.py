@@ -149,30 +149,21 @@ def test_build_specs_includes_rick_practice_exams():
 
 
 @pytest.fixture
-def cca_db():
-    """Self-contained in-memory DB context for the importer.
+def cca_db(app):
+    """App context for the importer against the suite's shared database.
 
-    Deliberately does NOT reuse the suite's ``app``/``db_session`` fixtures:
-    those run ``init_app()``, which stamps Alembic instead of creating the
-    schema and leaves some tables (e.g. ``ad_sense``) missing on a fresh SQLite
-    ``:memory:`` DB. We only need the ORM tables the importer touches, so we
-    create the full schema with ``create_all()`` and tear it down after.
+    v2.0.0's conftest owns the schema lifecycle (session-scoped creation +
+    TRUNCATE cleanup between tests), so this fixture must NOT create or drop
+    anything: the previous self-managed ``create_all()``/``drop_all()`` pair
+    destroyed tables the conftest expects but ``create_all()`` cannot rebuild
+    (``system_info`` is not in the model metadata), cascading hundreds of
+    failures through every later test file in a full-suite run.
+
+    The one thing it guarantees: the ``default`` certificate template that
+    ``Curso.plantilla_certificado``'s FK implicitly needs on PostgreSQL
+    (get-or-create — v2's initial data may have seeded it already).
     """
-    import os
-
-    os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
-    os.environ.setdefault("SECRET_KEY", "test-secret-key")
-    import now_lms
-
-    app = now_lms.lms_app
     with app.app_context():
-        database.create_all()
-        # Curso.plantilla_certificado defaults to 'default' and PostgreSQL
-        # enforces the FK to certificado.code (SQLite silently tolerates the
-        # dangling reference) — ensure the template the model implicitly needs
-        # exists. Get-or-create, not insert: v2.0.0's initial data can seed a
-        # 'default' certificate itself, and a blind insert then violates
-        # ix_certificado_code (found on the sync branch's first PG run).
         existing_default = database.session.execute(
             database.select(Certificado).filter_by(code="default")
         ).scalar_one_or_none()
@@ -188,11 +179,7 @@ def cca_db():
                 )
             )
             database.session.commit()
-        try:
-            yield database.session
-        finally:
-            database.session.remove()
-            database.drop_all()
+        yield database.session
 
 
 @pytest.fixture
