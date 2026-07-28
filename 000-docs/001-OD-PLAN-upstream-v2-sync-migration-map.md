@@ -136,6 +136,18 @@ removal (a privacy improvement — do not regress it) and its test.
 Also must survive: **`ce1d2cb`** (the `mailto:` address fix, fork PR #13) — newer
 than this triage, on `fix/mailto-address-encoding`.
 
+**Also must survive: the `feat/request-access` series (2026-07-27, waiting list +
+gated practice surfaces — record the merge hashes here when the PR lands).** It
+adds `now_lms/vistas/request_access.py` (a NEW file with zero imports from
+`static_pages.py`, so the split cannot orphan it), the themed intake page, the
+practice-tracks teaser override, the gated-course 302, and the extended deploy
+smoke. The smoke now hard-fails unless `/request-access` serves, `/course/explore`
+is the teaser, and `/contact` 404s — a sync deploy physically cannot pass while
+dropping this work. At the sync, verify the `from now_lms.db import
+ContactMessage` path still resolves under v2.0.0 and that the two small core
+edits (enable_contact 404 in the contact route; anonymous 302 in
+`vistas/courses/base.py::curso`) are re-applied against their v2 successors.
+
 ---
 
 ## 3. Correction: Max's PR #6 is *not* superseded
@@ -301,7 +313,7 @@ Reason it stays mandatory despite the guards: `20260725_120000` moves a live
   |---|---|---|
   | `themes/intent_learn/footer.j2:1` | `get_footer_pages()` | `get_custom_pages()` |
   | `themes/intent_learn/footer.j2:13` | `url_for('static_pages.view_page')` | `custom_pages.view_page` |
-  | `themes/intent_learn/footer.j2:43` | `url_for('static_pages.contact')` | `contact.contact_form` |
+  | `themes/intent_learn/footer.j2` (contact li) | ~~`url_for('static_pages.contact')`~~ → now `url_for('request_access.request_access')` (2026-07-27) | No change needed — the fork blueprint survives the split. |
   | `themes/intent_learn/navbar.j2:80` | `url_for('static_pages.contact')` | `contact.contact_form` |
 
   ⛔ **These must land WITH the sync, not before it.** The fork registers
