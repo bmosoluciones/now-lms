@@ -265,7 +265,10 @@ def _create_course(db, models, spec: dict) -> None:
         descripcion_corta=_truncate(spec["descripcion_corta"], 280),
         descripcion=_truncate(spec["descripcion"], 1000),
         estado="open",
-        publico=True,
+        # Courses are gated (2026-07-27): members reach them via enrollment, the
+        # public catalog is the practice-tracks teaser. A reseed must not
+        # resurrect a publicly listed course.
+        publico=False,
         modalidad="self_paced",
         nivel=spec["nivel"],
         duracion=spec.get("duracion", 4),

@@ -7,7 +7,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from werkzeug.wrappers import Response
 
@@ -56,6 +56,13 @@ def contact() -> str | Response:
 
     config_row = database.session.execute(database.select(Configuracion)).first()
     config = config_row[0] if config_row else None
+
+    # Honor the admin toggle: while contact is disabled this page must not serve.
+    # Fork-local fix, deliberately disposable — this module dies at the v2.0.0
+    # sync (upstream split it into contact.py, which carries the same bug; the
+    # fix is offered upstream as its own PR).
+    if not (config and config.enable_contact):
+        abort(404)
 
     if request.method == "POST":
         name = request.form.get("name", "").strip()
@@ -133,11 +140,17 @@ def edit_page(page_id: str) -> str | Response:
 def list_contact_messages() -> str:
     """List all contact messages."""
     status_filter = request.args.get("status", "all")
+    subject_query = request.args.get("q", "").strip()
 
     query = database.select(ContactMessage).order_by(ContactMessage.creado.desc())
 
     if status_filter != "all":
         query = query.filter(ContactMessage.status == status_filter)
+
+    # Subject filter so waiting-list rows are one URL away:
+    # /admin/contact-messages?q=[ACCESS] (the access-request discriminator).
+    if subject_query:
+        query = query.filter(ContactMessage.subject.like(f"%{subject_query}%"))
 
     messages = database.session.execute(query).scalars().all()
 
