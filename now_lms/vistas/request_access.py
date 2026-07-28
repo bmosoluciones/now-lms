@@ -138,10 +138,17 @@ def _rate_limited(ip: str) -> bool:
         if len(bucket) >= _RATE_LIMIT_POSTS:
             return True
         bucket.append(now)
-        # Bounded memory: drop drained buckets for other IPs.
+        # Bounded memory: expire other IPs' stale entries, then drop drained
+        # buckets. Without the expiry pass, one-shot IPs that never return
+        # would hold their timestamps (and their bucket) forever.
         if len(_RATE_BUCKETS) > 1000:
-            for key in [k for k, v in _RATE_BUCKETS.items() if not v]:
-                del _RATE_BUCKETS[key]
+            for key, other in list(_RATE_BUCKETS.items()):
+                if key == ip:
+                    continue
+                while other and now - other[0] > _RATE_LIMIT_WINDOW:
+                    other.popleft()
+                if not other:
+                    del _RATE_BUCKETS[key]
         return False
 
 
@@ -177,7 +184,10 @@ def _notify_slack(name: str, building_snippet: str) -> None:
         log.warning("SLACK_WEBHOOK_LEADS_CONTACT is not set; access request stored without a Slack ping.")
         return
     try:
-        admin_url = url_for("static_pages.list_contact_messages", _external=True) + "?q=%5BACCESS%5D"
+        # Path only, never _external=True: an external URL would be derived from
+        # the request Host header, letting a crafted POST poison the staff-facing
+        # link (Greptile P1 on PR #25). Staff open it against the admin origin.
+        admin_path = url_for("static_pages.list_contact_messages") + "?q=%5BACCESS%5D"
         payload = {
             "text": f"New access request: {name}",
             "unfurl_links": False,
@@ -196,7 +206,7 @@ def _notify_slack(name: str, building_snippet: str) -> None:
                 },
                 {
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": f"<{admin_url}|Review in the admin panel>"},
+                    "text": {"type": "plain_text", "text": f"Review in the admin panel: {admin_path}", "emoji": False},
                 },
             ],
         }
