@@ -82,6 +82,7 @@
 
 .isl-section-head.center .isl-kicker::after { display: none; }
 
+.isl-section-head h1,
 .isl-section-head h2 {
     max-width: 16ch;
     margin: 0 0 1.1rem;
@@ -395,8 +396,60 @@
 .isl-footer-bottom a { color: #aeb7b9; }
 .isl-footer-bottom a:hover { color: #fff; }
 
+/* Request-access intake (/request-access) — same composition, form-shaped. */
+.isl-ra { border-bottom: 0; }
+.isl-ra-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(3rem, 7vw, 6.5rem); align-items: start; }
+.isl-ra-copy h1 { max-width: 12ch; margin: 0 0 1.4rem; color: var(--graphite); font-family: var(--font-display); font-size: clamp(2.6rem, 4.6vw, 4rem); font-weight: 650; letter-spacing: -0.05em; line-height: 1; text-wrap: balance; }
+.isl-ra-lede { max-width: 52ch; margin: 0; color: rgb(var(--ink-dim)); font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.66; }
+.isl-ra-wave { max-width: 52ch; margin: 1.4rem 0 0; padding-top: 1.25rem; border-top: 1px solid rgb(var(--line)); color: rgb(var(--ink-faint)); font-size: 0.88rem; }
+.isl-ra-alt { margin: 1.4rem 0 0; color: rgb(var(--ink-faint)); font-family: var(--font-mono); font-size: 0.72rem; }
+.isl-ra-alt a { color: var(--signal-dark); }
+
+.isl-ra-panel { border: 0; border-left: 1px solid rgb(var(--line)); border-radius: 0; background: transparent; padding: 0.25rem 0 0.25rem clamp(1.75rem, 4vw, 3rem); }
+.isl-ra-form { display: grid; gap: 1.15rem; }
+.isl-ra-field label { display: block; margin-bottom: 0.4rem; color: var(--graphite); font-size: 0.83rem; font-weight: 650; }
+.isl-ra-field label .opt { color: rgb(var(--ink-faint)); font-weight: 400; }
+.isl-ra-field input,
+.isl-ra-field textarea {
+    display: block;
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid rgb(var(--line));
+    border-radius: 0.25rem;
+    background: var(--canvas);
+    color: var(--graphite);
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+.isl-ra-field input:focus,
+.isl-ra-field textarea:focus { border-color: var(--graphite); outline: none; }
+.isl-ra-field textarea { resize: vertical; min-height: 5.5rem; }
+.isl-ra-form .isl-btn { justify-self: start; }
+.isl-ra-error { margin: 0.35rem 0 0; color: var(--signal-dark); font-size: 0.8rem; }
+.isl-ra-privacy { margin: 0; color: rgb(var(--ink-faint)); font-size: 0.72rem; }
+.isl-ra-privacy a { color: var(--blueprint); text-decoration: underline; }
+/* Honeypot: visually removed, still submittable by naive bots. */
+.isl-ra-hp { position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.isl-ra-confirm h2 { margin: 0 0 0.8rem; color: var(--graphite); font-family: var(--font-display); font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 650; letter-spacing: -0.03em; }
+.isl-ra-confirm p { max-width: 48ch; margin: 0 0 1.6rem; color: rgb(var(--ink-dim)); }
+.isl-ra-confirm a:not(.isl-btn) { color: var(--signal-dark); }
+
+/* Practice-tracks teaser (/course/explore) — the click-deeper page. */
+.isl-tracks-list { display: grid; gap: 0; }
+.isl-track { border-top: 1px solid rgb(var(--line)); padding: 1.6rem 0; }
+.isl-track h3 { margin: 0 0 0.45rem; color: var(--graphite); font-family: var(--font-display); font-size: 1.15rem; font-weight: 650; }
+.isl-track p { max-width: 62ch; margin: 0; color: rgb(var(--ink-dim)); font-size: 0.9rem; }
+.isl-tracks-notes { margin-top: 0.5rem; border-top: 1px solid rgb(var(--line)); padding-top: 1.4rem; }
+.isl-tracks-notes p { max-width: 62ch; margin: 0 0 0.7rem; color: rgb(var(--ink-faint)); font-size: 0.83rem; }
+.isl-tracks-notes p strong { color: var(--graphite); }
+.isl-tracks-member { margin: 0 0 1.6rem; padding: 0.9rem 1.1rem; border-left: 4px solid var(--signal); background: var(--paper); color: rgb(var(--ink-dim)); font-size: 0.88rem; }
+.isl-tracks-member a { color: var(--signal-dark); font-weight: 650; }
+
 @media (max-width: 980px) {
     .isl-nav > a.link { display: none; }
+    .isl-ra-grid { grid-template-columns: 1fr; }
+    .isl-ra-panel { border-left: 0; border-top: 1px solid rgb(var(--line)); padding: 2rem 0 0; }
     .isl-hero-grid,
     .isl-paths { grid-template-columns: 1fr; }
     .isl-hero-copy h1 { max-width: 15ch; }
