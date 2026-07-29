@@ -15,7 +15,7 @@ from typing import Any, cast
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import requests
-from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from flask import Response as FlaskResponse
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
@@ -43,30 +43,28 @@ paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, ur
 @cache.cached(timeout=50)
 def check_paypal_enabled() -> bool:
     """Check if PayPal payments are enabled."""
-    with current_app.app_context():
-        try:
-            row = database.session.execute(database.select(PaypalConfig)).first()
-            if row is None:
-                return False
-            q = row[0]
-            enabled = q.enable
-            return enabled
-        except OperationalError:
+    try:
+        row = database.session.execute(database.select(PaypalConfig)).first()
+        if row is None:
             return False
+        q = row[0]
+        enabled = q.enable
+        return enabled
+    except OperationalError:
+        return False
 
 
 @cache.cached(timeout=50)
 def get_site_currency() -> str:
     """Get the site's default currency from configuration."""
-    with current_app.app_context():
-        try:
-            row = database.session.execute(database.select(Configuracion)).first()
-            if row is None:
-                return "USD"
-            config = row[0]
-            return config.moneda or "USD"  # Default to USD if not configured
-        except OperationalError:
+    try:
+        row = database.session.execute(database.select(Configuracion)).first()
+        if row is None:
             return "USD"
+        config = row[0]
+        return config.moneda or "USD"  # Default to USD if not configured
+    except OperationalError:
+        return "USD"
 
 
 def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: bool = False) -> dict[str, object]:

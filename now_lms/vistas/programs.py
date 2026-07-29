@@ -617,21 +617,28 @@ def tomar_programa(codigo: str) -> str | Response:
     )
 
     # Check if program is complete and issue certificate if needed
+    cert = None
     if verificar_programa_completo(current_user.usuario, codigo) and programa.certificado:
-        certificacion_existente = database.session.execute(
+        cert = database.session.execute(
             database.select(CertificacionPrograma).filter(
                 CertificacionPrograma.usuario == current_user.usuario, CertificacionPrograma.programa == programa.id
             )
         ).scalar_one_or_none()
 
-        if not certificacion_existente and programa.plantilla_certificado:
+        if not cert and programa.plantilla_certificado:
             _emitir_certificado_programa(codigo, current_user.usuario, programa.plantilla_certificado)
+            cert = database.session.execute(
+                database.select(CertificacionPrograma).filter(
+                    CertificacionPrograma.usuario == current_user.usuario, CertificacionPrograma.programa == programa.id
+                )
+            ).scalar_one_or_none()
 
     return render_template(
         "learning/programas/tomar_programa.html",
         programa=programa,
         progreso=progreso,
         cursos_programa=cursos_programa,
+        cert=cert,
     )
 
 

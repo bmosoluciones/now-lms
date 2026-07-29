@@ -21,7 +21,7 @@
                 paymentCancelled: {{ _('Pago cancelado por el usuario.') | tojson }},
                 errorLoadingButtons: {{ _('Error al cargar los botones de PayPal. Por favor recargue la página.') | tojson }},
                 errorInitializing: {{ _('Error al inicializar PayPal. Por favor recargue la página.') | tojson }},
-                errorConfirmingPayment: {{ _('Error al confirmar el pago después de %(max)s intentos. Por favor contacte soporte con el ID de orden: %(order)s') | tojson }},
+                errorConfirmingPayment: {{ _('Error al confirmar el pago después de %(max)s intentos. Por favor contacte soporte con el ID de orden: %(order)s', max='%(max)s', order='%(order)s') | tojson }},
                 errorInvalidCourse: {{ _('Error: Datos del curso inválidos.') | tojson }},
                 verifyingPayment: {{ _('Verificando estado del pago...') | tojson }},
                 errorLoadingPayPal: {{ _('Error al cargar PayPal') | tojson }},
