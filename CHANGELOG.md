@@ -9,6 +9,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Operational (no code change):
+ - 2026-07-28: founding-members beta provisioned on production from the intent-os estate
+   session — 50 users (6 admin / 44 student), 49 enrollments each in `IS-START` +
+   `CCA-F`, progress rows seeded, weekly digest cron live. Constraints + full record:
+   `000-docs/012-OD-AACR-founding-members-provisioned-on-prod-2026-07-28.md`.
+
 ## [1.2.4] - 2026-05-12
 
 ### Changed:
