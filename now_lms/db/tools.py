@@ -106,6 +106,15 @@ def verifica_estudiante_asignado_a_curso(id_curso: str | None = None) -> bool:
                 if pago.estado == "completed" or pago.audit:
                     return True
                 return False
+            # An enrollment with no Pago row is legitimate on a FREE course: the
+            # admin enrollment routes and any bulk/scripted enrollment create
+            # EstudianteCurso with pago=None. Requiring a payment record here
+            # locked those students out of courses they are enrolled in, because
+            # this helper is what `permitir_estudiante` and the resource routes
+            # gate on. Paid courses still require a completed or audit payment.
+            curso = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).scalars().first()
+            if curso is not None and not curso.pagado:
+                return True
             return False
         return False
     return False
