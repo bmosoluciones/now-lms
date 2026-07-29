@@ -51,8 +51,16 @@ engineering standard — never offered upstream (see `FORK.md`).
   full-history secret scan in `security-scans.yml` (2026-07-28).
 - L3: pytest, 51 test files; coverage measured via `--cov=now_lms` (CI +
   `dev/test.sh`), not gated.
-- L4: PostgreSQL-backed pytest in CI, advisory (`continue-on-error`) until
-  the v2.0.0 sync — see Baseline.
+- L4: PostgreSQL-backed pytest in CI, advisory (`continue-on-error`). The
+  stated flip condition (v2.0.0 sync repairs the suite) was met 2026-07-29 —
+  the blocking flip is due (bead `now-lms-dbq`).
+- L6: **browser E2E — Playwright** (`e2e/`, installed 2026-07-29): real
+  waitress subprocess + seeded scratch DB; pins the U12 founding-member
+  lockout shape (enrollment with `pago=NULL` on a free course must open
+  lessons; mutation-checked — the suite fails against the pre-fix helper).
+  Advisory CI job `Browser E2E (Playwright — advisory)` in
+  `deploy-line-ci.yml`; deps in `e2e/requirements.txt`, deliberately outside
+  the hash-pinned `test.lock`.
 - L6/L7: `features/*.feature` (engineer-owned, hash-pinned) +
   `scripts/deploy-smoke.sh` production smoke.
 
@@ -72,9 +80,16 @@ this branch (missing `dev/ensure_headers.py`) — use `dev/test.sh`.
 
 ## Last audit
 
-2026-07-28 — `/audit-tests`, grade C+ (70/100). Report: `TEST_AUDIT.md`
-(transient). Gaps closed same day: L0 harness, L1 hook chain, L3 coverage
-visibility, L6 feature specs, traceability scaffolds.
+2026-07-29 — `/audit-tests`, grade B- (78/100). Report: `TEST_AUDIT.md`
+(transient). P0 closed same session: L6 browser E2E installed (Playwright,
+6 tests, U12 regression pin mutation-checked). Remaining: L4 blocking flip
+(`now-lms-dbq`), 96 smoke-only assertion burn-down (P2). Post-sync baseline:
+full PG suite = 1 known test-infra flake
+(`test_session_multiworker.py::test_initial_setup_session_table_verification_success`,
+Flask teardown weakref) — any other failure is a regression.
+
+Prior: 2026-07-28 — C+ (70/100); closed same day: L0 harness, L1 hook chain,
+L3 coverage visibility, L6 feature specs, traceability scaffolds.
 
 ## Traceability
 

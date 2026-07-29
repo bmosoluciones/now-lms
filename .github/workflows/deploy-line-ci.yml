@@ -126,3 +126,33 @@ jobs:
                   sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
                   sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
                   pytest --tb=short -q --cov=now_lms --cov-report=term
+
+    e2e:
+        # Browser-level L6: the member journey (login -> course -> lesson) that
+        # every lower layer missed when U12 locked the whole cohort out on
+        # 2026-07-28. ADVISORY on arrival per tests/TESTING.md policy (new
+        # gates ship advisory; promotion to blocking is a deliberate separate
+        # change alongside the L4 flip tracked in bead now-lms-dbq).
+        name: Browser E2E (Playwright — advisory)
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        continue-on-error: true
+
+        steps:
+            - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.7
+
+            - name: Set up Python 3.12
+              uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v4.6.0
+              with:
+                  python-version: "3.12"
+
+            - name: Install app dependencies (hash-pinned)
+              run: python -m pip install --require-hashes -r test.lock
+
+            - name: Install E2E layer
+              run: |
+                  python -m pip install -r e2e/requirements.txt
+                  python -m playwright install --with-deps chromium
+
+            - name: Run browser E2E (SQLite-backed scratch app)
+              run: python -m pytest e2e/ -q --tb=short
