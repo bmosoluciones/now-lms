@@ -57,7 +57,9 @@ services:
       ADMIN_PSWD: ${LMS_ADMIN_PSWD:?set LMS_ADMIN_PSWD}
       NOW_LMS_DATA_DIR: /app/data
       NOW_LMS_THEMES_DIR: /app/themes
+      NOW_LMS_LANG: en                # English UI (app defaults to Spanish)
       NOW_LMS_FORCE_HTTPS: "1"        # behind the Caddy TLS terminator
+      NOW_LMS_TRUSTED_PROXY: "*"      # trust Caddy's X-Forwarded-* (app is loopback-bound; only Caddy reaches it)
       WSGI_SERVER: waitress          # single-process — avoids multi-worker session loss (no Redis in v1)
       FLASK_ENV: production          # flips SESSION_COOKIE_SECURE on (session_config.py keys off this)
       # Optional: best-effort Slack ping for /request-access submissions. The
