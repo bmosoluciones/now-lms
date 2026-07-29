@@ -1371,7 +1371,11 @@ def recurso_file(course_code: str, recurso_code: str) -> Response:
         .scalars()
         .first()
     )
+    if doc is None:
+        abort(404)
     config = current_app.upload_set_config.get(doc.base_doc_url)
+    if config is None:
+        abort(404)
 
     if current_user.is_authenticated:
         if (
