@@ -214,6 +214,22 @@ above: the provable-deploy work referenced by #14 (Dockerfile `BUILD_SHA`
 block, `scripts/deploy-vps.sh`, volinit, extended smoke) — it is the source of
 the `Dockerfile` residual conflict and must survive as a unit.
 
+**Also must survive — the 2026-07-28→29 hardening + rollout set (appended at
+the fifth pass; already cherry-picked onto `sync/v2.0.0` 2026-07-29, sync-side
+SHAs listed so a rebuild can verify presence):**
+
+| Deploy-line commit | On `sync/v2.0.0` as | What |
+|---|---|---|
+| `81a738c` (PR #35) | `142167b` | intake rate-limiter bounding (sweep interval + hard cap), webhook scheme guard, gitleaks digest pin, minimax action SHA pin, smoke 404-arm removal |
+| `2beb3c6` (PR #35) | `9b794ef` | regression tests for the rate limiter's sweep-interval and hard-cap behavior |
+| `6bccd59` + `d0c0e5f` | `88a81ea` (squashed) | founding-members provisioning AAR — **redacted form only**; never re-pick `6bccd59` alone, it republishes member PII + the ingress single point of failure |
+| `84fd06b` | `cdc257b` | `ops/lms/` provisioning + digest tooling (repo-owned, audit findings F3–F7 fixed) |
+
+⚠️ Standing rule from the rollout: prod now carries **49 live member accounts +
+enrollments** — the sync's migration rehearsal is only valid against a
+**post-provisioning** snapshot, and any deploy needs a fresh pre-sync snapshot
++ the previous image tag recoverable before it starts.
+
 ---
 
 ## 3. Correction: Max's PR #6 is *not* superseded
