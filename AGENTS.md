@@ -98,14 +98,14 @@ When adding a new migration to a populated DB, do `alembic upgrade` not `create_
 
 ## CI vs `dev/test.sh` — these are NOT the same
 
-- **`deploy-line-ci.yml` — the gate that actually fires on this branch** (`push` + `PR` to `deploy/now-lms-fixed`, Py 3.12): ruff + flake8 + `pylint --fail-under=9.5` are **blocking**; the PostgreSQL pytest run is **advisory** (`continue-on-error: true`) until the v2.0.0 sync repairs the suite. It exists because upstream's `python.yml` never runs here. **A green deploy-line PR proves lint, not tests** — run the Postgres pytest path locally before trusting one.
+- **`deploy-line-ci.yml` — the gate that actually fires on this branch** (`push` + `PR` to `deploy/now-lms-fixed`, Py 3.12): ruff + flake8 + `pylint --fail-under=9.5`, the PostgreSQL pytest suite, AND the Playwright browser-E2E job (`e2e/`) are all **blocking** since the v2.0.0 sync landed (2026-07-29, bead `now-lms-dbq`). It exists because upstream's `python.yml` never runs here. A green deploy-line PR proves lint + tests + the member browser journey.
 - **`ai-code-review.yml`**: the MiniMax reviewer on deploy-line PRs (fork-local, commit `c897582`). Greptile reviews via its GitHub App.
 - **`python.yml`** (`push` + `PR` to `main`/`development`, Py 3.11–3.14): `pip install --require-hashes -r test.lock` → `python -m build` + `twine check` → `pybabel compile` → `pytest`. **No lint.** ⚠️ Never fires on the deploy line, and half its trigger is dead — this fork has no `development` branch.
 - **`release.yml`** (PR to `main` + `workflow_run` after CI): `test.lock` install → SQLite + Postgres + MySQL pytest runs (multi-DB paths NOT covered locally) → lint gate (`flake8`, `mypy`, `ruff`, `pylint --fail-under=9`). Codecov gate.
 - **`dev/test.sh`**: flake8 + ruff + pylint (9.5) + mypy + pybabel compile + pytest. Stricter pylint than `release.yml` — expects 9.5 not 9.0.
 - **`dev/lint.sh`**: black + pylint (9.5) + prettier + (broken) `ensure_headers.py`. Not run in CI, and broken on this branch — see the dev-commands note.
 
-A green `python.yml` is **not** enough — Postgres/MySQL paths are only exercised in `release.yml` against live containers. On the deploy line, `python.yml` does not run at all; `deploy-line-ci.yml` is the gate, and its test half is advisory.
+A green `python.yml` is **not** enough — Postgres/MySQL paths are only exercised in `release.yml` against live containers. On the deploy line, `python.yml` does not run at all (upstream deleted it at v2.0.0); `deploy-line-ci.yml` is the gate, and its test half is blocking.
 
 ## Testing
 

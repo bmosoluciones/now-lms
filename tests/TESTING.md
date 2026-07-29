@@ -51,16 +51,18 @@ engineering standard — never offered upstream (see `FORK.md`).
   full-history secret scan in `security-scans.yml` (2026-07-28).
 - L3: pytest, 51 test files; coverage measured via `--cov=now_lms` (CI +
   `dev/test.sh`), not gated.
-- L4: PostgreSQL-backed pytest in CI, advisory (`continue-on-error`). The
-  stated flip condition (v2.0.0 sync repairs the suite) was met 2026-07-29 —
-  the blocking flip is due (bead `now-lms-dbq`).
+- L4: PostgreSQL-backed pytest in CI — **blocking** since 2026-07-29 (bead
+  `now-lms-dbq`; the flip condition — v2.0.0 sync repairs the suite — was
+  met the same day). Default collection is scoped to `tests/` via
+  `pytest.ini testpaths` so bare `pytest` never trips over `e2e/`.
 - L6: **browser E2E — Playwright** (`e2e/`, installed 2026-07-29): real
   waitress subprocess + seeded scratch DB; pins the U12 founding-member
   lockout shape (enrollment with `pago=NULL` on a free course must open
   lessons; mutation-checked — the suite fails against the pre-fix helper).
-  Advisory CI job `Browser E2E (Playwright — advisory)` in
-  `deploy-line-ci.yml`; deps in `e2e/requirements.txt`, deliberately outside
-  the hash-pinned `test.lock`.
+  CI job `Browser E2E (Playwright)` in `deploy-line-ci.yml` — shipped
+  advisory, promoted to **blocking** the same night (owner call, after a
+  green first run on the GitHub runner). Deps in `e2e/requirements.txt`,
+  deliberately outside the hash-pinned `test.lock`.
 - L6/L7: `features/*.feature` (engineer-owned, hash-pinned) +
   `scripts/deploy-smoke.sh` production smoke.
 

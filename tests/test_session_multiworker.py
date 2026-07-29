@@ -157,6 +157,10 @@ def test_initial_setup_session_table_verification_success(monkeypatch):
     monkeypatch.setattr("now_lms.crear_paginas_estaticas_predeterminadas", MagicMock())
     monkeypatch.setattr("now_lms.populate_custmon_data_dir", MagicMock())
     monkeypatch.setattr("now_lms.populate_custom_theme_dir", MagicMock())
+    # v2.0.0's initial_setup ends with alembic.stamp(); this bare Flask app was
+    # never alembic.init_app'd, so the real extension KeyErrors on its weakref
+    # registry. Mock it like every other collaborator above.
+    monkeypatch.setattr("now_lms.alembic", MagicMock())
 
     initial_setup(flask_app=app)
 

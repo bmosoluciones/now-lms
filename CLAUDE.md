@@ -37,12 +37,11 @@ fork's voice. Branding belongs in the theme layer
 
 ⚠️ PRs into `deploy/now-lms-fixed` are gated by `deploy-line-ci.yml` ("Deploy line
 CI"), which exists precisely because upstream's `python.yml` never runs on this
-branch. **Lint is blocking** there (ruff + flake8 + `pylint --fail-under=9.5`);
-the PostgreSQL pytest run is **advisory** (`continue-on-error: true`) until the
-v2.0.0 sync repairs the suite. So a green PR proves lint, not tests — run the
-Postgres pytest path locally before trusting one. Note `dev/lint.sh` is itself
-broken on this branch (it calls the missing `dev/ensure_headers.py`; upstream
-#217 fixed that, and the fix arrives with the sync) — use `dev/test.sh`.
+branch. Since the v2.0.0 sync landed (2026-07-29, PR #41) **everything blocks**:
+lint (ruff + flake8 + `pylint --fail-under=9.5`), the PostgreSQL pytest suite,
+and the Playwright browser-E2E job (`e2e/` — the member journey; see
+`tests/TESTING.md`). A green PR now proves lint + tests + the browser journey.
+The advisory era is over (bead `now-lms-dbq`).
 
 ## Task tracking — beads
 

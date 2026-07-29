@@ -96,11 +96,11 @@ jobs:
             #      String(20) here; upstream has since widened it to 150).
             #   2. The fork's i18n layer changed messages to English while the inherited
             #      tests still assert the Spanish text.
-            # Both classes are replaced wholesale by the v2.0.0 sync (upstream widened
-            # the columns and updated the assertions), so hand-fixing ~40 tests now is
-            # work the sync deletes. Until the sync lands: lint is BLOCKING, tests are
-            # visible but advisory. Flip this to blocking at the sync -- tracked with the
-            # deploy-integrity work in issue #14.
+            # Both classes were replaced wholesale by the v2.0.0 sync, which landed
+            # 2026-07-29 (PR #41): the suite went from ~40 pre-existing failures to
+            # green. This step is BLOCKING as of that landing (bead now-lms-dbq) —
+            # the advisory period existed only to avoid gating on inherited failures,
+            # and its justification is gone.
             # Coverage is MEASURED here, deliberately not GATED: no --cov-fail-under,
             # no Codecov upload on the deploy line. This is the first time coverage is
             # visible on the branch's real gate (dev/test.sh measures it locally, but
@@ -108,8 +108,7 @@ jobs:
             # threshold in the same change as the first measurement would redden the
             # line on a number nobody has seen yet; ratcheting is a separate, deliberate
             # decision once a baseline exists (tracked with the sync work in #14).
-            - name: Tests (PostgreSQL — advisory until the v2.0.0 sync repairs the suite)
-              continue-on-error: true
+            - name: Tests (PostgreSQL — blocking)
               env:
                   CI: "True"
                   SECRET_KEY: deploy-line-ci-test-key
@@ -130,13 +129,13 @@ jobs:
     e2e:
         # Browser-level L6: the member journey (login -> course -> lesson) that
         # every lower layer missed when U12 locked the whole cohort out on
-        # 2026-07-28. ADVISORY on arrival per tests/TESTING.md policy (new
-        # gates ship advisory; promotion to blocking is a deliberate separate
-        # change alongside the L4 flip tracked in bead now-lms-dbq).
-        name: Browser E2E (Playwright — advisory)
+        # 2026-07-28. Shipped advisory per tests/TESTING.md policy, promoted to
+        # BLOCKING the same night (owner call, bead now-lms-dbq) after a green
+        # first run on the GitHub runner and a mutation-check proving the U12
+        # pin fails against the pre-fix helper.
+        name: Browser E2E (Playwright)
         runs-on: ubuntu-latest
         timeout-minutes: 20
-        continue-on-error: true
 
         steps:
             - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.7
