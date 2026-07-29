@@ -58,7 +58,12 @@ services:
       NOW_LMS_DATA_DIR: /app/data
       NOW_LMS_THEMES_DIR: /app/themes
       NOW_LMS_LANG: en                # English UI (app defaults to Spanish)
-      NOW_LMS_FORCE_HTTPS: "1"        # behind the Caddy TLS terminator
+      # v2.0.0's in-container Caddy rewrites X-Forwarded-Proto to {scheme} (=http on
+      # the loopback hop from the HOST Caddy), so app-level FORCE_HTTPS 301-loops the
+      # whole site. The host edge terminates TLS and enforces the http->https redirect
+      # itself; the app must NOT second-guess it. Cookie security is unaffected
+      # (SESSION_COOKIE_SECURE keys off FLASK_ENV, below).
+      NOW_LMS_FORCE_HTTPS: "0"
       NOW_LMS_TRUSTED_PROXY: "*"      # trust Caddy's X-Forwarded-* (app is loopback-bound; only Caddy reaches it)
       WSGI_SERVER: waitress          # single-process — avoids multi-worker session loss (no Redis in v1)
       FLASK_ENV: production          # flips SESSION_COOKIE_SECURE on (session_config.py keys off this)
