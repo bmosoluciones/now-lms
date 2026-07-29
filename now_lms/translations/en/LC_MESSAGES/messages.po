@@ -12063,7 +12063,7 @@ msgstr "You have successfully enrolled in the master class."
 #: now_lms/vistas/masterclass.py:124
 #, python-format
 msgid "Inscribirse en %(title)s"
-msgstr "Sign up for the Course"
+msgstr "Sign up for %(title)s"
 
 #: now_lms/vistas/masterclass.py:198
 msgid "Clase magistral creada exitosamente."
@@ -12080,7 +12080,7 @@ msgstr "Edit Master Class"
 #: now_lms/vistas/masterclass.py:304
 #, python-format
 msgid "Estudiantes - %(title)s"
-msgstr "Enrolled students"
+msgstr "%(title)s - Students"
 
 #: now_lms/vistas/masterclass.py:358
 msgid "Administrar Clases Magistrales"
@@ -13001,7 +13001,7 @@ msgstr "Online"
 #: now_lms/vistas/courses/resources.py:1799
 #, python-format
 msgid "Enlace: %(url)s"
-msgstr "link"
+msgstr "Link: %(url)s"
 
 #: now_lms/vistas/courses/resources.py:1835
 #: now_lms/vistas/courses/resources.py:1858
