@@ -311,8 +311,25 @@ def tomar_curso(course_code: str) -> str | Response:
             .first()
         )
 
+        # The take template gates every resource link (and hides the enroll
+        # button) on `permitir_estudiante`, but no route ever passed it — so
+        # every enrolled student saw a link-less outline plus an "Enroll"
+        # button, and clicking it stacked duplicate enrollments. Upstream bug,
+        # present before the v2.0.0 sync. `.first()` deliberately tolerates
+        # the duplicate rows that bug already created.
+        student_enrollment = (
+            database.session.execute(
+                database.select(EstudianteCurso).filter_by(
+                    curso=course_code, usuario=current_user.usuario, vigente=True
+                )
+            )
+            .scalars()
+            .first()
+        )
+
         return render_template(
             get_course_take_template(),
+            permitir_estudiante=bool(student_enrollment),
             curso=curso_obj,
             secciones=database.session.execute(select(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice))
             .scalars()
@@ -346,6 +363,9 @@ def moderar_curso(course_code: str) -> str | Response:
     if current_user.tipo in ("moderator", "admin"):
         return render_template(
             get_course_take_template(),
+            # Moderators/admins always see the full resource list (same
+            # template gate as the student take view — see tomar_curso).
+            permitir_estudiante=True,
             curso=database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first(),
             secciones=database.session.execute(select(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice))
             .scalars()

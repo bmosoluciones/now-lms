@@ -93,7 +93,9 @@ def verifica_estudiante_asignado_a_curso(id_curso: str | None = None) -> bool:
             (
                 database.session.execute(
                     database.select(EstudianteCurso).filter(
-                        EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == id_curso
+                        EstudianteCurso.usuario == current_user.usuario,
+                        EstudianteCurso.curso == id_curso,
+                        EstudianteCurso.vigente == True,  # noqa: E712
                     )
                 )
             )
@@ -106,6 +108,14 @@ def verifica_estudiante_asignado_a_curso(id_curso: str | None = None) -> bool:
                 if pago.estado == "completed" or pago.audit:
                     return True
                 return False
+            # Enrollment without a payment record: valid for a FREE course.
+            # Admin/bulk enrollment paths create EstudianteCurso rows with
+            # pago=NULL, and requiring a pago here locked every such student
+            # out of their courses (the template's permitir_estudiante gate
+            # and the resource routes both run through this helper).
+            curso = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).scalars().first()
+            if curso is not None and not curso.pagado:
+                return True
             return False
         return False
     return False

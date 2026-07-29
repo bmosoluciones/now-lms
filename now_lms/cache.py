@@ -110,8 +110,16 @@ def cache_key_with_auth_state() -> str:
     """
     from flask import request
 
-    # Include authentication state in the cache key
-    auth_state = "auth" if (current_user and current_user.is_authenticated) else "anon"
+    # Include the user IDENTITY, not just the auth-or-anon flag. Pages cached
+    # under these keys (course take/moderate, etc.) render per-user data —
+    # evaluation attempts, certificates, enrollment state — so keying on a
+    # shared "auth" bucket serves one member's cached page to every other
+    # member the moment a real cache backend (Redis) is configured.
+    # (Fork finding U10, offered upstream.)
+    if current_user and current_user.is_authenticated:
+        auth_state = f"user:{current_user.usuario}"
+    else:
+        auth_state = "anon"
 
     # Build key from request path and auth state
     key = f"view/{request.path}/{auth_state}"
