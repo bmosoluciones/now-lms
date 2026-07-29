@@ -884,16 +884,41 @@ class ResetPasswordForm(FlaskForm):
 
 
 class PagoForm(FlaskForm):
-    """Formulario para crear un pago."""
+    """Formulario para crear un pago.
+
+    The billing-address fields are only required when there is actually
+    something to bill. Set ``requires_billing = False`` (see
+    ``vistas/courses/enrollment.py``) for a free or fully-discounted
+    enrollment; the template then hides those fields and the form still
+    validates. Paid enrollments keep requiring a full address.
+    """
 
     nombre = StringField(validators=[DataRequired()])
     apellido = StringField(validators=[DataRequired()])
     correo_electronico = StringField(validators=[DataRequired()])
-    direccion1 = StringField(validators=[DataRequired()])
+    direccion1 = StringField(validators=[Optional()])
     direccion2 = StringField()
-    pais = StringField(validators=[DataRequired()])
-    provincia = StringField(validators=[DataRequired()])
-    codigo_postal = StringField(validators=[DataRequired()])
+    pais = StringField(validators=[Optional()])
+    provincia = StringField(validators=[Optional()])
+    codigo_postal = StringField(validators=[Optional()])
+
+    #: Whether this submission must carry a billing address. The route sets it
+    #: from ``Curso.pagado`` before validating.
+    requires_billing = True
+
+    def validate(self, extra_validators=None) -> bool:
+        """Validate, enforcing the billing address only when it is required."""
+        valid = super().validate(extra_validators)
+
+        if not self.requires_billing:
+            return valid
+
+        for field in (self.direccion1, self.pais, self.provincia, self.codigo_postal):
+            if not (field.data or "").strip():
+                field.errors = list(field.errors) + [_("Este campo es obligatorio.")]
+                valid = False
+
+        return valid
 
 
 # ---------------------------------------------------------------------------------------

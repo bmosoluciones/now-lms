@@ -244,6 +244,10 @@ def course_enroll(course_code: str) -> str | Response:
         flash(pricing.validation_error, "warning")
 
     form = PagoForm()
+    # A free (or fully-discounted) enrollment has nothing to bill, so the
+    # billing address is neither collected nor required. The template hides
+    # those fields for the same condition.
+    form.requires_billing = not _is_free_enrollment(_curso, pricing.final_price)
     coupon_form = CouponApplicationForm()
 
     # Pre-fill form data only on GET requests to avoid overwriting user submission on POST
