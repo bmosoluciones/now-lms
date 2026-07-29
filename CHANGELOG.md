@@ -9,6 +9,26 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [2.0.1] - 2026-07-29
+
+### Added:
+ - Confirm and complete UI translation catalogs (EN, PT_BR).
+ - Harden system security with HTTP Security Headers (CSP, HSTS).
+ - Support Waitress reverse proxy via `NOW_LMS_TRUSTED_PROXY`.
+ - Populate bundled frontend assets when `node_modules` is missing.
+
+### Fixed:
+ - MAIL_USE_TLS/MAIL_USE_SSL coercion bug where `str.capitalize()` mismatch prevented match arms from firing.
+ - Missing `%(title)s` / `%(url)s` format specifiers in three English translations.
+ - ProxyFix `NameError` in WSGI initialization.
+
+### Dependencies:
+ - bleach: 6.3.0 → 6.4.0
+ - redis: 7.4.0 → 8.0.1
+ - weasyprint: 68.1 → 69.0
+ - flask-reuploaded: 1.5.0 → 1.6.0
+ - ruff: 0.15.22 → 0.16.0
+
 ## [2.0.0] - 2026-07-26
 
 > **BREAKING: This release requires manual migration. Existing installations will fail at runtime if themes are not updated. See [Migration Guide](https://bmosoluciones.github.io/now-lms/blog/2026/07/26/page-refactoring-breaking-changes/).**
