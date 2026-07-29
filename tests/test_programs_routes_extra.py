@@ -231,9 +231,9 @@ def test_delete_program_scenarios(client, db_session, extra_prog_setup):
 
 def test_program_explore_parameters(client, db_session, extra_prog_setup):
     """Test public explore with advanced filters and query strings."""
-    # Create a public program and link category and tag
+    # Create a public program and link category and tag (ensure program code is max 10 chars)
     prog = Programa(
-        codigo="PROG_EXPLORE",
+        codigo="PRG_EXPL",
         nombre="Explore Me",
         descripcion="desc",
         creado_por="admin_prog_ex",
@@ -330,21 +330,21 @@ def test_program_checkout_errors(client, db_session, extra_prog_setup):
     response = client.get("/program/NONEXISTENT/payment")
     assert response.status_code == 302
 
-    # 2. Free program payment request -> redirected
+    # 2. Free program payment request -> redirected (ensure program code is max 10 chars)
     free_prog = Programa(
-        codigo="PROG_FREE_PAY",
+        codigo="PRG_FRPAY",
         nombre="Free Pay",
         precio=0.0,
         creado_por="admin_prog_ex",
     )
     db_session.add(free_prog)
     db_session.commit()
-    response = client.get("/program/PROG_FREE_PAY/payment")
+    response = client.get("/program/PRG_FRPAY/payment")
     assert response.status_code == 302
 
-    # 3. Paid program with PayPal disabled
+    # 3. Paid program with PayPal disabled (ensure program code is max 10 chars)
     paid_prog = Programa(
-        codigo="PROG_PAID_PAY",
+        codigo="PRG_PDPAY",
         nombre="Paid Pay",
         precio=100.0,
         creado_por="admin_prog_ex",
@@ -358,7 +358,7 @@ def test_program_checkout_errors(client, db_session, extra_prog_setup):
         paypal_cfg.enable = False
         db_session.commit()
 
-    response = client.get("/program/PROG_PAID_PAY/payment")
+    response = client.get("/program/PRG_PDPAY/payment")
     assert response.status_code == 302
 
 
@@ -462,8 +462,9 @@ def test_gestionar_cursos_programa_failures_and_actions(client, db_session, extr
 
 def test_inscribir_usuario_programa_failures(client, db_session, extra_prog_setup):
     """Test manual student enrollment into programs by admin."""
+    # Ensure program code is max 10 chars
     prog = Programa(
-        codigo="PROG_MAN_EX",
+        codigo="PRG_MAN",
         nombre="Manual Prog",
         descripcion="desc",
         creado_por="admin_prog_ex",
@@ -475,7 +476,7 @@ def test_inscribir_usuario_programa_failures(client, db_session, extra_prog_setu
 
     # 1. User not found
     response = client.post(
-        "/program/PROG_MAN_EX/enroll_user",
+        "/program/PRG_MAN/enroll_user",
         data={"usuario_email": "nonexistent@test.com"},
         follow_redirects=True,
     )
@@ -483,7 +484,7 @@ def test_inscribir_usuario_programa_failures(client, db_session, extra_prog_setu
 
     # 2. Success
     response = client.post(
-        "/program/PROG_MAN_EX/enroll_user",
+        "/program/PRG_MAN/enroll_user",
         data={"usuario_email": "stud_p_ex@example.com"},
         follow_redirects=True,
     )
@@ -491,7 +492,7 @@ def test_inscribir_usuario_programa_failures(client, db_session, extra_prog_setu
 
     # 3. Already enrolled
     response = client.post(
-        "/program/PROG_MAN_EX/enroll_user",
+        "/program/PRG_MAN/enroll_user",
         data={"usuario_email": "stud_p_ex@example.com"},
         follow_redirects=True,
     )
@@ -500,8 +501,9 @@ def test_inscribir_usuario_programa_failures(client, db_session, extra_prog_setu
 
 def test_admin_enrollment_additional_coverage(client, db_session, extra_prog_setup):
     """Test admin program enrollment edge cases."""
+    # Ensure program code is max 10 chars
     prog = Programa(
-        codigo="PROG_ADMIN_EX",
+        codigo="PRG_ADM",
         nombre="Admin Prog Ex",
         descripcion="desc",
         creado_por="admin_prog_ex",
@@ -513,7 +515,7 @@ def test_admin_enrollment_additional_coverage(client, db_session, extra_prog_set
 
     # 1. Nonexistent student
     response = client.post(
-        "/program/PROG_ADMIN_EX/admin/enroll",
+        "/program/PRG_ADM/admin/enroll",
         data={"student_username": "nonexistent_stud", "bypass_payment": True},
         follow_redirects=True,
     )
@@ -522,21 +524,21 @@ def test_admin_enrollment_additional_coverage(client, db_session, extra_prog_set
     # 2. Duplicate student enrollment
     # Enroll once
     client.post(
-        "/program/PROG_ADMIN_EX/admin/enroll",
+        "/program/PRG_ADM/admin/enroll",
         data={"student_username": "stud_p_ex", "bypass_payment": True},
         follow_redirects=True,
     )
     # Enroll again -> warning
     response = client.post(
-        "/program/PROG_ADMIN_EX/admin/enroll",
+        "/program/PRG_ADM/admin/enroll",
         data={"student_username": "stud_p_ex", "bypass_payment": True},
         follow_redirects=True,
     )
     assert b"ya est\xc3\xa1 inscrito en este programa" in response.data
 
-    # 3. Unenroll student who is not enrolled in a different program
+    # 3. Unenroll student who is not enrolled in a different program (ensure program code is max 10 chars)
     prog2 = Programa(
-        codigo="PROG_ADMIN_EX2",
+        codigo="PRG_ADM2",
         nombre="Admin Prog Ex 2",
         descripcion="desc",
         creado_por="admin_prog_ex",
@@ -545,7 +547,7 @@ def test_admin_enrollment_additional_coverage(client, db_session, extra_prog_set
     db_session.commit()
 
     response = client.post(
-        "/program/PROG_ADMIN_EX2/admin/unenroll/stud_p_ex",
+        "/program/PRG_ADM2/admin/unenroll/stud_p_ex",
         follow_redirects=True,
     )
     assert b"no est\xc3\xa1 inscrito en este programa" in response.data

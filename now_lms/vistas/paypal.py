@@ -15,7 +15,7 @@ from typing import Any, cast
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import requests
-from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from flask import Response as FlaskResponse
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
