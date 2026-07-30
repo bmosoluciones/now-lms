@@ -64,16 +64,45 @@ them through the [Crowdin project](https://crowdin.com/project/now-lms) (source 
 `CHANGELOG.md` at the repo root is **upstream's** — do not add fork entries to it (merge tax); the
 fork's own change record is this file.
 
-## Open upstream contributions
+## Upstream contributions
 
-- [`bmosoluciones/now-lms#179`](https://github.com/bmosoluciones/now-lms/pull/179) — fix: bootstrap
-  a fresh PostgreSQL database correctly on first boot (three linked fresh-DB boot defects).
-  Rebased on `upstream/main`, regression test added, verified on real PostgreSQL. Open, waiting on
-  the maintainer.
-- [`bmosoluciones/now-lms#181`](https://github.com/bmosoluciones/now-lms/issues/181) — offer of a
-  complete English catalog (routed through the maintainer's Crowdin project, not a raw `.po` PR),
-  plus an offer to upstream the i18n `_()`/`_l()` wrapping that makes ~500 currently-hardcoded
-  Spanish strings extractable in the first place. Open, disclosure-first, waiting on the maintainer.
+**Merged (6).** `#179` fresh-PostgreSQL bootstrap · `#214` `ProxyFix` used an undefined
+`app` · `#215` `NOW_LMS_TRUSTED_PROXY` · `#216` assets populate under a custom data dir ·
+`#217` dangling `ensure_headers.py` call in `dev/lint.sh` · **`#226`** mail
+`MAIL_USE_TLS`/`MAIL_USE_SSL` boolean coercion — the maintainer closed our `#223` and
+cherry-picked the commit *plus* our 63-line test file into his own PR.
+
+**Open (7), all sent 2026-07-29.** Each is single-purpose and mutation-checked — the
+lesson of `#223`, which was closed in favour of a cherry-pick because it bundled more
+than the mail fix.
+
+| PR | What |
+|---|---|
+| [#227](https://github.com/bmosoluciones/now-lms/pull/227) | free-course access denied when the enrollment carries no payment record — the defect that locked out our whole cohort |
+| [#228](https://github.com/bmosoluciones/now-lms/pull/228) | `PagoForm.pais` is a `StringField` rendered with `form-select`, so the country field reads as a broken dropdown |
+| [#229](https://github.com/bmosoluciones/now-lms/pull/229) | a free course demands a full billing address before it will enroll anyone |
+| [#231](https://github.com/bmosoluciones/now-lms/pull/231) | 129 form labels resolve at import time; **and** `dev/lang.sh` never declared `-k _l`, so lazily-labelled strings are absent from the catalogue entirely |
+| [#232](https://github.com/bmosoluciones/now-lms/pull/232) | nine themes load ionicons from a CDN on every page; no template uses `<ion-icon>` |
+| [#233](https://github.com/bmosoluciones/now-lms/pull/233) | re-submitting the enrollment form adds a second enrollment row (the paid path already upserts) |
+| [#234](https://github.com/bmosoluciones/now-lms/pull/234) | unique constraint on `(usuario, curso)` plus a dedup migration, verified on real PostgreSQL |
+
+**Filed as a question, not a PR** —
+[#230](https://github.com/bmosoluciones/now-lms/issues/230): should `/contact` honour
+`enable_contact`, or is the flag navigation-only by design? Adding the 404 reddens 4 of
+his 11 contact tests and `is_contact_enabled()`'s docstring says "in navigation", so the
+current behaviour may be deliberate. The patch is ready and offered pending his call.
+
+**Also open, older.**
+[`#181`](https://github.com/bmosoluciones/now-lms/issues/181) — offer of a complete
+English catalog routed through the maintainer's Crowdin project rather than a raw `.po`
+PR.
+
+**Held deliberately.** The four access-control findings (U7–U10) stay private until
+`GHSA-3w27-xggq-j59p` moves out of triage. No public PRs on those, and no write-ups.
+
+**Standing rule learned here:** anything touching schema or constraints is verified
+against **PostgreSQL**, not SQLite. SQLite's permissiveness is what let ~34 strictness
+bugs hide in the suite before the v2.0.0 sync.
 
 ## Fork-local changes carried on `deploy/now-lms-fixed`
 

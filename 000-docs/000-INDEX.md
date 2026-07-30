@@ -28,6 +28,8 @@ files with an 8+ doc cluster, and we are far under both thresholds.
 | [009-AT-ADEC-native-contact-message-storage.md](009-AT-ADEC-native-contact-message-storage.md) | ADR-4 (2026-07-27, Accepted): access requests store in the native ContactMessage table with an `[ACCESS]` subject discriminator — no bespoke model, no migration, native admin surface. |
 | [010-AT-ADEC-gate-courses-doctrine-teaser.md](010-AT-ADEC-gate-courses-doctrine-teaser.md) | ADR-5 (2026-07-27, Accepted): gate all courses/resources/programs; `/course/explore` becomes a doctrine-voice practice-tracks teaser; anonymous gated-course hits 302 to the intake. |
 | [011-PP-PLAN-waiting-list-gated-surfaces.md](011-PP-PLAN-waiting-list-gated-surfaces.md) | Waiting-list + gated practice surfaces execution plan (locked 2026-07-27): /request-access intake, practice-tracks teaser, contact fix, course gating, security ship-gate, upstream PR queue U1–U10, founder-locked copy and decisions. |
+| [012-OD-AACR-founding-members-provisioned-on-prod-2026-07-28.md](012-OD-AACR-founding-members-provisioned-on-prod-2026-07-28.md) | After-action record (2026-07-28): the founding-member cohort provisioned on production from the intent-os estate session, plus the standing constraints for this repo's sessions. **Redacted** for the public repo — the unredacted evidence lives in the private intent-os record. |
+| [013-OD-AACR-v2-sync-landing-and-upstream-queue-2026-07-29.md](013-OD-AACR-v2-sync-landing-and-upstream-queue-2026-07-29.md) | After-action record (2026-07-29): the v2.0.0 sync landing on production, the cohort-wide access lockout and its fix, testing gates going from advisory to blocking, the eight upstream patches, the public-history rewrite, and what is still open. Read with 012 and 007. |
 
 ## Architecture Decisions (the ADR log)
 
@@ -89,5 +91,6 @@ do not "fix" them into 000-docs:
 Category codes (CC) and document types (ABCD) come from the canonical standard —
 `~/.claude/skills/doc-filing/references/000-DR-STND-document-filing-system.md`.
 Used here: `PP-PROD` (PRD), `PP-PLAN` (plans), `AT-ADEC` (architecture
-decision records), `OD-CHNG` (ops change management), `DR-REFF` (reference
-docs), `BL-POLI` (policy), `BL-LICN` (licensing/attribution).
+decision records), `OD-CHNG` (ops change management), `OD-AACR` (after-action
+records), `DR-REFF` (reference docs), `BL-POLI` (policy), `BL-LICN`
+(licensing/attribution).

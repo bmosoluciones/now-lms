@@ -9,7 +9,37 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Fixed:
+ - **Free-course access**: `verifica_estudiante_asignado_a_curso` required a completed
+   payment record even on free courses, so every bulk-provisioned member was locked out
+   of their courses while the page still rendered 200 with an Enroll button. Offered
+   upstream as [#227](https://github.com/bmosoluciones/now-lms/pull/227).
+ - **View-cache keys** now include user identity instead of only an auth/anon flag —
+   required before running a real cache backend. Offered upstream (U10 queue).
+ - Compose: app-level `NOW_LMS_FORCE_HTTPS` disabled, because v2.0.0's in-container
+   Caddy rewrites `X-Forwarded-Proto` and the app then 301-loops every request.
+ - Compose: restored `NOW_LMS_LANG=en` and `NOW_LMS_TRUSTED_PROXY`, dropped by the
+   sync rebuild.
+
+### Added:
+ - **Redis** for sessions and the view cache (`REDIS_URL`), appendonly + named volume.
+ - **Browser E2E layer** (`e2e/`, Playwright): boots the real app and walks the member
+   journey — login → course → lesson — plus the anonymous gating boundary. Pins the
+   free-course access regression above.
+ - `ops/lms/` — the LMS provisioning and progress-digest tooling now lives in this repo,
+   with reactivation made opt-in and reversible, rollback covering all user paths, and
+   the digest covering the whole cohort rather than only `tipo='student'`.
+
+### Changed:
+ - Deploy-line CI: the **PostgreSQL suite and the browser E2E job now block** (they were
+   advisory pending the v2.0.0 sync, which has landed). A green deploy-line PR now
+   proves lint + tests + the member browser journey.
+
 ### Operational (no code change):
+ - 2026-07-29: upstream **v2.0.0 sync landed on production** (PR #41), rehearsed against
+   a post-provisioning snapshot; public history rewritten to purge curriculum and member
+   PII. Eight patches sent upstream. Full record:
+   `000-docs/013-OD-AACR-v2-sync-landing-and-upstream-queue-2026-07-29.md`.
  - 2026-07-28: founding-members beta provisioned on production from the intent-os estate
    session — 50 users (6 admin / 44 student), 49 enrollments each in `IS-START` +
    `CCA-F`, progress rows seeded, weekly digest cron live. Constraints + full record:
