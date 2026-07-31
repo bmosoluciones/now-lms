@@ -16,7 +16,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, Curso, DocenteCurso, database
 from now_lms.forms import CourseAnnouncementForm
@@ -55,7 +55,7 @@ def get_instructor_courses(instructor_user) -> list:
 @instructor_announcements.route("/instructor/announcements", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def list_announcements() -> str:
     """Lista de anuncios de curso para instructores."""
     # Obtener cursos del instructor

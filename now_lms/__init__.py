@@ -629,7 +629,6 @@ def _register_error_handlers(flask_app):
     flask_app.register_error_handler(PaymentRequired, handle_402)
 
     @flask_app.errorhandler(403)
-    @cache.cached()
     def error_403(error):
         """Pagina personalizada para recursos no autorizados."""
         if not current_user.is_authenticated:
@@ -641,7 +640,6 @@ def _register_error_handlers(flask_app):
         return render_template("error_pages/403.html", error=error), 403
 
     @flask_app.errorhandler(404)
-    @cache.cached()
     def error_404(error):
         """Pagina personalizada para recursos no encontrados."""
         if not current_user.is_authenticated:
@@ -652,7 +650,6 @@ def _register_error_handlers(flask_app):
         return render_template("error_pages/404.html", error=error), 404
 
     @flask_app.errorhandler(405)
-    @cache.cached()
     def error_405(error):
         """Pagina personalizada para metodos no permitidos."""
         log.warning(f"Method not allowed: {error}")

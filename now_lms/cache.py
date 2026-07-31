@@ -131,6 +131,23 @@ def cache_key_with_auth_state() -> str:
     return key
 
 
+
+def cache_key_with_query_string() -> str:
+    """Cache key for public pages whose output varies by query string only.
+
+    Flask-Caching's default view key is ``"view/%s" % request.path`` with
+    ``query_string=False``, so ``?tag=x`` collapses onto the unfiltered page and
+    one filtered listing is served for another. Use this where the page is the
+    same for every visitor but differs by its query parameters; use
+    `cache_key_with_auth_state` when the output also depends on who is asking.
+    """
+    from flask import request
+
+    key = f"view/{request.path}"
+    if request.query_string:
+        key += f"?{request.query_string.decode('utf-8')}"
+    return key
+
 def cache_incr(key: str, timeout: int = 60) -> int:
     """Incrementa un contador en cache de forma atómica.
 
