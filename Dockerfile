@@ -104,8 +104,11 @@ ARG BUILD_SHA
 RUN test -n "${BUILD_SHA}" && echo "${BUILD_SHA}" > /app/BUILD_SHA
 LABEL io.intentsolutions.commit="${BUILD_SHA}"
 
-# Compile application translations
-RUN pybabel compile -d /app/now_lms/translations
+# Compile application translations. The freshness gate catches stale .mo
+# files (root-cause fix for the demo 'Gender rendered in Spanish' bug class)
+# and fails the build if any locale's catalog cannot resolve its sentinels.
+RUN pybabel compile -d /app/now_lms/translations \
+    && python -m now_lms.i18n_autocompile --check
 
 # Add Tini for process reaping
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
