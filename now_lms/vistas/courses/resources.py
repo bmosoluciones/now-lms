@@ -167,6 +167,29 @@ def _student_can_view_resource(course_id: str) -> bool:
     return current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_id)
 
 
+def _course_allows_public_preview(course_id: str) -> bool:
+    """Return whether a course may expose its `publico` resources to anonymous visitors.
+
+    A resource's own `publico` flag is not sufficient on its own: the course that owns it
+    must also still be public and open. Without this check a free-preview resource stays
+    readable after its course is unpublished, made private, or switched to paid. This
+    mirrors `_public_course_access()` in `now_lms.vistas.courses.base`.
+    """
+    curso = database.session.execute(select(Curso).filter(Curso.codigo == course_id)).scalars().first()
+    return bool(curso and curso.publico and curso.estado == "open")
+
+
+def _resource_is_viewable(course_id: str, recurso: CursoRecurso) -> bool:
+    """Return whether the current user may view this resource.
+
+    Either they are entitled to the course (enrolled student, assigned instructor, admin),
+    or the resource is a free preview AND its course is still public and open.
+    """
+    if _student_can_view_resource(course_id):
+        return True
+    return bool(recurso.publico) and _course_allows_public_preview(course_id)
+
+
 def _resource_completion(course_id: str, resource_id: str) -> bool:
     """Return completion status for the current user and resource."""
     if not current_user.is_authenticated:
@@ -185,7 +208,14 @@ def _resource_completion(course_id: str, resource_id: str) -> bool:
 @resources.route("/course/<curso_id>/resource/<resource_type>/<codigo>", methods=["GET"])
 def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
     CURSO = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
-    RECURSO = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo)).scalars().first()
+    # Filter on the course as well as the resource id: `curso_id` is attacker-controlled,
+    # and without this a resource can be rendered in the context of an unrelated course.
+    # The sibling routes in this module already filter on both.
+    RECURSO = (
+        database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo, CursoRecurso.curso == curso_id))
+        .scalars()
+        .first()
+    )
     if not RECURSO:
         abort(404)
 
@@ -204,9 +234,7 @@ def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
 
     INDICE = crear_indice_recurso(codigo)
 
-    show_resource = _student_can_view_resource(curso_id)
-
-    if show_resource or RECURSO.publico:
+    if _resource_is_viewable(curso_id, RECURSO):
         recurso_completado = _resource_completion(curso_id, codigo)
 
         user_progress: dict[int, dict[str, bool]] = {}
@@ -1470,6 +1498,14 @@ def slide_show(recurso_code: str) -> str:
     recurso = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == recurso_code)).scalars().first()
     if not recurso:
         abort(404)
+
+    # This route carried no authorization check at all, so it served slideshows from
+    # draft, private and paid courses to anonymous visitors. The neighbouring
+    # `preview_slideshow` is @login_required and `editar_slideshow` additionally
+    # requires the instructor profile; this brings the public route in line with the
+    # rest of the module by reusing the same gate `pagina_recurso` uses.
+    if not _resource_is_viewable(recurso.curso, recurso):
+        abort(403)
 
     if recurso.external_code:
         slideshow = database.session.get(SlideShowResource, recurso.external_code)
