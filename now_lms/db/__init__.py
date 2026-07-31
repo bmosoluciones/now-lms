@@ -267,8 +267,8 @@ class Curso(database.Model, BaseTabla):
     recertification_required = database.Column(database.Boolean(), default=False)
     recertification_period_years = database.Column(database.Integer(), nullable=True)
 
-    secciones = database.relationship("CursoSeccion", lazy="dynamic")
-    recursos = database.relationship("CursoRecurso", lazy="dynamic")
+    secciones = database.relationship("CursoSeccion", lazy="dynamic", back_populates="rel_curso")
+    recursos = database.relationship("CursoRecurso", lazy="dynamic", back_populates="rel_curso")
     inscripciones = database.relationship("EstudianteCurso", lazy="dynamic")
     user_events = database.relationship("UserEvent", back_populates="course")
 
@@ -344,7 +344,7 @@ class CursoSeccion(database.Model, BaseTabla):
     curso = database.Column(
         database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
     )
-    rel_curso = database.relationship("Curso", foreign_keys=curso)
+    rel_curso = database.relationship("Curso", foreign_keys=curso, back_populates="secciones")
     nombre = database.Column(database.String(100), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
     indice = database.Column(database.Integer(), index=True)
@@ -363,7 +363,7 @@ class CursoRecurso(database.Model, BaseTabla):
     curso = database.Column(
         database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
     )
-    rel_curso = database.relationship("Curso")
+    rel_curso = database.relationship("Curso", back_populates="recursos")
     user_events = database.relationship("UserEvent", back_populates="resource")
     nombre = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.Text(), nullable=False)
