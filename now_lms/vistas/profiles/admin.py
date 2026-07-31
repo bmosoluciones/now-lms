@@ -23,7 +23,7 @@ from werkzeug.wrappers import Response
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.bi import cambia_tipo_de_usuario_por_id
-from now_lms.cache import cache
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificacion, ContactMessage, Curso, CursoRecurso
 from now_lms.db import EstudianteCurso, Usuario, database
@@ -41,7 +41,7 @@ admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_
 @admin_profile.route("/admin/panel", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
-@cache.cached(timeout=90)
+@cache.cached(timeout=90, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def pagina_admin() -> str:
     """Perfil de usuario administrador."""
     # Get admin statistics
@@ -105,7 +105,7 @@ def pagina_admin() -> str:
 @admin_profile.route("/admin/users/list", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def usuarios() -> str:
     """Lista de usuarios con acceso a al aplicación."""
     CONSULTA = database.paginate(
@@ -174,7 +174,7 @@ def eliminar_usuario(user_id: str) -> Response:
 @admin_profile.route("/admin/users/list_inactive", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def usuarios_inactivos() -> str:
     """Lista de usuarios con acceso a al aplicación."""
     CONSULTA = database.paginate(
@@ -193,7 +193,7 @@ def usuarios_inactivos() -> str:
 @admin_profile.route("/admin/users/list_unverified", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def usuarios_sin_verificar() -> str:
     """Lista de usuarios que no han verificado su correo electrónico."""
     CONSULTA = database.paginate(

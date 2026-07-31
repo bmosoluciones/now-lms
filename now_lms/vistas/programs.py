@@ -181,7 +181,7 @@ def nuevo_programa() -> str | Response:
 @program.route("/program/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def programas() -> str:
     """Lista de programas."""
     if current_user.tipo == "admin":
