@@ -9,7 +9,7 @@
         {{ current_theme.local_style() }}
         <style>
             .moderator-header {
-                background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%);
+                background: linear-gradient(135deg, #20c997 0%, #12b886 100%);
                 color: white;
                 border-radius: 10px;
                 margin-bottom: 2rem;
@@ -67,24 +67,24 @@
                         <div class="w-100">
                             <div class="row">
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card moderation-card border-primary">
+                                    <div class="card moderation-card border-success">
                                         <div class="card-body">
                                             <div class="row align-items-center">
                                                 <div class="col">
-                                                    <h6 class="card-title text-primary mb-2">
+                                                    <h6 class="card-title text-success mb-2">
                                                         <i class="bi bi-book-half me-2"></i>{{ _('Cursos Moderados') }}
                                                     </h6>
-                                                    <h2 class="mb-0 text-primary">{{ created_courses }}</h2>
+                                                    <h2 class="mb-0 text-success">{{ created_courses }}</h2>
                                                     <small class="text-muted">{{ _('Bajo supervisión') }}</small>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <i class="bi bi-book-half stat-icon text-primary"></i>
+                                                    <i class="bi bi-book-half stat-icon text-success"></i>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
                                                 <a
                                                     href="{{ url_for('course.lista_cursos') }}"
-                                                    class="btn btn-outline-primary btn-sm"
+                                                    class="btn btn-outline-success btn-sm"
                                                 >
                                                     <i class="bi bi-eye me-1"></i>{{ _('Ver Cursos') }}
                                                 </a>
@@ -119,24 +119,24 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card moderation-card border-warning">
+                                    <div class="card moderation-card border-secondary">
                                         <div class="card-body">
                                             <div class="row align-items-center">
                                                 <div class="col">
-                                                    <h6 class="card-title text-warning mb-2">
+                                                    <h6 class="card-title text-secondary mb-2">
                                                         <i class="bi bi-chat-dots me-2"></i>{{ _('Mensajes Abiertos') }}
                                                     </h6>
-                                                    <h2 class="mb-0 text-warning">{{ open_messages|default(0) }}</h2>
+                                                    <h2 class="mb-0 text-secondary">{{ open_messages|default(0) }}</h2>
                                                     <small class="text-muted">{{ _('Pendientes de revisar') }}</small>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <i class="bi bi-chat-dots stat-icon text-warning"></i>
+                                                    <i class="bi bi-chat-dots stat-icon text-secondary"></i>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
                                                 <a
                                                     href="{{ url_for('msg.user_messages') }}"
-                                                    class="btn btn-outline-warning btn-sm"
+                                                    class="btn btn-outline-secondary btn-sm"
                                                 >
                                                     <i class="bi bi-envelope me-1"></i>{{ _('Revisar') }}
                                                 </a>
@@ -178,15 +178,15 @@
                             class="card mb-3"
                             style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
                         >
-                            <div class="card-header bg-primary bg-opacity-10">
+                            <div class="card-header bg-success bg-opacity-10">
                                 <div class="row align-items-center">
                                     <div class="col">
                                         <h5 class="card-title mb-0">
-                                            <i class="bi bi-shield-check text-primary me-2"></i>{{ _('Cursos Moderados') }}
+                                            <i class="bi bi-shield-check text-success me-2"></i>{{ _('Cursos Moderados') }}
                                         </h5>
                                     </div>
                                     <div class="col-auto">
-                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-success">
                                             <i class="bi bi-arrow-right me-1"></i>{{ _('Ver Todos') }}
                                         </a>
                                     </div>
@@ -214,7 +214,7 @@
                                                 </small>
                                             </div>
                                             <div class="col-auto">
-                                                <span class="badge bg-primary">{{ curso.codigo }}</span>
+                                                <span class="badge bg-success">{{ curso.codigo }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -234,9 +234,9 @@
                             class="card mb-3"
                             style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
                         >
-                            <div class="card-header bg-warning bg-opacity-10">
+                            <div class="card-header bg-success bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-chat-left-text text-warning me-2"></i>{{ _('Gestión de Mensajes') }}
+                                    <i class="bi bi-chat-left-text text-success me-2"></i>{{ _('Gestión de Mensajes') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -245,10 +245,10 @@
                                     las conversaciones para mantener un ambiente de aprendizaje positivo.') }}
                                 </p>
                                 <div class="d-flex gap-2 flex-wrap">
-                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary">
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-success">
                                         <i class="bi bi-envelope me-1"></i>{{ _('Mis Mensajes') }}
                                     </a>
-                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning">
+                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-outline-success">
                                         <i class="bi bi-flag me-1"></i>{{ _('Mensajes Reportados') }}
                                     </a>
                                 </div>
@@ -257,9 +257,9 @@
 
                         <!-- Moderation Tools -->
                         <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
-                            <div class="card-header bg-info bg-opacity-10">
+                            <div class="card-header bg-success bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-tools text-info me-2"></i>{{ _('Herramientas de Moderación') }}
+                                    <i class="bi bi-tools text-success me-2"></i>{{ _('Herramientas de Moderación') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -267,13 +267,13 @@
                                     <div class="col-md-6 mb-2">
                                         <a
                                             href="{{ url_for('admin_profile.usuarios') }}"
-                                            class="btn btn-outline-primary w-100"
+                                            class="btn btn-outline-success w-100"
                                         >
                                             <i class="bi bi-people me-2"></i>{{ _('Usuarios') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-warning w-100">
+                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-success w-100">
                                             <i class="bi bi-search me-2"></i>{{ _('Buscar Cursos') }}
                                         </a>
                                     </div>
@@ -288,7 +288,7 @@
                                     <div class="col-md-6 mb-2">
                                         <a
                                             href="{{ url_for('public_announcements.global_announcements') }}"
-                                            class="btn btn-outline-info w-100"
+                                            class="btn btn-outline-success w-100"
                                         >
                                             <i class="bi bi-megaphone me-2"></i>{{ _('Anuncios') }}
                                         </a>
