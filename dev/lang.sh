@@ -11,5 +11,11 @@ pybabel extract -F babel.cfg -k _l -k _n:1,2 -o now_lms/translations/messages.po
 # Actualizar archivos de idioma
 pybabel update -i now_lms/translations/messages.pot -d now_lms/translations
 
-# Luego edita los .po y recompila
+# Recompilar
 pybabel compile -d now_lms/translations
+
+# Verify the gate passes (refuse stale catalogs before they ship).
+# Skip the check if a virtualenv Python isn't on PATH (gate requires Babel + flask_babel).
+if [ -x .venv/bin/python ]; then
+    PYTHON=./.venv/bin/python bash dev/catalog_freshness_check.sh
+fi

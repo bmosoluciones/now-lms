@@ -32,6 +32,12 @@ echo
 python -m mypy now_lms --install-types --non-interactive --ignore-missing-imports
 echo
 echo -------------------------------------------------
+echo Catalog freshness check
+echo -------------------------------------------------
+echo
+bash dev/catalog_freshness_check.sh
+
+echo -------------------------------------------------
 echo Run tests
 echo -------------------------------------------------
 echo

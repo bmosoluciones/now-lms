@@ -30,6 +30,7 @@ jobs:
               run: |
                   python -m build
                   python -m twine check dist/*
+                  bash dev/catalog_freshness_check.sh
                   pybabel compile -d now_lms/translations
                   pytest
 
@@ -76,6 +77,7 @@ jobs:
                   CI: True
                   SECRET_KEY: ${{ env.TEST_SECRET_KEY }}
               run: |
+                  bash dev/catalog_freshness_check.sh
                   pybabel compile -d now_lms/translations
                   pytest --cov=now_lms
             - uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
@@ -125,6 +127,7 @@ jobs:
                   ADMIN_PSWD: ${{ env.TEST_ADMIN_PASSWORD }}
                   FLASK_APP: now_lms
               run: |
+                  bash dev/catalog_freshness_check.sh
                   pytest -v -v --cov=now_lms
             - uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
               with:
@@ -169,6 +172,7 @@ jobs:
                   ADMIN_PSWD: ${{ env.TEST_ADMIN_PASSWORD }}
                   FLASK_APP: now_lms
               run: |
+                  bash dev/catalog_freshness_check.sh
                   pytest -v -v --cov=now_lms
             - uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
               with:
