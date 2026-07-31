@@ -23,7 +23,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.calendar_utils import update_evaluation_events
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import (
@@ -145,7 +145,7 @@ def cursos() -> str:
 @instructor_profile.route("/instructor/group/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_grupos() -> str:
     """Formulario para crear un nuevo grupo."""
     grupos = database.paginate(

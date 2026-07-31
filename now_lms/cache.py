@@ -92,7 +92,13 @@ cache: Cache = Cache()
 # Opciones de cache.
 # ---------------------------------------------------------------------------------------
 def no_guardar_en_cache_global() -> bool:
-    """Si el usuario es anomino preferimos usar el sistema de cache."""
+    """Si el usuario es anomino preferimos usar el sistema de cache.
+
+    NOTE: this is not a substitute for a correct cache key, and is currently unused.
+    As the comments below record, suppressing the WRITE still leaves an existing
+    anonymous entry readable by an authenticated user. `cache_key_with_auth_state`
+    is the mechanism that actually separates users; prefer it.
+    """
     # Return True (don't cache) when user is authenticated
     # Return False (do cache) when user is anonymous
     # IMPORTANT: This only controls whether to WRITE to cache, not whether to READ from it
@@ -102,24 +108,49 @@ def no_guardar_en_cache_global() -> bool:
 
 
 def cache_key_with_auth_state() -> str:
-    """Generate cache key that includes authentication state.
+    """Generate a cache key scoped to the individual user.
 
-    This ensures authenticated and anonymous users get different cached versions
-    of the same page, preventing authenticated users from seeing cached anonymous
-    pages (and vice versa).
+    Separating "authenticated" from "anonymous" is not enough: every view using this
+    key function renders per-user content (enrolment state, instructor controls, admin
+    listings), so two authenticated users sharing one key means whichever request
+    populates the cache decides what the next user sees. The key therefore carries the
+    user's identity, not merely the fact that somebody is logged in.
+
+    Anonymous requests continue to share a single "anon" key, which is what makes the
+    cache worthwhile for public pages.
     """
     from flask import request
 
-    # Include authentication state in the cache key
-    auth_state = "auth" if (current_user and current_user.is_authenticated) else "anon"
+    # Identity, not just auth state. Two logged-in users must never share a key.
+    if current_user and current_user.is_authenticated:
+        scope = f"user:{current_user.id}"
+    else:
+        scope = "anon"
 
-    # Build key from request path and auth state
-    key = f"view/{request.path}/{auth_state}"
+    # Build key from request path and the identity scope
+    key = f"view/{request.path}/{scope}"
 
     # Include query parameters if present
     if request.query_string:
         key += f"?{request.query_string.decode('utf-8')}"
 
+    return key
+
+
+def cache_key_with_query_string() -> str:
+    """Generate a cache key for public pages whose output varies by query string.
+
+    Flask-Caching's default view key is ``"view/%s" % request.path`` with
+    ``query_string=False``, so ``?tag=x`` and ``?page=2`` collapse onto the same entry
+    as the unfiltered page. Use this for pages that are the same for every visitor but
+    differ by their query parameters; use `cache_key_with_auth_state` when the output
+    also depends on who is asking.
+    """
+    from flask import request
+
+    key = f"view/{request.path}"
+    if request.query_string:
+        key += f"?{request.query_string.decode('utf-8')}"
     return key
 
 
