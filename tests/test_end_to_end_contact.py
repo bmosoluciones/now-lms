@@ -262,8 +262,12 @@ def test_e2e_contact_disabled_configuration(app, db_session):
     resp_contact = client.get("/contact")
     assert resp_contact.status_code == 302
     assert resp_contact.headers["Location"] in {
-        "/", "http://localhost/", "http://localhost.localdomain/",
-        "/home", "http://localhost/home", "http://localhost.localdomain/home"
+        "/",
+        "http://localhost/",
+        "http://localhost.localdomain/",
+        "/home",
+        "http://localhost/home",
+        "http://localhost.localdomain/home",
     }
 
     # 5) Verificar que el enlace NO está en la página principal

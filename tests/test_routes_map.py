@@ -27,6 +27,7 @@ ADMIN_REDIRECT_ALLOWED_PATHS = {
     "/setting/mail_check",
     "/user/forgot_password",
     "/home/panel",
+    "/contact",
 }
 EXCLUDED_PATHS = {
     "/ads.txt",

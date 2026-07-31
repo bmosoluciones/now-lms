@@ -35,6 +35,7 @@ class TestContactForm:
     @pytest.fixture(autouse=True)
     def enable_contact(self, app):
         from now_lms.db import Configuracion, database
+
         with app.app_context():
             config = database.session.execute(database.select(Configuracion)).scalar_one_or_none()
             if config:
@@ -47,6 +48,7 @@ class TestContactForm:
 
     def test_contact_disabled_redirects(self, client, app):
         from now_lms.db import Configuracion, database
+
         with app.app_context():
             config = database.session.execute(database.select(Configuracion)).scalar_one_or_none()
             if config:
@@ -57,8 +59,12 @@ class TestContactForm:
         assert response.status_code == 302
         # Redirects to home page
         assert response.headers["Location"] in {
-            "/", "http://localhost/", "http://localhost.localdomain/",
-            "/home", "http://localhost/home", "http://localhost.localdomain/home"
+            "/",
+            "http://localhost/",
+            "http://localhost.localdomain/",
+            "/home",
+            "http://localhost/home",
+            "http://localhost.localdomain/home",
         }
 
     def test_contact_form_submission(self, client, app):
