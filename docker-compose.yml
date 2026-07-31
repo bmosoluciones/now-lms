@@ -93,6 +93,18 @@ services:
       # :- default means a deploy never fails on a notification var; unset just
       # logs a warning and the DB row remains the source of truth.
       SLACK_WEBHOOK_LEADS_CONTACT: ${SLACK_WEBHOOK_LEADS_CONTACT:-}
+
+      # MXroute SMTP. now_lms/mail.py only sets mail_configured=True when
+      # MAIL_SERVER, MAIL_PORT, MAIL_USERNAME and MAIL_PASSWORD are ALL present,
+      # so password-reset mail stays off until every one is set. There is no
+      # env_file here, so each var must be listed explicitly to reach the app.
+      MAIL_SERVER: ${LMS_MAIL_SERVER:-}
+      MAIL_PORT: ${LMS_MAIL_PORT:-}
+      MAIL_USERNAME: ${LMS_MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${LMS_MAIL_PASSWORD:-}
+      MAIL_USE_TLS: ${LMS_MAIL_USE_TLS:-False}
+      MAIL_USE_SSL: ${LMS_MAIL_USE_SSL:-False}
+      MAIL_DEFAULT_SENDER: ${LMS_MAIL_DEFAULT_SENDER:-}
     volumes:
       - nowlms-data:/app/data
       - nowlms-themes:/app/themes
