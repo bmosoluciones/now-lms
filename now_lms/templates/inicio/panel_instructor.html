@@ -157,16 +157,16 @@
                             class="card mb-3"
                             style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
                         >
-                            <div class="card-header bg-info bg-opacity-10">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <div class="row align-items-center">
                                     <div class="col">
                                         <h5 class="card-title mb-0">
-                                            <i class="bi bi-clock-history text-info me-2"></i>{{ _('Mis Cursos Recientes')
+                                            <i class="bi bi-clock-history text-primary me-2"></i>{{ _('Mis Cursos Recientes')
                                             }}
                                         </h5>
                                     </div>
                                     <div class="col-auto">
-                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-info">
+                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-arrow-right me-1"></i>{{ _('Ver Todos') }}
                                         </a>
                                     </div>
@@ -194,7 +194,7 @@
                                                 </small>
                                             </div>
                                             <div class="col-auto">
-                                                <span class="badge bg-info">{{ curso.codigo }}</span>
+                                                <span class="badge bg-primary">{{ curso.codigo }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -204,7 +204,7 @@
                                 <div class="text-center text-muted py-3">
                                     <i class="bi bi-book display-6 opacity-25"></i>
                                     <p class="mt-2 mb-0">{{ _('Aún no has creado cursos') }}</p>
-                                    <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-info btn-sm mt-2">
+                                    <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-primary btn-sm mt-2">
                                         <i class="bi bi-plus-circle me-1"></i>{{ _('Crear mi primer curso') }}
                                     </a>
                                 </div>
@@ -217,9 +217,9 @@
                             class="card mb-3"
                             style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
                         >
-                            <div class="card-header bg-info bg-opacity-10">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-chat-dots text-info me-2"></i>{{ _('Centro de Mensajes') }}
+                                    <i class="bi bi-chat-dots text-primary me-2"></i>{{ _('Centro de Mensajes') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -227,7 +227,7 @@
                                     {{ _('Mantente conectado con tus estudiantes y resuelve sus dudas de manera oportuna.') }}
                                 </p>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-info">
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary">
                                         <i class="bi bi-envelope me-1"></i>{{ _('Mis Mensajes') }}
                                     </a>
                                 </div>
@@ -236,9 +236,9 @@
 
                         <!-- Teaching Resources -->
                         <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
-                            <div class="card-header bg-info bg-opacity-10">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-tools text-info me-2"></i>{{ _('Herramientas de Enseñanza') }}
+                                    <i class="bi bi-tools text-primary me-2"></i>{{ _('Herramientas de Enseñanza') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -246,20 +246,20 @@
                                     <div class="col-md-6 mb-2">
                                         <a
                                             href="{{ url_for('resource.lista_de_recursos') }}"
-                                            class="btn btn-outline-info w-100"
+                                            class="btn btn-outline-primary w-100"
                                         >
                                             <i class="bi bi-collection me-2"></i>{{ _('Mis Recursos') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-info w-100">
+                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-primary w-100">
                                             <i class="bi bi-search me-2"></i>{{ _('Buscar Cursos') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <a
                                             href="{{ url_for('calendar.calendar_view') }}"
-                                            class="btn btn-outline-info w-100"
+                                            class="btn btn-outline-primary w-100"
                                         >
                                             <i class="bi bi-calendar-event me-2"></i>{{ _('Calendario') }}
                                         </a>
@@ -267,7 +267,7 @@
                                     <div class="col-md-6 mb-2">
                                         <a
                                             href="{{ url_for('instructor_announcements.list_announcements') }}"
-                                            class="btn btn-outline-info w-100"
+                                            class="btn btn-outline-primary w-100"
                                         >
                                             <i class="bi bi-megaphone me-2"></i>{{ _('Anuncios') }}
                                         </a>
