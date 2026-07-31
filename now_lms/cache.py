@@ -92,7 +92,13 @@ cache: Cache = Cache()
 # Opciones de cache.
 # ---------------------------------------------------------------------------------------
 def no_guardar_en_cache_global() -> bool:
-    """Si el usuario es anomino preferimos usar el sistema de cache."""
+    """Si el usuario es anomino preferimos usar el sistema de cache.
+
+    NOTE: this is not a substitute for a correct cache key, and is currently unused.
+    As the comments below record, suppressing the WRITE still leaves an existing
+    anonymous entry readable by an authenticated user. `cache_key_with_auth_state`
+    is the mechanism that actually separates users; prefer it.
+    """
     # Return True (don't cache) when user is authenticated
     # Return False (do cache) when user is anonymous
     # IMPORTANT: This only controls whether to WRITE to cache, not whether to READ from it
@@ -102,11 +108,16 @@ def no_guardar_en_cache_global() -> bool:
 
 
 def cache_key_with_auth_state() -> str:
-    """Generate cache key that includes authentication state.
+    """Generate a cache key scoped to the individual user.
 
-    This ensures authenticated and anonymous users get different cached versions
-    of the same page, preventing authenticated users from seeing cached anonymous
-    pages (and vice versa).
+    Separating "authenticated" from "anonymous" is not enough: every view using this
+    key function renders per-user content (enrolment state, instructor controls, admin
+    listings), so two authenticated users sharing one key means whichever request
+    populates the cache decides what the next user sees. The key therefore carries the
+    user's identity, not merely the fact that somebody is logged in.
+
+    Anonymous requests continue to share a single "anon" key, which is what makes the
+    cache worthwhile for public pages.
     """
     from flask import request
 
@@ -115,14 +126,20 @@ def cache_key_with_auth_state() -> str:
     # evaluation attempts, certificates, enrollment state — so keying on a
     # shared "auth" bucket serves one member's cached page to every other
     # member the moment a real cache backend (Redis) is configured.
-    # (Fork finding U10, offered upstream.)
+    # (Fork finding U10, merged upstream as 717a8f0 and released in 2.0.3.)
+    #
+    # Deliberately keyed on `usuario` (the username) rather than upstream's
+    # `current_user.id`: both are unique per user and equally safe, but
+    # invalidate_user_course_view_cache() rebuilds these keys from the username
+    # it is handed at the enrollment call sites. Switching to `.id` here without
+    # changing that helper would make every invalidation a silent no-op.
     if current_user and current_user.is_authenticated:
-        auth_state = f"user:{current_user.usuario}"
+        scope = f"user:{current_user.usuario}"
     else:
-        auth_state = "anon"
+        scope = "anon"
 
-    # Build key from request path and auth state
-    key = f"view/{request.path}/{auth_state}"
+    # Build key from request path and the identity scope
+    key = f"view/{request.path}/{scope}"
 
     # Include query parameters if present
     if request.query_string:
