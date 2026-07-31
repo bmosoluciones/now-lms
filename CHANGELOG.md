@@ -9,6 +9,32 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [2.0.2] - 2026-07-31
+
+### Added:
+ - Enforce one enrollment per student and course (DB unique constraint).
+ - Consolidate admin panel: redirect admin users from `/home/panel` to `/admin/panel`.
+
+### Fixed:
+ - Grant free-course access when the enrollment has no payment record.
+ - Render country field as text input instead of empty select in enrollment forms.
+ - Stop requiring a billing address for free enrollments.
+ - Stop a repeat enrollment from adding a second enrollment row.
+ - Link overlapping SQLAlchemy course relationships with `back_populates`.
+ - Stat card contrast ratios for accessibility (WCAG AA).
+
+### Changed:
+ - Unify section colors across all role panels.
+ - Moderator panel header from red to green, sections uniform success.
+ - Drop unused ionicons CDN loads from bundled themes.
+
+### i18n:
+ - Make form labels lazy and keep them extractable.
+ - Declare `_n:1,2` for extraction so the documented plural helper works.
+
+### Testing:
+ - Cover unique-enrollment migration dedup.
+
 ## [2.0.1] - 2026-07-29
 
 ### Added:
