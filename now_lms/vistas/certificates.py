@@ -54,6 +54,36 @@ certificate = Blueprint("certificate", __name__, template_folder=DIRECTORIO_PLAN
 VISTA_CERTIFICADOS = "certificate.certificados"
 
 
+class CertificateHolder:
+    """Read-only projection of `Usuario` for certificate templates.
+
+    Certificate bodies are admin-authored Jinja stored in the database
+    (`Certificado.html`) and rendered on routes that require no authentication, so
+    anyone holding a certification ULID can trigger the render. Passing the `Usuario`
+    ORM row into that context put every column within reach of the template -
+    `correo_electronico`, `nacimiento`, `bio`, `tipo` - not just the name printed on
+    the certificate.
+
+    Only the fields a certificate legitimately prints are exposed. Jinja resolves an
+    unknown attribute to `Undefined`, which renders as empty rather than raising, so a
+    custom template that referenced a personal field degrades to a blank instead of
+    breaking the page.
+
+    Keep this list minimal. Anything added here becomes readable by an unauthenticated
+    visitor with a certificate URL.
+    """
+
+    __slots__ = ("id", "nombre", "apellido")
+
+    def __init__(self, usuario: Usuario) -> None:
+        self.id = usuario.id
+        self.nombre = usuario.nombre
+        self.apellido = usuario.apellido
+
+    def __repr__(self) -> str:  # pragma: no cover - debugging aid
+        return f"CertificateHolder(nombre={self.nombre!r}, apellido={self.apellido!r})"
+
+
 @certificate.route("/certificate/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
@@ -259,7 +289,7 @@ def certificacion(ulid: str) -> str | Response:
 
     # Create context with both curso and master_class for template compatibility
     context = {
-        "usuario": usuario,
+        "usuario": CertificateHolder(usuario),
         "certificacion": certificacion_obj,
         "certificado": certificado_obj,
         "url_for": url_for,
@@ -306,7 +336,7 @@ def certificate_serve_pdf(ulid: str) -> Response:
 
     # Create context with both curso and master_class for template compatibility
     context = {
-        "usuario": usuario,
+        "usuario": CertificateHolder(usuario),
         "certificacion": certificacion_obj,
         "certificado": certificado_obj,
         "url_for": url_for,
@@ -399,7 +429,7 @@ def certificado(ulid: str) -> str:
 
     # Create context with both curso and master_class for template compatibility
     context = {
-        "usuario": usuario,
+        "usuario": CertificateHolder(usuario),
         "certificacion": certificacion_obj,
         "certificado": certificado_obj,
         "content_type": content_type,
@@ -648,7 +678,7 @@ def certificacion_programa(ulid: str) -> str:
             pass
 
     context = {
-        "usuario": usuario,
+        "usuario": CertificateHolder(usuario),
         "certificacion_programa": certificacion_programa_obj,
         "certificado": certificado_obj,
         "programa": programa,
@@ -709,7 +739,7 @@ def certificate_programa_serve_pdf(ulid: str) -> Any:
             pass
 
     context = {
-        "usuario": usuario,
+        "usuario": CertificateHolder(usuario),
         "certificacion_programa": certificacion_programa_obj,
         "certificado": certificado_obj,
         "programa": programa,
