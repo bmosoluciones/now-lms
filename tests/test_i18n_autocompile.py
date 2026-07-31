@@ -147,6 +147,112 @@ def test_compile_lock_is_best_effort_when_the_directory_is_unwritable(clean_tran
         pass  # must not raise
 
 
+def test_missing_translations_directory_is_a_no_op(monkeypatch, tmp_path):
+    """A source tree with no translations/ dir must warn and carry on, not crash."""
+    import now_lms.i18n_autocompile as ac
+
+    monkeypatch.setattr(ac, "_catalog_root", lambda: tmp_path / "does-not-exist")
+    assert ensure_translations_compiled() is False
+
+
+def test_failed_pybabel_run_returns_false(clean_translations, monkeypatch):
+    """A non-zero pybabel exit is logged and reported, never raised."""
+    import now_lms.i18n_autocompile as ac
+
+    class _Failed:
+        returncode = 2
+        stdout = ""
+        stderr = "boom"
+
+    monkeypatch.setattr(ac.subprocess, "run", lambda *a, **k: _Failed())
+    assert ensure_translations_compiled() is False
+
+
+def test_pybabel_spawn_error_returns_false(clean_translations, monkeypatch):
+    """If the pybabel binary cannot be spawned at all, boot still proceeds."""
+    import now_lms.i18n_autocompile as ac
+
+    def _explode(*args, **kwargs):
+        raise OSError("exec format error")
+
+    monkeypatch.setattr(ac.subprocess, "run", _explode)
+    assert ensure_translations_compiled() is False
+
+
+def test_another_worker_winning_the_lock_is_a_no_op(clean_translations, monkeypatch):
+    """Re-checking under the lock must skip the compile a peer already did.
+
+    Two workers booting at once both see a stale catalog; only the first
+    through the lock should spawn pybabel.
+    """
+    import now_lms.i18n_autocompile as ac
+
+    calls = {"n": 0}
+    real = ac._stale_catalogs
+
+    def _stale_then_fresh(root, force):
+        calls["n"] += 1
+        return real(root, force) if calls["n"] == 1 else []
+
+    monkeypatch.setattr(ac, "_stale_catalogs", _stale_then_fresh)
+    monkeypatch.setattr(ac, "_run_pybabel", lambda *a, **k: pytest.fail("compiled anyway"))
+    assert ensure_translations_compiled() is False
+
+
+def test_probe_reports_a_subprocess_failure_as_stale(clean_translations, monkeypatch):
+    """If the probe interpreter cannot be spawned, treat the catalog as unproven."""
+    import now_lms.i18n_autocompile as ac
+
+    def _explode(*args, **kwargs):
+        raise OSError("no interpreter")
+
+    monkeypatch.setattr(ac.subprocess, "run", _explode)
+    assert ac._probe_freshness_in_subprocess("en") is False
+
+
+def test_cli_force_recompiles_and_exits_zero(clean_translations, monkeypatch):
+    """--force rebuilds every catalog regardless of mtime."""
+    import now_lms.i18n_autocompile as ac
+
+    monkeypatch.setattr(sys, "argv", ["i18n_autocompile", "--force"])
+    assert ac._main() == 0
+    assert (clean_translations / "en" / "LC_MESSAGES" / "messages.mo").exists()
+
+
+def test_cli_without_flags_reports_recompiled_then_no_op(clean_translations, monkeypatch, capsys):
+    """Bare invocation compiles once, then reports a no-op on the second run."""
+    import now_lms.i18n_autocompile as ac
+
+    monkeypatch.setattr(sys, "argv", ["i18n_autocompile"])
+    assert ac._main() == 0
+    assert "recompiled" in capsys.readouterr().out
+
+    assert ac._main() == 0
+    assert "no-op" in capsys.readouterr().out
+
+
+def test_cli_check_exits_one_when_a_locale_cannot_be_proved(clean_translations, monkeypatch, capsys):
+    """--check must return a non-zero exit code so CI blocks on it."""
+    import now_lms.i18n_autocompile as ac
+
+    monkeypatch.setattr(sys, "argv", ["i18n_autocompile", "--check", "--locale", "en"])
+    monkeypatch.setattr(ac, "_probe_freshness_in_subprocess", lambda locale: False)
+    assert ac._main() == 1
+    assert "locale=en FAIL" in capsys.readouterr().out
+
+
+def test_cli_check_probes_every_locale_by_default(clean_translations, monkeypatch, capsys):
+    """With no --locale, every locale that has a .po is probed."""
+    import now_lms.i18n_autocompile as ac
+
+    seen = []
+    monkeypatch.setattr(sys, "argv", ["i18n_autocompile", "--check"])
+    monkeypatch.setattr(ac, "_probe_freshness_in_subprocess", lambda locale: seen.append(locale) or True)
+    assert ac._main() == 0
+    assert set(seen) == {"en", "pt_BR"}
+    assert "locale=en OK" in capsys.readouterr().out
+
+
 def test_probe_rejects_a_corrupt_mo(clean_translations, monkeypatch):
     """The gate must FAIL on a corrupt .mo, not just pass on a good one.
 
