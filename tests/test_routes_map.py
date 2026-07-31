@@ -26,6 +26,7 @@ ADMIN_REDIRECT_ALLOWED_PATHS = {
     "/setting/delete_site_logo",
     "/setting/mail_check",
     "/user/forgot_password",
+    "/home/panel",
 }
 EXCLUDED_PATHS = {
     "/ads.txt",

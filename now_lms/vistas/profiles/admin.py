@@ -25,7 +25,8 @@ from now_lms.auth import perfil_requerido
 from now_lms.bi import cambia_tipo_de_usuario_por_id
 from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Curso, EstudianteCurso, Usuario, database
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificacion, ContactMessage, Curso, CursoRecurso
+from now_lms.db import EstudianteCurso, Usuario, database
 from now_lms.db import Pago
 from now_lms.i18n import _
 
@@ -60,6 +61,16 @@ def pagina_admin() -> str:
     # Get total enrollments
     total_enrollments = database.session.execute(database.select(func.count(EstudianteCurso.id))).scalar() or 0
 
+    # Get content and engagement statistics
+    recursos_creados = database.session.execute(database.select(func.count(CursoRecurso.id))).scalar() or 0
+    certificados_emitidos = database.session.execute(database.select(func.count(Certificacion.id))).scalar() or 0
+    mensajes_sin_leer = (
+        database.session.execute(
+            database.select(func.count(ContactMessage.id)).filter(ContactMessage.status == "not_seen")
+        ).scalar()
+        or 0
+    )
+
     from sqlalchemy import cast, Numeric
 
     total_payments = (
@@ -85,6 +96,9 @@ def pagina_admin() -> str:
         cursos_recientes=cursos_recientes,
         total_payments=total_payments,
         total_ingresos=total_ingresos,
+        recursos_creados=recursos_creados,
+        certificados_emitidos=certificados_emitidos,
+        mensajes_sin_leer=mensajes_sin_leer,
     )
 
 
