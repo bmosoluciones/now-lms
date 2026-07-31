@@ -11,7 +11,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import func
 from werkzeug.wrappers import Response
@@ -26,11 +26,8 @@ from now_lms.db import (
     BlogPost,
     Certificacion,
     Configuracion,
-    ContactMessage,
     Curso,
-    CursoRecurso,
     EstudianteCurso,
-    Usuario,
     database,
     select,
 )
@@ -100,26 +97,11 @@ def panel() -> str | Response:
     if not current_user.is_authenticated:
         return redirect("/")
 
+    if current_user.tipo == "admin":
+        return redirect(url_for("admin_profile.pagina_admin"))
+
     # Use structural pattern matching for user types (Python 3.10+)
     match current_user.tipo:
-        case "admin":
-            cursos_actuales = database.session.execute(select(func.count(Curso.id))).scalar()
-            usuarios_registrados = database.session.execute(select(func.count(Usuario.usuario))).scalar()
-            recursos_creados = database.session.execute(select(func.count(CursoRecurso.id))).scalar()
-            certificados_emitidos = database.session.execute(select(func.count(Certificacion.id))).scalar()
-            mensajes_sin_leer = database.session.execute(
-                select(func.count(ContactMessage.id)).filter(ContactMessage.status == "not_seen")
-            ).scalar()
-            cursos_por_fecha = database.session.execute(select(Curso).order_by(Curso.creado).limit(5)).scalars().all()
-            return render_template(
-                "inicio/panel_admin.html",
-                cursos_actuales=cursos_actuales,
-                usuarios_registrados=usuarios_registrados,
-                recursos_creados=recursos_creados,
-                cursos_por_fecha=cursos_por_fecha,
-                certificados_emitidos=certificados_emitidos,
-                mensajes_sin_leer=mensajes_sin_leer,
-            )
         case "student":
             cuenta_cursos = database.session.execute(
                 select(func.count(EstudianteCurso.id)).filter(EstudianteCurso.usuario == current_user.usuario)

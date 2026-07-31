@@ -4,18 +4,13 @@
 Extra comprehensive unit and integration tests for admin profile routes (now_lms/vistas/profiles/admin.py).
 """
 
-import os
-from datetime import datetime
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from sqlalchemy.exc import OperationalError
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import (
-    database,
     Usuario,
-    Curso,
-    Pago,
 )
 
 
@@ -224,3 +219,44 @@ def test_eliminar_usuario_route(client, db_session, extra_admin_setup):
 
     deleted_user = db_session.get(Usuario, active_user.id)
     assert deleted_user is None
+
+
+def test_admin_login_redirects_directly_to_admin_panel(client, db_session, extra_admin_setup):
+    """Admin login must redirect directly to /admin/panel."""
+    resp = client.post("/user/login", data={"usuario": "admin_prof_ex", "acceso": "pass"}, follow_redirects=False)
+    assert resp.status_code in (301, 302, 303, 307, 308)
+    assert "/admin/panel" in resp.headers.get("Location", "")
+
+
+def test_home_panel_redirects_admin_to_admin_panel(client, db_session, extra_admin_setup):
+    """GET /home/panel as admin must redirect to /admin/panel."""
+    login(client, "admin_prof_ex")
+    resp = client.get("/home/panel", follow_redirects=False)
+    assert resp.status_code in (301, 302, 303, 307, 308)
+    assert "/admin/panel" in resp.headers.get("Location", "")
+
+
+def test_home_panel_serves_student_panel(client, db_session, extra_admin_setup):
+    """GET /home/panel as student still renders the user panel."""
+    login(client, "stud_active_ex")
+    resp = client.get("/home/panel")
+    assert resp.status_code == 200
+
+
+def test_admin_panel_contains_home_admin_options(client, db_session, extra_admin_setup):
+    """All options previously shown on /home/panel admin must be available on /admin/panel."""
+    login(client, "admin_prof_ex")
+    resp = client.get("/admin/panel")
+    assert resp.status_code == 200
+    for url in [
+        "/course/new_curse",
+        "/resource/list",
+        "/certificate/issued/list",
+        "/admin/contact-messages",
+        "/category/list",
+        "/program/list",
+        "/admin/pages",
+        "/admin/flagged-messages",
+        "/user/messages",
+    ]:
+        assert url.encode() in resp.data, f"missing link {url} on /admin/panel"

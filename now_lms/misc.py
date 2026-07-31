@@ -16,7 +16,9 @@ from html.parser import HTMLParser
 # ---------------------------------------------------------------------------------------
 from bleach import clean, linkify
 from flask import redirect
+from flask_login import current_user
 from markdown import markdown
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -70,7 +72,13 @@ class EstiloAlterta:
 # Constantes globales
 INICIO_SESION = redirect("/user/login")
 
-PANEL_DE_USUARIO = redirect("/home/panel")
+
+def panel_de_usuario() -> Response:
+    """Redirige al panel correspondiente según el tipo de usuario."""
+    if current_user.is_authenticated and current_user.tipo == "admin":
+        return redirect("/admin/panel")
+    return redirect("/home/panel")
+
 
 TIPOS_DE_USUARIO: list[str] = ["admin", "user", "instructor", "moderator"]
 

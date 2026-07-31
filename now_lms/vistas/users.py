@@ -27,7 +27,7 @@ from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.forms import ForgotPasswordForm, LoginForm, LogonForm, ResetPasswordForm
 from now_lms.i18n import _
 from now_lms.logs import log
-from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
+from now_lms.misc import INICIO_SESION, panel_de_usuario
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -63,7 +63,7 @@ def inicio_sesion() -> str | Response:
     """Inicio de sesión del usuario."""
     if current_user.is_authenticated:
         flash(USER_ALREADY_LOGGED_IN_MSG, "info")
-        return PANEL_DE_USUARIO
+        return panel_de_usuario()
 
     # Rate limiting: 5 login attempts per minute per IP
     rate_limit_key = f"rate_limit_login_{request.remote_addr}"
@@ -108,7 +108,7 @@ def inicio_sesion() -> str | Response:
                             ),
                             "warning",
                         )
-                        return PANEL_DE_USUARIO
+                        return panel_de_usuario()
                     flash(_("Su cuenta esta inactiva."), "info")
                     return INICIO_SESION
 
@@ -122,7 +122,7 @@ def inicio_sesion() -> str | Response:
                         "warning",
                     )
 
-                return PANEL_DE_USUARIO
+                return panel_de_usuario()
 
         flash(_("Inicio de Sesion Incorrecto."), "warning")
         return INICIO_SESION
@@ -148,7 +148,7 @@ def crear_cuenta() -> str | Response:
     """Crear cuenta de usuario desde el sistio web."""
     if current_user.is_authenticated:
         flash(_("Usted ya posee una cuenta en el sistema."), "warning")
-        return PANEL_DE_USUARIO
+        return panel_de_usuario()
 
     form = LogonForm()
     config_result = database.session.execute(database.select(Configuracion)).first()
@@ -260,7 +260,7 @@ def forgot_password() -> str | Response:
     """Solicitar recuperación de contraseña."""
     if current_user.is_authenticated:
         flash(USER_ALREADY_LOGGED_IN_MSG, "info")
-        return PANEL_DE_USUARIO
+        return panel_de_usuario()
 
     # Rate limiting: 3 forgot-password attempts per minute per IP
     rate_limit_key = f"rate_limit_forgot_pwd_{request.remote_addr}"
@@ -286,7 +286,7 @@ def reset_password(token: str) -> str | Response:
     """Restablecer contraseña con token."""
     if current_user.is_authenticated:
         flash(USER_ALREADY_LOGGED_IN_MSG, "info")
-        return PANEL_DE_USUARIO
+        return panel_de_usuario()
 
     from now_lms.auth import validate_password_reset_token
 

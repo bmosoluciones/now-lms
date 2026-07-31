@@ -303,9 +303,10 @@ def test_admin_panel_shows_unread_contact_messages(app, db_session):
     # 2) Login como admin
     client = _login_admin(app)
 
-    # 3) Acceder al panel de administrador
-    resp = client.get("/home/panel")
+    # 3) Acceder al panel de administrador (redirige a /admin/panel)
+    resp = client.get("/home/panel", follow_redirects=True)
     assert resp.status_code == 200
+    assert "/admin/panel" in resp.request.path
 
     # 4) Verificar que el contador de mensajes sin leer aparece en el panel
     # Debe mostrar "2" porque hay 2 mensajes con status "not_seen"
