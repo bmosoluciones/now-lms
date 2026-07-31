@@ -12,3 +12,23 @@
 c686cf6534c23f2a2d8547400e70f7bd25ef1c41:.github/workflows/release.yml:generic-api-key:58
 9aff04d3f0c24b101549e271ebab0005d1fe443d:.github/workflows/release.yml:generic-api-key:31
 9aff04d3f0c24b101549e271ebab0005d1fe443d:.github/workflows/release.yml:generic-api-key:38
+
+# --- Added 2026-07-31 -------------------------------------------------------
+# Four findings began failing every pull request. None is a real credential;
+# each was read in its own commit before being listed here, per the rule above.
+#
+# 1. release.yml:58 @ 386f6d81 — the SAME upstream throwaway Flask SECRET_KEY
+#    already allowlisted at c686cf65 and 9aff04d3, just
+#    carried to a later commit. Env value for an ephemeral CI test run.
+386f6d81b31f66e73173459077ad2b5575c5df40:.github/workflows/release.yml:generic-api-key:58
+#
+# 2/3. tests/test_free_enrollment_no_billing.py:16 — the module-level PASSWORD
+#    constant a pytest fixture logs in with, named for what it is. Two
+#    fingerprints because the same
+#    change landed on both the fork branch and the upstream-sync branch.
+4e293f1ac7f729f05e98f81f4bcb93593c5292ac:tests/test_free_enrollment_no_billing.py:generic-api-key:16
+d7db1c7025d1185b3519ba0ae0a32447a2b72c8c:tests/test_free_enrollment_no_billing.py:generic-api-key:16
+#
+# 4. e2e/conftest.py:35 — the SECRET_KEY for a throwaway SQLite app the
+#    Playwright suite boots and discards. Named for exactly what it is.
+a203d3c8c4397efd7bfdf8ca01775a223c4e5f36:e2e/conftest.py:generic-api-key:35

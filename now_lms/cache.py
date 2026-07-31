@@ -131,7 +131,6 @@ def cache_key_with_auth_state() -> str:
     return key
 
 
-
 def cache_key_with_query_string() -> str:
     """Cache key for public pages whose output varies by query string only.
 
@@ -147,6 +146,7 @@ def cache_key_with_query_string() -> str:
     if request.query_string:
         key += f"?{request.query_string.decode('utf-8')}"
     return key
+
 
 def cache_incr(key: str, timeout: int = 60) -> int:
     """Incrementa un contador en cache de forma atómica.
