@@ -28,6 +28,11 @@ CONTACT_TEMPLATE = "page_info/contact.html"
 def contact_form() -> str | Response:
     """Contact form page."""
     from now_lms.db import Configuracion
+    from now_lms.db.tools import is_contact_enabled
+
+    if not is_contact_enabled():
+        flash(_("La página de contacto ha sido deshabilitada."), "info")
+        return redirect(url_for(HOME_ROUTE))
 
     config_row = database.session.execute(database.select(Configuracion)).first()
     config = config_row[0] if config_row else None

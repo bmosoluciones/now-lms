@@ -32,9 +32,34 @@ def client_admin(client, admin_user, app):
 class TestContactForm:
     """Tests for the public contact form."""
 
+    @pytest.fixture(autouse=True)
+    def enable_contact(self, app):
+        from now_lms.db import Configuracion, database
+        with app.app_context():
+            config = database.session.execute(database.select(Configuracion)).scalar_one_or_none()
+            if config:
+                config.enable_contact = True
+                database.session.commit()
+
     def test_contact_page_loads(self, client):
         response = client.get("/contact")
         assert response.status_code == 200
+
+    def test_contact_disabled_redirects(self, client, app):
+        from now_lms.db import Configuracion, database
+        with app.app_context():
+            config = database.session.execute(database.select(Configuracion)).scalar_one_or_none()
+            if config:
+                config.enable_contact = False
+                database.session.commit()
+
+        response = client.get("/contact", follow_redirects=False)
+        assert response.status_code == 302
+        # Redirects to home page
+        assert response.headers["Location"] in {
+            "/", "http://localhost/", "http://localhost.localdomain/",
+            "/home", "http://localhost/home", "http://localhost.localdomain/home"
+        }
 
     def test_contact_form_submission(self, client, app):
         with app.app_context():
