@@ -222,9 +222,9 @@
                             class="card mb-3"
                             style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
                         >
-                            <div class="card-header bg-success bg-opacity-10">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-chat-dots text-success me-2"></i>{{ _('Centro de Comunicación') }}
+                                    <i class="bi bi-chat-dots text-primary me-2"></i>{{ _('Centro de Comunicación') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -233,7 +233,7 @@
                                     participa en discusiones y recibe apoyo.') }}
                                 </p>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-success">
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary">
                                         <i class="bi bi-envelope me-1"></i>{{ _('Mis Mensajes') }}
                                     </a>
                                 </div>
@@ -243,9 +243,9 @@
 
                         <!-- Learning Resources -->
                         <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
-                            <div class="card-header bg-info bg-opacity-10">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-tools text-info me-2"></i>{{ _('Recursos de Aprendizaje') }}
+                                    <i class="bi bi-tools text-primary me-2"></i>{{ _('Recursos de Aprendizaje') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -258,7 +258,7 @@
                                     <div class="col-md-6 mb-2">
                                         <a
                                             href="{{ url_for('calendar.calendar_view') }}"
-                                            class="btn btn-outline-success w-100"
+                                            class="btn btn-outline-primary w-100"
                                         >
                                             <i class="bi bi-calendar-event me-2"></i>{{ _('Calendario') }}
                                         </a>
@@ -266,7 +266,7 @@
                                     <div class="col-md-6 mb-2">
                                         <a
                                             href="{{ url_for('certificate.certificaciones') }}"
-                                            class="btn btn-outline-warning w-100"
+                                            class="btn btn-outline-primary w-100"
                                         >
                                             <i class="bi bi-trophy me-2"></i>{{ _('Mis Logros') }}
                                         </a>
@@ -274,7 +274,7 @@
                                     <div class="col-md-6 mb-2">
                                         <a
                                             href="{{ url_for('public_announcements.global_announcements') }}"
-                                            class="btn btn-outline-info w-100"
+                                            class="btn btn-outline-primary w-100"
                                         >
                                             <i class="bi bi-megaphone me-2"></i>{{ _('Anuncios') }}
                                         </a>

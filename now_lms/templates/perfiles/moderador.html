@@ -7,7 +7,7 @@
 
         <style>
             .moderator-header {
-                background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%);
+                background: linear-gradient(135deg, #20c997 0%, #12b886 100%);
                 color: white;
                 border-radius: 10px;
                 margin-bottom: 2rem;
@@ -72,7 +72,7 @@
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-3">
                     <!-- Messages Section -->
                     <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-chat-right-text-fill text-primary" aria-hidden="true"></i></h3>
+                        <h3><i class="bi bi-chat-right-text-fill text-success" aria-hidden="true"></i></h3>
                         <div class="ms-3">
                             <h4 class="fw-bold mb-0">{{ _('Mensajes') }}</h4>
                             <p class="text-muted">{{ _('Gestiona las conversaciones de usuarios') }}</p>
@@ -84,7 +84,7 @@
 
                     <!-- Flagged Messages Section -->
                     <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i></h3>
+                        <h3><i class="bi bi-exclamation-triangle-fill text-success" aria-hidden="true"></i></h3>
                         <div class="ms-3">
                             <h4 class="fw-bold mb-0">{{ _('Mensajes Reportados') }}</h4>
                             <p class="text-muted">{{ _('Revisa contenido reportado por usuarios') }}</p>
@@ -98,7 +98,7 @@
 
                     <!-- Profile Management -->
                     <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-person-vcard text-info" aria-hidden="true"></i></h3>
+                        <h3><i class="bi bi-person-vcard text-success" aria-hidden="true"></i></h3>
                         <div class="ms-3">
                             <h4 class="fw-bold mb-0">{{ _('Mi Perfil') }}</h4>
                             <p class="text-muted">{{ _('Actualiza tu información personal') }}</p>
@@ -127,24 +127,24 @@
                 <div class="row mt-4">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header bg-success bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                                    <i class="bi bi-lightning-charge text-success" aria-hidden="true"></i>
                                     {{ _('Acciones Rápidas') }}
                                 </h5>
                             </div>
                             <div class="card-body">
                                 <div class="d-flex flex-wrap gap-2">
-                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary btn-sm">
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-success btn-sm">
                                         <i class="bi bi-envelope"></i> {{ _('Mis Mensajes') }}
                                     </a>
-                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning btn-sm">
+                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-outline-success btn-sm">
                                         <i class="bi bi-exclamation-circle"></i> {{ _('Mensajes Reportados') }}
                                     </a>
-                                    <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-success btn-sm">
+                                    <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-success btn-sm">
                                         <i class="bi bi-calendar"></i> {{ _('Calendario') }}
                                     </a>
-                                    <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-info btn-sm">
+                                    <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-outline-success btn-sm">
                                         <i class="bi bi-person-circle"></i> {{ _('Mi Perfil') }}
                                     </a>
                                 </div>
