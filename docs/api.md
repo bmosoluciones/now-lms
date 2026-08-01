@@ -164,6 +164,53 @@ Enrolls a user in a specific course. This endpoint is **idempotent** using the `
 
 ---
 
+### 4.4. List Unread Contact Messages
+`GET /api/v1/public/contact-messages`
+
+Retrieves a list of all contact form messages that are in `not_seen` (unread) status. This can be consumed by external systems like a CRM.
+
+**Response (Success - 200 OK):**
+```json
+[
+  {
+    "id": "01J41Y6XN...",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "subject": "Inquiry about partnership",
+    "message": "Hello, we are interested in...",
+    "status": "not_seen",
+    "created_at": "2026-07-31T23:22:01.180000"
+  }
+]
+```
+
+---
+
+### 4.5. Mark Contact Message as Read
+`POST /api/v1/public/contact-messages/{message_id}/read`
+
+Marks a specific contact message as read by updating its status to `seen`.
+
+**Response (Success - 200 OK):**
+```json
+{
+  "status": "success",
+  "message_id": "01J41Y6XN...",
+  "new_status": "seen",
+  "message": "Message marked as read successfully."
+}
+```
+
+**Response (Not Found - 404 Not Found):**
+```json
+{
+  "error": "message_not_found",
+  "message": "Contact message ID was not found."
+}
+```
+
+---
+
 ## 5. Certification and Recertification
 
 Courses can be configured to require recertification.

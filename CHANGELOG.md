@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 ### Added:
  - Enforce one enrollment per student and course (DB unique constraint).
  - Consolidate admin panel: redirect admin users from `/home/panel` to `/admin/panel`.
+ - Gated contact form behind feature flag with redirection to homepage.
+ - Implemented public API endpoints for retrieving unread contact messages and marking them as read.
 
 ### Fixed:
  - Grant free-course access when the enrollment has no payment record.
