@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [2.0.3] - 2026-08-01
+
 ### Security:
  - Fix unauthenticated access to course resources and slideshows: free-preview resources stay hidden once their course is unpublished, private, or paid, and resources can no longer be rendered in the context of an unrelated course (GHSA-3w27-xggq-j59p).
  - Stop exposing personal data to unauthenticated certificate templates: certificate routes now receive a `CertificateHolder` projection exposing only `id`, `nombre`, and `apellido` (GHSA-3w27-xggq-j59p).
