@@ -13,7 +13,16 @@ from datetime import datetime
 from flask import Blueprint, jsonify, request, url_for
 from flask_mail import Message
 from now_lms.auth import proteger_passwd, generate_confirmation_token
-from now_lms.db import ExternalApiKey, Curso, RemoteEnrollmentRequest, Usuario, EstudianteCurso, database, MailConfig
+from now_lms.db import (
+    ExternalApiKey,
+    Curso,
+    RemoteEnrollmentRequest,
+    Usuario,
+    EstudianteCurso,
+    database,
+    MailConfig,
+    ContactMessage,
+)
 from now_lms.i18n import _
 from now_lms.mail import send_mail
 from now_lms.version import VERSION
@@ -293,3 +302,58 @@ def send_enrollment_email(user, course, is_new_user, sync=False):
         send_mail(msg, background=not sync, no_config=True)
     except Exception:
         pass
+
+
+@public_api.route("/contact-messages", methods=["GET"])
+@require_api_key
+def list_unread_contact_messages():
+    """List unread contact messages (status is 'not_seen')."""
+    messages = (
+        database.session.execute(
+            database.select(ContactMessage).filter(ContactMessage.status == "not_seen").order_by(ContactMessage.creado.desc())
+        )
+        .scalars()
+        .all()
+    )
+
+    result = []
+    for msg in messages:
+        result.append(
+            {
+                "id": msg.id,
+                "name": msg.name,
+                "email": msg.email,
+                "subject": msg.subject,
+                "message": msg.message,
+                "status": msg.status,
+                "created_at": msg.timestamp.isoformat() if msg.timestamp else None,
+            }
+        )
+
+    return jsonify(result), 200
+
+
+@public_api.route("/contact-messages/<message_id>/read", methods=["POST"])
+@require_api_key
+def mark_contact_message_read(message_id):
+    """Mark a contact message as read (status 'seen')."""
+    msg = database.session.get(ContactMessage, message_id)
+
+    if not msg:
+        return jsonify({"error": "message_not_found", "message": "Contact message ID was not found."}), 404
+
+    if msg.status == "not_seen":
+        msg.status = "seen"
+        database.session.commit()
+
+    return (
+        jsonify(
+            {
+                "status": "success",
+                "message_id": msg.id,
+                "new_status": msg.status,
+                "message": "Message marked as read successfully.",
+            }
+        ),
+        200,
+    )

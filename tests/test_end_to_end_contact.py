@@ -257,13 +257,21 @@ def test_e2e_contact_disabled_configuration(app, db_session):
     # 3) Cliente público
     client = app.test_client()
 
-    # 4) El formulario de contacto sigue siendo accesible directamente en /contact
-    # Solo el enlace en la navbar no se muestra
+    # 4) El formulario de contacto no debe ser accesible directamente en /contact.
+    # Debe redireccionar a la página de inicio (302) porque está deshabilitado.
     resp_contact = client.get("/contact")
-    assert resp_contact.status_code == 200
+    assert resp_contact.status_code == 302
+    assert resp_contact.headers["Location"] in {
+        "/",
+        "http://localhost/",
+        "http://localhost.localdomain/",
+        "/home",
+        "http://localhost/home",
+        "http://localhost.localdomain/home",
+    }
 
     # 5) Verificar que el enlace NO está en la página principal
-    resp_home = client.get("/")
+    resp_home = client.get("/", follow_redirects=True)
     assert resp_home.status_code == 200
     # Cuando está deshabilitado, no debe haber enlace visible a contact en navbar
     # (esto depende del template, pero el enlace está condicionado por is_contact_enabled())

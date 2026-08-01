@@ -27,6 +27,7 @@ ADMIN_REDIRECT_ALLOWED_PATHS = {
     "/setting/mail_check",
     "/user/forgot_password",
     "/home/panel",
+    "/contact",
 }
 EXCLUDED_PATHS = {
     "/ads.txt",
@@ -45,6 +46,7 @@ EXCLUDED_PATHS = {
     "/setting/delete_site_logo",
     "/user/logout",
     "/api/v1/public/ping",
+    "/api/v1/public/contact-messages",
 }
 
 # Excluir prefijos completos (e.g., rutas del Debug Toolbar)
