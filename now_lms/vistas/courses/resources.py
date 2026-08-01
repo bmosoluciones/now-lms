@@ -312,8 +312,17 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
 @login_required
 @perfil_requerido("student")
 def pagina_recurso_alternativo(curso_id: str, codigo: str, order: str) -> str:
+    # Filter on the course as well as the resource id: `curso_id` is attacker-controlled,
+    # and without this a resource can be rendered in the context of an unrelated course.
+    # The sibling routes in this module already filter on both.
+    RECURSO = (
+        database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo, CursoRecurso.curso == curso_id))
+        .scalars()
+        .first()
+    )
+    if not RECURSO:
+        abort(404)
     CURSO = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
-    RECURSO = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo)).scalars().first()
     SECCION = database.session.execute(select(CursoSeccion).filter(CursoSeccion.id == RECURSO.seccion)).scalars().first()
     INDICE = crear_indice_recurso(codigo)
 
@@ -341,17 +350,21 @@ def pagina_recurso_alternativo(curso_id: str, codigo: str, order: str) -> str:
             .all()
         )
 
-    if (current_user.is_authenticated and current_user.tipo == "admin") or RECURSO.publico is True:
-        return render_template(
-            "learning/resources/type_alternativo.html",
-            recursos=consulta_recursos,
-            curso=CURSO,
-            recurso=RECURSO,
-            seccion=SECCION,
-            indice=INDICE,
-        )
-    flash(NO_AUTORIZADO_MSG, "warning")
-    return abort(403)
+    # Route through the same gate `pagina_recurso` uses: a free preview is only
+    # served while its course is still public and open. A non-enrolled student
+    # could otherwise keep reading the alternative-resource sidebar of a course
+    # that had been unpublished, made private, or closed.
+    if not _resource_is_viewable(curso_id, RECURSO):
+        flash(NO_AUTORIZADO_MSG, "warning")
+        return abort(403)
+    return render_template(
+        "learning/resources/type_alternativo.html",
+        recursos=consulta_recursos,
+        curso=CURSO,
+        recurso=RECURSO,
+        seccion=SECCION,
+        indice=INDICE,
+    )
 
 
 # Nuevo/editar recursos por tipo
@@ -1481,7 +1494,10 @@ def external_code(course_code: str, recurso_code: str) -> str | Response:
         .first()
     )
     if current_user.is_authenticated:
-        if recurso.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+        # Route through the same gate the other raw-resource routes use: a `publico`
+        # resource stays hidden once its course is unpublished, private, or closed,
+        # and an unauthenticated visitor is asked to sign in.
+        if _resource_is_viewable(course_code, recurso):
             return recurso.external_code
         return abort(403)
     return INICIO_SESION
@@ -1808,10 +1824,11 @@ def _meet_resource_context(course_code: str, codigo: str):
     course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
     if not recurso or not course_obj:
         abort(404)
-    can_view = current_user.tipo in ("admin", "instructor") or (
-        current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code)
-    )
-    if not (can_view or recurso.publico):
+    # Route through the same gate the rest of the module uses: an assigned instructor
+    # or enrolled student, or a free preview of a course that is still public and open.
+    # A non-entitled user used to reach the meet details whenever the resource was
+    # marked `publico`, regardless of course state.
+    if not _resource_is_viewable(course_code, recurso):
         abort(403)
     return recurso, course_obj
 

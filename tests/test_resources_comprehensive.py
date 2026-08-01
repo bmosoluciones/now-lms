@@ -1011,9 +1011,10 @@ def test_instructor_editar_recurso_meet(app, db_session):
 
 def test_descargar_calendario_ics_meet(app, db_session):
     """Se puede descargar un archivo ICS para un recurso Meet."""
-    crear_usuario(db_session, "instructor", "instructor13")
+    instructor = crear_usuario(db_session, "instructor", "instructor13")
     curso = crear_curso(db_session, "curso_cal_ics")
     seccion = crear_seccion(db_session, curso)
+    asignar_instructor(db_session, curso, instructor)
 
     recurso = CursoRecurso(
         curso=curso.codigo,
@@ -1052,9 +1053,10 @@ def test_descargar_calendario_ics_meet(app, db_session):
 
 def test_google_calendar_link_redireccion(app, db_session):
     """El enlace de Google Calendar redirige correctamente."""
-    crear_usuario(db_session, "instructor", "instructor14")
+    instructor = crear_usuario(db_session, "instructor", "instructor14")
     curso = crear_curso(db_session, "curso_gcal")
     seccion = crear_seccion(db_session, curso)
+    asignar_instructor(db_session, curso, instructor)
 
     recurso = CursoRecurso(
         curso=curso.codigo,
@@ -1091,9 +1093,10 @@ def test_google_calendar_link_redireccion(app, db_session):
 
 def test_outlook_calendar_link_redireccion(app, db_session):
     """El enlace de Outlook Calendar redirige correctamente."""
-    crear_usuario(db_session, "instructor", "instructor15")
+    instructor = crear_usuario(db_session, "instructor", "instructor15")
     curso = crear_curso(db_session, "curso_outlook")
     seccion = crear_seccion(db_session, curso)
+    asignar_instructor(db_session, curso, instructor)
 
     recurso = CursoRecurso(
         curso=curso.codigo,
