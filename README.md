@@ -1,4 +1,4 @@
- ![Logo](https://github.com/bmosoluciones/now-lms/blob/main/now_lms/static/icons/logo/logo_large.png?raw=true)
+![Logo](https://raw.githubusercontent.com/bmosoluciones/now-lms/main/now_lms/static/icons/logo/logo_large.png)
 # NOW - Learning Management System
 
 ![PyPI - License](https://img.shields.io/pypi/l/now_lms?color=brightgreen&logo=apache&logoColor=white)
@@ -15,17 +15,17 @@
 
 A simple-to-{install, use, configure, monetize, and maintain} learning management system.
 
-![Default NOW LMS view](docs/images/default.png)
+![Default NOW LMS view](https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/images/default.png)
 
 -----------
 
 <table>
   <tr>
-    <td><a href="docs/images/bmo.png"><img src="docs/images/bmo.png" alt="BMO theme" width="140"></a></td>
-    <td><a href="docs/images/now-lms.png"><img src="docs/images/now-lms.png" alt="NOW LMS landing page" width="140"></a></td>
-    <td><a href="docs/images/excel.png"><img src="docs/images/excel.png" alt="Excel theme" width="140"></a></td>
-    <td><a href="docs/images/sunshine.png"><img src="docs/images/sunshine.png" alt="Sunshine theme" width="140"></a></td>
-    <td><a href="docs/images/theme.png"><img src="docs/images/theme.png" alt="Custom theme" width="140"></a></td>
+    <td><a href="https://github.com/bmosoluciones/now-lms/blob/main/docs/images/bmo.png"><img src="https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/images/bmo.png" alt="BMO theme" width="140"></a></td>
+    <td><a href="https://github.com/bmosoluciones/now-lms/blob/main/docs/images/now-lms.png"><img src="https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/images/now-lms.png" alt="NOW LMS landing page" width="140"></a></td>
+    <td><a href="https://github.com/bmosoluciones/now-lms/blob/main/docs/images/excel.png"><img src="https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/images/excel.png" alt="Excel theme" width="140"></a></td>
+    <td><a href="https://github.com/bmosoluciones/now-lms/blob/main/docs/images/sunshine.png"><img src="https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/images/sunshine.png" alt="Sunshine theme" width="140"></a></td>
+    <td><a href="https://github.com/bmosoluciones/now-lms/blob/main/docs/images/theme.png"><img src="https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/images/theme.png" alt="Custom theme" width="140"></a></td>
   </tr>
 </table>
 
