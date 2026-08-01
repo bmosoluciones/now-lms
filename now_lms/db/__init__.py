@@ -1580,6 +1580,51 @@ class RemoteEnrollmentRequest(database.Model, BaseTabla):
     raw_payload_json = database.Column(database.Text, nullable=True)
 
 
+class PriorCredential(database.Model, BaseTabla):
+    """A credential a learner earned elsewhere, self-reported with a link that proves it.
+
+    Distinct from `Certificacion`, which records a certificate this platform *issued*. This
+    records one a learner brings *in* — prior learning completed before, or alongside, the
+    courses hosted here.
+
+    The record is evidence, not an assertion by the platform: `verification_url` is required
+    because a link back to the issuer can be checked, while an uploaded image only shows what
+    the learner chose to upload. `image_file` is an optional convenience attachment.
+
+    `status` is review bookkeeping for staff, not an access control. Nothing in the
+    application gates on it.
+    """
+
+    __tablename__ = "prior_credentials"
+    __table_args__ = (
+        database.UniqueConstraint("usuario", "credential_key", name="prior_credential_unico_por_usuario"),
+    )
+
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True
+    )
+    # Stable slug of the credential (the catalog key). `credential_name` is denormalized at
+    # submission time so a renamed or retired catalog entry cannot rewrite history.
+    credential_key = database.Column(database.String(50), nullable=False, index=True)
+    credential_name = database.Column(database.String(150), nullable=False)
+    credential_id = database.Column(database.String(100), nullable=True)
+    verification_url = database.Column(database.String(500), nullable=False)
+    issued_on = database.Column(database.Date, nullable=True)
+    # Stored file name only; the bytes live under the `credenciales` upload folder and are
+    # served through an authorization-checked route, never from a guessable static path.
+    image_file = database.Column(database.String(200), nullable=True)
+    status = database.Column(
+        database.String(20), default="submitted", nullable=False, index=True
+    )  # submitted, verified, rejected
+    admin_notes = database.Column(database.Text, nullable=True)
+    reviewed_at = database.Column(database.DateTime, nullable=True)
+    reviewed_by = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=True)
+
+    # Explicit foreign_keys: this table has two paths to Usuario, so the join is ambiguous
+    # without it.
+    reviewed_by_user = database.relationship("Usuario", foreign_keys=[reviewed_by])
+
+
 # Event listeners for audit field population and validation
 def _populate_new_audit_fields(instance: BaseTabla, current_user_id: str | None, current_date) -> None:
     """Populate creation audit fields for a new model instance."""

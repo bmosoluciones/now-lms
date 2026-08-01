@@ -121,6 +121,7 @@ noted — when upstream accepts it, we drop the fork-local copy and let `main` c
 | Anonymous GET on a gated course 302s to `/request-access` instead of a bare 403 (`vistas/courses/base.py`) | Core edit, 4 lines | Fork conversion path; re-apply at sync. Not offered upstream (product decision, not a bug). |
 | Admin contact list accepts a `?q=` subject filter (`vistas/static_pages.py`) | Core edit, 3 lines | Candidate for upstream once the contact-webhook PR lands; until then re-apply at sync. |
 | Self-registration is **closed at the ingress layer** — in host-level configuration on the production VPS, *not* in this repo. `/user/login` stays reachable for members; anonymous signup routes to the `/request-access` intake instead. | Host config (zero repo files) | **Permanent while the platform is invite-only.** ⚠️ Because it lives outside the repo, nothing here re-applies it: regenerating host ingress config without consulting the private intent-os ops record silently reopens self-signup. Any session touching host ingress must read that record first. |
+| Learner-reported prior credentials — `prior_credentials` model + guarded Alembic revision, `now_lms/vistas/prior_credentials.py` (`/my-credentials`, `/admin/prior-credentials`), two themed pages | **Core source** (new model + new blueprint), plus the theme layer | ADR-7 (`000-docs/014-AT-ADEC`). Genuinely generic (recognition of prior learning) and offerable upstream once the credential catalog stops being a module constant and becomes admin-configurable. Retire from the fork when upstream accepts. |
 | Testing enforcement layer — vendored `@intentsolutions/audit-harness` (`.audit-harness/` + `scripts/audit-harness` + `.harness-hash`), L1 pre-commit lint gate (`scripts/pre-commit-lint.sh` chained into the beads hook by `scripts/install-git-hooks.sh`), acceptance specs (`features/*.feature`), traceability (`tests/{TESTING,RTM,PERSONAS,JOURNEYS}.md`), coverage visibility in `deploy-line-ci.yml` | Fork tooling + fork CI, **zero core edits** | **Permanent fork-local, deliberately.** This is Intent Solutions' engineering standard, not a platform bug — it has NO upstream path. At the v2.0.0 sync these files carry over on purpose; do not treat them as drift. |
 
 ## Fork changelog
@@ -128,6 +129,14 @@ noted — when upstream accepts it, we drop the fork-local copy and let `main` c
 Fork-relevant, most recent first. (Upstream feature history lives in the root `CHANGELOG.md`; this
 section records only what is Intent-Solutions-fork-specific.)
 
+- **2026-07-31** — Added learner-reported prior credentials: a member records which courses they
+  completed elsewhere (`/my-credentials`) and staff review the record with a per-learner
+  completeness count (`/admin/prior-credentials`). The issuer's verification URL is required and
+  the certificate image is an optional attachment, because a link can be checked and an image
+  cannot. Uploads land in the private files directory and are served only through an
+  authorization-checked route — the UploadSet directories are autoserved with no authorization at
+  all, and a certificate carries a real name and credential number. Nothing gates on these
+  records. Decision and security posture: `000-docs/014-AT-ADEC` (ADR-7).
 - **2026-07-28** — Backfilled the blueprint baseline docs and installed the fork's testing
   enforcement layer. Docs: baseline PRD + five accepted ADRs filed chronologically in `000-docs/`
   (one-time renumber: sync map `001→007`, waiting-list plan `002→011`; `NNN` append-only from

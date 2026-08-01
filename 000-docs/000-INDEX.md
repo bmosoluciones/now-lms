@@ -30,6 +30,7 @@ files with an 8+ doc cluster, and we are far under both thresholds.
 | [011-PP-PLAN-waiting-list-gated-surfaces.md](011-PP-PLAN-waiting-list-gated-surfaces.md) | Waiting-list + gated practice surfaces execution plan (locked 2026-07-27): /request-access intake, practice-tracks teaser, contact fix, course gating, security ship-gate, upstream PR queue U1–U10, founder-locked copy and decisions. |
 | [012-OD-AACR-founding-members-provisioned-on-prod-2026-07-28.md](012-OD-AACR-founding-members-provisioned-on-prod-2026-07-28.md) | After-action record (2026-07-28): the founding-member cohort provisioned on production from the intent-os estate session, plus the standing constraints for this repo's sessions. **Redacted** for the public repo — the unredacted evidence lives in the private intent-os record. |
 | [013-OD-AACR-v2-sync-landing-and-upstream-queue-2026-07-29.md](013-OD-AACR-v2-sync-landing-and-upstream-queue-2026-07-29.md) | After-action record (2026-07-29): the v2.0.0 sync landing on production, the cohort-wide access lockout and its fix, testing gates going from advisory to blocking, the eight upstream patches, the public-history rewrite, and what is still open. Read with 012 and 007. |
+| [014-AT-ADEC-prior-credential-tracking.md](014-AT-ADEC-prior-credential-tracking.md) | ADR-7 (2026-07-31, Proposed): learner-reported prior credentials get a dedicated `prior_credentials` table with a required issuer verification URL and an optional privately-served image — a deliberate ADR-1 deviation, carried fork-local with an upstream path. |
 
 ## Architecture Decisions (the ADR log)
 
@@ -47,6 +48,8 @@ table of contents, in decision order.
 | ADR-3 | [008](008-AT-ADEC-curriculum-private-fork-public.md) | 2026-07-26 | Accepted | Curriculum moves to a private repo; the fork stays public |
 | ADR-4 | [009](009-AT-ADEC-native-contact-message-storage.md) | 2026-07-27 | Accepted | Store access requests in the native ContactMessage table, not a bespoke model |
 | ADR-5 | [010](010-AT-ADEC-gate-courses-doctrine-teaser.md) | 2026-07-27 | Accepted | Gate the courses; the public catalog becomes a doctrine teaser |
+| ADR-6 | — (open PR #37) | — | Proposed | Short-answer question type with instructor grading. Not merged; the number is reserved by that branch |
+| ADR-7 | [014](014-AT-ADEC-prior-credential-tracking.md) | 2026-07-31 | Proposed | Dedicated `prior_credentials` table; verification URL required, image optional and privately served |
 
 ## Renames & moves (references in old commit messages resolve here)
 

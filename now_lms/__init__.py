@@ -160,6 +160,7 @@ from now_lms.vistas.profiles.admin import admin_profile
 from now_lms.vistas.profiles.instructor import instructor_profile
 from now_lms.vistas.profiles.moderator import moderator_profile
 from now_lms.vistas.profiles.user import user_profile
+from now_lms.vistas.prior_credentials import prior_credentials
 from now_lms.vistas.programs import program
 from now_lms.vistas.public_api import public_api
 from now_lms.vistas.request_access import request_access_bp
@@ -255,6 +256,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(home)
         flask_app.register_blueprint(msg)
         flask_app.register_blueprint(page_info)
+        flask_app.register_blueprint(prior_credentials)
         flask_app.register_blueprint(program)
         flask_app.register_blueprint(public_api)
         flask_app.register_blueprint(request_access_bp)
