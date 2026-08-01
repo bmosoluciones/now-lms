@@ -35,8 +35,27 @@ from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
 
 
 # Constants
-USER_ALREADY_LOGGED_IN_MSG = _("Su usuario ya tiene una sesión iniciada.")
-ACCOUNT_CREATION_ERROR_MSG = _("Error al crear la cuenta.")
+#
+# These are functions rather than module-level strings on purpose. `_()` resolves
+# against the locale active *when it runs*, and a module-level constant runs once
+# at import, outside any request — so the translation freezes to whatever locale
+# the interpreter started in and every later request gets that same string. The
+# msgids below are Spanish and are translated in the catalogue, but users were
+# still seeing Spanish because the lookup had already happened at import.
+#
+# Same defect class as the eager `_()` form labels that upstream PR #231 made
+# lazy. `_l()` would also work, but flash() puts its argument in the session and
+# a lazy proxy is not JSON-serialisable, so resolving at call time is safer here.
+def USER_ALREADY_LOGGED_IN_MSG() -> str:
+    """Return the already-signed-in notice in the current request's locale."""
+    return _("Su usuario ya tiene una sesión iniciada.")
+
+
+def ACCOUNT_CREATION_ERROR_MSG() -> str:
+    """Return the account-creation failure notice in the current request's locale."""
+    return _("Error al crear la cuenta.")
+
+
 USER_LOGIN_ROUTE = "user.inicio_sesion"
 
 # ---------------------------------------------------------------------------------------
@@ -62,7 +81,7 @@ def _check_rate_limit(limit_key: str, max_attempts: int, window: int = 60) -> bo
 def inicio_sesion() -> str | Response:
     """Inicio de sesión del usuario."""
     if current_user.is_authenticated:
-        flash(USER_ALREADY_LOGGED_IN_MSG, "info")
+        flash(USER_ALREADY_LOGGED_IN_MSG(), "info")
         return PANEL_DE_USUARIO
 
     # Rate limiting: 5 login attempts per minute per IP
@@ -184,10 +203,10 @@ def crear_cuenta() -> str | Response:
 
             return INICIO_SESION
         except OperationalError:
-            flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
+            flash(ACCOUNT_CREATION_ERROR_MSG(), "warning")
             return redirect("/")
         except PendingRollbackError:
-            flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
+            flash(ACCOUNT_CREATION_ERROR_MSG(), "warning")
             return redirect("/")
     return render_template("auth/logon.html", form=form, titulo=_("Crear cuenta - NOW LMS"))
 
@@ -216,7 +235,7 @@ def crear_usuario() -> str | Response:
             flash(_("Usuario creado exitosamente."), "success")
             return redirect(url_for("user_profile.usuario", id_usuario=form.usuario.data))
         except OperationalError:
-            flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
+            flash(ACCOUNT_CREATION_ERROR_MSG(), "warning")
             return redirect("/new_user")
     else:
         return render_template(
@@ -259,7 +278,7 @@ def _send_password_reset_message(usuario) -> None:
 def forgot_password() -> str | Response:
     """Solicitar recuperación de contraseña."""
     if current_user.is_authenticated:
-        flash(USER_ALREADY_LOGGED_IN_MSG, "info")
+        flash(USER_ALREADY_LOGGED_IN_MSG(), "info")
         return PANEL_DE_USUARIO
 
     # Rate limiting: 3 forgot-password attempts per minute per IP
@@ -285,7 +304,7 @@ def forgot_password() -> str | Response:
 def reset_password(token: str) -> str | Response:
     """Restablecer contraseña con token."""
     if current_user.is_authenticated:
-        flash(USER_ALREADY_LOGGED_IN_MSG, "info")
+        flash(USER_ALREADY_LOGGED_IN_MSG(), "info")
         return PANEL_DE_USUARIO
 
     from now_lms.auth import validate_password_reset_token
