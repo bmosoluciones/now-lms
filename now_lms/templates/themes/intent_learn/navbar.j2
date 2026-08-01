@@ -2,22 +2,39 @@
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">
     <div class="container-fluid">
-        <a href="{{ url_for('home.pagina_de_inicio') }}" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
+        {# Brand: the theme's own mark plus the configured site title. The image carries an
+           empty alt because the adjacent text already names the site, so a screen reader
+           announces it once rather than twice. Never hardcode a product name here — this
+           macro renders on every authenticated page, and it previously shipped upstream's
+           wordmark with alt="NOW LMS" on both branches.
+
+           This depends on Configuracion.titulo being set. On a fresh database that field
+           defaults to "NOW LMS", so a new deployment must set the site title before the
+           navbar reads correctly. Verified 2026-07-31: production holds
+           "Intent Solutions Learn". #}
+        <a
+            href="{{ url_for('home.pagina_de_inicio') }}"
+            class="d-flex align-items-center gap-2 mb-2 mb-lg-0 text-decoration-none"
+            aria-label="{{ config().titulo }}"
+        >
             {% if logo_perzonalizado() %}
             <img
-                height="20"
-                src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}"
-                alt="NOW LMS"
+                width="24"
+                height="24"
+                src="{{ url_for('static', filename='files/public/images/logotipo.jpg') }}"
+                alt=""
                 class="d-inline-block align-top"
             />
             {% else %}
             <img
-                height="20"
-                src="{{ url_for('static', filename='/icons/logo/logo_white_large.png') }}"
-                alt="NOW LMS"
+                width="24"
+                height="24"
+                src="{{ url_for('static', filename='themes/intent_learn/logo-mark.png') }}"
+                alt=""
                 class="d-inline-block align-top"
             />
             {% endif %}
+            <span class="text-light fw-semibold">{{ config().titulo }}</span>
         </a>
         <button
             class="navbar-toggler"
@@ -46,10 +63,27 @@
                     >
                 </li>
                 {% endif %}
+                {# "Courses" must land somewhere that has courses. `course.lista_cursos`
+                   only ever lists `publico=True` rows, and this deployment gates every
+                   course, so for a signed-in member that route is guaranteed empty and
+                   sends them back to the dashboard.
+
+                   Point at `my_courses` ONLY for the roles that route actually serves.
+                   `course.my_courses` handles student, instructor and admin, and every
+                   other type falls through to a flash plus a redirect back to
+                   `lista_cursos` (now_lms/vistas/courses/base.py:558-560). Sending a
+                   moderator there would bounce them straight back here — the same loop
+                   this change exists to close, just one role over. #}
                 <li>
+                    {% if current_user.is_authenticated and current_user.tipo in ("student", "instructor", "admin") %}
+                    <a href="{{ url_for('course.my_courses') }}" class="nav-link text-light px-2"
+                        ><i class="bi bi-card-checklist" aria-hidden="true"></i> {{ _("Mis Cursos") }}</a
+                    >
+                    {% else %}
                     <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link text-light px-2"
                         ><i class="bi bi-card-checklist" aria-hidden="true"></i> {{ _("Cursos") }}</a
                     >
+                    {% endif %}
                 </li>
                 {% if is_programs_enabled() %}
                 <li>
@@ -164,14 +198,24 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            {# This modal is the attribution surface, and the credit to NOW-LMS and BMO
+               Soluciones below is deliberate — Apache-2.0 and good citizenship both ask
+               for it. What was wrong is that it presented AS NOW LMS: the heading and the
+               logo named the upstream product to a member who signed in to Intent
+               Solutions Learn. It now names this site and credits upstream underneath,
+               which is what attribution means. Do not remove the credit. #}
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">NOW - Learning Management System</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">{{ config().titulo }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body">
+                <p class="text-muted small mb-2">
+                    {{ _('Built on NOW-LMS, the open-source learning platform by BMO Soluciones.') }}
+                </p>
                 <img
-                    src="{{ url_for('static', filename='/icons/logo/logo_large.png') }}"
-                    alt="NOW Learning Management System"
+                    width="180"
+                    src="{{ url_for('static', filename='icons/logo/logo_large.png') }}"
+                    alt="NOW-LMS"
                 />
                 <br />
                 <strong>{{ _('Versión') }}:</strong> {{ version }}
@@ -189,9 +233,9 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <img
-                            weith="75"
+                            width="75"
                             height="20"
-                            src="{{ url_for('static', filename='/img/bmo-logo.png') }}"
+                            src="{{ url_for('static', filename='img/bmo-logo.png') }}"
                             alt="BMO Soluciones"
                         />
                     </div>

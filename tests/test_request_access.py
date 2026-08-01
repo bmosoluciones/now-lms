@@ -439,7 +439,12 @@ def test_explore_shows_members_the_panel_pointer(app, db_session):
 
     body = client.get("/course/explore").data.decode("utf-8")
     assert "isl-tracks-list" in body
-    assert "go to your dashboard" in body
+    # A signed-in member is pointed onward to their own courses, not asked to
+    # request access they already hold. `my_courses` serves student, instructor
+    # and admin; other roles are sent to the dashboard instead (linking them to
+    # my_courses would bounce them straight back to this page).
+    assert "Go to my courses" in body
+    assert "Request access" not in body
 
 
 def test_gated_course_redirects_anonymous_to_the_intake(client, db_session):

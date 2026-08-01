@@ -9,8 +9,14 @@
         <link rel="stylesheet" href="{{ S }}/front-door.css" />
     </head>
     {# Deliberately renders NO course data: the public catalog is a doctrine-voice
-       teaser. Courses are gated (publico=false); members reach their courses from
-       the dashboard. The `cursos` pagination object the route passes is unused. #}
+       teaser, and the `cursos` pagination object the route passes is unused. That is
+       not laziness — `_course_explore_query` filters `Curso.publico.is_(True)` and
+       every course on this deployment is gated, so the object is empty for everyone.
+       Rendering it would show a member an empty catalogue.
+
+       Signed-in members therefore get a route onward to their own courses rather than
+       the prospect call-to-action, which previously asked people who already had
+       access to request it. #}
     <body class="isl-root">
         <header class="isl-header">
             <div class="isl-wrap">
@@ -37,10 +43,18 @@
         <main>
             <section class="isl-section" aria-labelledby="tracks-title">
                 <div class="isl-wrap">
+                    {# `my_courses` only serves student, instructor and admin; every other
+                       role is flashed and redirected back to this page, so linking a
+                       moderator there would loop. Send those roles to the dashboard. #}
+                    {% set has_my_courses = current_user.is_authenticated and current_user.tipo in ("student", "instructor", "admin") %}
                     {% if current_user.is_authenticated %}
                     <p class="isl-tracks-member">
-                        {{ _('Your courses live in your panel —') }}
-                        <a href="{{ url_for('home.panel') }}">{{ _('go to your dashboard') }}</a>.
+                        {{ _('This page is the public overview of the practice.') }}
+                        {% if has_my_courses %}
+                        <a href="{{ url_for('course.my_courses') }}">{{ _('Go to my courses') }}</a>
+                        {% else %}
+                        <a href="{{ url_for('home.panel') }}">{{ _('Open your dashboard') }}</a>
+                        {% endif %}
                     </p>
                     {% endif %}
 
@@ -73,8 +87,16 @@
                         <p>{{ _('Some members are invited onto client work that comes through Intent Solutions. That invitation is earned, not sold.') }}</p>
                     </div>
 
+                    {# Do not offer "Request access" to somebody who already has it.
+                       Role guard as above: `my_courses` would bounce a moderator back here. #}
                     <div class="isl-cta-row">
+                        {% if has_my_courses %}
+                        <a class="isl-btn isl-btn-primary" href="{{ url_for('course.my_courses') }}">{{ _('Go to my courses') }} <span aria-hidden="true">→</span></a>
+                        {% elif current_user.is_authenticated %}
+                        <a class="isl-btn isl-btn-primary" href="{{ url_for('home.panel') }}">{{ _('Open your dashboard') }} <span aria-hidden="true">→</span></a>
+                        {% else %}
                         <a class="isl-btn isl-btn-primary" href="{{ url_for('request_access.request_access') }}">{{ _('Request access') }} <span aria-hidden="true">→</span></a>
+                        {% endif %}
                         <a class="isl-btn isl-btn-secondary" href="/#practice">{{ _('See how the practice works') }}</a>
                     </div>
                 </div>
