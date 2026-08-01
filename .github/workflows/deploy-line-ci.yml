@@ -160,6 +160,34 @@ jobs:
             - name: Reset-only checkout behaviour
               run: bash scripts/test-reset-only-hook.sh
 
+    themes:
+        # Every theme ships theme.css AND theme.min.css, both hand-maintained, and
+        # local_style.j2 loads the .min one -- so the file people edit is not the
+        # file users get. Nothing checked that they agreed, and 7 of 8 have drifted
+        # (corporative's .min is LARGER than its source: the served stylesheet has
+        # rules the source lacks). Bead now-lms-7g4.
+        #
+        # Blocking, but scoped: only themes in the script's GATED list fail the run.
+        # The 7 drifted ones are upstream-owned and predate this check; reddening
+        # the deploy line on inherited drift would just get the check disabled. The
+        # script always PRINTS them, so the bound is visible rather than silent.
+        name: Theme stylesheets (min matches source)
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+
+        steps:
+            - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.7
+
+            - name: Set up Python 3.12
+              uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v4.6.0
+              with:
+                  python-version: "3.12"
+
+            # No dependencies on purpose: stdlib only, so this cannot break on a
+            # lockfile change and takes seconds.
+            - name: Check theme.min.css against theme.css
+              run: python scripts/check_theme_minification.py
+
     e2e:
         # Browser-level L6: the member journey (login -> course -> lesson) that
         # every lower layer missed when U12 locked the whole cohort out on
