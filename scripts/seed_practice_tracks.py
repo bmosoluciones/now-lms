@@ -53,7 +53,22 @@ from now_lms import lms_app
 from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, database
 
 # Upstream's demo seed data. Codes come from now_lms/db/initial_data.py.
-DEMO_COURSE_CODES = ["now", "details", "free", "lms-training", "resources"]
+#
+# "lms-training" is deliberately NOT in this list. It is not demo content: it is
+# upstream's operator manual, "Guía Completa de NOW LMS" — how to run the LMS as
+# an administrator or instructor. Upstream gates it accordingly, in its own code:
+#
+#     now_lms/vistas/courses/base.py:120   (William Moreno, 1b3857f, 2026-07-21)
+#     if course_code == "lms-training" and current_user.is_authenticated:
+#         if current_user.tipo in ("admin", "instructor"):
+#
+# Deleting it removes staff documentation, not sample data — and it would go
+# unnoticed: scripts/deploy-smoke.sh asserts /course/lms-training/view returns
+# 302 anonymously, but by that file's own comment a course that does not exist
+# ALSO returns 302, so the smoke check cannot tell the two apart.
+#
+# Bead now-lms-4vf.
+DEMO_COURSE_CODES = ["now", "details", "free", "resources"]
 
 HOUSE_CORE_NOTE = (
     "All members begin with the shared house core, regardless of track. "
