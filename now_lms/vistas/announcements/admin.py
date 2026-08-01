@@ -16,7 +16,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, database
 from now_lms.forms import GlobalAnnouncementForm
@@ -37,7 +37,7 @@ admin_announcements = Blueprint("admin_announcements", __name__, template_folder
 @admin_announcements.route("/admin/announcements", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def list_announcements() -> str:
     """Lista de anuncios globales para administradores."""
     consulta = database.paginate(
