@@ -1493,6 +1493,12 @@ def external_code(course_code: str, recurso_code: str) -> str | Response:
         .scalars()
         .first()
     )
+    # Mirrors `pdf_viewer` above: without this, `_resource_is_viewable` dereferences
+    # `recurso.publico` on a None and raises AttributeError -> 500 instead of 404 when
+    # an attacker supplies a resource id that does not exist under this course.
+    if not recurso:
+        return abort(404)
+
     if current_user.is_authenticated:
         # Route through the same gate the other raw-resource routes use: a `publico`
         # resource stays hidden once its course is unpublished, private, or closed,

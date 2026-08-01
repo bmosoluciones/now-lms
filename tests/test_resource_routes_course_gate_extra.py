@@ -180,6 +180,24 @@ def test_external_code_serves_enrolled_student_of_private_course(app, db_session
     assert resp.status_code == 200
 
 
+def test_external_code_returns_404_for_unknown_resource(app, db_session):
+    """`external_code` filters on `CursoRecurso.id == recurso_code` and
+    `CursoRecurso.curso == course_code`. When the resource id does not exist under
+    the supplied course, the loader returns None. Without the explicit null check the
+    authenticated branch dereferenced `recurso.publico` inside `_resource_is_viewable`
+    and raised AttributeError -> 500 rather than the 404 its sibling routes
+    (`pdf_viewer` etc.) return for the same input.
+    """
+    curso = _crear_curso(db_session, "ec_404")
+    _crear_usuario(db_session, "no_matriculado")
+
+    with app.test_client() as client:
+        _login(client, "no_matriculado")
+        resp = client.get(f"/course/{curso.codigo}/external_code/does-not-exist")
+
+    assert resp.status_code == 404
+
+
 # --------------------------------------------------------------------------------------
 # pagina_recurso_alternativo
 # --------------------------------------------------------------------------------------
