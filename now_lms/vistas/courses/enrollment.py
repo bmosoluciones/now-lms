@@ -120,9 +120,7 @@ def _finalize_completed_enrollment(
         # same (usuario, curso) is never what we want — it just inflates the
         # enrollment counts everything else reads.
         registro = (
-            database.session.execute(
-                database.select(EstudianteCurso).filter_by(curso=pago.curso, usuario=pago.usuario)
-            )
+            database.session.execute(database.select(EstudianteCurso).filter_by(curso=pago.curso, usuario=pago.usuario))
             .scalars()
             .first()
         )
@@ -234,7 +232,11 @@ def _process_validated_enrollment(
 
     # Add coupon information to payment description
     if pricing.applied_coupon:
-        pago.descripcion = _("Cupón aplicado: %(code)s (Descuento: %(discount)s)", code=pricing.applied_coupon.code, discount=pricing.discount_amount)
+        pago.descripcion = _(
+            "Cupón aplicado: %(code)s (Descuento: %(discount)s)",
+            code=pricing.applied_coupon.code,
+            discount=pricing.discount_amount,
+        )
 
     # Handle different enrollment modes
     if _is_free_enrollment(course_obj, pricing.final_price):

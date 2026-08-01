@@ -34,10 +34,7 @@ CONSTRAINT_NAME = "uq_estudiante_curso_usuario_curso"
 def _duplicate_groups(bind) -> list[tuple[str, str]]:
     """Return the (usuario, curso) pairs that have more than one enrollment row."""
     rows = bind.execute(
-        sa.text(
-            "SELECT usuario, curso FROM estudiante_curso "
-            "GROUP BY usuario, curso HAVING COUNT(*) > 1"
-        )
+        sa.text("SELECT usuario, curso FROM estudiante_curso " "GROUP BY usuario, curso HAVING COUNT(*) > 1")
     ).fetchall()
     return [(row[0], row[1]) for row in rows]
 
@@ -50,10 +47,7 @@ def _rows_for(bind, usuario: str, curso: str) -> list[tuple[str, str | None, boo
     boolean and NULL ordering differ between SQLite, PostgreSQL and MySQL.
     """
     rows = bind.execute(
-        sa.text(
-            "SELECT id, pago, vigente FROM estudiante_curso "
-            "WHERE usuario = :usuario AND curso = :curso"
-        ),
+        sa.text("SELECT id, pago, vigente FROM estudiante_curso " "WHERE usuario = :usuario AND curso = :curso"),
         {"usuario": usuario, "curso": curso},
     ).fetchall()
     return sorted(rows, key=lambda r: (r[1] is None, not bool(r[2]), r[0]))
@@ -85,8 +79,7 @@ def upgrade() -> None:
             for discarded_id in discarded:
                 bind.execute(
                     sa.text(
-                        "UPDATE remote_enrollment_requests SET enrollment_id = :keeper "
-                        "WHERE enrollment_id = :discarded"
+                        "UPDATE remote_enrollment_requests SET enrollment_id = :keeper " "WHERE enrollment_id = :discarded"
                     ),
                     {"keeper": keeper_id, "discarded": discarded_id},
                 )

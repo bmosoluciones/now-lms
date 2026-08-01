@@ -717,7 +717,9 @@ def crear_evaluacion_predeterminada() -> None:
         evaluation_id=evaluacion.id,
         type="multiple",
         text=_("¿Cuál es una de las principales ventajas de la enseñanza en línea?"),
-        explanation=_("La flexibilidad es una de las características más importantes de la educación en línea, permitiendo a estudiantes e instructores adaptar horarios."),
+        explanation=_(
+            "La flexibilidad es una de las características más importantes de la educación en línea, permitiendo a estudiantes e instructores adaptar horarios."
+        ),
         order=1,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -759,7 +761,9 @@ def crear_evaluacion_predeterminada() -> None:
         evaluation_id=evaluacion.id,
         type="boolean",
         text=_("Los cursos en línea requieren mayor autodisciplina por parte de los estudiantes."),
-        explanation=_("Verdadero. Los estudiantes en línea deben gestionar su tiempo y motivación de manera más independiente."),
+        explanation=_(
+            "Verdadero. Los estudiantes en línea deben gestionar su tiempo y motivación de manera más independiente."
+        ),
         order=2,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -789,7 +793,9 @@ def crear_evaluacion_predeterminada() -> None:
         evaluation_id=evaluacion.id,
         type="multiple",
         text=_("¿Qué elemento es esencial para estructurar un curso en línea efectivo?"),
-        explanation=_("Los objetivos claros de aprendizaje son fundamentales para guiar tanto al instructor como a los estudiantes."),
+        explanation=_(
+            "Los objetivos claros de aprendizaje son fundamentales para guiar tanto al instructor como a los estudiantes."
+        ),
         order=3,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )
@@ -1778,21 +1784,27 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
             "nombre": _("¿Qué es NOW LMS?"),
             "descripcion": _("Introducción al sistema LMS"),
             "tipo": "text",
-            "contenido": _("# ¿Qué es NOW LMS?\n\nNOW LMS es un sistema de gestión de aprendizaje diseñado para ser simple, potente y fácil de usar.\n\n## Características principales:\n- Fácil instalación\n- Interfaz intuitiva\n- Gestión completa de usuarios y cursos\n- Sistema de evaluaciones\n- Reportes detallados\n- Configuración flexible para administradores"),
+            "contenido": _(
+                "# ¿Qué es NOW LMS?\n\nNOW LMS es un sistema de gestión de aprendizaje diseñado para ser simple, potente y fácil de usar.\n\n## Características principales:\n- Fácil instalación\n- Interfaz intuitiva\n- Gestión completa de usuarios y cursos\n- Sistema de evaluaciones\n- Reportes detallados\n- Configuración flexible para administradores"
+            ),
         },
         {
             "seccion": secciones_creadas[1],
             "nombre": _("Tipos de Usuario"),
             "descripcion": _("Roles y permisos en el sistema"),
             "tipo": "text",
-            "contenido": _("# Tipos de Usuario\n\n## Roles disponibles:\n1. **admin**: Control total del sistema\n2. **instructor**: Crear y gestionar cursos\n3. **moderator**: Moderar contenido\n4. **student**: Acceso básico de estudiante\n\nCada rol tiene permisos específicos para garantizar la seguridad y organización del sistema. Los administradores tienen acceso completo."),
+            "contenido": _(
+                "# Tipos de Usuario\n\n## Roles disponibles:\n1. **admin**: Control total del sistema\n2. **instructor**: Crear y gestionar cursos\n3. **moderator**: Moderar contenido\n4. **student**: Acceso básico de estudiante\n\nCada rol tiene permisos específicos para garantizar la seguridad y organización del sistema. Los administradores tienen acceso completo."
+            ),
         },
         {
             "seccion": secciones_creadas[2],
             "nombre": _("Modalidades de Curso"),
             "descripcion": _("Diferentes modalidades disponibles"),
             "tipo": "text",
-            "contenido": _("# Modalidades de Curso\n\n## 1. Self-paced\n- Estudiantes aprenden a su ritmo\n- Sin fechas fijas\n\n## 2. Time-based\n- Fechas de inicio y fin\n- Aprendizaje en cohort\n\n## 3. Live\n- Sesiones en tiempo real\n- Interacción directa\n\nCada modalidad tiene sus ventajas según el tipo de contenido y audiencia. Los instructores pueden elegir la modalidad apropiada."),
+            "contenido": _(
+                "# Modalidades de Curso\n\n## 1. Self-paced\n- Estudiantes aprenden a su ritmo\n- Sin fechas fijas\n\n## 2. Time-based\n- Fechas de inicio y fin\n- Aprendizaje en cohort\n\n## 3. Live\n- Sesiones en tiempo real\n- Interacción directa\n\nCada modalidad tiene sus ventajas según el tipo de contenido y audiencia. Los instructores pueden elegir la modalidad apropiada."
+            ),
         },
     ]
 
@@ -1874,7 +1886,9 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
         evaluation_id=evaluacion_usuarios.id,
         type="boolean",
         text=_("Los instructores pueden crear y gestionar cualquier curso en el sistema."),
-        explanation=_("Falso. Los instructores solo pueden gestionar los cursos que han creado o a los que han sido asignados."),
+        explanation=_(
+            "Falso. Los instructores solo pueden gestionar los cursos que han creado o a los que han sido asignados."
+        ),
         order=2,
         creado_por=ADMIN_USER_WITH_FALLBACK,
     )

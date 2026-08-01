@@ -858,7 +858,9 @@ def _get_or_create_course_enrollment(course_code, student_username, bypass_payme
     pago.estado = "completed"
     pago.metodo = "admin_program_enrollment"
     pago.monto = 0 if bypass_payment else curso.precio
-    pago.descripcion = _("Inscripción administrativa al programa '%(name)s' por %(user)s", name=programa.nombre, user=current_user.usuario)
+    pago.descripcion = _(
+        "Inscripción administrativa al programa '%(name)s' por %(user)s", name=programa.nombre, user=current_user.usuario
+    )
     if notes:
         pago.descripcion += _(" - Notas: %(notes)s", notes=notes)
     pago.audit = not bypass_payment and curso.pagado

@@ -1061,7 +1061,9 @@ body {
 
 CERTIFICADO_DEFAULT_TITULO = _("Default")
 
-CERTIFICADO_DEFAULT_DESCRIPCION = _("Professional default certificate template in English with comprehensive features including QR verification, security elements, and multi-language support.")
+CERTIFICADO_DEFAULT_DESCRIPCION = _(
+    "Professional default certificate template in English with comprehensive features including QR verification, security elements, and multi-language support."
+)
 
 CERTIFICADO_DEFAULT_HTML = """
 <!doctype html>
@@ -1632,7 +1634,9 @@ body {
 
 CERTIFICADO_PROFESIONAL_TITULO = _("Profesional")
 
-CERTIFICADO_PROFESIONAL_DESCRIPCION = _("Certificado profesional moderno inspirado en diseños corporativos de alta calidad con elementos de seguridad y verificación.")
+CERTIFICADO_PROFESIONAL_DESCRIPCION = _(
+    "Certificado profesional moderno inspirado en diseños corporativos de alta calidad con elementos de seguridad y verificación."
+)
 
 CERTIFICADO_PROFESIONAL_HTML = """
 <!doctype html>

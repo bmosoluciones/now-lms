@@ -33,9 +33,7 @@ def upgrade():
             # migration while retaining the legacy r column. Preserve any
             # values that were only stored in r, then remove the obsolete
             # duplicate so the schema matches the model.
-            conn.execute(
-                sa.text("UPDATE configuracion SET csrf_seed = COALESCE(csrf_seed, r) WHERE r IS NOT NULL")
-            )
+            conn.execute(sa.text("UPDATE configuracion SET csrf_seed = COALESCE(csrf_seed, r) WHERE r IS NOT NULL"))
             with op.batch_alter_table("configuracion") as batch_op:
                 batch_op.drop_column("r")
         elif "r" in columns:

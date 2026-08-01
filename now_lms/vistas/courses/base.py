@@ -682,7 +682,9 @@ def admin_course_enrollment(course_code: str) -> str | Response:
         try:
             _persist_admin_enrollment(course_code, _curso, usuario_existe, bypass_payment, notes)
 
-            flash(_("Estudiante '{}' inscrito exitosamente en el curso '{}'.").format(student_username, _curso.nombre), "success")
+            flash(
+                _("Estudiante '{}' inscrito exitosamente en el curso '{}'.").format(student_username, _curso.nombre), "success"
+            )
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
         except Exception as e:
