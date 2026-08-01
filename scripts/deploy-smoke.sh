@@ -80,4 +80,22 @@ for code in CCA-A CCA-B CCA-F free IS-START now postgresql python resources deta
     esac
 done
 
+# 8. Record repository state in the receipt, not just local state. The gate that
+#    REFUSES a divergent deploy lives in deploy-vps.sh (it is the one that can
+#    fetch); this line exists so a green smoke can never again be read as "the
+#    checkout matches the repo" when nobody checked. No fetch here on purpose —
+#    a smoke check should not depend on the network to report what it observed.
+branch="$(git rev-parse --abbrev-ref HEAD)"
+repo_state="origin/${branch} not fetched in this checkout — repository state UNKNOWN"
+if [ "${branch}" != "HEAD" ] && git rev-parse --verify --quiet "origin/${branch}^{commit}" >/dev/null; then
+    origin_sha="$(git rev-parse "origin/${branch}")"
+    if [ "${origin_sha}" = "${want}" ]; then
+        repo_state="in sync with origin/${branch}"
+    else
+        read -r ahead behind <<<"$(git rev-list --left-right --count "HEAD...origin/${branch}")"
+        repo_state="DIVERGENT from origin/${branch} at ${origin_sha} (+${ahead}/-${behind}) as of the last fetch by deploy-vps.sh — this check does not fetch"
+    fi
+fi
+
 echo "SMOKE OK: ${want} is built, running, healthy, and serving its own bytes."
+echo "SMOKE OK: ${repo_state}."

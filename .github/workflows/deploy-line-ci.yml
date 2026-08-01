@@ -126,6 +126,40 @@ jobs:
                   sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
                   pytest --tb=short -q --cov=now_lms --cov-report=term
 
+    deploy-scripts:
+        # The deploy scripts are the only code in this repo that CI never
+        # exercised, which is how a checkout could sit 2 commits ahead of origin
+        # on 2026-07-31 while the deploy reported SMOKE OK. scripts/deploy-vps.sh
+        # now refuses a checkout origin does not agree with; this job is what
+        # stops that refusal from being weakened later without anyone noticing.
+        #
+        # Fast (no docker, no network — the test builds a throwaway origin in a
+        # tempdir and stubs everything downstream of the gate), so it is BLOCKING
+        # from the start. Bead now-lms-4bt.
+        name: Deploy scripts (divergence gate, reset-only hook)
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+
+        steps:
+            - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.7
+
+            - name: Shell syntax
+              run: |
+                  for f in scripts/deploy-vps.sh \
+                           scripts/deploy-smoke.sh \
+                           scripts/vps-sync.sh \
+                           scripts/install-vps-reset-only.sh \
+                           scripts/test-deploy-gate.sh \
+                           scripts/test-reset-only-hook.sh; do
+                      bash -n "$f" || exit 1
+                  done
+
+            - name: Divergence gate behaviour
+              run: bash scripts/test-deploy-gate.sh
+
+            - name: Reset-only checkout behaviour
+              run: bash scripts/test-reset-only-hook.sh
+
     e2e:
         # Browser-level L6: the member journey (login -> course -> lesson) that
         # every lower layer missed when U12 locked the whole cohort out on

@@ -16,10 +16,29 @@
 #   3. The smoke check (scripts/deploy-smoke.sh) fails the deploy unless the
 #      running container, the checkout, and the served bytes all agree.
 #
+# WHAT THE ABOVE STILL DID NOT ANSWER (bead now-lms-4bt, 2026-07-31)
+# All three gaps above compare the checkout to itself. None of them asks whether
+# the CHECKOUT matches the REPOSITORY. On 2026-07-31 this box sat 2 commits ahead
+# of origin and 1 behind while the smoke check reported SMOKE OK — truthfully,
+# because the checkout WAS what was running. Nobody had asked the other question.
+# So step 0 below fetches and refuses to deploy a checkout that origin does not
+# agree with, and both SHAs are printed so the receipt records repository state
+# rather than only local state.
+#
 # Run ON the VPS, from anywhere: bash /srv/now-lms/scripts/deploy-vps.sh
+#   --allow-divergent   deploy anyway, and say so in the receipt. For a genuine
+#                       emergency only: it ships code that exists nowhere else.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+ALLOW_DIVERGENT=0
+for arg in "$@"; do
+    case "${arg}" in
+        --allow-divergent) ALLOW_DIVERGENT=1 ;;
+        *) echo "unknown argument: ${arg}" >&2; exit 2 ;;
+    esac
+done
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
     echo "REFUSING to deploy: the checkout has uncommitted changes." >&2
@@ -27,9 +46,66 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
     exit 1
 fi
 
+# 0. The checkout agrees with the repository.
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [ "${BRANCH}" = "HEAD" ]; then
+    echo "REFUSING to deploy: detached HEAD. There is no origin branch to compare against." >&2
+    exit 1
+fi
+REMOTE_REF="origin/${BRANCH}"
+
+echo "==> Fetching origin to compare the checkout against the repository"
+if ! git fetch --quiet origin "${BRANCH}"; then
+    echo "REFUSING to deploy: could not fetch origin/${BRANCH}." >&2
+    echo "  A deploy that cannot see the repository cannot know whether it is current." >&2
+    exit 1
+fi
+
+if ! git rev-parse --verify --quiet "${REMOTE_REF}^{commit}" >/dev/null; then
+    echo "REFUSING to deploy: ${REMOTE_REF} does not exist. Is this branch pushed?" >&2
+    exit 1
+fi
+
 BUILD_SHA="$(git rev-parse HEAD)"
-export BUILD_SHA
-echo "==> Deploying ${BUILD_SHA} ($(git log --format=%s -1))"
+ORIGIN_SHA="$(git rev-parse "${REMOTE_REF}")"
+REPO_ROOT="$(pwd)"
+# Three dots, not two: "A...B" is the SYMMETRIC difference, so --left-right --count
+# prints "<commits only in A> <commits only in B>" -- i.e. ahead and behind in one
+# call. "A..B" would give only one side and could not tell divergence from being
+# merely behind.
+read -r AHEAD BEHIND <<<"$(git rev-list --left-right --count "HEAD...${REMOTE_REF}")"
+
+if [ "${AHEAD}" -ne 0 ] || [ "${BEHIND}" -ne 0 ]; then
+    {
+        echo "REFUSING to deploy: the checkout has diverged from ${REMOTE_REF}."
+        echo "  checkout HEAD    ${BUILD_SHA}"
+        echo "  ${REMOTE_REF}    ${ORIGIN_SHA}"
+        echo "  ${AHEAD} commit(s) here and not on origin, ${BEHIND} commit(s) on origin and not here."
+        echo
+        if [ "${AHEAD}" -ne 0 ]; then
+            echo "  ${AHEAD} local commit(s) exist NOWHERE ELSE. Deploying them would put code"
+            echo "  into production that no PR reviewed and no other clone can reproduce."
+            echo "  Push them, or reset to origin — see ops/ for the reset-only policy."
+        fi
+        if [ "${BEHIND}" -ne 0 ]; then
+            echo "  Deploying now would ship code ${BEHIND} commit(s) stale. Run:"
+            echo "      git -C \"${REPO_ROOT}\" fetch origin && git -C \"${REPO_ROOT}\" reset --hard \"${REMOTE_REF}\""
+        fi
+        echo
+        echo "  Override with --allow-divergent only if you accept shipping unreproducible code."
+    } >&2
+    [ "${ALLOW_DIVERGENT}" -eq 1 ] || exit 1
+    echo "==> --allow-divergent given; continuing with a DIVERGENT checkout." >&2
+fi
+
+export BUILD_SHA ORIGIN_SHA
+if [ "${BUILD_SHA}" = "${ORIGIN_SHA}" ]; then
+    echo "==> Deploying ${BUILD_SHA} ($(git log --format=%s -1))"
+    echo "    in sync with ${REMOTE_REF}"
+else
+    echo "==> Deploying ${BUILD_SHA} ($(git log --format=%s -1))"
+    echo "    DIVERGENT from ${REMOTE_REF} at ${ORIGIN_SHA} (+${AHEAD}/-${BEHIND})"
+fi
 
 echo "==> Building image (fails if BUILD_SHA were unset — that is the point)"
 docker compose build app
@@ -64,4 +140,8 @@ done
 echo "==> Smoke check"
 bash scripts/deploy-smoke.sh
 
-echo "==> Deploy of ${BUILD_SHA} verified."
+if [ "${BUILD_SHA}" = "${ORIGIN_SHA}" ]; then
+    echo "==> Deploy of ${BUILD_SHA} verified (== ${REMOTE_REF})."
+else
+    echo "==> Deploy of ${BUILD_SHA} verified, but DIVERGENT from ${REMOTE_REF} (${ORIGIN_SHA})."
+fi
