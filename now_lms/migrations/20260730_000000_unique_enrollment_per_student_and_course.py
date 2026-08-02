@@ -24,7 +24,11 @@ import sqlalchemy as sa
 from alembic import op
 
 revision = "20260730_000000"
-down_revision = "20260726_000000"
+# Upstream chains this off 20260726_000000; the deploy line already carries
+# 20260731_120500 (prior credentials) on that same parent, so this cherry-pick
+# re-chains onto it to keep a single Alembic head. Production sits at
+# 20260731_120500 as of 2026-08-02.
+down_revision = "20260731_120500"
 branch_labels = None
 depends_on = None
 
