@@ -42,7 +42,12 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                 <div class="row">
                     <div class="col-sm-8">
                         <h6>{{ recurso.nombre }}:</h6>
-                        {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else %} {{
+                        {# `text` is the body column for a text resource; `descripcion` is the
+                           one-line blurb. Seeded lessons write the whole lesson into `text`,
+                           so rendering only `descripcion` displayed the stub line and hid the
+                           entire lesson body (fork issue #43). #}
+                        {% if recurso.text %} {{ markdown2html(recurso.text) | safe }} {% elif
+                        recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else %} {{
                         markdown2html(recurso.descripcion) | safe}} {% endif %}
 
                         <!-- AdSense Ad after resource description for free courses -->
