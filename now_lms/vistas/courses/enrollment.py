@@ -35,7 +35,7 @@ from now_lms.i18n import _
 from now_lms.misc import CURSO_NIVEL, TIPOS_RECURSOS
 from now_lms.themes import get_course_take_template
 from .base import VISTA_CURSOS, course, markdown2html
-from .helpers import _crear_indice_avance_curso
+from .helpers import _crear_indice_avance_curso, _get_user_resource_progress
 from .coupons import _validate_coupon_for_enrollment
 
 
@@ -349,6 +349,7 @@ def tomar_curso(course_code: str) -> str | Response:
             reopen_requests=reopen_requests,
             user_has_paid=user_has_paid,
             user_certificate=user_certificate,
+            user_progress=_get_user_resource_progress(course_code, current_user.usuario),
             markdown2html=markdown2html,
         )
     return redirect(url_for(VISTA_CURSOS, course_code=course_code))
@@ -365,7 +366,10 @@ def moderar_curso(course_code: str) -> str | Response:
             get_course_take_template(),
             # Moderators/admins always see the full resource list (same
             # template gate as the student take view — see tomar_curso).
+            # user_has_paid=True keeps the evaluation gate open for them if
+            # this view ever gains `evaluaciones`; they moderate, not buy.
             permitir_estudiante=True,
+            user_has_paid=True,
             curso=database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first(),
             secciones=database.session.execute(select(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice))
             .scalars()

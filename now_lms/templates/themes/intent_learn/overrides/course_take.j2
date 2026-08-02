@@ -188,20 +188,29 @@
                     {% endif %}
 
                     {#
-                      Progress is derived from the resources this page already has rather
-                      than from a new query: the take route does not pass per-resource
-                      completion. It counts required resources, which is the same set the
-                      platform uses to decide whether a course is finished.
+                      `user_progress` comes from the take route
+                      (_get_user_resource_progress): {resource_id: {"completado": bool}}.
+                      Required resources are the same set the platform uses to decide
+                      whether a course is finished.
                     #}
-                    {% set required_total = recursos | selectattr('requerido', 'equalto', 'required') | list | length %}
-                    {% if required_total %}
+                    {# The moderator view (moderar_curso) renders this template without
+                       user_progress: hide the bar there instead of showing a false 0%. #}
+                    {% set required_resources = recursos | selectattr('requerido', 'equalto', 'required') | list %}
+                    {% set required_total = required_resources | length %}
+                    {% if required_total and user_progress is defined %}
+                    {% set done = namespace(count=0) %}
+                    {% for r in required_resources %}
+                        {% if user_progress.get(r.id, {}).get('completado') %}{% set done.count = done.count + 1 %}{% endif %}
+                    {% endfor %}
+                    {% set pct = ((done.count / required_total) * 100) | round | int %}
                     <div class="isl-prog">
-                        <div class="isl-prog-bar" role="progressbar" aria-valuemin="0" aria-valuemax="{{ required_total }}" aria-valuenow="0"
+                        <div class="isl-prog-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}"
+                             aria-valuetext="{{ done.count }} / {{ required_total }} {{ _('required lessons completed') }}"
                              aria-label="{{ _('Course progress') }}">
-                            <span style="width: 0%"></span>
+                            <span style="width: {{ pct }}%"></span>
                         </div>
                         <div class="isl-prog-label">
-                            <span>{{ required_total }} {{ _('required lessons') }}</span>
+                            <span>{{ done.count }} / {{ required_total }} {{ _('required lessons completed') }}</span>
                             <span>{{ recursos | length }} {{ _('items in total') }}</span>
                         </div>
                     </div>
@@ -294,7 +303,9 @@
                                     {% for evaluacion in evaluaciones %}
                                     <div class="isl-res">
                                         <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                                        {% if permitir_estudiante %}
+                                        {# take_evaluation refuses unpaid learners on paid courses, so
+                                           don't offer a link the route will reject. #}
+                                        {% if permitir_estudiante and (user_has_paid or not curso.pagado) %}
                                         <a class="name" href="{{ url_for('evaluation.take_evaluation', evaluation_id=evaluacion.id) }}">{{ evaluacion.title }}</a>
                                         {% else %}
                                         <span class="name">{{ evaluacion.title }}</span>
