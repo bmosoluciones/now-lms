@@ -8,12 +8,22 @@ import platform
 from os import environ
 
 # ---------------------------------------------------------------------------------------
+# Auto-compile stale .mo catalogs BEFORE any other import.
+# .mo is .gitignored; a stale .mo (older than its .po) means Babel falls back
+# to the Spanish msgid for every translation added post-compile - which is the
+# demo "Gender rendered in Spanish" bug class. See now_lms/i18n_autocompile.py.
+# ---------------------------------------------------------------------------------------
+from now_lms.i18n_autocompile import ensure_translations_compiled
+
+ensure_translations_compiled()
+
+# ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms import lms_app, init_app
-from now_lms.logs import log
-from now_lms.session_config import ensure_session_storage
-from now_lms.worker_config import get_worker_config_from_env
+from now_lms import lms_app, init_app  # noqa: E402
+from now_lms.logs import log  # noqa: E402
+from now_lms.session_config import ensure_session_storage  # noqa: E402
+from now_lms.worker_config import get_worker_config_from_env  # noqa: E402
 
 PORT = environ.get("PORT") or 8080
 

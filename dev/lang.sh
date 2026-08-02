@@ -22,3 +22,9 @@ pybabel update -i now_lms/translations/messages.pot -d now_lms/translations
 
 # Then edit the .po files and recompile
 pybabel compile -d now_lms/translations
+
+# Verify the gate passes (refuse stale catalogs before they ship).
+# Skip the check if a virtualenv Python isn't on PATH (gate requires Babel + flask_babel).
+if [ -x .venv/bin/python ]; then
+    PYTHON=./.venv/bin/python bash dev/catalog_freshness_check.sh
+fi
