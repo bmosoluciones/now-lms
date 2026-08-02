@@ -115,15 +115,31 @@ def _finalize_completed_enrollment(
         if applied_coupon and final_price == 0:
             applied_coupon.current_uses += 1
 
-        registro = EstudianteCurso(
-            curso=pago.curso,
-            usuario=pago.usuario,
-            vigente=True,
-            pago=pago.id,
+        # Reuse the student's existing enrollment if there is one, the same way
+        # paypal.py::_save_payment_enrollment does. Adding a second row for the
+        # same (usuario, curso) is never what we want — it just inflates the
+        # enrollment counts everything else reads.
+        registro = (
+            database.session.execute(
+                database.select(EstudianteCurso).filter_by(curso=pago.curso, usuario=pago.usuario)
+            )
+            .scalars()
+            .first()
         )
-        registro.creado = datetime.now(timezone.utc).date()
-        registro.creado_por = current_user.usuario
-        database.session.add(registro)
+        if registro is None:
+            registro = EstudianteCurso(
+                curso=pago.curso,
+                usuario=pago.usuario,
+                vigente=True,
+                pago=pago.id,
+            )
+            registro.creado = datetime.now(timezone.utc).date()
+            registro.creado_por = current_user.usuario
+            database.session.add(registro)
+        else:
+            registro.vigente = True
+            registro.pago = pago.id
+            registro.modificado_por = current_user.usuario
         database.session.commit()
         _crear_indice_avance_curso(course_code)
 
@@ -184,6 +200,18 @@ def _check_unverified_email_restriction(course_obj: Curso) -> bool:
     return False
 
 
+def _has_active_enrollment(course_code: str) -> bool:
+    """Whether the current user already holds a live enrollment in the course."""
+    return (
+        database.session.execute(
+            database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+        )
+        .scalars()
+        .first()
+        is not None
+    )
+
+
 def _process_validated_enrollment(
     form,
     course_obj: Curso,
@@ -192,6 +220,16 @@ def _process_validated_enrollment(
     course_code: str,
 ) -> Response:
     """Handle PagoForm submission when it has been successfully validated."""
+    # If they are already enrolled, there is nothing to do — send them to the
+    # course instead of writing another Pago and another enrollment row. Paid
+    # enrollments still go through, though: paying to upgrade an audit
+    # enrollment is a real flow, and paypal.py updates the existing row.
+    if _has_active_enrollment(course_code) and (
+        _is_free_enrollment(course_obj, pricing.final_price) or _is_audit_enrollment(mode, course_obj)
+    ):
+        flash(_("Ya está inscrito en este curso."), "info")
+        return redirect(url_for("course.tomar_curso", course_code=course_code))
+
     pago = _build_pago_from_form(form, course_obj, pricing.final_price)
 
     # Add coupon information to payment description
@@ -244,6 +282,10 @@ def course_enroll(course_code: str) -> str | Response:
         flash(pricing.validation_error, "warning")
 
     form = PagoForm()
+    # A free (or fully-discounted) enrollment has nothing to bill, so the
+    # billing address is neither collected nor required. The template hides
+    # those fields for the same condition.
+    form.requires_billing = not _is_free_enrollment(_curso, pricing.final_price)
     coupon_form = CouponApplicationForm()
 
     # Pre-fill form data only on GET requests to avoid overwriting user submission on POST

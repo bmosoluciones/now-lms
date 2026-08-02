@@ -603,6 +603,12 @@ class ModeradorCurso(database.Model, BaseTabla):
 class EstudianteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
 
+    # A student is either enrolled in a course or not — a second row for the same
+    # pair has never meant anything, it just inflates the counts everything else
+    # reads. The enrollment paths upsert, and this keeps a bug or a double-submit
+    # from getting past them.
+    __table_args__ = (database.UniqueConstraint("usuario", "curso", name="uq_estudiante_curso_usuario_curso"),)
+
     curso = database.Column(
         database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
     )

@@ -10,9 +10,12 @@
 # it. The 65 strings it recovers include every option in the profile Gender and
 # Qualification dropdowns, which is why those rendered in Spanish under an
 # English label. If you change this line, check that the msgid count moves.
+#
+# -k _n:1,2 declares the project's ngettext alias the same way: singular and
+# plural argument positions for _n(), so the documented plural helper extracts.
 
 # Extract translatable strings
-pybabel extract -F babel.cfg -k _l -o now_lms/translations/messages.pot .
+pybabel extract -F babel.cfg -k _l -k _n:1,2 -o now_lms/translations/messages.pot .
 
 # Merge into the per-language catalogues
 pybabel update -i now_lms/translations/messages.pot -d now_lms/translations

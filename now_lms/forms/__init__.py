@@ -29,6 +29,7 @@ from wtforms import (
     TextAreaField,
     TimeField,
 )
+from flask_babel import LazyString
 from wtforms.validators import DataRequired, Length, Optional, ValidationError
 from wtforms.widgets import ColorInput, TextArea, html_params
 
@@ -346,7 +347,10 @@ def get_reveal_theme_choices() -> list[tuple[str, str]]:
 
 
 # Form label constants
-LABEL_TITULO: str = _("Título")
+# Shared field label. Lazy like every other form label: this constant is
+# evaluated at import time, so _() would freeze one locale for every form that
+# reuses it.
+LABEL_TITULO: LazyString = _l("Título")
 
 
 # ---------------------------------------------------------------------------------------
@@ -359,25 +363,25 @@ class ConfigForm(FlaskForm):
     descripcion = StringField(validators=[DataRequired()])
 
     # Localización
-    moneda = SelectField(_("Moneda"), choices=[], validators=[])
+    moneda = SelectField(_l("Moneda"), choices=[], validators=[])
     lang = SelectField(
-        _("Idioma"), choices=[("es", "Español"), ("en", "English"), ("pt_BR", "Português do Brasil")], validators=[]
+        _l("Idioma"), choices=[("es", "Español"), ("en", "English"), ("pt_BR", "Português do Brasil")], validators=[]
     )
-    timezone = SelectField(_("Zona Horaria"), choices=[], validators=[])
+    timezone = SelectField(_l("Zona Horaria"), choices=[], validators=[])
 
     verify_user_by_email = BooleanField(validators=[])
     allow_unverified_email_login = BooleanField(validators=[])
 
     # Navigation configuration
-    enable_programs = BooleanField(_("Habilitar Programas"), default=False, validators=[])
-    enable_masterclass = BooleanField(_("Habilitar Master Class"), default=False, validators=[])
-    enable_resources = BooleanField(_("Habilitar Recursos descargables"), default=False, validators=[])
-    enable_blog = BooleanField(_("Habilitar Blog"), default=False, validators=[])
-    enable_contact = BooleanField(_("Habilitar Contacto"), default=False, validators=[])
+    enable_programs = BooleanField(_l("Habilitar Programas"), default=False, validators=[])
+    enable_masterclass = BooleanField(_l("Habilitar Master Class"), default=False, validators=[])
+    enable_resources = BooleanField(_l("Habilitar Recursos descargables"), default=False, validators=[])
+    enable_blog = BooleanField(_l("Habilitar Blog"), default=False, validators=[])
+    enable_contact = BooleanField(_l("Habilitar Contacto"), default=False, validators=[])
 
     # Blog display configuration
     show_latest_blog_posts_on_home = BooleanField(
-        _("Mostrar últimas entradas del blog en página de inicio"), default=False, validators=[]
+        _l("Mostrar últimas entradas del blog en página de inicio"), default=False, validators=[]
     )
 
     # Custom information
@@ -394,31 +398,31 @@ class ConfigForm(FlaskForm):
     custom_text4 = StringField(validators=[])
 
     # File upload configuration
-    enable_file_uploads = BooleanField(_("Habilitar subida de archivos descargables"), default=False, validators=[])
-    max_file_size = IntegerField(_("Tamaño máximo de archivo (MB)"), default=1, validators=[])
+    enable_file_uploads = BooleanField(_l("Habilitar subida de archivos descargables"), default=False, validators=[])
+    max_file_size = IntegerField(_l("Tamaño máximo de archivo (MB)"), default=1, validators=[])
 
     # HTML preformatted descriptions configuration
     enable_html_preformatted_descriptions = BooleanField(
-        _("Permitir HTML preformateado en la descripción de recursos"), default=False, validators=[]
+        _l("Permitir HTML preformateado en la descripción de recursos"), default=False, validators=[]
     )
 
     # Footer display configuration
-    enable_footer = BooleanField(_("Mostrar pie de página en páginas públicas"), default=True, validators=[])
+    enable_footer = BooleanField(_l("Mostrar pie de página en páginas públicas"), default=True, validators=[])
 
     # Social media links
-    social_facebook = StringField(_("URL de Facebook"), validators=[])
-    social_twitter = StringField(_("URL de Twitter/X"), validators=[])
-    social_linkedin = StringField(_("URL de LinkedIn"), validators=[])
-    social_youtube = StringField(_("URL de YouTube"), validators=[])
-    social_instagram = StringField(_("URL de Instagram"), validators=[])
-    social_github = StringField(_("URL de GitHub"), validators=[])
+    social_facebook = StringField(_l("URL de Facebook"), validators=[])
+    social_twitter = StringField(_l("URL de Twitter/X"), validators=[])
+    social_linkedin = StringField(_l("URL de LinkedIn"), validators=[])
+    social_youtube = StringField(_l("URL de YouTube"), validators=[])
+    social_instagram = StringField(_l("URL de Instagram"), validators=[])
+    social_github = StringField(_l("URL de GitHub"), validators=[])
 
     # Contact information
-    contact_address = StringField(_("Dirección del negocio"), validators=[])
-    contact_email = StringField(_("Correo de contacto"), validators=[])
-    contact_phone = StringField(_("Teléfono"), validators=[])
-    contact_mobile = StringField(_("Número celular"), validators=[])
-    contact_whatsapp = StringField(_("WhatsApp"), validators=[])
+    contact_address = StringField(_l("Dirección del negocio"), validators=[])
+    contact_email = StringField(_l("Correo de contacto"), validators=[])
+    contact_phone = StringField(_l("Teléfono"), validators=[])
+    contact_mobile = StringField(_l("Número celular"), validators=[])
+    contact_whatsapp = StringField(_l("WhatsApp"), validators=[])
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -431,7 +435,7 @@ class ThemeForm(FlaskForm):
     """Formulario para editar el tema del sistema."""
 
     style = SelectField(
-        _("Estilo"),
+        _l("Estilo"),
         choices=[],
     )
 
@@ -472,7 +476,7 @@ class BaseForm(FlaskForm):
 
     nombre = StringField(validators=[DataRequired()])
     descripcion = MdeField(validators=[DataRequired()])
-    descripcion_html_preformateado = BooleanField(_("Descripción en HTML preformateado"), default=False, validators=[])
+    descripcion_html_preformateado = BooleanField(_l("Descripción en HTML preformateado"), default=False, validators=[])
 
 
 class GrupoForm(BaseForm):
@@ -486,14 +490,14 @@ class CurseForm(BaseForm):
     # Nombre y descripción de la base.
     codigo = StringField(validators=[DataRequired()])
     descripcion_corta = StringField(validators=[DataRequired()])
-    nivel = SelectField(_("Nivel"), choices=[], coerce=int, validators=[])
+    nivel = SelectField(_l("Nivel"), choices=[], coerce=int, validators=[])
     duracion = FlexibleIntegerField(validators=[])
     # Estado de publicación
     publico = BooleanField(validators=[])
     # Modalidad
-    modalidad = SelectField(_("Modalidad"), choices=[], validators=[])
+    modalidad = SelectField(_l("Modalidad"), choices=[], validators=[])
     # Configuración del foro
-    foro_habilitado = BooleanField(_("Habilitar foro"), validators=[])
+    foro_habilitado = BooleanField(_l("Habilitar foro"), validators=[])
     # Disponibilidad de cupos
     limitado = BooleanField(validators=[])
     capacidad = FlexibleIntegerField(validators=[])
@@ -507,18 +511,18 @@ class CurseForm(BaseForm):
     auditable = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
     plantilla_certificado = SelectField(
-        _("Plantilla de certificado"),
+        _l("Plantilla de certificado"),
         choices=[],
         validate_choice=False,
     )
     precio = FlexibleDecimalField(validators=[])
     categoria = SelectField(
-        _("Categoría"),
+        _l("Categoría"),
         choices=[],
         validate_choice=False,
     )
     etiquetas = SelectMultipleField(
-        _("Etiquetas"),
+        _l("Etiquetas"),
         choices=[],
         validate_choice=False,
     )
@@ -542,7 +546,7 @@ class CursoSeccionForm(BaseForm):
 class CursoRecursoForm(BaseForm):
     """Base para los recursos del curso."""
 
-    requerido = SelectField(_("Requerido"), choices=[], validators=[])
+    requerido = SelectField(_l("Requerido"), choices=[], validators=[])
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -576,15 +580,15 @@ class CursoLibraryFileForm(BaseForm):
     """Formulario para subir archivos a la biblioteca del curso."""
 
     nombre = StringField(
-        _("Nombre del archivo"),
+        _l("Nombre del archivo"),
         validators=[DataRequired(), Length(min=1, max=255)],
-        render_kw={"placeholder": _("Nombre descriptivo para el archivo")},
+        render_kw={"placeholder": _l("Nombre descriptivo para el archivo")},
     )
 
     descripcion = TextAreaField(
-        _("Descripción"),
+        _l("Descripción"),
         validators=[DataRequired(), Length(min=1, max=1000)],
-        render_kw={"placeholder": _("Describe el uso o contenido del archivo"), "rows": 3},
+        render_kw={"placeholder": _l("Describe el uso o contenido del archivo"), "rows": 3},
     )
 
 
@@ -609,7 +613,7 @@ class CursoRecursoExternalLink(CursoRecursoForm):
 class CursoRecursoSlides(CursoRecursoForm):
     """Formulario para insertar un SlideShow."""
 
-    notes = SelectField(_("Tema"), choices=[], validators=[])
+    notes = SelectField(_l("Tema"), choices=[], validators=[])
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -621,7 +625,7 @@ class SlideShowForm(BaseForm):
     """Formulario para crear una nueva presentación de diapositivas."""
 
     theme = SelectField(
-        _("Tema Reveal.js"),
+        _l("Tema Reveal.js"),
         choices=[],
         default="simple",
         validators=[DataRequired()],
@@ -636,9 +640,9 @@ class SlideShowForm(BaseForm):
 class SlideForm(FlaskForm):
     """Formulario para crear/editar una diapositiva individual."""
 
-    title = StringField(_("Título de la Diapositiva"), validators=[DataRequired()])
-    content = MdeField(_("Contenido de la Diapositiva"), validators=[DataRequired()])
-    order = IntegerField(_("Orden"), validators=[DataRequired()], default=1)
+    title = StringField(_l("Título de la Diapositiva"), validators=[DataRequired()])
+    content = MdeField(_l("Contenido de la Diapositiva"), validators=[DataRequired()])
+    order = IntegerField(_l("Orden"), validators=[DataRequired()], default=1)
 
 
 class SlideShowEditForm(SlideShowForm):
@@ -654,7 +658,7 @@ class CursoRecursoMeet(CursoRecursoForm):
     hora_inicio = TimeField(validators=[])
     hora_fin = TimeField(validators=[])
     url = StringField(validators=[DataRequired()])
-    notes = SelectField(_("Plataforma"), choices=[], validate_choice=False)
+    notes = SelectField(_l("Plataforma"), choices=[], validate_choice=False)
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -678,22 +682,22 @@ class ProgramaForm(BaseForm):
     codigo = StringField(validators=[DataRequired()])
     precio = FlexibleDecimalField(validators=[])
     publico = BooleanField(validators=[])
-    estado = SelectField(_("Estado"), choices=[], validate_choice=False)
+    estado = SelectField(_l("Estado"), choices=[], validate_choice=False)
     promocionado = BooleanField(validators=[])
     pagado = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
     plantilla_certificado = SelectField(
-        _("Plantilla de certificado"),
+        _l("Plantilla de certificado"),
         choices=[],
         validate_choice=False,
     )
     categoria = SelectField(
-        _("Categoría"),
+        _l("Categoría"),
         choices=[],
         validate_choice=False,
     )
     etiquetas = SelectMultipleField(
-        _("Etiquetas"),
+        _l("Etiquetas"),
         choices=[],
         validate_choice=False,
     )
@@ -711,7 +715,7 @@ class RecursoForm(BaseForm):
     precio = DecimalField()
     publico = BooleanField(validators=[])
     promocionado = BooleanField(validators=[])
-    tipo = SelectField(_("Tipo"), choices=[], validators=[])
+    tipo = SelectField(_l("Tipo"), choices=[], validators=[])
     pagado = BooleanField(validators=[])
 
     def __init__(self, *args, **kwargs):
@@ -732,8 +736,8 @@ class UserForm(FlaskForm):
     twitter = StringField(validators=[])
     github = StringField(validators=[])
     youtube = StringField(validators=[])
-    genero = SelectField(_("Genero"), choices=[], validators=[])
-    titulo = SelectField(_("Titulo"), choices=[], validators=[])
+    genero = SelectField(_l("Genero"), choices=[], validators=[])
+    titulo = SelectField(_l("Titulo"), choices=[], validators=[])
     nacimiento = DateField()
     bio = TextAreaField()
 
@@ -755,22 +759,22 @@ class MsgForm(FlaskForm):
 class MessageThreadForm(FlaskForm):
     """Form for creating a new message thread."""
 
-    subject = StringField(_("Asunto"), validators=[DataRequired()])
-    content = MdeField(_("Mensaje"), validators=[DataRequired()])
+    subject = StringField(_l("Asunto"), validators=[DataRequired()])
+    content = MdeField(_l("Mensaje"), validators=[DataRequired()])
     course_id = HiddenField(validators=[DataRequired()])
 
 
 class MessageReplyForm(FlaskForm):
     """Form for replying to a message thread."""
 
-    content = MdeField(_("Respuesta"), validators=[DataRequired()])
+    content = MdeField(_l("Respuesta"), validators=[DataRequired()])
     thread_id = HiddenField(validators=[DataRequired()])
 
 
 class MessageReportForm(FlaskForm):
     """Form for reporting a message or thread."""
 
-    reason = TextAreaField(_("Motivo del reporte"), validators=[DataRequired()])
+    reason = TextAreaField(_l("Motivo del reporte"), validators=[DataRequired()])
     message_id = HiddenField(validators=[])
     thread_id = HiddenField(validators=[])
 
@@ -801,7 +805,7 @@ class CertificateForm(FlaskForm):
     publico = BooleanField(validators=[])
     html = TextAreaField(widget=TextAreaNoEscape())
     css = TextAreaField(widget=TextAreaNoEscape())
-    tipo = SelectField(_("Tipo"), choices=[], validators=[])
+    tipo = SelectField(_l("Tipo"), choices=[], validators=[])
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -843,11 +847,11 @@ class PayaplForm(FlaskForm):
 class EmitCertificateForm(FlaskForm):
     """Form for emitting certificates."""
 
-    usuario = SelectField(_("Usuario"), choices=[], validators=[])
-    content_type = SelectField(_("Tipo de Contenido"), choices=[], validators=[])
-    curso = SelectField(_("Curso"), choices=[], validators=[])
-    master_class = SelectField(_("Clase Magistral"), choices=[], validators=[])
-    template = SelectField(_("Plantilla"), choices=[], validators=[])
+    usuario = SelectField(_l("Usuario"), choices=[], validators=[])
+    content_type = SelectField(_l("Tipo de Contenido"), choices=[], validators=[])
+    curso = SelectField(_l("Curso"), choices=[], validators=[])
+    master_class = SelectField(_l("Clase Magistral"), choices=[], validators=[])
+    template = SelectField(_l("Plantilla"), choices=[], validators=[])
     nota = DecimalField(validators=[])
 
     def __init__(self, *args, **kwargs):
@@ -865,35 +869,60 @@ class CheckMailForm(FlaskForm):
 class ChangePasswordForm(FlaskForm):
     """Formulario para cambiar la contraseña del usuario."""
 
-    current_password = PasswordField(_("Contraseña Actual"), validators=[DataRequired()])
-    new_password = PasswordField(_("Nueva Contraseña"), validators=[DataRequired()])
-    confirm_password = PasswordField(_("Confirmar Nueva Contraseña"), validators=[DataRequired()])
+    current_password = PasswordField(_l("Contraseña Actual"), validators=[DataRequired()])
+    new_password = PasswordField(_l("Nueva Contraseña"), validators=[DataRequired()])
+    confirm_password = PasswordField(_l("Confirmar Nueva Contraseña"), validators=[DataRequired()])
 
 
 class ForgotPasswordForm(FlaskForm):
     """Formulario para solicitar recuperación de contraseña."""
 
-    email = StringField(_("Correo Electrónico"), validators=[DataRequired()])
+    email = StringField(_l("Correo Electrónico"), validators=[DataRequired()])
 
 
 class ResetPasswordForm(FlaskForm):
     """Formulario para restablecer contraseña con token."""
 
-    new_password = PasswordField(_("Nueva Contraseña"), validators=[DataRequired()])
-    confirm_password = PasswordField(_("Confirmar Nueva Contraseña"), validators=[DataRequired()])
+    new_password = PasswordField(_l("Nueva Contraseña"), validators=[DataRequired()])
+    confirm_password = PasswordField(_l("Confirmar Nueva Contraseña"), validators=[DataRequired()])
 
 
 class PagoForm(FlaskForm):
-    """Formulario para crear un pago."""
+    """Formulario para crear un pago.
+
+    The billing-address fields are only required when there is actually
+    something to bill. Set ``requires_billing = False`` (see
+    ``vistas/courses/enrollment.py``) for a free or fully-discounted
+    enrollment; the template then hides those fields and the form still
+    validates. Paid enrollments keep requiring a full address.
+    """
 
     nombre = StringField(validators=[DataRequired()])
     apellido = StringField(validators=[DataRequired()])
     correo_electronico = StringField(validators=[DataRequired()])
-    direccion1 = StringField(validators=[DataRequired()])
+    direccion1 = StringField(validators=[Optional()])
     direccion2 = StringField()
-    pais = StringField(validators=[DataRequired()])
-    provincia = StringField(validators=[DataRequired()])
-    codigo_postal = StringField(validators=[DataRequired()])
+    pais = StringField(validators=[Optional()])
+    provincia = StringField(validators=[Optional()])
+    codigo_postal = StringField(validators=[Optional()])
+
+    #: Whether this submission must carry a billing address. The route sets it
+    #: from ``Curso.pagado`` before validating.
+    requires_billing = True
+
+    def validate(self, extra_validators=None) -> bool:
+        """Validate, enforcing the billing address only when it is required."""
+        valid = super().validate(extra_validators)
+
+        if not self.requires_billing:
+            return valid
+
+        for field in (self.direccion1, self.pais, self.provincia, self.codigo_postal):
+            if not (field.data or "").strip():
+                field.errors = list(field.errors) + [_("Este campo es obligatorio.")]
+                valid = False
+
+        return valid
 
 
 # ---------------------------------------------------------------------------------------
@@ -905,18 +934,18 @@ class EvaluationForm(FlaskForm):
     """Formulario para crear/editar una evaluación."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
-    description = TextAreaField(_("Descripción"))
-    is_exam = BooleanField(_("Es un examen"))
-    passing_score = DecimalField(_("Puntuación mínima para aprobar"), default=70.0, validators=[DataRequired()])
-    max_attempts = IntegerField(_("Máximo número de intentos (vacío = ilimitado)"))
+    description = TextAreaField(_l("Descripción"))
+    is_exam = BooleanField(_l("Es un examen"))
+    passing_score = DecimalField(_l("Puntuación mínima para aprobar"), default=70.0, validators=[DataRequired()])
+    max_attempts = IntegerField(_l("Máximo número de intentos (vacío = ilimitado)"))
 
 
 class QuestionForm(FlaskForm):
     """Formulario para crear/editar una pregunta."""
 
-    text = TextAreaField(_("Texto de la pregunta"), validators=[DataRequired()])
-    type = SelectField(_("Tipo"), choices=[], validators=[DataRequired()])
-    explanation = TextAreaField(_("Explicación (opcional)"))
+    text = TextAreaField(_l("Texto de la pregunta"), validators=[DataRequired()])
+    type = SelectField(_l("Tipo"), choices=[], validators=[DataRequired()])
+    explanation = TextAreaField(_l("Explicación (opcional)"))
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -927,14 +956,14 @@ class QuestionForm(FlaskForm):
 class QuestionOptionForm(FlaskForm):
     """Formulario para crear/editar una opción de pregunta."""
 
-    text = StringField(_("Texto de la opción"), validators=[DataRequired()])
-    is_correct = BooleanField(_("Es correcta"))
+    text = StringField(_l("Texto de la opción"), validators=[DataRequired()])
+    is_correct = BooleanField(_l("Es correcta"))
 
 
 class EvaluationReopenRequestForm(FlaskForm):
     """Formulario para solicitar reabrir una evaluación."""
 
-    justification_text = TextAreaField(_("Justificación"), validators=[DataRequired()], render_kw={"rows": 4})
+    justification_text = TextAreaField(_l("Justificación"), validators=[DataRequired()], render_kw={"rows": 4})
 
 
 class TakeEvaluationForm(FlaskForm):
@@ -949,42 +978,42 @@ class TakeEvaluationForm(FlaskForm):
 class ForoMensajeForm(FlaskForm):
     """Formulario para crear un nuevo mensaje del foro."""
 
-    contenido = MdeField(_("Mensaje"), validators=[DataRequired()])
+    contenido = MdeField(_l("Mensaje"), validators=[DataRequired()])
     parent_id = HiddenField()
 
 
 class ForoMensajeRespuestaForm(FlaskForm):
     """Formulario para responder a un mensaje del foro."""
 
-    contenido = MdeField(_("Respuesta"), validators=[DataRequired()])
+    contenido = MdeField(_l("Respuesta"), validators=[DataRequired()])
 
 
 class AnnouncementBaseForm(FlaskForm):
     """Formulario base para crear/editar anuncios sin campos de BaseForm."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
-    message = MdeField(_("Mensaje"), validators=[DataRequired()])
-    expires_at = DateField(_("Fecha de expiración"), validators=[], render_kw={"placeholder": _("Opcional")})
+    message = MdeField(_l("Mensaje"), validators=[DataRequired()])
+    expires_at = DateField(_l("Fecha de expiración"), validators=[], render_kw={"placeholder": _l("Opcional")})
 
 
 class AnnouncementForm(BaseForm):
     """Formulario para anuncios que requiere campos de BaseForm."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
-    message = MdeField(_("Mensaje"), validators=[DataRequired()])
-    expires_at = DateField(_("Fecha de expiración"), validators=[], render_kw={"placeholder": _("Opcional")})
+    message = MdeField(_l("Mensaje"), validators=[DataRequired()])
+    expires_at = DateField(_l("Fecha de expiración"), validators=[], render_kw={"placeholder": _l("Opcional")})
 
 
 class GlobalAnnouncementForm(AnnouncementForm):
     """Formulario para anuncios globales (solo administradores)."""
 
-    is_sticky = BooleanField(_("Anuncio destacado"))
+    is_sticky = BooleanField(_l("Anuncio destacado"))
 
 
 class CourseAnnouncementForm(AnnouncementBaseForm):
     """Formulario para anuncios de curso (instructores)."""
 
-    course_id = SelectField(_("Curso"), coerce=str, validators=[DataRequired()])
+    course_id = SelectField(_l("Curso"), coerce=str, validators=[DataRequired()])
 
 
 # ---------------------------------------------------------------------------------------
@@ -995,23 +1024,23 @@ class CourseAnnouncementForm(AnnouncementBaseForm):
 class CouponForm(FlaskForm):
     """Formulario para crear y editar cupones de descuento."""
 
-    code = StringField(_("Código del Cupón"), validators=[DataRequired()], render_kw={"placeholder": _("Ej: DESCUENTO50")})
+    code = StringField(_l("Código del Cupón"), validators=[DataRequired()], render_kw={"placeholder": _l("Ej: DESCUENTO50")})
     discount_type = SelectField(
-        _("Tipo de Descuento"),
+        _l("Tipo de Descuento"),
         choices=[],
         default="percentage",
         validators=[DataRequired()],
     )
-    discount_value = DecimalField(_("Valor del Descuento"), validators=[DataRequired()], render_kw={"min": "0"})
+    discount_value = DecimalField(_l("Valor del Descuento"), validators=[DataRequired()], render_kw={"min": "0"})
     max_uses = FlexibleIntegerField(
-        _("Máximo de Usos"),
+        _l("Máximo de Usos"),
         validators=[Optional()],
-        render_kw={"min": "1", "placeholder": _("Dejar vacío para ilimitado")},
+        render_kw={"min": "1", "placeholder": _l("Dejar vacío para ilimitado")},
     )
     expires_at = MultiFormatDateField(
-        _("Fecha de Expiración"),
+        _l("Fecha de Expiración"),
         validators=[Optional()],
-        render_kw={"placeholder": _("Dejar vacío si no expira")},
+        render_kw={"placeholder": _l("Dejar vacío si no expira")},
     )
 
     def __init__(self, *args, **kwargs):
@@ -1023,7 +1052,7 @@ class CouponForm(FlaskForm):
 class CouponApplicationForm(FlaskForm):
     """Formulario para aplicar un cupón durante la inscripción."""
 
-    coupon_code = StringField(_("Código de Cupón"), render_kw={"placeholder": _("Código de cupón (opcional)")})
+    coupon_code = StringField(_l("Código de Cupón"), render_kw={"placeholder": _l("Código de cupón (opcional)")})
 
 
 # Blog forms
@@ -1031,11 +1060,11 @@ class BlogPostForm(BaseForm):
     """Formulario para crear/editar entradas de blog."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
-    content = MdeField(_("Contenido"), validators=[DataRequired()])
-    allow_comments = BooleanField(_("Permitir comentarios"), default=True)
-    tags = StringField(_("Etiquetas (separadas por comas)"))
-    status = SelectField(_("Estado"), choices=[], validators=[])
-    cover_image = FileField(_("Imagen de portada"), validators=[FileAllowed(["jpg", "png", "webp"], _("Solo imágenes"))])
+    content = MdeField(_l("Contenido"), validators=[DataRequired()])
+    allow_comments = BooleanField(_l("Permitir comentarios"), default=True)
+    tags = StringField(_l("Etiquetas (separadas por comas)"))
+    status = SelectField(_l("Estado"), choices=[], validators=[])
+    cover_image = FileField(_l("Imagen de portada"), validators=[FileAllowed(["jpg", "png", "webp"], _l("Solo imágenes"))])
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -1046,13 +1075,13 @@ class BlogPostForm(BaseForm):
 class BlogTagForm(BaseForm):
     """Formulario para crear etiquetas de blog."""
 
-    name = StringField(_("Nombre"), validators=[DataRequired()])
+    name = StringField(_l("Nombre"), validators=[DataRequired()])
 
 
 class BlogCommentForm(BaseForm):
     """Formulario para comentarios de blog."""
 
-    content = TextAreaField(_("Comentario"), validators=[DataRequired()])
+    content = TextAreaField(_l("Comentario"), validators=[DataRequired()])
 
 
 # ---------------------------------------------------------------------------------------
@@ -1064,17 +1093,17 @@ class AdminCourseEnrollmentForm(FlaskForm):
     """Formulario para inscripción administrativa de estudiantes a cursos."""
 
     student_username = StringField(
-        _("Usuario del Estudiante"),
+        _l("Usuario del Estudiante"),
         validators=[DataRequired()],
-        render_kw={"placeholder": _("Nombre de usuario del estudiante")},
+        render_kw={"placeholder": _l("Nombre de usuario del estudiante")},
     )
     bypass_payment = BooleanField(
-        _("Omitir Pago"),
+        _l("Omitir Pago"),
         default=True,
-        render_kw={"title": _("Si está marcado, el estudiante tendrá acceso completo sin importar si el curso es pagado")},
+        render_kw={"title": _l("Si está marcado, el estudiante tendrá acceso completo sin importar si el curso es pagado")},
     )
     notes = TextAreaField(
-        _("Notas (opcional)"), render_kw={"rows": 3, "placeholder": _("Notas adicionales sobre la inscripción")}
+        _l("Notas (opcional)"), render_kw={"rows": 3, "placeholder": _l("Notas adicionales sobre la inscripción")}
     )
 
 
@@ -1082,50 +1111,50 @@ class AdminProgramEnrollmentForm(FlaskForm):
     """Formulario para inscripción administrativa de estudiantes a programas."""
 
     student_username = StringField(
-        _("Usuario del Estudiante"),
+        _l("Usuario del Estudiante"),
         validators=[DataRequired()],
-        render_kw={"placeholder": _("Nombre de usuario del estudiante")},
+        render_kw={"placeholder": _l("Nombre de usuario del estudiante")},
     )
     bypass_payment = BooleanField(
-        _("Omitir Pago"),
+        _l("Omitir Pago"),
         default=True,
         render_kw={
-            "title": _("Si está marcado, el estudiante tendrá acceso completo a todos los cursos sin importar si son pagados")
+            "title": _l("Si está marcado, el estudiante tendrá acceso completo a todos los cursos sin importar si son pagados")
         },
     )
     notes = TextAreaField(
-        _("Notas (opcional)"), render_kw={"rows": 3, "placeholder": _("Notas adicionales sobre la inscripción")}
+        _l("Notas (opcional)"), render_kw={"rows": 3, "placeholder": _l("Notas adicionales sobre la inscripción")}
     )
 
 
 class EnlaceUtilForm(FlaskForm):
     """Formulario para crear/editar enlaces útiles en el footer."""
 
-    titulo = StringField(_("Título del enlace"), validators=[DataRequired(), Length(min=1, max=100)])
-    url = StringField(_("URL"), validators=[DataRequired(), Length(min=1, max=500)])
-    orden = IntegerField(_("Orden"), default=0, validators=[])
-    activo = BooleanField(_("Activo"), default=True, validators=[])
+    titulo = StringField(_l("Título del enlace"), validators=[DataRequired(), Length(min=1, max=100)])
+    url = StringField(_l("URL"), validators=[DataRequired(), Length(min=1, max=500)])
+    orden = IntegerField(_l("Orden"), default=0, validators=[])
+    activo = BooleanField(_l("Activo"), default=True, validators=[])
 
 
 class CustomPageFooterForm(FlaskForm):
     """Formulario para configurar si una página custom se muestra en el footer."""
 
-    mostrar_en_footer = BooleanField(_("Mostrar en el footer"), default=False, validators=[])
+    mostrar_en_footer = BooleanField(_l("Mostrar en el footer"), default=False, validators=[])
 
 
 class CustomPageForm(FlaskForm):
     """Formulario para crear/editar páginas custom."""
 
-    title = StringField(_("Título"), validators=[DataRequired(), Length(min=1, max=200)])
-    slug = StringField(_("Slug (URL)"), validators=[DataRequired(), Length(min=1, max=50)])
-    content = TextAreaField(_("Contenido (HTML)"), validators=[DataRequired()])
-    is_active = BooleanField(_("Activa (visible públicamente)"), default=True, validators=[])
-    mostrar_en_footer = BooleanField(_("Mostrar en el footer del sitio"), default=False, validators=[])
+    title = StringField(_l("Título"), validators=[DataRequired(), Length(min=1, max=200)])
+    slug = StringField(_l("Slug (URL)"), validators=[DataRequired(), Length(min=1, max=50)])
+    content = TextAreaField(_l("Contenido (HTML)"), validators=[DataRequired()])
+    is_active = BooleanField(_l("Activa (visible públicamente)"), default=True, validators=[])
+    mostrar_en_footer = BooleanField(_l("Mostrar en el footer del sitio"), default=False, validators=[])
 
 
 class ExternalApiKeyForm(FlaskForm):
     """Form to create a new external API key."""
 
-    name = StringField(_("Nombre de la integración"), validators=[DataRequired(), Length(max=100)])
-    allowed_origin = StringField(_("Origen permitido (opcional)"), validators=[Optional(), Length(max=255)])
-    notes = TextAreaField(_("Notas"), validators=[Optional()])
+    name = StringField(_l("Nombre de la integración"), validators=[DataRequired(), Length(max=100)])
+    allowed_origin = StringField(_l("Origen permitido (opcional)"), validators=[Optional(), Length(max=255)])
+    notes = TextAreaField(_l("Notas"), validators=[Optional()])

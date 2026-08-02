@@ -83,7 +83,9 @@
                             </ul>
                         </div>
                         <div class="col-md-7 col-lg-8">
-                            <h4 class="mb-3">{{ _('Billing address') }}</h4>
+                            <h4 class="mb-3">
+                                {% if form.requires_billing %}{{ _('Billing address') }}{% else %}{{ _('Sus datos') }}{% endif %}
+                            </h4>
                             <div class="row g-3">
                                 <div class="col-sm-6">
                                     <label for="nombre" class="form-label">{{ _('Nombre') }}</label>
@@ -104,6 +106,8 @@
                                         {{ _('Please enter a valid email address for shipping updates.') }}
                                     </div>
                                 </div>
+                                {# Billing address: only collected when there is something to bill. #}
+                                {% if form.requires_billing %}
                                 <div class="col-12">
                                     <label for="dirrecion1" class="form-label">{{ _('Dirección') }}</label>
                                     {{ form.direccion1(class="form-control", id="dirrecion1") }} {{
@@ -117,7 +121,7 @@
                                 </div>
                                 <div class="col-md-5">
                                     <label for="pais" class="form-label">{{ _('País') }}</label>
-                                    {{ form.pais(class="form-select", id="pais") }} {{ render_field_errors(form.pais) }}
+                                    {{ form.pais(class="form-control", id="pais") }} {{ render_field_errors(form.pais) }}
                                     <div class="invalid-feedback">{{ _('Please select a valid country.') }}</div>
                                 </div>
                                 <div class="col-md-4">
@@ -132,6 +136,7 @@
                                     render_field_errors(form.codigo_postal) }}
                                     <div class="invalid-feedback">{{ _('Zip code required.') }}</div>
                                 </div>
+                                {% endif %}
                             </div>
 
                             {% if curso.pagado %}
