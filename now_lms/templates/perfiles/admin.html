@@ -51,13 +51,29 @@
                             <p class="mb-0 opacity-75">{{ _('Tu centro de control y administración del sistema') }}</p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <a
-                                href="{{ url_for('admin_profile.usuarios') }}"
-                                class="btn btn-light"
-                                style="border-radius: 25px"
-                            >
-                                <i class="bi bi-people me-1"></i> {{ _('Ver Usuarios') }}
-                            </a>
+                            <div class="d-flex flex-wrap justify-content-end">
+                                <a
+                                    href="{{ url_for('user.crear_usuario') }}"
+                                    class="btn btn-light"
+                                    style="border-radius: 25px"
+                                >
+                                    <i class="bi bi-person-plus me-1"></i> {{ _('Nuevo Usuario') }}
+                                </a>
+                                <a
+                                    href="{{ url_for('course.nuevo_curso') }}"
+                                    class="btn btn-light"
+                                    style="border-radius: 25px"
+                                >
+                                    <i class="bi bi-book me-1"></i> {{ _('Nuevo Curso') }}
+                                </a>
+                                <a
+                                    href="{{ url_for('admin_profile.usuarios') }}"
+                                    class="btn btn-light"
+                                    style="border-radius: 25px"
+                                >
+                                    <i class="bi bi-people me-1"></i> {{ _('Ver Usuarios') }}
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -94,24 +110,24 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card admin-card border-warning">
+                                    <div class="card admin-card border-primary">
                                         <div class="card-body">
                                             <div class="row align-items-center">
                                                 <div class="col">
-                                                    <h6 class="card-title text-warning mb-2">
+                                                    <h6 class="card-title text-primary mb-2">
                                                         <i class="bi bi-person-x me-2"></i>{{ _('Usuarios Inactivos') }}
                                                     </h6>
-                                                    <h2 class="mb-0 text-warning">{{ inactivos }}</h2>
+                                                    <h2 class="mb-0 text-primary">{{ inactivos }}</h2>
                                                     <small class="text-muted">{{ _('Requieren atención') }}</small>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <i class="bi bi-person-x stat-icon text-warning"></i>
+                                                    <i class="bi bi-person-x stat-icon text-primary"></i>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
                                                 <a
                                                     href="{{ url_for('admin_profile.usuarios_inactivos') }}"
-                                                    class="btn btn-outline-warning btn-sm"
+                                                    class="btn btn-outline-primary btn-sm"
                                                 >
                                                     <i class="bi bi-exclamation-triangle me-1"></i>{{ _('Revisar') }}
                                                 </a>
@@ -172,18 +188,18 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card admin-card border-info">
+                                    <div class="card admin-card border-secondary">
                                         <div class="card-body">
                                             <div class="row align-items-center">
                                                 <div class="col">
-                                                    <h6 class="card-title text-info mb-2">
+                                                    <h6 class="card-title text-secondary mb-2">
                                                         <i class="bi bi-person-check me-2"></i>{{ _('Inscripciones') }}
                                                     </h6>
-                                                    <h2 class="mb-0 text-info">{{ total_enrollments }}</h2>
+                                                    <h2 class="mb-0 text-secondary">{{ total_enrollments }}</h2>
                                                     <small class="text-muted">{{ _('Estudiantes inscritos') }}</small>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <i class="bi bi-person-check stat-icon text-info"></i>
+                                                    <i class="bi bi-person-check stat-icon text-secondary"></i>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
@@ -217,6 +233,86 @@
                                                     class="btn btn-outline-success btn-sm"
                                                 >
                                                     <i class="bi bi-eye me-1"></i>{{ _('Ver Pagos') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card admin-card border-secondary">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-secondary mb-2">
+                                                        <i class="bi bi-file-earmark-text me-2"></i>{{ _('Recursos Creados') }}
+                                                    </h6>
+                                                    <h2 class="mb-0 text-secondary">{{ recursos_creados }}</h2>
+                                                    <small class="text-muted">{{ _('Recursos de aprendizaje') }}</small>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="bi bi-file-earmark-text stat-icon text-secondary"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('resource.lista_de_recursos') }}"
+                                                    class="btn btn-outline-secondary btn-sm"
+                                                >
+                                                    <i class="bi bi-collection me-1"></i>{{ _('Gestionar') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card admin-card border-secondary">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-secondary mb-2">
+                                                        <i class="bi bi-award-fill me-2"></i>{{ _('Certificados Emitidos') }}
+                                                    </h6>
+                                                    <h2 class="mb-0 text-secondary">{{ certificados_emitidos }}</h2>
+                                                    <small class="text-muted">{{ _('Certificaciones otorgadas') }}</small>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="bi bi-award-fill stat-icon text-secondary"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('certificate.certificaciones') }}"
+                                                    class="btn btn-outline-secondary btn-sm"
+                                                >
+                                                    <i class="bi bi-trophy me-1"></i>{{ _('Ver Certificados') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card admin-card border-danger">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-danger mb-2">
+                                                        <i class="bi bi-envelope-exclamation me-2"></i>{{ _('Mensajes Sin Leer') }}
+                                                    </h6>
+                                                    <h2 class="mb-0 text-danger">{{ mensajes_sin_leer }}</h2>
+                                                    <small class="text-muted"
+                                                        >{{ _('Mensajes de contacto pendientes') }}</small
+                                                    >
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="bi bi-envelope-exclamation stat-icon text-danger"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('contact.list_contact_messages') }}"
+                                                    class="btn btn-outline-danger btn-sm"
+                                                >
+                                                    <i class="bi bi-eye me-1"></i>{{ _('Ver Mensajes') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -256,7 +352,7 @@
                                             <div class="col">
                                                 <h6 class="mb-1">
                                                     <a
-                                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                                        href="{{ url_for('course.administrar_curso', course_code=curso.codigo) }}"
                                                         class="text-decoration-none"
                                                     >
                                                         {{ curso.nombre }}
@@ -289,9 +385,9 @@
                             class="card mb-3"
                             style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
                         >
-                            <div class="card-header bg-warning bg-opacity-10">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-gear text-warning me-2"></i>{{ _('Gestión del Sistema') }}
+                                    <i class="bi bi-gear text-primary me-2"></i>{{ _('Gestión del Sistema') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -302,17 +398,17 @@
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('setting.configuracion') }}" class="btn btn-outline-warning w-100">
+                                        <a href="{{ url_for('setting.configuracion') }}" class="btn btn-outline-primary w-100">
                                             <i class="bi bi-gear me-2"></i>{{ _('Configuración') }}</a
                                         >
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('group.nuevo_grupo') }}" class="btn btn-outline-success w-100">
+                                        <a href="{{ url_for('group.nuevo_grupo') }}" class="btn btn-outline-primary w-100">
                                             <i class="bi bi-people me-2"></i>{{ _('Nuevo Grupo') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('setting.personalizacion') }}" class="btn btn-outline-info w-100">
+                                        <a href="{{ url_for('setting.personalizacion') }}" class="btn btn-outline-primary w-100">
                                             <i class="bi bi-palette me-2"></i>{{ _('Personalización') }}
                                         </a>
                                     </div>
@@ -320,11 +416,11 @@
                             </div>
                         </div>
 
-                        <!-- Advanced Tools -->
+                         <!-- Advanced Tools -->
                         <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
-                            <div class="card-header bg-info bg-opacity-10">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-tools text-info me-2"></i>{{ _('Herramientas Administrativas') }}
+                                    <i class="bi bi-tools text-primary me-2"></i>{{ _('Herramientas Administrativas') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -344,12 +440,12 @@
                                                     >
                                                     <a
                                                         href="{{ url_for('admin_profile.usuarios_inactivos') }}"
-                                                        class="btn btn-sm btn-outline-warning"
+                                                        class="btn btn-sm btn-outline-primary"
                                                         >{{ _('Usuarios Inactivos') }}</a
                                                     >
                                                     <a
                                                         href="{{ url_for('admin_profile.usuarios_sin_verificar') }}"
-                                                        class="btn btn-sm btn-outline-danger"
+                                                        class="btn btn-sm btn-outline-primary"
                                                     >
                                                         {{ _('Usuarios sin Verificar') }} {% if unverified_users > 0 %}
                                                         <span class="badge bg-danger ms-1">{{ unverified_users }}</span>
@@ -362,20 +458,20 @@
 
                                     <!-- System Configuration -->
                                     <div class="col-md-6">
-                                        <div class="card border-success border-opacity-25">
+                                        <div class="card border-primary border-opacity-25">
                                             <div class="card-body p-3">
-                                                <h6 class="card-title text-success">
+                                                <h6 class="card-title text-primary">
                                                     <i class="bi bi-gear me-2"></i>{{ _('Configuración') }}
                                                 </h6>
                                                 <div class="d-grid gap-1">
                                                     <a
                                                         href="{{ url_for('setting.configuracion') }}"
-                                                        class="btn btn-sm btn-outline-success"
+                                                        class="btn btn-sm btn-outline-primary"
                                                         >{{ _('Sistema') }}</a
                                                     >
                                                     <a
                                                         href="{{ url_for('setting.mail') }}"
-                                                        class="btn btn-sm btn-outline-success"
+                                                        class="btn btn-sm btn-outline-primary"
                                                         >{{ _('Correo SMTP') }}</a
                                                     >
                                                 </div>
@@ -385,21 +481,59 @@
 
                                     <!-- Content Management -->
                                     <div class="col-md-6">
-                                        <div class="card border-warning border-opacity-25">
+                                        <div class="card border-primary border-opacity-25">
                                             <div class="card-body p-3">
-                                                <h6 class="card-title text-warning">
+                                                <h6 class="card-title text-primary">
                                                     <i class="bi bi-journal me-2"></i>{{ _('Contenido') }}
                                                 </h6>
                                                 <div class="d-grid gap-1">
                                                     <a
                                                         href="{{ url_for('blog.admin_blog_index') }}"
-                                                        class="btn btn-sm btn-outline-warning"
+                                                        class="btn btn-sm btn-outline-primary"
                                                         >{{ _('Blog') }}</a
                                                     >
                                                     <a
                                                         href="{{ url_for('admin_announcements.list_announcements') }}"
-                                                        class="btn btn-sm btn-outline-warning"
+                                                        class="btn btn-sm btn-outline-primary"
                                                         >{{ _('Anuncios') }}</a
+                                                    >
+                                                    <a
+                                                        href="{{ url_for('category.categories') }}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        >{{ _('Categorías') }}</a
+                                                    >
+                                                    <a
+                                                        href="{{ url_for('program.programas') }}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        >{{ _('Programas') }}</a
+                                                    >
+                                                    <a
+                                                        href="{{ url_for('custom_pages.list_pages') }}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        >{{ _('Páginas Custom') }}</a
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reported Messages -->
+                                    <div class="col-md-6">
+                                        <div class="card border-primary border-opacity-25">
+                                            <div class="card-body p-3">
+                                                <h6 class="card-title text-primary">
+                                                    <i class="bi bi-flag me-2"></i>{{ _('Mensajes y Moderación') }}
+                                                </h6>
+                                                <div class="d-grid gap-1">
+                                                    <a
+                                                        href="{{ url_for('msg.admin_flagged_messages') }}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        >{{ _('Mensajes Reportados') }}</a
+                                                    >
+                                                    <a
+                                                        href="{{ url_for('msg.user_messages') }}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        >{{ _('Todos los Mensajes') }}</a
                                                     >
                                                 </div>
                                             </div>
@@ -408,25 +542,25 @@
 
                                     <!-- System Tools -->
                                     <div class="col-md-6">
-                                        <div class="card border-info border-opacity-25">
+                                        <div class="card border-primary border-opacity-25">
                                             <div class="card-body p-3">
-                                                <h6 class="card-title text-info">
+                                                <h6 class="card-title text-primary">
                                                     <i class="bi bi-tools me-2"></i>{{ _('Herramientas') }}
                                                 </h6>
                                                 <div class="d-grid gap-1">
                                                     <a
                                                         href="{{ url_for('setting.paypal') }}"
-                                                        class="btn btn-sm btn-outline-info"
+                                                        class="btn btn-sm btn-outline-primary"
                                                         >{{ _('Pagos PayPal') }}</a
                                                     >
                                                     <a
                                                         href="{{ url_for('setting.adsense') }}"
-                                                        class="btn btn-sm btn-outline-info"
+                                                        class="btn btn-sm btn-outline-primary"
                                                         >{{ _('AdSense') }}</a
                                                     >
                                                     <a
                                                         href="{{ url_for('admin_profile.pagos') }}"
-                                                        class="btn btn-sm btn-outline-success"
+                                                        class="btn btn-sm btn-outline-primary"
                                                     >
                                                         <i class="bi bi-credit-card me-1"></i>{{ _('Ver Pagos Recibidos') }}
                                                     </a>
@@ -437,21 +571,21 @@
 
                                     <!-- Role Access -->
                                     <div class="col-md-6">
-                                        <div class="card border-secondary border-opacity-25">
+                                        <div class="card border-primary border-opacity-25">
                                             <div class="card-body p-3">
-                                                <h6 class="card-title text-secondary">
+                                                <h6 class="card-title text-primary">
                                                     <i class="bi bi-person-badge me-2"></i>{{ _('Acceso a Roles') }}
                                                 </h6>
                                                 <div class="d-grid gap-1">
                                                     <a
                                                         href="{{ url_for('instructor_profile.pagina_instructor') }}"
-                                                        class="btn btn-sm btn-outline-secondary"
+                                                        class="btn btn-sm btn-outline-primary"
                                                     >
                                                         <i class="bi bi-mortarboard me-1"></i>{{ _('Panel de Instructor') }}
                                                     </a>
                                                     <a
                                                         href="{{ url_for('moderator_profile.pagina_moderador') }}"
-                                                        class="btn btn-sm btn-outline-secondary"
+                                                        class="btn btn-sm btn-outline-primary"
                                                     >
                                                         <i class="bi bi-shield me-1"></i>{{ _('Panel de Moderador') }}
                                                     </a>
