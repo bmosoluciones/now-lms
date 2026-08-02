@@ -146,7 +146,17 @@ def _check_course_access(_curso, course_code: str) -> tuple[bool, bool]:
         )
         if enrollment:
             return True, False
-        return (True, False) if enrollment else _public_course_access(_curso)
+        # Ruling on fork issue #52's gating inconsistency (2026-08-02): a
+        # signed-in member may PREVIEW any open course. The take page already
+        # renders its locked outline to every student, so denying the summary
+        # made the deeper page more permissive than the shallower one — and
+        # left members no way to discover the courses they are invited to
+        # enroll in. `publico` keeps governing the anonymous world (gated
+        # courses 302 to the intake), drafts stay hidden, and content remains
+        # gated per resource.
+        if _curso and _curso.estado == "open":
+            return True, False
+        return _public_course_access(_curso)
 
     return _public_course_access(_curso)
 
