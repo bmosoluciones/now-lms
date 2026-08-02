@@ -74,7 +74,7 @@ from now_lms.forms import (
 from now_lms.i18n import _
 from now_lms.logs import log
 from now_lms.misc import CURSO_NIVEL, TIPOS_RECURSOS
-from now_lms.cache import invalidar_cache_curso
+from now_lms.cache import invalidar_cache_curso, invalidate_user_course_view_cache
 from now_lms.themes import get_course_list_template, get_course_view_template
 from now_lms.vistas.courses.helpers import markdown2html, _crear_indice_avance_curso
 
@@ -658,6 +658,7 @@ def _persist_admin_enrollment(course_code: str, curso, student, bypass_payment: 
     database.session.add(enrollment)
     database.session.commit()
     _crear_indice_avance_curso(course_code)
+    invalidate_user_course_view_cache(student.usuario, course_code)
     create_events_for_student_enrollment(student.usuario, course_code)
 
 
@@ -761,6 +762,7 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
         enrollment.modificado = datetime.now(timezone.utc).date()
         enrollment.modificado_por = current_user.usuario
         database.session.commit()
+        invalidate_user_course_view_cache(student_username, course_code)
 
         flash(_("Estudiante '{}' desinscrito del curso exitosamente.").format(student_username), "success")
 

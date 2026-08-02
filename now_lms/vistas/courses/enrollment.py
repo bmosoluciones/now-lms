@@ -12,7 +12,7 @@ from sqlalchemy.exc import OperationalError
 from werkzeug.wrappers import Response
 
 from now_lms.auth import perfil_requerido, usuario_requiere_verificacion_email
-from now_lms.cache import cache, cache_key_with_auth_state
+from now_lms.cache import cache, cache_key_with_auth_state, invalidate_user_course_view_cache
 from now_lms.calendar_utils import create_events_for_student_enrollment
 from now_lms.db import (
     Certificacion,
@@ -142,6 +142,12 @@ def _finalize_completed_enrollment(
             registro.modificado_por = current_user.usuario
         database.session.commit()
         _crear_indice_avance_curso(course_code)
+
+        # The redirect below lands on the member's own cached pre-enrollment
+        # render otherwise (fork issue #50): phantom Enroll button for up to
+        # CACHE_DEFAULT_TIMEOUT seconds, which is what manufactured duplicate
+        # enrollment attempts.
+        invalidate_user_course_view_cache(pago.usuario, course_code)
 
         create_events_for_student_enrollment(pago.usuario, pago.curso)
 

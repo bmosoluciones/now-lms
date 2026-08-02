@@ -230,6 +230,10 @@ def remote_enrollment():
     database.session.add(remote_request)
     database.session.commit()
 
+    from now_lms.cache import invalidate_user_course_view_cache
+
+    invalidate_user_course_view_cache(user.usuario, course_code)
+
     # Send notification email
     # Determine if we should send synchronously (useful for tests)
     sync = data.get("_sync_email") == "1" or data.get("_sync_email") is True

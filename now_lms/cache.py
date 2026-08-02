@@ -251,3 +251,23 @@ def invalidar_cache_programa(program_code: str) -> None:
         log.trace(f"Cache invalidated for program: {program_code}")
     except Exception as e:
         log.error(f"Error invalidating cache for program {program_code}: {e}")
+
+
+def invalidate_user_course_view_cache(usuario: str, course_code: str) -> None:
+    """Drop a member's cached renders of a course's take and view pages.
+
+    Both routes cache per user under ``cache_key_with_auth_state``
+    (``view/<path>/user:<usuario>``), and nothing cleared those entries when
+    enrollment state changed — so the ordinary sequence "look at a course,
+    then enroll" redirected the member straight into their own stale
+    pre-enrollment render: a phantom Enroll button, suppressed lesson links,
+    and a second enrollment attempt (fork issue #50). Call this after ANY
+    commit that changes a member's enrollment state: self-enrollment, payment
+    confirmation, admin enrollment, unenrollment, program fan-out, API and
+    bulk enrollment.
+
+    Deleting a key that does not exist is a no-op, so callers do not need to
+    know whether the member ever warmed the cache.
+    """
+    for path in (f"/course/{course_code}/take", f"/course/{course_code}/view"):
+        cache.delete(f"view/{path}/user:{usuario}")

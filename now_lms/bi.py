@@ -17,6 +17,7 @@ from flask_login import current_user
 from now_lms.db import Curso, CursoRecurso, CursoSeccion, DocenteCurso, EstudianteCurso, ModeradorCurso, Usuario, database
 from now_lms.i18n import _
 from now_lms.logs import log
+from now_lms.cache import invalidate_user_course_view_cache
 
 # pylint: disable=E1101
 
@@ -176,6 +177,8 @@ def asignar_curso_a_estudiante(curso_codigo: str | None, /, usuario_id: str | No
     )
     database.session.add(ASIGNACION)
     database.session.commit()
+    if curso_codigo and usuario_id:
+        invalidate_user_course_view_cache(usuario_id, curso_codigo)
 
 
 def cambia_tipo_de_usuario_por_id(id_usuario: str | None, /, nuevo_tipo: str | None = None, usuario: str | None = None):

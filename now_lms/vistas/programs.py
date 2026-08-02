@@ -30,7 +30,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache, cache_key_with_auth_state, invalidar_cache_programa
+from now_lms.cache import cache, cache_key_with_auth_state, invalidar_cache_programa, invalidate_user_course_view_cache
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
@@ -412,6 +412,7 @@ def inscribir_usuario_en_cursos_de_programa(username: str, programa: Programa) -
     if enrolled:
         for course_code in enrolled:
             _crear_indice_avance_curso(course_code)
+            invalidate_user_course_view_cache(username, course_code)
             create_events_for_student_enrollment(username, course_code)
 
     return enrolled
@@ -468,6 +469,7 @@ def inscribir_usuario_en_curso_especifico_de_programa(username: str, course_code
     )
     database.session.add(course_enrollment)
     _crear_indice_avance_curso(course_code)
+    invalidate_user_course_view_cache(username, course_code)
     create_events_for_student_enrollment(username, course_code)
     return True
 
@@ -710,6 +712,7 @@ def gestionar_cursos_programa(codigo: str) -> str | Response:
                         enrollment.vigente = False
                         enrollment.modificado = datetime.now(timezone.utc).date()
                         enrollment.modificado_por = current_user.usuario
+                        invalidate_user_course_view_cache(est.usuario, curso_codigo)
 
                 database.session.delete(curso_programa)
                 database.session.commit()
@@ -880,6 +883,7 @@ def _post_enrollment_processing(student_username, enrolled_courses, programa):
 
     for course_code in enrolled_courses:
         _crear_indice_avance_curso(course_code)
+        invalidate_user_course_view_cache(student_username, course_code)
         create_events_for_student_enrollment(student_username, course_code)
 
     message = _("Estudiante '{}' inscrito exitosamente en el programa '{}'").format(student_username, programa.nombre)
@@ -1026,6 +1030,9 @@ def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
                 course_enrollment.modificado = datetime.now(timezone.utc).date()
                 course_enrollment.modificado_por = current_user.usuario
                 unenrolled_courses.append(course_code)
+
+        for course_code in unenrolled_courses:
+            invalidate_user_course_view_cache(student_username, course_code)
 
         # Remove program enrollment
         database.session.delete(program_enrollment)

@@ -25,7 +25,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache
+from now_lms.cache import cache, invalidate_user_course_view_cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, Curso, Pago, PaypalConfig, database
 from now_lms.i18n import _
@@ -411,6 +411,7 @@ def _save_payment_enrollment(pago: Any, course_code: str) -> None:
         else:
             database.session.add(EstudianteCurso(curso=pago.curso, usuario=pago.usuario, vigente=True, pago=pago.id))
     database.session.commit()
+    invalidate_user_course_view_cache(pago.usuario, course_code)
 
 
 def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
