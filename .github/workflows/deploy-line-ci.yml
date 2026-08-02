@@ -188,6 +188,36 @@ jobs:
             - name: Check theme.min.css against theme.css
               run: python scripts/check_theme_minification.py
 
+    image:
+        # The image build is the ONLY place the Dockerfile's own commands run, and
+        # nothing used to execute it before a deploy. On 2026-08-02 a build-stage
+        # command that works everywhere else (`python -m ...`) exited 127 in the
+        # image -- it installs python3.12 with no bare `python` on PATH -- so every
+        # check on the PR went green and the failure surfaced only when
+        # deploy-vps.sh tried to build on the VPS. Production was never at risk
+        # (a failed build cannot replace a running image), but the deploy was
+        # blocked with the merge already landed.
+        #
+        # Build only: no push, no registry, no secrets. BUILD_SHA is required by
+        # the Dockerfile on purpose (see fork issue #14), so it is passed here too.
+        #
+        # The build IS the assertion: the Dockerfile's own `RUN pybabel compile
+        # && python3.12 -m now_lms.i18n_autocompile --check` executes during it,
+        # so a green build proves the catalog gate resolved its interpreter and
+        # passed inside the image. A separate `docker run` of that command would
+        # be redundant AND wrong -- this image has an ENTRYPOINT (tini ->
+        # docker-entry-point.sh), so the command arrives as entrypoint arguments
+        # and boots the whole app against a database that does not exist here.
+        name: Container image builds
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+
+        steps:
+            - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.7
+
+            - name: Build the image exactly as the deploy does
+              run: docker build --build-arg BUILD_SHA="${GITHUB_SHA}" -t now-lms:ci-check .
+
     e2e:
         # Browser-level L6: the member journey (login -> course -> lesson) that
         # every lower layer missed when U12 locked the whole cohort out on

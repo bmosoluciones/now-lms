@@ -107,8 +107,12 @@ LABEL io.intentsolutions.commit="${BUILD_SHA}"
 # Compile application translations. The freshness gate catches stale .mo
 # files (root-cause fix for the demo 'Gender rendered in Spanish' bug class)
 # and fails the build if any locale's catalog cannot resolve its sentinels.
+# /usr/bin/python3.12 explicitly: this image installs python3.12 only (see the
+# microdnf lines above) and provides NO bare `python` on PATH, so the upstream
+# form of this gate exits 127 and fails the build. CI runners do have `python`,
+# which is why this passed every check and only broke at image build time.
 RUN pybabel compile -d /app/now_lms/translations \
-    && python -m now_lms.i18n_autocompile --check
+    && /usr/bin/python3.12 -m now_lms.i18n_autocompile --check
 
 # Add Tini for process reaping
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
