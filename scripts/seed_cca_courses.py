@@ -419,11 +419,16 @@ def _build_specs() -> list[dict]:
     ]
     specs.append({
         "codigo": "IS-START",
-        "nombre": "Getting Started on Intent Solutions Learn",
-        "descripcion_corta": "How to sign in, enroll, track progress, and (for staff) run the platform.",
-        "descripcion": "A short onboarding module for every new learner and instructor: student "
-                       "sign-in and email verification, enrolling and tracking progress, password reset, "
-                       "and the admin/instructor roles and panel. Start here before any prep course.",
+        # Display-name only: "Start AI Tools" is the learner-facing brand
+        # (2026-07-30 rename, bead now-lms-0iq); codigo stays IS-START as the
+        # URL- and FK-stable internal handle. Do not migrate the codigo.
+        "nombre": "Start AI Tools",
+        "descripcion_corta": "Free orientation + free practice exams on Courses A/B/C. The on-ramp to "
+                             "Intent Solutions certification.",
+        "descripcion": "Start AI Tools is the free on-ramp to Intent Solutions certification: how to "
+                       "sign in, enroll, and track progress on Learn, plus free practice-exam access on "
+                       "Courses A, B, and C. Work through the orientation first, then pick your "
+                       "certification path — Associate, Developer, or CCA-F.",
         "nivel": 0,
         "duracion": 1,
         "sections": [
