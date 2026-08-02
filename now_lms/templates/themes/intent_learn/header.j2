@@ -14,6 +14,11 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}" />
 <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 
+<!-- Brand layer: maps the learn identity tokens onto Bootstrap's CSS variables so
+     authenticated stock pages keep the same identity as the front door (issue #38).
+     Must load AFTER bootstrap so the variable overrides win the cascade. -->
+<link rel="stylesheet" href="{{ url_for('static', filename='themes/intent_learn/brand.css') }}" />
+
 <!-- Bootstrap Font -->
 <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.min.css') }}" />
 

@@ -1,0 +1,118 @@
+/* Intent Solutions Learn — brand layer over Bootstrap (fork issue #38).
+ *
+ * front-door.css carries the learn identity (paper #F3F6F4, graphite #161B1D,
+ * signal orange #EF5A24, blueprint teal #2E5C59) but only the composed
+ * full-page overrides load it, so every stock Bootstrap page after sign-in
+ * rendered default Bootstrap blue on white — the product appeared to change
+ * identity exactly when a member started working.
+ *
+ * This file is the bridge: it maps the same brand tokens onto Bootstrap 5.3's
+ * CSS variables. It is loaded by the intent_learn theme macros only
+ * (headertags / base), always AFTER bootstrap.css, so it retints Bootstrap
+ * components everywhere the theme renders them without touching any upstream
+ * template. Pages with their own composition (front door, request-access)
+ * either do not load it or out-specify it with their .isl-* rules.
+ *
+ * Keep this file mechanical: tokens onto Bootstrap variables, nothing layout.
+ * The palette source of truth is front-door.css — change tokens there first.
+ */
+
+:root {
+    /* Theme tokens → Bootstrap global palette */
+    --bs-primary: #ef5a24;
+    --bs-primary-rgb: 239, 90, 36;
+    --bs-secondary: #2e5c59;
+    --bs-secondary-rgb: 46, 92, 89;
+    /* Stock member surfaces accent with text-info/border-info; map info to the
+       blueprint teal so those accents read as brand, not Bootstrap cyan. */
+    --bs-info: #2e5c59;
+    --bs-info-rgb: 46, 92, 89;
+    --bs-body-bg: #f3f6f4;
+    --bs-body-color: #161b1d;
+    --bs-emphasis-color: #161b1d;
+    --bs-secondary-color: #4f5b60;
+    --bs-tertiary-bg: #eef2ef;
+    --bs-border-color: #d3dbd7;
+    --bs-link-color: #2e5c59;
+    --bs-link-color-rgb: 46, 92, 89;
+    --bs-link-hover-color: #1f403e;
+    --bs-link-hover-color-rgb: 31, 64, 62;
+    --bs-focus-ring-color: rgba(239, 90, 36, 0.25);
+}
+
+.btn-primary {
+    --bs-btn-bg: #ef5a24;
+    --bs-btn-border-color: #ef5a24;
+    --bs-btn-hover-bg: #c94213;
+    --bs-btn-hover-border-color: #c94213;
+    --bs-btn-active-bg: #c94213;
+    --bs-btn-active-border-color: #b23a10;
+    --bs-btn-disabled-bg: #ef5a24;
+    --bs-btn-disabled-border-color: #ef5a24;
+    --bs-btn-focus-shadow-rgb: 239, 90, 36;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #c94213;
+    --bs-btn-border-color: #ef5a24;
+    --bs-btn-hover-bg: #ef5a24;
+    --bs-btn-hover-border-color: #ef5a24;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-active-bg: #c94213;
+    --bs-btn-active-border-color: #c94213;
+    --bs-btn-active-color: #ffffff;
+    --bs-btn-focus-shadow-rgb: 239, 90, 36;
+}
+
+.btn-link {
+    --bs-btn-color: #2e5c59;
+    --bs-btn-hover-color: #1f403e;
+}
+
+/* Bootstrap 5.3 hardcodes the focus tint on form controls. */
+.form-control:focus,
+.form-select:focus {
+    border-color: rgba(239, 90, 36, 0.5);
+    box-shadow: 0 0 0 0.25rem rgba(239, 90, 36, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #ef5a24;
+    border-color: #ef5a24;
+}
+
+.form-check-input:focus {
+    border-color: rgba(239, 90, 36, 0.5);
+    box-shadow: 0 0 0 0.25rem rgba(239, 90, 36, 0.25);
+}
+
+.nav-pills {
+    --bs-nav-pills-link-active-bg: #ef5a24;
+}
+
+.pagination {
+    --bs-pagination-active-bg: #ef5a24;
+    --bs-pagination-active-border-color: #ef5a24;
+    --bs-pagination-color: #2e5c59;
+    --bs-pagination-hover-color: #1f403e;
+    --bs-pagination-focus-color: #1f403e;
+}
+
+.progress,
+.progress-stacked {
+    --bs-progress-bar-bg: #ef5a24;
+}
+
+.dropdown-menu {
+    --bs-dropdown-link-active-bg: #ef5a24;
+}
+
+.list-group {
+    --bs-list-group-active-bg: #ef5a24;
+    --bs-list-group-active-border-color: #ef5a24;
+}
+
+.card {
+    --bs-card-border-color: #d3dbd7;
+    --bs-card-bg: #ffffff;
+}
