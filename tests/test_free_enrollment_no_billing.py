@@ -115,7 +115,7 @@ def test_free_enrollment_page_hides_the_address_fields(app, client):
 
     body = client.get("/course/FREEBIL/enroll").get_data(as_text=True)
     assert 'id="nombre"' in body
-    assert 'id="dirrecion1"' not in body
+    assert 'id="direccion1"' not in body
     assert 'id="pais"' not in body
     assert 'id="codigo_postal"' not in body
 

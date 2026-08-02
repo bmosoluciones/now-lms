@@ -5443,8 +5443,8 @@ msgid ""
 "Mantente conectado con tus instructores y compañeros de clase. Haz preguntas,\n"
 "                                    participa en discusiones y recibe apoyo."
 msgstr ""
-"Stay connected with your instructors and classmates. ask questions,\n"
-"                                    participates in discussions and receives support."
+"Stay connected with your instructors and classmates. Ask questions,\n"
+"                                    participate in discussions, and receive support."
 
 #: now_lms/templates/inicio/panel_user.html:248
 msgid "Recursos de Aprendizaje"
@@ -5603,7 +5603,7 @@ msgstr "User Profile"
 
 #: now_lms/templates/inicio/perfil_editar.html:7
 msgid "Editar perfil."
-msgstr "Edit profile."
+msgstr "Edit profile"
 
 #: now_lms/templates/inicio/perfil_editar.html:20
 msgid "Editar perfil del usuario"
@@ -8247,7 +8247,7 @@ msgstr "First"
 
 #: now_lms/templates/learning/mensajes/course_messages.html:96
 msgid "No hay mensajes de estudiantes en este curso."
-msgstr "There are no students enrolled"
+msgstr "There are no student messages in this course."
 
 #: now_lms/templates/learning/mensajes/new_thread.html:55
 msgid "¿En qué podemos ayudarte?"
@@ -8310,7 +8310,7 @@ msgstr "Go to Dashboard"
 
 #: now_lms/templates/learning/mensajes/user_messages.html:85
 msgid "No has enviado ningún mensaje aún."
-msgstr "You have not created any resources yet."
+msgstr "You have not sent any messages yet."
 
 #: now_lms/templates/learning/mensajes/user_messages.html:87
 msgid "No hay mensajes de estudiantes en tus cursos."
@@ -8933,11 +8933,11 @@ msgstr "Previous resource"
 
 #: now_lms/templates/learning/resources/type_macros.html:32
 msgid "Marcar Completado"
-msgstr "Course completed"
+msgstr "Mark completed"
 
 #: now_lms/templates/learning/resources/type_macros.html:36
 msgid "Recurso Completado"
-msgstr "Course completed"
+msgstr "Resource completed"
 
 #: now_lms/templates/learning/resources/type_macros.html:46
 #: now_lms/templates/learning/resources/type_macros.html:52

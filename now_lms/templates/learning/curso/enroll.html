@@ -109,8 +109,8 @@
                                 {# Billing address: only collected when there is something to bill. #}
                                 {% if form.requires_billing %}
                                 <div class="col-12">
-                                    <label for="dirrecion1" class="form-label">{{ _('Dirección') }}</label>
-                                    {{ form.direccion1(class="form-control", id="dirrecion1") }} {{
+                                    <label for="direccion1" class="form-label">{{ _('Dirección') }}</label>
+                                    {{ form.direccion1(class="form-control", id="direccion1") }} {{
                                     render_field_errors(form.direccion1) }}
                                     <div class="invalid-feedback">{{ _('Please enter your shipping address.') }}</div>
                                 </div>

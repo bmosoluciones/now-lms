@@ -168,11 +168,11 @@
                                 <div class="row g-2 mb-3">
                                     <div class="col-6">
                                         <small class="text-muted">{{ _('Nacimiento') }}:</small><br />
-                                        <span>{{ perfil.nacimiento }}</span>
+                                        <span>{{ perfil.nacimiento.strftime('%Y-%m-%d') if perfil.nacimiento else '—' }}</span>
                                     </div>
                                     <div class="col-6">
                                         <small class="text-muted">{{ _('Fecha de Alta') }}:</small><br />
-                                        <span>{{ perfil.fecha_alta }}</span>
+                                        <span>{{ perfil.fecha_alta.strftime('%Y-%m-%d') if perfil.fecha_alta else '—' }}</span>
                                     </div>
                                 </div>
                             </div>
