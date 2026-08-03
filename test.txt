@@ -2,7 +2,7 @@
 
 # Crear tarball y wheel
 build==1.5.0
-twine==6.2.0
+twine==7.0.0
 wheel==0.47.0
 
 # Control de calidad python
