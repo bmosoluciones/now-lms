@@ -2,7 +2,7 @@
 
 # Crear tarball y wheel
 build==1.5.0
-twine==6.2.0
+twine==7.0.0
 wheel==0.47.0
 
 # Control de calidad python
@@ -13,7 +13,7 @@ pytest==9.0.3
 pytest-xdist==3.8.0
 pytest-timeout==2.4.0
 pytest-benchmark==5.2.3
-ruff==0.16.0
+ruff==0.16.1
 
 # Cobertura de código
 coverage==7.15.2
