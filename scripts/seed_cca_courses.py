@@ -36,9 +36,20 @@ Production is already seeded and the importer is idempotent, so this is needed
 only for a reseed or a disaster-recovery rebuild.
 
 Question shape (per bank item): ``{id, domain, domainName, domainKey, text,
-options[], answerIndex, rationale, source}``. Mapping onto NOW-LMS:
-``answerIndex`` -> the matching ``QuestionOption.is_correct``; ``rationale`` (+
-appended ``source`` attribution) -> ``Question.explanation``.
+options[], answerIndex | answerIndexes, rationale, source}``. Mapping onto
+NOW-LMS: the correct positions -> the matching ``QuestionOption.is_correct``;
+``rationale`` (+ appended ``source`` attribution) -> ``Question.explanation``.
+
+SINGLE- AND MULTI-CORRECT ITEMS
+===============================
+Banks may carry ``answerIndexes`` (a list of 0-based positions) for
+"select TWO"-style items, alongside or instead of the single ``answerIndex``.
+Both are honoured; ``answerIndexes`` wins when present.
+
+The platform already grades multi-correct: every question is seeded as
+``type="multiple"``, and ``_answer_is_correct`` compares the full selected set
+against the full correct set (``set(selected_ids) == correct_ids``). The gap was
+only here, in the importer.
 """
 
 from __future__ import annotations
@@ -77,6 +88,60 @@ def _truncate(value: str, limit: int) -> str:
     if len(value) <= limit:
         return value
     return value[: limit - 1].rstrip() + "…"
+
+
+def _correct_positions(item: dict) -> set[int]:
+    """Return the 0-based option positions that are correct for ``item``.
+
+    Honours ``answerIndexes`` (multi-correct, "select TWO") and the older single
+    ``answerIndex``. ``answerIndexes`` wins when both are present.
+
+    REFUSES rather than importing an unanswerable question. The previous version
+    computed ``is_correct=(position == item.get("answerIndex"))``, so an item whose
+    ``answerIndex`` was missing or ``None`` — exactly how a multi-correct item is
+    encoded — silently imported with EVERY option marked incorrect. The question
+    then looks fine in the UI and cannot be answered correctly by anyone, and
+    nothing anywhere reports a problem. A hard failure at seed time is the only
+    honest outcome: a certification-prep exam with an unanswerable question is
+    worse than one that refused to import.
+    """
+    # Messages here are operator-facing CLI output for someone running a reseed from a
+    # terminal; intentionally not gettext-wrapped (raised in review of PR #76).
+    options = item.get("options") or []
+    if not options:
+        raise ValueError(f"question {item.get('id', '<no id>')!r}: has no options to mark correct")
+
+    raw = item.get("answerIndexes")
+    if raw is None:
+        single = item.get("answerIndex")
+        raw = [] if single is None else [single]
+    elif not isinstance(raw, (list, tuple)):
+        # `answerIndexes: 1` instead of `[1]` would otherwise die on Python's native
+        # "'int' object is not iterable", which tells the operator nothing about which
+        # bank item is malformed (raised in review of PR #76).
+        raise TypeError(f"question {item.get('id', '<no id>')!r}: answerIndexes must be a list, got {type(raw).__name__}")
+
+    positions = set()
+    for value in raw:
+        # TypeError for a type problem, ValueError for a value problem — `bool` is excluded
+        # explicitly because it IS an int subclass, so `answerIndexes: [true]` would otherwise
+        # silently mean position 1.
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise TypeError(f"question {item.get('id', '<no id>')!r}: answer position {value!r} is not an int")
+        if not 0 <= value < len(options):
+            raise ValueError(
+                f"question {item.get('id', '<no id>')!r}: answer position {value} is outside "
+                f"its {len(options)} options"
+            )
+        positions.add(value)
+
+    if not positions:
+        raise ValueError(
+            f"question {item.get('id', '<no id>')!r}: no correct answer "
+            "(needs answerIndex or answerIndexes) — refusing to import a question "
+            "no learner could ever answer correctly"
+        )
+    return positions
 
 
 def _load_bank(filename: str) -> list[dict]:
@@ -224,9 +289,16 @@ def _add_evaluation(db, models, section_id: str, title: str, description: str, i
                     passing_score: float, questions: list[dict]) -> int:
     """Create an evaluation on a section and import its questions.
 
-    ``answerIndex`` -> the matching option's ``is_correct``; ``rationale`` +
+    The correct positions -> the matching options' ``is_correct``; ``rationale`` +
     appended ``source`` attribution -> ``explanation``. Returns the number of
     questions imported.
+
+    NOT all-or-nothing across the batch. Each question is committed individually, so a
+    malformed item at position 7 of 10 leaves items 1-6 persisted and the course
+    half-imported. That is deliberate — a reseed should keep the progress it made — and
+    the seeder is idempotent, so a corrected re-run completes it. What IS guaranteed is
+    that the failing item leaves no partial row of its own: answers are resolved before
+    the question is written (raised in review of PR #76).
     """
     evaluation = models["Evaluation"](
         section_id=section_id,
@@ -241,6 +313,12 @@ def _add_evaluation(db, models, section_id: str, title: str, description: str, i
 
     imported = 0
     for order, item in enumerate(questions, start=1):
+        # VALIDATE BEFORE WRITING. _correct_positions raises on a malformed item, and the
+        # question row is committed a few lines down to obtain its id — so resolving the
+        # answers first is what keeps a bad bank from leaving a half-imported course behind
+        # (an orphan Question with no options). Raised in review of PR #76.
+        correct_positions = _correct_positions(item)
+
         rationale = (item.get("rationale") or "").strip()
         source = (item.get("source") or "").strip()
         explanation = rationale + (f"\n\nSource: {source}" if source else "")
@@ -254,13 +332,12 @@ def _add_evaluation(db, models, section_id: str, title: str, description: str, i
         db.session.add(question)
         db.session.commit()  # flush so question.id is available for options
 
-        answer_index = item.get("answerIndex")
         for position, option_text in enumerate(item.get("options", [])):
             db.session.add(
                 models["QuestionOption"](
                     question_id=question.id,
                     text=_truncate(option_text, MAX_OPTION_TEXT),
-                    is_correct=(position == answer_index),
+                    is_correct=(position in correct_positions),
                 )
             )
         db.session.commit()
