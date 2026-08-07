@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [2.0.4] - 2026-08-07
+
 ### Security:
  - Apply the course gate to the remaining resource routes that still branched on the resource's own `publico` flag: `pagina_recurso_alternativo`, `external_code`, and the meet calendar routes (`/calendar.ics`, `/google-calendar`, `/outlook-calendar`) now route through `_resource_is_viewable()`. `pagina_recurso_alternativo` additionally filters on `CursoRecurso.curso == curso_id` so a resource can no longer be rendered in the context of an unrelated course.
  - Return `404` from `external_code` when the resource id does not exist under the supplied course instead of dereferencing `None` inside `_resource_is_viewable()` and raising a `500` (the sibling `pdf_viewer` route already had this guard).
