@@ -1374,7 +1374,7 @@ msgstr "State"
 #: now_lms/templates/learning/resources_new/editar_recurso_img.html:45
 #: now_lms/templates/masterclass/admin_list.html:42
 msgid "Tipo"
-msgstr "Guy"
+msgstr "Type"
 
 #: now_lms/forms/__init__.py:735
 msgid "Genero"
@@ -7526,7 +7526,7 @@ msgstr "Code:"
 
 #: now_lms/templates/learning/curso/admin_enroll.html:112
 msgid "Tipo:"
-msgstr "Guy:"
+msgstr "Type:"
 
 #: now_lms/templates/learning/curso/admin_enroll.html:118
 msgid "Auditable"

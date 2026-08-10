@@ -408,3 +408,23 @@ body .empty-state, body .empty-state-icon { color: var(--isl-ink-faint); }
 
 /* Keep focus visible against the dark surface. */
 :focus-visible { outline: 2px solid var(--isl-ember); outline-offset: 3px; }
+
+/* --- Dark-ink text utilities ------------------------------------------- */
+/* Bootstrap's .link-dark and .text-dark paint near-black ink, and .link-dark
+   does it with !important, so nothing in the cascade can reach it. On this
+   theme's dark surfaces that is black on black. The admin user list is the
+   worst case: every row's name is a .link-dark, so the table renders as empty
+   rows. .link-dark's hover is hardcoded RGBA(26,30,33) rather than a token, so
+   it is invisible in that state too and needs its own rule.
+
+   Fixed here rather than in the templates because these classes appear 126 and
+   6 times across 50 shared files. Remapping --bs-dark-rgb instead would reach
+   them in one line, but that token also drives .bg-dark and .btn-dark, whose
+   surfaces are supposed to stay dark. */
+.link-dark, body .text-dark {
+    color: var(--isl-ink) !important;
+}
+.link-dark:hover, .link-dark:focus {
+    color: var(--isl-ember-hi) !important;
+    text-decoration-color: var(--isl-ember-hi) !important;
+}
