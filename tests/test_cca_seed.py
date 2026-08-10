@@ -544,6 +544,13 @@ def test_reset_refuses_when_learner_data_changes_after_the_check(app, db_session
         # the deleting transaction) sees a second learner arrive.
         return (1, 0) if llamadas["n"] == 1 else (2, 0)
 
+    # main() calls _require_content_dir() first, and content/cca is gitignored
+    # (it lives in the private intent-curriculum repo), so without this the
+    # script exits 2 on the missing directory long before it reaches the
+    # re-check this test exists to exercise. Both sibling tests that drive
+    # main() stub it the same way.
+    monkeypatch.setattr(seed, "_require_content_dir", lambda: None)
+
     monkeypatch.setattr(seed, "_count_learner_data", contando)
 
     borrados = []
