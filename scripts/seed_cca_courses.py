@@ -623,11 +623,66 @@ def _build_specs() -> list[dict]:
     return specs
 
 
+def _count_learner_data(db, models, code: str) -> tuple[int, int]:
+    """Count what a ``--reset`` of this course would destroy: enrollments and
+    graded evaluation attempts. Both are real member data — enrollments via
+    ``EstudianteCurso``, attempts via ``EvaluationAttempt`` reached through the
+    course's evaluations (``EvaluationAttempt.evaluation_id`` cascades on
+    delete, so dropping the evaluations silently takes the attempts with them).
+    """
+    from sqlalchemy import func
+
+    EstudianteCurso = models["EstudianteCurso"]
+    EvaluationAttempt = models["EvaluationAttempt"]
+    Evaluation = models["Evaluation"]
+    CursoSeccion = models["CursoSeccion"]
+
+    enrollments = db.session.execute(
+        db.select(func.count()).select_from(EstudianteCurso).filter(EstudianteCurso.curso == code)
+    ).scalar_one()
+
+    evaluation_ids = (
+        db.session.execute(
+            db.select(Evaluation.id).join(CursoSeccion, Evaluation.section_id == CursoSeccion.id).filter(
+                CursoSeccion.curso == code
+            )
+        )
+        .scalars()
+        .all()
+    )
+    attempts = 0
+    if evaluation_ids:
+        attempts = db.session.execute(
+            db.select(func.count())
+            .select_from(EvaluationAttempt)
+            .filter(EvaluationAttempt.evaluation_id.in_(evaluation_ids))
+        ).scalar_one()
+
+    return enrollments, attempts
+
+
+def _required_ack_flag(total_enrollments: int, total_attempts: int) -> str:
+    """The exact flag ``--reset`` requires when it would destroy learner data.
+
+    Naming the counts in the flag forces the operator to have actually seen
+    them (from this function's own prior refusal) rather than muscle-memoried
+    a bare boolean past this gate; a mismatch also catches new enrollments or
+    attempts landing between the check and the re-run.
+    """
+    return f"--i-know-this-deletes-{total_enrollments}-enrollments-and-{total_attempts}-attempts"
+
+
 def _delete_course(db, models, code: str) -> bool:
     """Delete a course and its sections/lessons/evaluations. Returns True if found.
 
-    Used by ``--reset`` to allow re-seeding a course that has no learner data yet
-    (deleting an Evaluation cascades to its questions + options).
+    Used by ``--reset`` to rebuild a course. Callers MUST call
+    ``_count_learner_data`` first and get the operator's explicit
+    acknowledgement before calling this — it does not check itself, so it is
+    only ever called from ``main()`` after that gate has passed.
+
+    Deliberately does NOT commit. The whole reset is one transaction so that a
+    course cannot be dropped while a sibling's re-check is still deciding, and so
+    a failure part-way leaves nothing half-deleted. ``main()`` commits once.
     """
     Curso = models["Curso"]
     curso = db.session.execute(db.select(Curso).filter_by(codigo=code)).scalar_one_or_none()
@@ -641,7 +696,7 @@ def _delete_course(db, models, code: str) -> bool:
             db.session.delete(rec)
         db.session.delete(sec)
     db.session.delete(curso)
-    db.session.commit()
+    db.session.flush()  # surface integrity errors here, still inside the caller's transaction
     return True
 
 
@@ -676,7 +731,9 @@ def main() -> int:
         Curso,
         CursoRecurso,
         CursoSeccion,
+        EstudianteCurso,
         Evaluation,
+        EvaluationAttempt,
         Question,
         QuestionOption,
         database,
@@ -689,20 +746,95 @@ def main() -> int:
         "Evaluation": Evaluation,
         "Question": Question,
         "QuestionOption": QuestionOption,
+        "EstudianteCurso": EstudianteCurso,
+        "EvaluationAttempt": EvaluationAttempt,
     }
 
     # Optional: `--reset=CODE1,CODE2` deletes those courses before seeding so they
-    # can be rebuilt (safe only when they carry no learner data).
+    # can be rebuilt. Refuses when any of them carry learner data (enrollments
+    # or graded evaluation attempts) unless the operator passes the exact
+    # acknowledgement flag this prints — naming the count forces them to have
+    # actually seen it, not just muscle-memoried a boolean flag past this gate.
     reset_codes: list[str] = []
+    ack_flag: str | None = None
     for arg in sys.argv[1:]:
         if arg.startswith("--reset="):
             reset_codes = [c.strip() for c in arg.split("=", 1)[1].split(",") if c.strip()]
+        elif arg.startswith("--i-know-this-deletes-"):
+            ack_flag = arg
 
     with app.app_context():
         print("Seeding CCA-F preliminary prep curriculum...")
-        for code in reset_codes:
-            if _delete_course(database, models, code):
-                print(f"  [reset] deleted course '{code}' for rebuild")
+
+        if reset_codes:
+            per_course: dict[str, tuple[int, int]] = {}
+            total_enrollments = 0
+            total_attempts = 0
+            for code in reset_codes:
+                enrollments, attempts = _count_learner_data(database, models, code)
+                per_course[code] = (enrollments, attempts)
+                total_enrollments += enrollments
+                total_attempts += attempts
+
+            if total_enrollments or total_attempts:
+                required_flag = _required_ack_flag(total_enrollments, total_attempts)
+                if ack_flag != required_flag:
+                    print(
+                        "ERROR: --reset would destroy real member data:",
+                        file=sys.stderr,
+                    )
+                    for code, (enrollments, attempts) in per_course.items():
+                        if enrollments or attempts:
+                            print(
+                                f"  {code}: {enrollments} enrollment(s), {attempts} evaluation attempt(s)",
+                                file=sys.stderr,
+                            )
+                    print(
+                        "\nThis is not a warning to skim past — it is a refusal. Re-run with the "
+                        "exact flag naming what this destroys:\n"
+                        f"    {required_flag}\n"
+                        "If those counts don't match what you expect, STOP: someone enrolled or "
+                        "attempted an evaluation since you last checked, and re-seeding right now "
+                        "would delete their record.",
+                        file=sys.stderr,
+                    )
+                    raise SystemExit(3)
+
+            # Re-count inside the deleting transaction and refuse if anything moved.
+            #
+            # The acknowledgement flag is checked against counts read a moment
+            # earlier, and nothing stopped a learner enrolling or submitting an
+            # attempt in between — that record would then be destroyed without ever
+            # appearing in the number the operator acknowledged. Locking the Curso
+            # row does not help, because a new enrollment inserts into
+            # EstudianteCurso, which that lock does not cover. So the acknowledged
+            # numbers are enforced HERE, at the point of deletion, rather than only
+            # at the point of checking. Greptile, PR #78.
+            ahora_enrollments = 0
+            ahora_attempts = 0
+            for code in reset_codes:
+                e, a = _count_learner_data(database, models, code)
+                ahora_enrollments += e
+                ahora_attempts += a
+
+            if (ahora_enrollments, ahora_attempts) != (total_enrollments, total_attempts):
+                database.session.rollback()
+                print(
+                    "ERROR: learner data changed between the check and the delete.\n"
+                    f"  acknowledged: {total_enrollments} enrollment(s), {total_attempts} attempt(s)\n"
+                    f"  now:          {ahora_enrollments} enrollment(s), {ahora_attempts} attempt(s)\n"
+                    "Nothing was deleted. Someone enrolled or submitted an attempt while this ran, "
+                    "and their record is not covered by the flag you passed. Re-run to see the "
+                    "current numbers.",
+                    file=sys.stderr,
+                )
+                raise SystemExit(4)
+
+            for code in reset_codes:
+                if _delete_course(database, models, code):
+                    print(f"  [reset] deleted course '{code}' for rebuild")
+            database.session.commit()  # one commit for the whole reset
+
         specs = _build_specs()
         for spec in specs:
             _create_course(database, models, spec)

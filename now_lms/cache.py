@@ -141,11 +141,62 @@ def cache_key_with_auth_state() -> str:
     # Build key from request path and the identity scope
     key = f"view/{request.path}/{scope}"
 
-    # Include query parameters if present
+    # The query string stays in the key. Dropping it for "routes that ignore args"
+    # was tried and is wrong: the key contract is that two different query strings
+    # are two different pages, and eleven cached routes genuinely read args
+    # (catalogue filters, admin user lists, pagination). A key that collapses them
+    # serves one page's cached output for another, which is worse than the bug
+    # being fixed.
     if request.query_string:
         key += f"?{request.query_string.decode('utf-8')}"
 
+    # Invalidation is what the query string broke, so invalidation is what changes.
+    # `cache.delete()` takes one exact key and no supported backend offers portable
+    # pattern deletion, so the invalidator could never reach
+    # `.../view/user:someone?tab=details`. Every key now carries a GENERATION for
+    # its scope; bumping that scope retires all its variants, for every user and
+    # every query, in one write. Greptile, PR #78.
+    key += f"/g{_generacion(_ambito(request.path))}"
+
     return key
+
+
+def _ambito(path: str) -> str:
+    """The invalidation scope a path belongs to.
+
+    Course pages get their own scope so editing one course does not dump the whole
+    cache; everything else shares the global scope, which the catalogue and home
+    pages live in because they render course listings.
+    """
+    partes = [p for p in path.split("/") if p]
+    # A course PAGE has three segments: /course/<code>/<action>. A listing has two
+    # (/course/explore, /course/list) and belongs to the global scope — scoping
+    # those per "course code" would have made `explore` its own bucket that no
+    # course edit ever bumps.
+    if len(partes) >= 3 and partes[0] == "course":
+        return f"curso:{partes[1]}"
+    return "global"
+
+
+def _generacion(ambito: str) -> int:
+    """Current generation for a scope. Absent or unreadable counts as zero.
+
+    Stored without expiry. If the backend evicts it the counter restarts and a
+    stale entry can briefly resurface — strictly better than the previous
+    behaviour, where query variants were never invalidated at all.
+    """
+    try:
+        return int(cache.get(f"cache_gen:{ambito}") or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def bump_generacion(ambito: str) -> None:
+    """Retire every cached variant in this scope, whatever query produced it."""
+    try:
+        cache.set(f"cache_gen:{ambito}", _generacion(ambito) + 1, timeout=0)
+    except Exception:  # noqa: BLE001 - a cache that cannot count must not break a write path
+        log.warning("cache: could not bump generation for %s; entries will expire on TTL", ambito)
 
 
 def cache_key_with_query_string() -> str:
@@ -201,52 +252,92 @@ def invalidate_all_cache() -> bool:
 
 
 def _obtiene_llaves_generales_cache() -> list[str]:
-    """Retorna las llaves comunes de catálogo y página de inicio para invalidación."""
+    """Retorna las llaves anónimas comunes de catálogo y página de inicio para invalidación.
+
+    Las variantes ``/auth`` de esta lista quedaron obsoletas cuando
+    `cache_key_with_auth_state()` empezó a cachear por identidad de usuario
+    (``user:<usuario>``) en vez de por un balde compartido "auth" — ver
+    `RUTAS_GENERALES` para el reemplazo correcto por-usuario.
+    """
     return [
         # Con doble diagonal
         "view//course/explore/anon",
-        "view//course/explore/auth",
         "view//program/explore/anon",
-        "view//program/explore/auth",
         "view///anon",
-        "view///auth",
         # Con diagonal simple
         "view/course/explore/anon",
-        "view/course/explore/auth",
         "view/program/explore/anon",
-        "view/program/explore/auth",
         "view//anon",
-        "view//auth",
     ]
 
 
+def _llave_vista_por_usuario(ruta: str, usuario: str) -> str:
+    """Construye la misma llave que emite `cache_key_with_auth_state()` para un usuario autenticado.
+
+    Único lugar que conoce ese formato aparte de la propia `cache_key_with_auth_state()`,
+    para que un futuro cambio de formato de llave no pueda desincronizar los
+    invalidadores de esa función otra vez (la falla que produjo este arreglo).
+    """
+    return f"view/{ruta}/user:{usuario}"
+
+
+def _elimina_vistas_por_usuario(usuario: str, rutas: list[str]) -> None:
+    """Borra, para un usuario, las entradas de cache por-usuario de las rutas dadas."""
+    for ruta in rutas:
+        cache.delete(_llave_vista_por_usuario(ruta, usuario))
+
+
+def _obtiene_roster_curso(course_code: str) -> set[str]:
+    """Usuarios cuya cache por-usuario de este curso debe invalidarse: estudiantes
+    matriculados, docentes y moderadores asignados al curso."""
+    from now_lms.db import DocenteCurso, EstudianteCurso, ModeradorCurso, database
+
+    roster: set[str] = set()
+    for modelo in (EstudianteCurso, DocenteCurso, ModeradorCurso):
+        rows = database.session.execute(database.select(modelo).filter_by(curso=course_code)).scalars().all()
+        roster.update(row.usuario for row in rows)
+    return roster
+
+
+RUTAS_GENERALES = ("/course/explore", "/program/explore", "/")
+"""Rutas de inicio y catálogo que también cachean por identidad de usuario."""
+
+
 def invalidar_cache_curso(course_code: str) -> None:
-    """Invalidar cache para un curso específico y las vistas relacionadas."""
+    """Invalidar cache para un curso específico y las vistas relacionadas.
+
+    Cubre tanto la entrada anónima compartida como, para cada estudiante,
+    docente o moderador del curso, su propia entrada por-usuario — las vistas
+    de curso cachean con `cache_key_with_auth_state()`, que separa por
+    identidad, no por un balde "auth" compartido (fork finding L1).
+    """
     if CTYPE == "NullCache":
         return
     try:
-        keys_to_delete = [
-            f"view//course/{course_code}/view/anon",
-            f"view//course/{course_code}/view/auth",
-            f"view//course/{course_code}/admin/anon",
-            f"view//course/{course_code}/admin/auth",
-            f"view//course/{course_code}/take/anon",
-            f"view//course/{course_code}/take/auth",
-            f"view//course/{course_code}/moderate/anon",
-            f"view//course/{course_code}/moderate/auth",
-            f"view/course/{course_code}/view/anon",
-            f"view/course/{course_code}/view/auth",
-            f"view/course/{course_code}/admin/anon",
-            f"view/course/{course_code}/admin/auth",
-            f"view/course/{course_code}/take/anon",
-            f"view/course/{course_code}/take/auth",
-            f"view/course/{course_code}/moderate/anon",
-            f"view/course/{course_code}/moderate/auth",
+        rutas_curso = [
+            f"/course/{course_code}/view",
+            f"/course/{course_code}/admin",
+            f"/course/{course_code}/take",
+            f"/course/{course_code}/moderate",
         ]
+        keys_to_delete = [f"view/{ruta}/anon" for ruta in rutas_curso]
         keys_to_delete.extend(_obtiene_llaves_generales_cache())
         for key in keys_to_delete:
             cache.delete(key)
-        log.trace(f"Cache invalidated for course: {course_code}")
+
+        # The catalogue and home pages vary by query string, so their exact keys
+        # cannot be enumerated. Bumping the generation retires every variant for
+        # every user in one write, which is what deleting a fixed list could not do.
+        # This course's own pages, and the global scope because the catalogue and
+        # home pages list courses.
+        bump_generacion(f"curso:{course_code}")
+        bump_generacion("global")
+
+        roster = _obtiene_roster_curso(course_code)
+        for usuario in roster:
+            _elimina_vistas_por_usuario(usuario, rutas_curso)
+            _elimina_vistas_por_usuario(usuario, list(RUTAS_GENERALES))
+        log.trace(f"Cache invalidated for course: {course_code} ({len(roster)} member(s))")
     except Exception as e:
         log.error(f"Error invalidating cache for course {course_code}: {e}")
 
@@ -265,6 +356,7 @@ def invalidar_cache_programa(program_code: str) -> None:
         keys_to_delete.extend(_obtiene_llaves_generales_cache())
         for key in keys_to_delete:
             cache.delete(key)
+        bump_generacion("global")
         log.trace(f"Cache invalidated for program: {program_code}")
     except Exception as e:
         log.error(f"Error invalidating cache for program {program_code}: {e}")
@@ -286,5 +378,4 @@ def invalidate_user_course_view_cache(usuario: str, course_code: str) -> None:
     Deleting a key that does not exist is a no-op, so callers do not need to
     know whether the member ever warmed the cache.
     """
-    for path in (f"/course/{course_code}/take", f"/course/{course_code}/view"):
-        cache.delete(f"view/{path}/user:{usuario}")
+    _elimina_vistas_por_usuario(usuario, [f"/course/{course_code}/take", f"/course/{course_code}/view"])

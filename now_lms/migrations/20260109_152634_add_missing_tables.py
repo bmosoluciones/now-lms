@@ -72,10 +72,10 @@ def upgrade():
             sa.Column("timezone", sa.String(50), nullable=True),
             sa.Column("status", sa.String(20), nullable=False, index=True, server_default="pending"),
             sa.ForeignKeyConstraint(["user_id"], ["usuario.usuario"]),
-            sa.ForeignKeyConstraint(["course_id"], ["curso.codigo"]),
-            sa.ForeignKeyConstraint(["section_id"], ["curso_seccion.id"]),
-            sa.ForeignKeyConstraint(["resource_id"], ["curso_recurso.id"]),
-            sa.ForeignKeyConstraint(["evaluation_id"], ["evaluation.id"]),
+            sa.ForeignKeyConstraint(["course_id"], ["curso.codigo"], ondelete="CASCADE"),
+            sa.ForeignKeyConstraint(["section_id"], ["curso_seccion.id"], ondelete="CASCADE"),
+            sa.ForeignKeyConstraint(["resource_id"], ["curso_recurso.id"], ondelete="CASCADE"),
+            sa.ForeignKeyConstraint(["evaluation_id"], ["evaluation.id"], ondelete="CASCADE"),
             sa.PrimaryKeyConstraint("id"),
         )
 

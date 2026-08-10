@@ -267,10 +267,22 @@ class Curso(database.Model, BaseTabla):
     recertification_required = database.Column(database.Boolean(), default=False)
     recertification_period_years = database.Column(database.Integer(), nullable=True)
 
-    secciones = database.relationship("CursoSeccion", lazy="dynamic", back_populates="rel_curso")
-    recursos = database.relationship("CursoRecurso", lazy="dynamic", back_populates="rel_curso")
-    inscripciones = database.relationship("EstudianteCurso", lazy="dynamic")
-    user_events = database.relationship("UserEvent", back_populates="course")
+    # passive_deletes=True on all four: every child FK here is already
+    # ondelete="CASCADE" at the DB level. Without it, deleting a Curso makes
+    # the ORM try to NULL these FKs on any loaded child instead of trusting
+    # the DB's own cascade — and since EstudianteCurso.curso and
+    # UserEvent.course_id are NOT NULL, that UPDATE fails with an
+    # IntegrityError, so deleting (or --reset-ing) a course that has real
+    # enrollments or calendar events crashes instead of succeeding.
+    secciones = database.relationship("CursoSeccion", lazy="dynamic", back_populates="rel_curso", passive_deletes=True)
+    recursos = database.relationship("CursoRecurso", lazy="dynamic", back_populates="rel_curso", passive_deletes=True)
+    inscripciones = database.relationship("EstudianteCurso", lazy="dynamic", passive_deletes=True)
+    # "all", not True: the three relationships above are lazy="dynamic" and can never be
+    # loaded into the session, so True is enough for them. This one is a plain relationship,
+    # and passive_deletes=True still disassociates children that are ALREADY loaded — which
+    # nulls UserEvent.course_id, a NOT NULL column, and raises IntegrityError on a delete the
+    # database would have cascaded cleanly. Any view that renders a course's calendar loads it.
+    user_events = database.relationship("UserEvent", back_populates="course", passive_deletes="all")
 
     def validar_foro_habilitado(self):
         """Valida que el foro solo pueda habilitarse en cursos no self-paced."""

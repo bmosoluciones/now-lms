@@ -13697,6 +13697,10 @@ msgstr " e de {} curso(s)."
 msgid "Error al desinscribir al estudiante del programa: {}"
 msgstr "Erro ao desinscrever o estudante do programa: {}"
 
+#: now_lms/vistas/public_api.py:114 now_lms/vistas/public_api.py:177
+msgid "Course code was not found."
+msgstr "O código do curso não foi encontrado."
+
 #: now_lms/vistas/public_api.py:256
 #, python-brace-format
 msgid "Has sido inscrito en {}"

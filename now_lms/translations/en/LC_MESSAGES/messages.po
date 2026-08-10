@@ -12679,6 +12679,10 @@ msgstr " and from {} course(s)."
 msgid "Error al desinscribir al estudiante del programa: {}"
 msgstr "Error unenrolling student from program: {}"
 
+#: now_lms/vistas/public_api.py:114 now_lms/vistas/public_api.py:177
+msgid "Course code was not found."
+msgstr "Course code was not found."
+
 #: now_lms/vistas/public_api.py:256
 #, python-brace-format
 msgid "Has sido inscrito en {}"

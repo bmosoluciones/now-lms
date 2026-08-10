@@ -63,6 +63,34 @@ def test_get_course_success(client, api_key, active_course):
     assert data["title"] == active_course.nombre
     assert data["recertification_required"] is True
 
+@pytest.fixture
+def gated_course(app, db_session):
+    course = Curso(
+        codigo="HARBOR_GATED",
+        nombre="Gated Course for Harbor",
+        descripcion_corta="Short Description",
+        descripcion="Test Description",
+        estado="open",
+        publico=False,
+        duracion=10,
+        certificado=False,
+    )
+    database.session.add(course)
+    database.session.commit()
+    return course
+
+def test_get_course_gated_returns_404_like_the_web_path(client, api_key, gated_course):
+    # Fork finding E1 (audit 2026-08-07): a valid API key authenticates a
+    # calling service, not a specific enrolled learner, and this endpoint has
+    # no per-caller entitlement to check — so it must apply the same
+    # `publico` visibility rule the HTML course-view route already applies to
+    # an anonymous browser (which 404s the same request). Before the fix this
+    # returned 200 with the gated course's title and description.
+    response = client.get(f"/api/v1/public/courses/{gated_course.codigo}", headers={"X-API-Key": api_key})
+    assert response.status_code == 404
+    data = response.get_json()
+    assert data["error"] == "course_not_found"
+
 def test_enrollment_invalid_payload(client, api_key):
     response = client.post("/api/v1/public/enrollments",
                            headers={"Authorization": f"Bearer {api_key}"},
