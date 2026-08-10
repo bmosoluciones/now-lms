@@ -14553,6 +14553,11 @@ msgstr "Senha atualizada com sucesso."
 msgid "Error al actualizar la contraseña."
 msgstr "Erro ao atualizar a senha."
 
+#: now_lms/templates/themes/intent_learn/pages/dashboard.html:92
+#, python-format
+msgid "%(done)d of %(total)d required items complete"
+msgstr "%(done)d de %(total)d itens obrigatórios concluídos"
+
 #~ msgid "Recuperar Contraseña"
 #~ msgstr "Recuperar senha"
 

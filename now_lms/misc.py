@@ -74,9 +74,17 @@ INICIO_SESION = redirect("/user/login")
 
 
 def panel_de_usuario() -> Response:
-    """Redirige al panel correspondiente según el tipo de usuario."""
+    """Redirige al panel correspondiente según el tipo de usuario.
+
+    FORK-LOCAL: ``student`` lands on ``/dashboard`` (see
+    ``now_lms.vistas.member_dashboard``) instead of ``/home/panel``. Instructors,
+    moderators and admins are unchanged, so the upstream panels keep their only
+    callers. Re-apply at sync; upstream path is the dashboard blueprint itself.
+    """
     if current_user.is_authenticated and current_user.tipo == "admin":
         return redirect("/admin/panel")
+    if current_user.is_authenticated and current_user.tipo == "student":
+        return redirect("/dashboard")
     return redirect("/home/panel")
 
 

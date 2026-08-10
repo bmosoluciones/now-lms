@@ -13500,6 +13500,11 @@ msgstr "Password updated successfully."
 msgid "Error al actualizar la contraseña."
 msgstr "Error updating password."
 
+#: now_lms/templates/themes/intent_learn/pages/dashboard.html:92
+#, python-format
+msgid "%(done)d of %(total)d required items complete"
+msgstr ""
+
 #~ msgid "Recuperar Contraseña"
 #~ msgstr "Recover Password"
 

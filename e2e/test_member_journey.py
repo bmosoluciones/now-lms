@@ -20,12 +20,15 @@ def _login(page: Page, base: str) -> None:
     page.fill('input[name="usuario"]', E2E_MEMBER)
     page.fill('input[name="acceso"]', E2E_MEMBER_PASSWORD)
     page.click('button[type="submit"], input[type="submit"]')
-    page.wait_for_url(re.compile(r"/(home/panel|panel)"), timeout=15000)
+    page.wait_for_url(re.compile(r"/(dashboard|home/panel|panel)"), timeout=15000)
 
 
 def test_member_login_reaches_panel(app_server: str, page: Page) -> None:
     _login(page, app_server)
-    assert "/panel" in page.url
+    # A student now lands on the fork-local member dashboard rather than upstream's
+    # /home/panel (see now_lms.misc.panel_de_usuario). Instructors, moderators and
+    # admins are unchanged, so both destinations remain valid depending on role.
+    assert "/dashboard" in page.url or "/panel" in page.url
 
 
 def test_enrolled_member_sees_lessons_not_enroll_button(app_server: str, page: Page) -> None:

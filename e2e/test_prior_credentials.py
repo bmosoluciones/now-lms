@@ -35,7 +35,7 @@ def _login(page: Page, base: str, user: str, password: str) -> None:
     page.fill('input[name="usuario"]', user)
     page.fill('input[name="acceso"]', password)
     page.click('button[type="submit"], input[type="submit"]')
-    page.wait_for_url(re.compile(r"/(home/panel|panel)"), timeout=15000)
+    page.wait_for_url(re.compile(r"/(dashboard|home/panel|panel)"), timeout=15000)
 
 
 def _login_member(page: Page, base: str) -> None:

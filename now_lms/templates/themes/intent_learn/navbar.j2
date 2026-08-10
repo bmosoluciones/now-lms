@@ -57,8 +57,14 @@
                     >
                 </li>
                 {% else %}
+                {# A student's home is /dashboard, not the upstream panel. Without this
+                   split, "Inicio" and the post-login redirect land on two different
+                   pages and the member has two landing pages. Instructors, moderators
+                   and admins keep home.panel. #}
                 <li>
-                    <a href="{{ url_for('home.panel') }}" class="nav-link text-light px-2"
+                    <a
+                        href="{% if current_user.tipo == 'student' %}{{ url_for('member_dashboard.panel') }}{% else %}{{ url_for('home.panel') }}{% endif %}"
+                        class="nav-link text-light px-2"
                         ><i class="bi bi-house-fill" aria-hidden="true"></i> {{ _("Inicio") }}</a
                     >
                 </li>
@@ -163,7 +169,6 @@
                                     <i class="bi bi-person-circle" aria-hidden="true"></i> {{ _('Perfil de Usuario') }}</a
                                 >
                             </li>
-                            <li><a class="dropdown-item" href="#"> </a></li>
                             <li>
                                 <hr class="dropdown-divider" />
                             </li>

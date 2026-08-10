@@ -32,7 +32,6 @@ from now_lms.db import (
     select,
 )
 from now_lms.db.tools import get_current_theme
-from now_lms.logs import log
 from now_lms.themes import get_home_template
 
 # ---------------------------------------------------------------------------------------
@@ -118,7 +117,6 @@ def panel() -> str | Response:
                 .scalars()
                 .all()
             )
-            log.warning(mis_cursos)
             return render_template(
                 "inicio/panel_user.html",
                 cuenta_cursos=cuenta_cursos,

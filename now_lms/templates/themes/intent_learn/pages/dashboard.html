@@ -1,0 +1,188 @@
+{# Member dashboard — the signed-in landing page.
+
+   Follows the themed-page pattern established by pages/my_credentials.html:
+   no {% extends %}, chrome comes from current_theme() macros, and colour comes
+   from theme.css's Bootstrap token remap so plain Bootstrap classes render on
+   brand. One accent only — theme.css collapses text-primary/info/success to
+   ember deliberately, and green/amber stay reserved for real status.
+
+   Mobile first: every row is col-12 and only widens at lg. No grid template
+   with an fr column, so nothing can collapse to zero at 390px.
+#}
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _('Dashboard') }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-3 py-4">
+                {# ---- Welcome ------------------------------------------------------ #}
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1 class="h3 mb-1">
+                            {{ _('Welcome back') }}{% if current_user.nombre %}, {{ current_user.nombre }}{% endif %}
+                        </h1>
+                        <p class="text-muted mb-0">{{ _('Your learning, your community, in one place.') }}</p>
+                    </div>
+                </div>
+
+                {# ---- Pinned announcements ----------------------------------------- #}
+                {% if anuncios %}
+                <div class="row mb-4">
+                    <div class="col-12">
+                        {% for anuncio in anuncios %}
+                        <div class="card mb-2 {% if anuncio.is_sticky %}border-primary{% endif %}">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start gap-2">
+                                    {% if anuncio.is_sticky %}
+                                    <i class="bi bi-pin-angle-fill text-primary mt-1" aria-hidden="true"></i>
+                                    <span class="visually-hidden">{{ _('Pinned') }}</span>
+                                    {% else %}
+                                    <i class="bi bi-megaphone mt-1 text-muted" aria-hidden="true"></i>
+                                    {% endif %}
+                                    <div>
+                                        <h2 class="h6 mb-1">{{ anuncio.title }}</h2>
+                                        <div class="small">{{ mkdown2html(anuncio.message) | safe }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% if anuncios_totales > anuncios_mostrados %}
+                        <p class="small mb-0">
+                            <a href="{{ url_for('public_announcements.global_announcements') }}">
+                                {{ _('View all %(total)d announcements', total=anuncios_totales) }}
+                            </a>
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    {# ---- Main column ---------------------------------------------- #}
+                    <div class="col-12 col-lg-8">
+                        {% if en_progreso %}
+                        <div class="card mb-4">
+                            <div class="card-header">{{ _('Pick up where you left off') }}</div>
+                            <ul class="list-group list-group-flush">
+                                {% for item in en_progreso %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-baseline gap-3 mb-2">
+                                        <a href="{{ url_for('course.tomar_curso', course_code=item.curso.codigo) }}"
+                                           class="fw-semibold text-decoration-none">{{ item.curso.nombre }}</a>
+                                        <span class="small text-muted flex-shrink-0">{{ item.porcentaje }}%</span>
+                                    </div>
+                                    {# The stored percentage, which until now only staff could see
+                                       via the weekly progress digest. #}
+                                    <div class="progress" style="height: 6px;"
+                                         role="progressbar"
+                                         aria-label="{{ _('Progress in') }} {{ item.curso.nombre }}"
+                                         aria-valuenow="{{ item.porcentaje }}" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-bar" style="width: {{ item.porcentaje }}%;"></div>
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        {{ _('%(done)d of %(total)d required items complete',
+                                             done=item.recursos_completados, total=item.recursos_requeridos) }}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>{{ _('My courses') }}</span>
+                                {% if cursos %}
+                                <a href="{{ url_for('course.my_courses') }}"
+                                   class="small text-decoration-none">{{ _('See all') }}</a>
+                                {% endif %}
+                            </div>
+                            {% if cursos %}
+                            <ul class="list-group list-group-flush">
+                                {% for item in cursos %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center gap-3">
+                                    <a href="{{ url_for('course.tomar_curso', course_code=item.curso.codigo) }}"
+                                       class="text-decoration-none">{{ item.curso.nombre }}</a>
+                                    {% if item.completado %}
+                                    <span class="badge bg-success flex-shrink-0">{{ _('Complete') }}</span>
+                                    {% elif item.empezado %}
+                                    <span class="badge bg-secondary flex-shrink-0">{{ item.porcentaje }}%</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary flex-shrink-0">{{ _('Not started') }}</span>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            {# Honest empty state. It deliberately does NOT send anyone to
+                               /course/explore: every course on this deployment is gated, so
+                               that catalog renders no courses and the loop closes with
+                               nothing in it. #}
+                            <div class="card-body text-muted">
+                                {{ _('You are not enrolled in a course yet. Your cohort lead will enrol you, and it will show up here.') }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# ---- Side column ---------------------------------------------- #}
+                    <div class="col-12 col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header">{{ _('Coming up') }}</div>
+                            {% if eventos %}
+                            <ul class="list-group list-group-flush">
+                                {% for evento in eventos %}
+                                <li class="list-group-item">
+                                    <div class="fw-semibold">{{ evento.title }}</div>
+                                    <div class="small text-muted">{{ evento.start_time | datetimeformat('MMM d, HH:mm') }}</div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <div class="card-body py-2">
+                                <a href="{{ url_for('calendar.calendar_view') }}"
+                                   class="small text-decoration-none">{{ _('Open calendar') }}</a>
+                            </div>
+                            {% else %}
+                            <div class="card-body text-muted small">{{ _('Nothing scheduled.') }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">{{ _('Credentials') }}</div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>{{ _('Earned here') }}</span>
+                                    <span class="badge bg-secondary">{{ certificados }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>{{ _('Recorded from elsewhere') }}</span>
+                                    <span class="badge bg-secondary">{{ credenciales }} / {{ credenciales_total }}</span>
+                                </li>
+                            </ul>
+                            <div class="card-body py-2 d-flex flex-column gap-1">
+                                {% if certificados %}
+                                <a href="{{ url_for('certificate.certificaciones') }}"
+                                   class="small text-decoration-none">{{ _('View certificates') }}</a>
+                                {% endif %}
+                                {# This link did not exist anywhere in the template tree before
+                                   now, so /my-credentials was unreachable. #}
+                                <a href="{{ url_for('prior_credentials.my_credentials') }}"
+                                   class="small text-decoration-none">{{ _('Record a credential you earned elsewhere') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        {{ current_theme.footer() }}
+    </body>
+</html>

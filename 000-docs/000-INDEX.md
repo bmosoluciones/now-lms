@@ -32,6 +32,7 @@ files with an 8+ doc cluster, and we are far under both thresholds.
 | [013-OD-AACR-v2-sync-landing-and-upstream-queue-2026-07-29.md](013-OD-AACR-v2-sync-landing-and-upstream-queue-2026-07-29.md) | After-action record (2026-07-29): the v2.0.0 sync landing on production, the cohort-wide access lockout and its fix, testing gates going from advisory to blocking, the eight upstream patches, the public-history rewrite, and what is still open. Read with 012 and 007. |
 | [014-AT-ADEC-prior-credential-tracking.md](014-AT-ADEC-prior-credential-tracking.md) | ADR-7 (2026-07-31, Proposed): learner-reported prior credentials get a dedicated `prior_credentials` table with a required issuer verification URL and an optional privately-served image — a deliberate ADR-1 deviation, carried fork-local with an upstream path. |
 | [015-AT-ADEC-short-answer-evaluations.md](015-AT-ADEC-short-answer-evaluations.md) | ADR-6 (2026-08-02, Accepted): add a `short_answer` question type with written-response storage, a per-question rubric, and an instructor grading queue — authored upstream per ADR-1, carried on the deploy line only while the upstream PR is open. Automated grading explicitly out of scope. |
+| [016-AT-ADEC-member-dashboard.md](016-AT-ADEC-member-dashboard.md) | ADR-9 (2026-08-08, Accepted 2026-08-10): members get a fork-local dashboard at `/dashboard` instead of the upstream student panel, which cannot be themed and showed a fabricated counter while hiding the member's own stored progress. Instructors and moderators keep the upstream panel. |
 
 ## Architecture Decisions (the ADR log)
 
@@ -51,6 +52,7 @@ table of contents, in decision order.
 | ADR-5 | [010](010-AT-ADEC-gate-courses-doctrine-teaser.md) | 2026-07-27 | Accepted | Gate the courses; the public catalog becomes a doctrine teaser |
 | ADR-6 | [015](015-AT-ADEC-short-answer-evaluations.md) | 2026-08-02 | Accepted | Add a `short_answer` question type with instructor grading, authored upstream |
 | ADR-7 | [014](014-AT-ADEC-prior-credential-tracking.md) | 2026-07-31 | Proposed | Dedicated `prior_credentials` table; verification URL required, image optional and privately served |
+| ADR-9 | [016](016-AT-ADEC-member-dashboard.md) | 2026-08-10 | Accepted | Fork-local member dashboard at `/dashboard`; the upstream student panel stays for instructors and moderators |
 
 ## Renames & moves (references in old commit messages resolve here)
 
