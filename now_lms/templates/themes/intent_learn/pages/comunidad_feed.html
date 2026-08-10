@@ -1,0 +1,297 @@
+{# Community Hub feed. Pattern A themed page: no {% extends %}, chrome from
+   current_theme() macros, colour from theme.css's Bootstrap token remap.
+   Mobile first — every row is col-12 and only widens at lg. #}
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _('Community') }}</title>
+        <meta name="robots" content="noindex, nofollow" />
+        {{ current_theme.local_style() }}
+        <style>
+            /* Feed card chrome. Colours come from theme.css tokens so this stays on brand
+               without introducing a second accent. */
+            .isl-avatar {
+                width: 40px; height: 40px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                background: var(--isl-surface-2, #1f1f23); color: var(--isl-ink-dim, #a1a1aa);
+                font-size: .8rem; font-weight: 600; letter-spacing: .02em;
+            }
+            .isl-plus {
+                width: 32px; height: 32px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                background: var(--isl-surface-2, #1f1f23); color: var(--isl-ink-dim, #a1a1aa);
+                font-size: 1.1rem; line-height: 1;
+            }
+            .isl-composer:hover .isl-plus { color: var(--isl-ember, #f97316); }
+            .isl-post-title { color: var(--isl-ink, #fafafa); }
+            .isl-post-title:hover { color: var(--isl-ember, #f97316); }
+            /* The excerpt is the point of the card: readable, not a headline. */
+            .isl-excerpt { color: var(--isl-ink-dim, #a1a1aa); white-space: pre-wrap; }
+            .isl-action {
+                color: var(--isl-ink-dim, #a1a1aa); text-decoration: none;
+                /* 44px tap target on a phone even though the glyph is small. */
+                display: inline-flex; align-items: center; min-height: 44px; padding-right: .25rem;
+            }
+            .isl-action:hover, button.isl-action:hover { color: var(--isl-ember, #f97316); }
+            .isl-avatar-sm { width: 32px; height: 32px; font-size: .7rem; }
+            /* Date chip in the events list, mirroring the reference's stacked day/month. */
+            .isl-date {
+                width: 44px; padding: .35rem 0; border-radius: .5rem; text-align: center;
+                background: var(--isl-surface-2, #1f1f23); line-height: 1.1;
+            }
+            .isl-date strong { display: block; font-size: 1rem; color: var(--isl-ink, #fafafa); }
+            .isl-date span { display: block; font-size: .65rem; color: var(--isl-ink-faint, #71717a); }
+            .min-width-0 { min-width: 0; }
+        </style>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+            <div class="container px-3 py-4">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-8">
+                        <h1 class="h3 mb-1">{{ _('Community') }}</h1>
+                        <p class="text-muted mb-0">
+                            {{ _('Ask, show what you built, and share a win. Answers here stay findable.') }}
+                        </p>
+                    </div>
+                    <div class="col-12 col-lg-4 mt-3 mt-lg-0 text-lg-end">
+                        <a href="{{ url_for('comunidad.nueva_publicacion') }}" class="btn btn-primary">
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('New post') }}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                <div class="col-12 col-lg-8">
+                {# Composer entry, matching the reference: one obvious way in. #}
+                <a href="{{ url_for('comunidad.nueva_publicacion') }}"
+                   class="card mb-3 text-decoration-none isl-composer">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <span class="isl-avatar flex-shrink-0" aria-hidden="true">{{ mis_iniciales }}</span>
+                        <span class="text-muted flex-grow-1">{{ _('Start a post') }}</span>
+                        <span class="isl-plus flex-shrink-0" aria-hidden="true">+</span>
+                    </div>
+                </a>
+
+                {% if anuncios %}
+                {# Native Announcement rows, not a Hub post type. Staff pin these with the
+                   admin UI they already have; the Hub only reads them. #}
+                {% for anuncio in anuncios %}
+                <div class="card mb-2 border-primary">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-2">
+                            <i class="bi bi-megaphone-fill text-primary mt-1" aria-hidden="true"></i>
+                            <span class="visually-hidden">{{ _('Announcement') }}</span>
+                            <div>
+                                <h2 class="h6 mb-1">{{ anuncio.title }}</h2>
+                                <div class="small">{{ mkdown2html(anuncio.message) | safe }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% if anclados %}
+                {% for item in anclados %}
+                <div class="card mb-2 border-primary">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start gap-2">
+                            <i class="bi bi-pin-angle-fill text-primary mt-1" aria-hidden="true"></i>
+                            <span class="visually-hidden">{{ _('Pinned') }}</span>
+                            <div>
+                                <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                                   class="fw-semibold text-decoration-none">{{ item.pub.titulo }}</a>
+                                <div class="small text-muted">{{ item.autor.nombre }} {{ item.autor.apellido }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {# ---- Controls: tabs, type chips, search ---- #}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2 mb-3" role="tablist" aria-label="{{ _('Sort') }}">
+                            <a role="tab" aria-selected="{{ 'true' if vista == 'latest' else 'false' }}"
+                               href="{{ url_for('comunidad.feed', view='latest', tipo=tipo, q=consulta or None) }}"
+                               class="btn btn-sm {{ 'btn-primary' if vista == 'latest' else 'btn-outline-secondary' }}">{{ _('Latest') }}</a>
+                            <a role="tab" aria-selected="{{ 'true' if vista == 'trending' else 'false' }}"
+                               href="{{ url_for('comunidad.feed', view='trending') }}"
+                               class="btn btn-sm {{ 'btn-primary' if vista == 'trending' else 'btn-outline-secondary' }}">{{ _('Trending') }}</a>
+                        </div>
+
+                        {# Chips scroll inside their own container so the page body never scrolls sideways. #}
+                        <div class="d-flex gap-2 mb-3" style="overflow-x: auto;">
+                            <a href="{{ url_for('comunidad.feed', view=vista, q=consulta or None) }}"
+                               class="btn btn-sm flex-shrink-0 {{ 'btn-primary' if not tipo else 'btn-outline-secondary' }}">{{ _('All') }}</a>
+                            {% for valor, etiqueta in tipos %}
+                            <a href="{{ url_for('comunidad.feed', view=vista, tipo=valor, q=consulta or None) }}"
+                               class="btn btn-sm flex-shrink-0 {{ 'btn-primary' if tipo == valor else 'btn-outline-secondary' }}">{{ etiqueta }}</a>
+                            {% endfor %}
+                        </div>
+
+                        <form method="get" action="{{ url_for('comunidad.feed') }}" class="d-flex gap-2" role="search">
+                            <input type="hidden" name="view" value="{{ vista }}" />
+                            {% if tipo %}<input type="hidden" name="tipo" value="{{ tipo }}" />{% endif %}
+                            <label class="visually-hidden" for="q">{{ _('Search the community') }}</label>
+                            <input class="form-control" id="q" name="q" value="{{ consulta }}"
+                                   placeholder="{{ _('Search before you ask') }}" />
+                            <button class="btn btn-outline-secondary flex-shrink-0" type="submit">{{ _('Search') }}</button>
+                        </form>
+                    </div>
+                </div>
+
+                {% if degradado %}
+                {# Honest fallback: Trending refuses to exist on thin data rather than
+                   crowning a post with three likes. #}
+                <div class="alert alert-secondary" role="status">
+                    {{ _('Not enough activity yet to rank. Showing the latest posts.') }}
+                </div>
+                {% endif %}
+
+                {# ---- The feed ---- #}
+                {% if publicaciones %}
+                {% for item in publicaciones %}
+                <article class="card mb-3">
+                    <div class="card-body">
+                        {# Author row #}
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <span class="isl-avatar flex-shrink-0" aria-hidden="true">{{ item.iniciales }}</span>
+                            <div class="flex-grow-1 min-width-0">
+                                <div>
+                                    <span class="fw-semibold">{{ item.nombre }}</span>
+                                    <span class="text-muted small ms-1">{{ item.hace }}</span>
+                                </div>
+                                <div class="text-muted small">{{ _('Posted in') }} {{ item.etiqueta }}</div>
+                            </div>
+                        </div>
+
+                        <h2 class="h5 mb-2">
+                            <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                               class="text-decoration-none isl-post-title">{{ item.pub.titulo }}</a>
+                        </h2>
+
+                        <p class="mb-2 isl-excerpt">{{ item.extracto }}{% if item.cortado %}&hellip;{% endif %}</p>
+                        {% if item.cortado %}
+                        <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                           class="small text-decoration-none">{{ _('See more') }}</a>
+                        {% endif %}
+                    </div>
+
+                    {# Action bar #}
+                    <div class="card-footer d-flex align-items-center gap-3">
+                        {% if not item.es_propio %}
+                        <form method="post" class="m-0"
+                              action="{{ url_for('comunidad.quitar_like' if item.me_gusta else 'comunidad.dar_like', publicacion_id=item.pub.id) }}">
+                            {{ accion_form.csrf_token }}
+                            <button type="submit" class="btn btn-sm btn-link p-0 isl-action"
+                                    aria-pressed="{{ 'true' if item.me_gusta else 'false' }}"
+                                    aria-label="{{ _('Like this post') }} ({{ item.likes }})">
+                                <i class="bi bi-heart{{ '-fill' if item.me_gusta else '' }}" aria-hidden="true"></i>
+                                <span class="ms-1">{{ item.likes }}</span>
+                            </button>
+                        </form>
+                        {% else %}
+                        <span class="isl-action" aria-label="{{ item.likes }} {{ _('likes') }}">
+                            <i class="bi bi-heart" aria-hidden="true"></i>
+                            <span class="ms-1">{{ item.likes }}</span>
+                        </span>
+                        {% endif %}
+
+                        <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                           class="isl-action text-decoration-none"
+                           aria-label="{{ item.respuestas }} {{ _('replies') }}">
+                            <i class="bi bi-chat" aria-hidden="true"></i>
+                            <span class="ms-1">{{ item.respuestas }}</span>
+                        </a>
+
+                        <span class="ms-auto text-muted small">
+                            {{ item.respuestas }} {{ _('replies') if item.respuestas != 1 else _('reply') }}
+                        </span>
+                    </div>
+                </article>
+                {% endfor %}
+                {% else %}
+                <div class="card">
+                    <div class="card-body text-muted">
+                        {% if consulta %}
+                        {{ _('Nothing matched') }} &ldquo;{{ consulta }}&rdquo;.
+                        <a href="{{ url_for('comunidad.feed') }}" class="ms-1">{{ _('Clear search') }}</a>
+                        {% elif tipo %}
+                        {{ _('Nothing of this kind yet.') }}
+                        <a href="{{ url_for('comunidad.feed', view=vista) }}" class="ms-1">{{ _('Show everything') }}</a>
+                        {% else %}
+                        {{ _('No posts yet. Be the first — ask a question, or show what you built.') }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if es_staff %}
+                <p class="mt-3 mb-0">
+                    <a href="{{ url_for('comunidad.staff') }}" class="small text-decoration-none">{{ _('Staff view') }}</a>
+                </p>
+                {% endif %}
+                </div>
+
+                {# ---- Right sidebar ---- #}
+                <div class="col-12 col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-header">{{ _('Upcoming events') }}</div>
+                        {% if eventos %}
+                        <ul class="list-group list-group-flush">
+                            {% for evento in eventos %}
+                            <li class="list-group-item d-flex align-items-start gap-3">
+                                <span class="isl-date flex-shrink-0" aria-hidden="true">
+                                    <strong>{{ evento.start_time.strftime('%d') }}</strong>
+                                    <span>{{ evento.start_time.strftime('%b')|upper }}</span>
+                                </span>
+                                <span class="min-width-0">
+                                    <span class="d-block fw-semibold">{{ evento.title }}</span>
+                                    <span class="d-block small text-muted">{{ evento.start_time.strftime('%-I:%M %p') }}</span>
+                                </span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="card-body py-2">
+                            <a href="{{ url_for('calendar.calendar_view') }}"
+                               class="small text-decoration-none">{{ _('Open calendar') }}</a>
+                        </div>
+                        {% else %}
+                        <div class="card-body text-muted small">{{ _('Nothing scheduled.') }}</div>
+                        {% endif %}
+                    </div>
+
+                    {# Only rendered when Trending actually ranks. Below the threshold the
+                       card is omitted entirely rather than showing filler under a label
+                       that would then be untrue. #}
+                    {% if destacados %}
+                    <div class="card mb-4">
+                        <div class="card-header">{{ _('Trending posts') }}</div>
+                        <ul class="list-group list-group-flush">
+                            {% for item in destacados %}
+                            <li class="list-group-item d-flex align-items-start gap-3">
+                                <span class="isl-avatar isl-avatar-sm flex-shrink-0" aria-hidden="true">{{ item.iniciales }}</span>
+                                <span class="min-width-0">
+                                    <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                                       class="d-block text-decoration-none isl-post-title">{{ item.pub.titulo }}</a>
+                                    <span class="d-block small text-muted">{{ item.nombre }}</span>
+                                </span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+        </main>
+        {{ current_theme.footer() }}
+    </body>
+</html>

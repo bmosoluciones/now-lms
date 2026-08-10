@@ -68,6 +68,18 @@
                         ><i class="bi bi-house-fill" aria-hidden="true"></i> {{ _("Inicio") }}</a
                     >
                 </li>
+                <li>
+                    <a href="{{ url_for('comunidad.feed') }}" class="nav-link text-light px-2"
+                        ><i class="bi bi-people" aria-hidden="true"></i> {{ _("Community") }}</a
+                    >
+                </li>
+                {% if current_user.tipo in ("admin", "instructor", "moderator") %}
+                <li>
+                    <a href="{{ url_for('comunidad.staff') }}" class="nav-link text-light px-2"
+                        ><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ _("Community staff") }}</a
+                    >
+                </li>
+                {% endif %}
                 {% endif %}
                 {# "Courses" must land somewhere that has courses. `course.lista_cursos`
                    only ever lists `publico=True` rows, and this deployment gates every

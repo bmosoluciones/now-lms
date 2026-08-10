@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _('New post') }}</title>
+        <meta name="robots" content="noindex, nofollow" />
+        {{ current_theme.local_style() }}
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+            <div class="container px-3 py-4">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-8">
+                        <h1 class="h3 mb-3">{{ _('New post') }}</h1>
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post" novalidate>
+                                    {{ form.csrf_token }}
+                                    <div class="mb-3">
+                                        <label class="form-label" for="tipo">{{ _('Type') }}</label>
+                                        {{ form.tipo(class="form-select", id="tipo") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="titulo">{{ _('Title') }}</label>
+                                        {{ form.titulo(class="form-control", id="titulo") }}
+                                        {% for e in form.titulo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="contenido">{{ _('Your post') }}</label>
+                                        {{ form.contenido(class="form-control", id="contenido", rows="10") }}
+                                        {% for e in form.contenido.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+                                        <p class="form-text">{{ _('Text and links. Images are not supported.') }}</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="enlace_build">{{ _('Link (optional)') }}</label>
+                                        {{ form.enlace_build(class="form-control", id="enlace_build", placeholder="https://") }}
+                                    </div>
+                                    <p class="form-text">
+                                        {{ _('What you post here is community experience, not official %(brand)s guidance. Questions about certification, pricing or partner policy are routed to %(owner)s.', brand='Intent Solutions', owner='Jeremy') }}
+                                    </p>
+                                    <button class="btn btn-primary btn-lg w-100" type="submit">{{ _('Post to the community') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        {{ current_theme.footer() }}
+    </body>
+</html>

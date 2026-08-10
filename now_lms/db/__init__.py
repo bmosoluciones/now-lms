@@ -1643,6 +1643,141 @@ class PriorCredential(database.Model, BaseTabla):
     reviewed_by_user = database.relationship("Usuario", foreign_keys=[reviewed_by])
 
 
+# ---------------------------------------------------------------------------------------
+# Community Hub — ADR-10 (000-docs/017-AT-ADEC), which supersedes ADR-8.
+#
+# The Hub owns its own content. ADR-8 stored bodies in the native `ForoMensaje` and hung a
+# metadata sidecar off it; ADR-10 reversed that because the table count was identical either
+# way, and the container course it required brought a real blast radius: `ForoMensaje.curso_id`
+# is ondelete=CASCADE, so deleting one fake course row silently deleted every Hub post.
+#
+# `ForoMensaje` is untouched by either design, so course forums are unaffected.
+# ---------------------------------------------------------------------------------------
+
+# Member post types. `announcement` is deliberately absent: staff announcements stay in the
+# native `Announcement` model, which already has global/course scoping, stickiness, expiry
+# and admin CRUD. Two announcement concepts would be two channels for one message.
+COMUNIDAD_TIPOS: tuple[str, ...] = ("question", "build", "success_story")
+
+# Moderation states. Reporting does not hide anything — only a staff action does.
+COMUNIDAD_ESTADOS_MODERACION: tuple[str, ...] = ("visible", "oculto")
+
+# Moderation trail event types, member reports and staff actions in one chronological record.
+COMUNIDAD_EVENTOS: tuple[str, ...] = ("report", "hide", "restore", "lock", "unlock", "pin", "unpin")
+
+
+class ComunidadPublicacion(database.Model, BaseTabla):
+    """A Community Hub post, or a reply to one.
+
+    Self-contained: this table owns the body, the author and the reply relationship, so the
+    Hub depends on no other model for its content. `parent_id` NULL means a root post;
+    non-NULL means a reply to that post.
+
+    `titulo` and `tipo` are nullable because they belong to a root post — a reply has
+    neither. That is the one cost of collapsing the ADR-8 sidecar into this table, and it is
+    cheaper than the container course the sidecar required.
+    """
+
+    __tablename__ = "comunidad_publicacion"
+    __table_args__ = (
+        database.Index("ix_comunidad_publicacion_tipo_estado", "tipo", "estado_moderacion"),
+        database.Index("ix_comunidad_publicacion_parent_fecha", "parent_id", "fecha_creacion"),
+    )
+
+    parent_id = database.Column(
+        database.String(26),
+        database.ForeignKey("comunidad_publicacion.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True
+    )
+    contenido = database.Column(database.Text, nullable=False)
+    fecha_creacion = database.Column(database.DateTime, default=utc_now, nullable=False, index=True)
+
+    # Root-post fields. NULL on replies.
+    titulo = database.Column(database.String(160), nullable=True)
+    tipo = database.Column(database.String(20), nullable=True, index=True)
+    enlace_build = database.Column(database.String(500), nullable=True)
+    fijado = database.Column(database.Boolean(), default=False, nullable=False)
+
+    estado_moderacion = database.Column(database.String(20), default="visible", nullable=False, index=True)
+    # Thread lock, same vocabulary the native forum uses so the concept reads the same.
+    estado = database.Column(database.String(20), default="abierto", nullable=False)
+    # A queue hint for the moderation view. The append-only trail is the authority.
+    reportes_abiertos = database.Column(database.Integer, default=0, nullable=False)
+
+    autor = database.relationship("Usuario", foreign_keys=[usuario])
+    parent = database.relationship("ComunidadPublicacion", remote_side="ComunidadPublicacion.id", back_populates="respuestas")
+    respuestas = database.relationship("ComunidadPublicacion", back_populates="parent")
+
+    def es_raiz(self) -> bool:
+        """True for a top-level post."""
+        return self.parent_id is None
+
+    def es_visible(self) -> bool:
+        """True when not hidden by a moderator."""
+        return self.estado_moderacion == "visible"
+
+
+class ComunidadReaccion(database.Model, BaseTabla):
+    """One member liked one root post.
+
+    The unique constraint is the whole point of this table. One member, one like is a
+    property of a pair, and enforcing it needs a row the database can refuse.
+
+    There is exactly one reaction and it is positive. No polarity column, no type: the owner
+    ruled there is no thumbs-down, so adding one is a schema change and a product change
+    together, not a config flag.
+    """
+
+    __tablename__ = "comunidad_reaccion"
+    __table_args__ = (
+        database.UniqueConstraint("publicacion_id", "usuario", name="uq_comunidad_reaccion_una_por_miembro"),
+    )
+
+    publicacion_id = database.Column(
+        database.String(26),
+        database.ForeignKey("comunidad_publicacion.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    usuario = database.Column(
+        database.String(150),
+        database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+
+class ComunidadEventoModeracion(database.Model, BaseTabla):
+    """Append-only record of everything that happened to a post's moderation state.
+
+    Member reports and staff actions together, chronologically, because they are one
+    concept: how this post came to be in the state it is in. Nothing in the Hub
+    hard-deletes, so the trail is complete by construction.
+    """
+
+    __tablename__ = "comunidad_evento_moderacion"
+    __table_args__ = (
+        database.Index("ix_comunidad_evento_publicacion_fecha", "publicacion_id", "ocurrido_en"),
+    )
+
+    publicacion_id = database.Column(
+        database.String(26),
+        database.ForeignKey("comunidad_publicacion.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    tipo = database.Column(database.String(20), nullable=False)
+    actor = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True
+    )
+    motivo = database.Column(database.String(500), nullable=True)
+    ocurrido_en = database.Column(database.DateTime, default=utc_now, nullable=False)
+
+
 # Event listeners for audit field population and validation
 def _populate_new_audit_fields(instance: BaseTabla, current_user_id: str | None, current_date) -> None:
     """Populate creation audit fields for a new model instance."""

@@ -14553,6 +14553,41 @@ msgstr "Senha atualizada com sucesso."
 msgid "Error al actualizar la contraseña."
 msgstr "Erro ao atualizar a senha."
 
+#: now_lms/templates/themes/intent_learn/pages/comunidad_post.html:40
+#, python-format
+msgid "Like this post (%(num)d like)"
+msgid_plural "Like this post (%(num)d likes)"
+msgstr[0] "Curtir esta publicação (%(num)d curtida)"
+msgstr[1] "Curtir esta publicação (%(num)d curtidas)"
+
+#: now_lms/templates/themes/intent_learn/pages/comunidad_post.html:46
+#, python-format
+msgid "%(num)d like"
+msgid_plural "%(num)d likes"
+msgstr[0] "%(num)d curtida"
+msgstr[1] "%(num)d curtidas"
+
+#: now_lms/templates/themes/intent_learn/pages/comunidad_post.html:52
+#, python-format
+msgid "%(num)d reply"
+msgid_plural "%(num)d replies"
+msgstr[0] "%(num)d resposta"
+msgstr[1] "%(num)d respostas"
+
+#: now_lms/templates/themes/intent_learn/pages/comunidad_post.html:76
+#, python-format
+msgid "Replies from members are community experience, not official %(brand)s guidance."
+msgstr "As respostas dos membros são experiência da comunidade, não orientação oficial da %(brand)s."
+
+#: now_lms/templates/themes/intent_learn/pages/comunidad_nuevo.html:42
+#, python-format
+msgid ""
+"What you post here is community experience, not official %(brand)s guidance. Questions about "
+"certification, pricing or partner policy are routed to %(owner)s."
+msgstr ""
+"O que você publica aqui é experiência da comunidade, não orientação oficial da %(brand)s. "
+"Perguntas sobre certificação, preços ou política de parceiros são encaminhadas a %(owner)s."
+
 #: now_lms/templates/themes/intent_learn/pages/dashboard.html:92
 #, python-format
 msgid "%(done)d of %(total)d required items complete"

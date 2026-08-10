@@ -16,6 +16,18 @@
         {{ current_theme.headertags() }}
         <title>{{ _('Dashboard') }}</title>
         {{ current_theme.local_style() }}
+        <style>
+            .isl-avatar {
+                width: 40px; height: 40px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                background: var(--isl-surface-2, #1f1f23); color: var(--isl-ink-dim, #a1a1aa);
+                font-size: .8rem; font-weight: 600;
+            }
+            .isl-post-title { color: var(--isl-ink, #fafafa); }
+            .isl-post-title:hover { color: var(--isl-ember, #f97316); }
+            .isl-excerpt { color: var(--isl-ink-dim, #a1a1aa); }
+            .min-width-0 { min-width: 0; }
+        </style>
     </head>
     <body>
         {{ current_theme.navbar() }}
@@ -97,6 +109,43 @@
                             </ul>
                         </div>
                         {% endif %}
+
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>{{ _('From the community') }}</span>
+                                <a href="{{ url_for('comunidad.feed') }}" class="small text-decoration-none">{{ _('Open Community') }}</a>
+                            </div>
+                            {% if comunidad %}
+                            <ul class="list-group list-group-flush">
+                                {% for item in comunidad %}
+                                <li class="list-group-item">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <span class="isl-avatar flex-shrink-0" aria-hidden="true">{{ item.iniciales }}</span>
+                                        <div class="min-width-0">
+                                            <div>
+                                                <span class="fw-semibold">{{ item.nombre }}</span>
+                                                <span class="text-muted small ms-1">{{ item.hace }}</span>
+                                            </div>
+                                            <div class="text-muted small mb-1">{{ _('Posted in') }} {{ item.etiqueta }}</div>
+                                            <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                                               class="d-block fw-semibold text-decoration-none isl-post-title mb-1">{{ item.pub.titulo }}</a>
+                                            <p class="small isl-excerpt mb-1">{{ item.extracto }}{% if item.cortado %}&hellip;{% endif %}</p>
+                                            <div class="small text-muted">
+                                                <i class="bi bi-heart" aria-hidden="true"></i> {{ item.likes }}
+                                                <i class="bi bi-chat ms-2" aria-hidden="true"></i> {{ item.respuestas }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <div class="card-body text-muted">
+                                {{ _('Nothing in the community yet.') }}
+                                <a href="{{ url_for('comunidad.nueva_publicacion') }}">{{ _('Start the first conversation.') }}</a>
+                            </div>
+                            {% endif %}
+                        </div>
 
                         <div class="card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">

@@ -27,6 +27,11 @@ ADMIN_REDIRECT_ALLOWED_PATHS = {
     "/setting/mail_check",
     "/user/forgot_password",
     "/home/panel",
+    # Deliberate: the Hub is the single reader for global announcements, so this
+    # second reader redirects to the dashboard rather than rendering a duplicate.
+    # One channel for community communication is a product decision (ADR-9), not
+    # a broken route.
+    "/dashboard/announcements",
 }
 EXCLUDED_PATHS = {
     "/ads.txt",

@@ -1,0 +1,173 @@
+{# The Hub as staff need it. Leads with what is waiting on someone, not with
+   what is popular — a member's feed answers "what is the cohort talking about",
+   this one answers "what needs me". #}
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _('Community — staff') }}</title>
+        <meta name="robots" content="noindex, nofollow" />
+        {{ current_theme.local_style() }}
+        <style>
+            .isl-avatar {
+                width: 36px; height: 36px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                background: var(--isl-surface-2, #1f1f23); color: var(--isl-ink-dim, #a1a1aa);
+                font-size: .75rem; font-weight: 600;
+            }
+            .isl-post-title { color: var(--isl-ink, #fafafa); }
+            .isl-post-title:hover { color: var(--isl-ember, #f97316); }
+            .isl-excerpt { color: var(--isl-ink-dim, #a1a1aa); }
+            .isl-stat { font-size: 1.6rem; font-weight: 600; line-height: 1; }
+            .min-width-0 { min-width: 0; }
+        </style>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+            <div class="container px-3 py-4">
+                <div class="row mb-3">
+                    <div class="col-12 col-lg-8">
+                        <h1 class="h3 mb-1">{{ _('Community') }} &middot; <span class="text-muted">{{ _('staff') }}</span></h1>
+                        <p class="text-muted mb-0">{{ _('What is waiting on you, and what the cohort has been doing.') }}</p>
+                    </div>
+                    <div class="col-12 col-lg-4 mt-3 mt-lg-0 text-lg-end">
+                        <a href="{{ url_for('comunidad.feed') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-people" aria-hidden="true"></i> {{ _('Member view') }}
+                        </a>
+                    </div>
+                </div>
+
+                {# ---- At a glance ---- #}
+                <div class="row g-3 mb-4">
+                    {% for etiqueta, valor, tono in [
+                        (_('Unanswered questions'), resumen.sin_responder, 'text-primary' if resumen.sin_responder else ''),
+                        (_('Open reports'), resumen.reportes, 'text-primary' if resumen.reportes else ''),
+                        (_('Hidden posts'), resumen.ocultos, ''),
+                        (_('Posts this week'), resumen.publicaciones_semana, ''),
+                        (_('Members posting'), resumen.miembros_semana, '')] %}
+                    <div class="col-6 col-lg">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="isl-stat {{ tono }}">{{ valor }}</div>
+                                <div class="small text-muted">{{ etiqueta }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-12 col-lg-8">
+                        {# ---- Needs an answer: the Hub's whole promise ---- #}
+                        <div class="card mb-4">
+                            <div class="card-header">{{ _('Needs an answer') }}</div>
+                            {% if sin_responder %}
+                            <ul class="list-group list-group-flush">
+                                {% for item in sin_responder %}
+                                <li class="list-group-item">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <span class="isl-avatar flex-shrink-0" aria-hidden="true">{{ item.iniciales }}</span>
+                                        <div class="min-width-0 flex-grow-1">
+                                            <div class="small text-muted">
+                                                {{ item.nombre }} &middot; {{ _('asked') }} {{ item.hace }} {{ _('ago') }}
+                                            </div>
+                                            <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                                               class="d-block fw-semibold text-decoration-none isl-post-title">{{ item.pub.titulo }}</a>
+                                            <p class="small isl-excerpt mb-0">{{ item.extracto }}{% if item.cortado %}&hellip;{% endif %}</p>
+                                        </div>
+                                        <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                                           class="btn btn-sm btn-primary flex-shrink-0">{{ _('Answer') }}</a>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <div class="card-body text-muted">{{ _('Every question has a reply. Nothing waiting.') }}</div>
+                            {% endif %}
+                        </div>
+
+                        {# ---- Reports: a report never hides anything, a decision does ---- #}
+                        <div class="card mb-4">
+                            <div class="card-header">{{ _('Reported by members') }}</div>
+                            {% if reportados %}
+                            <ul class="list-group list-group-flush">
+                                {% for item in reportados %}
+                                <li class="list-group-item">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <span class="badge bg-secondary flex-shrink-0">{{ item.pub.reportes_abiertos }}</span>
+                                        <div class="min-width-0 flex-grow-1">
+                                            <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                                               class="d-block fw-semibold text-decoration-none isl-post-title">{{ item.pub.titulo }}</a>
+                                            <div class="small text-muted">{{ item.nombre }} &middot; {{ item.hace }}</div>
+                                        </div>
+                                        <form method="post" class="flex-shrink-0 d-flex gap-2"
+                                              action="{{ url_for('comunidad.ocultar', publicacion_id=item.pub.id) }}">
+                                            {{ moderacion_form.csrf_token }}
+                                            <input class="form-control form-control-sm" name="motivo"
+                                                   placeholder="{{ _('Reason') }}" aria-label="{{ _('Reason') }}" />
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">{{ _('Hide') }}</button>
+                                        </form>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <div class="card-body text-muted">{{ _('Nothing reported.') }}</div>
+                            {% endif %}
+                        </div>
+
+                        {# ---- Hidden: reversible, and visible to staff so it cannot be forgotten ---- #}
+                        {% if ocultos %}
+                        <div class="card mb-4">
+                            <div class="card-header">{{ _('Hidden posts') }}</div>
+                            <ul class="list-group list-group-flush">
+                                {% for item in ocultos %}
+                                <li class="list-group-item d-flex align-items-center gap-3">
+                                    <div class="min-width-0 flex-grow-1">
+                                        <a href="{{ url_for('comunidad.ver_publicacion', publicacion_id=item.pub.id) }}"
+                                           class="d-block text-decoration-none isl-post-title">{{ item.pub.titulo or _('(reply)') }}</a>
+                                        <div class="small text-muted">{{ item.nombre }} &middot; {{ item.hace }}</div>
+                                    </div>
+                                    <form method="post" class="flex-shrink-0"
+                                          action="{{ url_for('comunidad.restaurar', publicacion_id=item.pub.id) }}">
+                                        {{ accion_form.csrf_token }}
+                                        <button class="btn btn-sm btn-outline-secondary" type="submit">{{ _('Restore') }}</button>
+                                    </form>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {# ---- The trail: append-only, so who did what survives the content ---- #}
+                    <div class="col-12 col-lg-4">
+                        <div class="card">
+                            <div class="card-header">{{ _('Moderation trail') }}</div>
+                            {% if eventos %}
+                            <ul class="list-group list-group-flush">
+                                {% for fila in eventos %}
+                                <li class="list-group-item">
+                                    <span class="badge bg-secondary">{{ fila.evento.tipo }}</span>
+                                    <span class="small ms-1">{{ fila.actor.nombre }} {{ fila.actor.apellido }}</span>
+                                    <span class="small text-muted ms-1">{{ fila.hace }}</span>
+                                    {% if fila.evento.motivo %}
+                                    <div class="small text-muted">{{ fila.evento.motivo }}</div>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <div class="card-body text-muted small">{{ _('No moderation actions yet.') }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        {{ current_theme.footer() }}
+    </body>
+</html>

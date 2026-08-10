@@ -39,6 +39,10 @@ build/Release
 
 # Dependency directories
 node_modules/
+# The pattern above ends in a slash, so it matches directories only. A local dev
+# setup that links the bootstrap assets in from elsewhere leaves a *symlink*
+# here, which git treats as a file and would happily commit.
+now_lms/static/node_modules
 jspm_packages/
 venv/
 
@@ -230,6 +234,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.venv*/
 env/
 venv/
 ENV/

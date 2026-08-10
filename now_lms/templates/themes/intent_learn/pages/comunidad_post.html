@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ item.pub.titulo }}</title>
+        <meta name="robots" content="noindex, nofollow" />
+        {{ current_theme.local_style() }}
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+            <div class="container px-3 py-4">
+                <p class="mb-3"><a href="{{ url_for('comunidad.feed') }}" class="small text-decoration-none">&larr; {{ _('Back to Community') }}</a></p>
+
+                {% if oculto %}
+                <div class="alert alert-warning" role="status">{{ _('Hidden by a moderator. Only you and staff can see this.') }}</div>
+                {% endif %}
+
+                <div class="row g-4">
+                    <div class="col-12 col-lg-8">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <span class="badge bg-secondary mb-2">{{ item.etiqueta }}</span>
+                                <h1 class="h4">{{ item.pub.titulo }}</h1>
+                                <p class="small text-muted">{{ item.autor.nombre }} {{ item.autor.apellido }}</p>
+                                <div>{{ cuerpo | safe }}</div>
+                                {% if item.pub.enlace_build %}
+                                <p class="mt-3 mb-0">
+                                    <a href="{{ item.pub.enlace_build }}" rel="noopener noreferrer nofollow" target="_blank">{{ _('See the build') }}</a>
+                                </p>
+                                {% endif %}
+                                <div class="mt-3 d-flex gap-2">
+                                    {% if not item.es_propio %}
+                                    <form method="post" action="{{ url_for('comunidad.quitar_like' if item.me_gusta else 'comunidad.dar_like', publicacion_id=item.pub.id) }}">
+                                        {{ accion_form.csrf_token }}
+                                        <button type="submit" class="btn btn-sm {{ 'btn-primary' if item.me_gusta else 'btn-outline-secondary' }}"
+                                                aria-pressed="{{ 'true' if item.me_gusta else 'false' }}"
+                                                aria-label="{{ ngettext('Like this post (%(num)d like)', 'Like this post (%(num)d likes)', item.likes) }}">
+                                            <i class="bi bi-hand-thumbs-up{{ '-fill' if item.me_gusta else '' }}" aria-hidden="true"></i>
+                                            <span class="ms-1">{{ item.likes }}</span>
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <span class="small text-muted align-self-center">{{ ngettext('%(num)d like', '%(num)d likes', item.likes) }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="h6 mb-2">{{ ngettext('%(num)d reply', '%(num)d replies', respuestas | length) }}</h2>
+                        {% for r in respuestas %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <p class="small text-muted mb-1">
+                                    {{ r.autor.nombre }} {{ r.autor.apellido }}
+                                    {% if r.es_staff %}<span class="badge bg-primary ms-1">Intent Solutions</span>{% endif %}
+                                </p>
+                                <div>{{ r.cuerpo | safe }}</div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="card"><div class="card-body text-muted">{{ _('No replies yet.') }}</div></div>
+                        {% endfor %}
+
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                {% if cerrado %}
+                                <p class="text-muted mb-0">{{ _('Replies are closed on this thread.') }}</p>
+                                {% else %}
+                                <form method="post" action="{{ url_for('comunidad.responder', publicacion_id=item.pub.id) }}">
+                                    {{ respuesta_form.csrf_token }}
+                                    <label class="form-label" for="contenido">{{ _('Reply') }}</label>
+                                    {{ respuesta_form.contenido(class="form-control", id="contenido", rows="4") }}
+                                    <p class="form-text">{{ _('Replies from members are community experience, not official %(brand)s guidance.', brand='Intent Solutions') }}</p>
+                                    <button class="btn btn-primary" type="submit">{{ _('Post reply') }}</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-4">
+                        <div class="card mb-3">
+                            <div class="card-header">{{ _('Something wrong?') }}</div>
+                            <div class="card-body">
+                                <form method="post" action="{{ url_for('comunidad.reportar', publicacion_id=item.pub.id) }}">
+                                    {{ reporte_form.csrf_token }}
+                                    {{ reporte_form.motivo(class="form-control mb-2", placeholder=_('What is wrong with this post?')) }}
+                                    <button class="btn btn-outline-secondary btn-sm" type="submit">{{ _('Report to a moderator') }}</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        {% if es_staff %}
+                        <div class="card">
+                            <div class="card-header">{{ _('Moderation') }}</div>
+                            <div class="card-body d-flex flex-column gap-2">
+                                {% if oculto %}
+                                <form method="post" action="{{ url_for('comunidad.restaurar', publicacion_id=item.pub.id) }}">
+                                    {{ accion_form.csrf_token }}
+                                    <button class="btn btn-sm btn-outline-secondary w-100" type="submit">{{ _('Restore') }}</button>
+                                </form>
+                                {% else %}
+                                <form method="post" action="{{ url_for('comunidad.ocultar', publicacion_id=item.pub.id) }}">
+                                    {{ moderacion_form.csrf_token }}
+                                    {{ moderacion_form.motivo(class="form-control form-control-sm mb-2", placeholder=_('Reason')) }}
+                                    <button class="btn btn-sm btn-outline-danger w-100" type="submit">{{ _('Hide') }}</button>
+                                </form>
+                                {% endif %}
+                                <form method="post" action="{{ url_for('comunidad.abrir' if cerrado else 'comunidad.cerrar', publicacion_id=item.pub.id) }}">
+                                    {{ accion_form.csrf_token }}
+                                    <button class="btn btn-sm btn-outline-secondary w-100" type="submit">{{ _('Reopen replies') if cerrado else _('Close replies') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+        {{ current_theme.footer() }}
+    </body>
+</html>

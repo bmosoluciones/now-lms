@@ -61,6 +61,7 @@ from now_lms.db import (
     select,
     utc_now,
 )
+from now_lms.vistas.comunidad import posts_recientes
 from now_lms.vistas.prior_credentials import CREDENTIAL_TOTAL
 
 member_dashboard = Blueprint("member_dashboard", __name__, template_folder=DIRECTORIO_PLANTILLAS)
@@ -71,6 +72,7 @@ DASHBOARD_TEMPLATE = "themes/intent_learn/pages/dashboard.html"
 # dashboard is an orientation surface, not an index.
 MAX_ANNOUNCEMENTS = 3
 MAX_EVENTS = 4
+MAX_COMUNIDAD = 5
 
 
 def _cursos_con_avance(usuario: str) -> list[dict]:
@@ -192,4 +194,5 @@ def panel() -> str:
         anuncios_totales=_anuncios_totales(),
         anuncios_mostrados=MAX_ANNOUNCEMENTS,
         eventos=get_upcoming_events_for_user(usuario, limit=MAX_EVENTS),
+        comunidad=posts_recientes(usuario, limite=MAX_COMUNIDAD),
     )
