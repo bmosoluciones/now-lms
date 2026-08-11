@@ -178,3 +178,24 @@ def test_front_door_uses_the_composition_reset_and_canonical_legal_footer() -> N
     assert "www.credly.com/embedded_badge/ddf22fb4-0aa6-46b3-a93b-0b45b509e471" in template
     assert "cdn.credly.com" not in template
     assert "embed.js" not in template
+
+
+def test_umami_tracker_is_same_origin_on_both_visitor_surfaces() -> None:
+    """The Umami tag loads from /u.js (edge-proxied) on base.j2 AND the standalone
+    request-access page — never directly from analytics.intentsolutions.io.
+
+    Same-origin is the load-bearing property: upstream v2.0.0's CSP
+    (script-src/connect-src 'self' + payment hosts) refuses a cross-origin
+    tracker, and the fork's discipline is edge-solutions over core CSP patches
+    (no merge surface at upstream syncs). If either template ever points at the
+    analytics host directly, the tracker silently dies under CSP — this test
+    makes that a red build instead of a silent data gap.
+    """
+    for path in (BASE_PATH, REQUEST_ACCESS_PATH):
+        text = path.read_text(encoding="utf-8")
+        assert 'src="/u.js"' in text, f"{path}: same-origin Umami tag missing"
+        assert 'data-website-id="9350d174-bb53-4f1d-be75-c8221a3f4717"' in text
+        assert 'data-host-url="/u"' in text, f"{path}: posts must stay same-origin"
+        assert "analytics.intentsolutions.io" not in text, (
+            f"{path}: cross-origin tracker load would be refused by the CSP"
+        )

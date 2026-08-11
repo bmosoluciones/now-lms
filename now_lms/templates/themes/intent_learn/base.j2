@@ -31,6 +31,17 @@
         />
 
         <title>{{ title }}</title>
+        {# Umami analytics — served SAME-ORIGIN via the edge proxy (/u.js -> the estate
+           Umami container; posts to /u/api/send). Same-origin is deliberate: upstream
+           v2.0.0 CSP script-src/connect-src stay untouched (no core patch, no merge
+           surface) and the theme no-CDN rule holds. Website id: learn.intentsolutions.io
+           in the estate Umami. #}
+        <script
+            defer
+            src="/u.js"
+            data-website-id="9350d174-bb53-4f1d-be75-c8221a3f4717"
+            data-host-url="/u"
+        ></script>
     </head>
 
     <body>
