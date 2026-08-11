@@ -191,7 +191,7 @@ def test_umami_tracker_is_same_origin_on_both_visitor_surfaces() -> None:
     analytics host directly, the tracker silently dies under CSP — this test
     makes that a red build instead of a silent data gap.
     """
-    for path in (BASE_PATH, REQUEST_ACCESS_PATH):
+    for path in (BASE_PATH, REQUEST_ACCESS_PATH, TEMPLATE_PATH):
         text = path.read_text(encoding="utf-8")
         assert 'src="/u.js"' in text, f"{path}: same-origin Umami tag missing"
         assert 'data-website-id="9350d174-bb53-4f1d-be75-c8221a3f4717"' in text
