@@ -1,0 +1,63 @@
+name: Course content error
+description: A wrong answer, a bad question, or a mistake in the lesson material
+title: "[content] "
+labels: ["content", "beta-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when the **material itself** is wrong — a question marked incorrect that you
+        believe is right, a broken explanation, a typo, a mistranslation.
+
+        This matters more than it might seem: people are studying for a real Anthropic exam
+        against this content. A wrong answer key teaches the wrong thing. Reporting one is a
+        contribution to everyone in the cohort.
+
+        If the site is *broken* rather than *wrong*, use the Bug report template instead.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem?
+      options:
+        - "Answer key looks wrong"
+        - "Question is ambiguous or has two defensible answers"
+        - "Explanation is wrong or misleading"
+        - "Typo / formatting / mistranslation"
+        - "Content is out of date vs current Anthropic docs"
+        - "Other"
+    validations:
+      required: true
+
+  - type: input
+    id: where
+    attributes:
+      label: Where is it?
+      description: Course code and section, plus the URL if you have it.
+      placeholder: "CCA-F, section 3 — https://learn.intentsolutions.io/..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: quote
+    attributes:
+      label: Quote the exact question or passage
+      description: Paste it verbatim so it can be found and fixed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: whats-wrong
+    attributes:
+      label: What is wrong, and what should it say?
+      description: If you believe an answer key is incorrect, say which option you think is right and why.
+    validations:
+      required: true
+
+  - type: textarea
+    id: source
+    attributes:
+      label: Anything backing it up?
+      description: A link to Anthropic's docs or the official course carries a lot of weight here. Optional.
+    validations:
+      required: false

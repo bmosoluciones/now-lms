@@ -1,0 +1,13 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question about the platform or the certification
+    url: https://chat.whatsapp.com/KYsoq5syR6A5KtVknXUhSm
+    about: "\"How do I…\" questions get answered faster in the cohort WhatsApp group than in the tracker."
+
+  - name: Lost your password or cannot sign in
+    url: mailto:jeremy@intentsolutions.io?subject=Learn%20platform%20access
+    about: Email Jeremy directly and he will reset it. Do not open an issue — never post credentials here.
+
+  - name: Official Anthropic certification material
+    url: https://anthropic.skilljar.com
+    about: The prerequisite courses and exam registration live on Anthropic's own site, not here.

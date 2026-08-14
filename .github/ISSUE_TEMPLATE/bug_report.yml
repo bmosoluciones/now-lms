@@ -1,0 +1,95 @@
+name: Bug report
+description: Something on learn.intentsolutions.io is broken or behaving oddly
+title: "[bug] "
+labels: ["bug", "beta-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. The platform is in beta and being built in public —
+        a bug report is genuinely useful work, not a complaint.
+
+        **Before you file:** if this is a wrong answer or a typo in course content, use the
+        *Course content error* template instead. If it's a "how do I…" question, ask in WhatsApp.
+
+        **Never paste your password** here. Issues are visible to everyone with repo access.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you saw, in your own words. A screenshot helps if it is visual.
+      placeholder: I clicked Continue on the last section and it returned me to the course list.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to get there
+      description: Enough that someone else can reproduce it.
+      placeholder: |
+        1. Sign in
+        2. Open the CCA-F course
+        3. Go to section 3 and click Continue
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      description: Copy it from the address bar. This is usually the single most useful field.
+      placeholder: https://learn.intentsolutions.io/course/CCA-F/...
+    validations:
+      required: true
+
+  - type: input
+    id: account
+    attributes:
+      label: Your Intent Solutions username
+      description: "Just the @intentsolutions.io address — no password. Lets us reproduce against the right account and permissions."
+      placeholder: yourname@intentsolutions.io
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Safari
+        - Firefox
+        - Edge
+        - Mobile browser
+        - Other / not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: blocking
+    attributes:
+      label: Is this blocking you?
+      description: Be honest — it helps us order the queue.
+      options:
+        - "Yes — I cannot continue studying"
+        - "Partly — there is a workaround"
+        - "No — cosmetic or minor"
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Console errors, screenshots, what you tried. Optional.
+    validations:
+      required: false
