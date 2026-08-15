@@ -42,7 +42,11 @@ from now_lms.db import (
 )
 from now_lms.forms import EvaluationReopenRequestForm
 from now_lms.i18n import _
-from now_lms.themes import get_evaluation_result_template, get_practice_template
+from now_lms.themes import (
+    get_evaluation_result_template,
+    get_practice_template,
+    get_take_evaluation_template,
+)
 
 # ---------------------------------------------------------------------------------------
 # Blueprint definition
@@ -247,7 +251,7 @@ def take_evaluation(evaluation_id: int) -> str | Response:
         flash(EVALUATION_SUBMITTED, "success")
         return redirect(url_for("evaluation.evaluation_result", attempt_id=attempt.id))
 
-    return render_template("evaluations/take_evaluation.html", evaluation=eval_obj)
+    return render_template(get_take_evaluation_template(), evaluation=eval_obj)
 
 
 @evaluation.route("/evaluation/attempt/<attempt_id>/result", methods=["GET"])

@@ -1,0 +1,545 @@
+{# Intent Solutions exam surface.
+
+   Structure follows the CCAR-F practice app: one item on screen at a time, a
+   progress strip, flag-for-review, keyboard control, and a review pass before
+   submit. Every string here is written for Intent Solutions Learn.
+
+   The form contract is UNCHANGED from evaluations/take_evaluation.html — same
+   `question_<id>` field names, same option-id values, same Verdadero/Falso for
+   boolean, same POST target. All items are rendered into the one form and the
+   navigation only changes which is visible, so submitting sends exactly the
+   payload the plain template sent.
+
+   `required` is deliberately NOT carried over. A hidden input marked required
+   makes the browser refuse to submit and then fail to focus the offending
+   control, which would strand a member on the last screen. The server already
+   treats a missing answer as wrong (`_save_question_answers` skips it and
+   `calculate_score` divides by the full question count), so unanswered items
+   score zero either way — and the review screen names them before submit.
+#}
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ evaluation.title }} - Intent Solutions Learn</title>
+        {{ current_theme.local_style() }}
+        <style>
+            /* Bind to the theme's own Bootstrap tokens rather than restating a
+               palette. `theme.min.css` loads after `brand.css` and overrides it — the
+               live surface is dark (`--bs-body-bg: #09090b`) and the live brand orange
+               is `--bs-primary: #f97316`, not the value in brand.css. Hardcoding either
+               is how this page ended up bright white inside a dark site. Everything
+               below follows the theme, so a future light/dark change carries this page
+               with it and needs no edit here. */
+            :root {
+                --is-accent: var(--bs-primary, #f97316);
+                --is-paper: var(--bs-body-bg, #09090b);
+                --is-ink: var(--bs-body-color, #a1a1aa);
+                --is-strong: var(--bs-emphasis-color, #fafafa);
+                --is-muted: var(--bs-secondary-color, #a1a1aa);
+                --is-line: var(--bs-border-color, #27272a);
+                --is-card: var(--bs-secondary-bg, #18181b);
+                --is-bar: var(--bs-tertiary-bg, #1f1f23);
+                --is-cell: var(--bs-border-color, #27272a);
+                --is-cell-done: var(--bs-secondary-color, #a1a1aa);
+                --is-flag: #e0a500;
+            }
+            body.is-exam {
+                background: var(--is-paper);
+                color: var(--is-ink);
+            }
+            .is-exam-bar {
+                position: sticky;
+                top: 0;
+                z-index: 1030;
+                background: var(--is-bar);
+                color: var(--is-strong);
+            }
+            /* A flex item defaults to min-width:auto, so it refuses to shrink below its
+               content. Without this the nowrap title below pushed the bar to 439px and
+               the whole page to 451px inside a 390px viewport. */
+            .is-exam-bar .is-exam-id {
+                min-width: 0;
+                max-width: 100%;
+            }
+            .is-exam-bar .is-exam-name {
+                font-weight: 700;
+                letter-spacing: 0.02em;
+            }
+            .is-exam-bar .is-exam-state {
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.8125rem;
+                color: var(--is-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+            .is-strip {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 3px;
+                background: var(--is-bar);
+                padding: 0.5rem 0;
+            }
+            .is-strip button {
+                width: 14px;
+                height: 14px;
+                padding: 0;
+                border: 0;
+                border-radius: 2px;
+                background: var(--is-cell);
+                cursor: pointer;
+            }
+            .is-strip button[data-answered="1"] {
+                background: var(--is-cell-done);
+            }
+            .is-strip button[data-flagged="1"] {
+                background: var(--is-flag);
+            }
+            .is-strip button[aria-current="true"] {
+                outline: 2px solid var(--is-accent);
+                outline-offset: 1px;
+            }
+            .is-legend {
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.6875rem;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--is-muted);
+            }
+            .is-legend .swatch {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 2px;
+                vertical-align: middle;
+                margin-right: 0.35rem;
+            }
+            /* The exam bar is sticky, so scrolling an item to the top would slide it
+               under the bar. Reserve its height instead of guessing at scroll offsets. */
+            .is-item,
+            #is-review {
+                scroll-margin-top: calc(var(--is-bar-h, 7.5rem) + 0.75rem);
+            }
+            .is-item-meta {
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.8125rem;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+            }
+            .is-item-meta .is-count {
+                color: var(--is-accent);
+            }
+            .is-card {
+                background: var(--is-card);
+                border: 1px solid var(--is-line);
+                border-radius: 10px;
+            }
+            .is-stem {
+                font-size: 1.125rem;
+                line-height: 1.65;
+                color: var(--is-strong);
+            }
+            .is-choice {
+                display: flex;
+                gap: 0.85rem;
+                align-items: flex-start;
+                width: 100%;
+                text-align: left;
+                border: 1px solid var(--is-line);
+                border-radius: 8px;
+                background: var(--is-card);
+                color: var(--is-ink);
+                padding: 0.85rem 1rem;
+                margin-bottom: 0.6rem;
+                cursor: pointer;
+            }
+            .is-choice:hover {
+                border-color: var(--is-accent);
+            }
+            .is-choice input {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+            }
+            .is-choice .is-key {
+                flex: 0 0 auto;
+                width: 1.6rem;
+                height: 1.6rem;
+                border: 1px solid var(--is-line);
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.8125rem;
+                color: var(--is-muted);
+            }
+            .is-choice.is-picked {
+                border-color: var(--is-accent);
+                box-shadow: 0 0 0 1px var(--is-accent) inset;
+            }
+            .is-choice.is-picked .is-key {
+                background: var(--is-accent);
+                border-color: var(--is-accent);
+                color: var(--bs-body-bg, #09090b);
+            }
+            .is-keys {
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.75rem;
+                color: var(--is-muted);
+            }
+            .is-keys kbd {
+                background: var(--is-card);
+                border: 1px solid var(--is-line);
+                border-radius: 3px;
+                color: var(--is-strong);
+                padding: 0 0.35rem;
+            }
+            .is-flagged-note {
+                color: var(--is-flag);
+            }
+            @media (max-width: 575.98px) {
+                .is-strip button {
+                    width: 11px;
+                    height: 11px;
+                }
+                .is-stem {
+                    font-size: 1rem;
+                }
+                /* The bar is sticky and measured 179px of an 844px viewport at 390px
+                   wide. The legend only explains two colours that the strip teaches on
+                   first use, so it is the cheapest thing to drop, and the title is
+                   clamped to one line rather than wrapping to three. */
+                .is-legend {
+                    display: none;
+                }
+                .is-exam-bar .is-exam-name {
+                    display: block;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="is-exam">
+        {{ current_theme.navbar() }}
+
+        <div class="is-exam-bar">
+            <div class="container py-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="is-exam-id">
+                    <span class="is-exam-name">{{ evaluation.title }}</span>
+                    <span class="is-exam-state ms-2">
+                        {% if evaluation.is_exam %}{{ _('Exam in progress') }}{% else %}{{ _('Practice in progress') }}{% endif %}
+                    </span>
+                </div>
+                <div class="is-exam-state">
+                    <span id="is-answered-count">0</span> / {{ evaluation.questions | length }} {{ _('answered') }} &middot; {{ _('pass') }}
+                    {{ evaluation.passing_score }}%
+                </div>
+            </div>
+            <div class="container">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pb-2">
+                    <div class="is-strip" id="is-strip" role="group" aria-label="{{ _('Jump to an item') }}"></div>
+                    <div class="is-legend">
+                        <span class="swatch" style="background: var(--is-cell-done)"></span>{{ _('Answered') }}
+                        <span class="swatch ms-3" style="background: var(--is-flag)"></span>{{ _('Flagged') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container py-4">
+                <div class="row">
+                    <div class="col-lg-9 col-xl-8 mx-auto">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb small">
+                                {% if evaluation.section %}<li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none" href="{{ url_for('home.panel') }}">{{ _('Home') }}</a>
+                                </li>{% endif %}
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none"
+                                        href="{{ url_for('course.tomar_curso', course_code=evaluation.section.curso) }}"
+                                        >{{ _('Course') }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ evaluation.title }}</li>
+                            </ol>
+                        </nav>
+
+                        <form method="POST" id="is-exam-form"
+                              data-item-label="{{ _('Item %(number)s', number='__N__') }}"
+                              data-flagged-label="{{ _('flagged') }}"
+                              data-unanswered-label="{{ _('unanswered') }}"
+                              data-flag-clear="{{ _('Flagged — click to clear') }}"
+                              data-flag-review="{{ _('Flag for review') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                            {% for question in evaluation.questions %} {% set correct_count = question.options |
+                            selectattr("is_correct", "equalto", true) | list | length %}
+                            <section
+                                class="is-item"
+                                data-index="{{ loop.index0 }}"
+                                data-qid="{{ question.id }}"
+                                {% if not loop.first %}hidden{% endif %}
+                            >
+                                <div class="d-flex justify-content-between align-items-center mb-2 is-item-meta">
+                                    <span class="is-count">{{ _('Item %(number)s of %(total)s', number=loop.index, total=evaluation.questions | length) }}</span>
+                                    <span class="text-secondary">
+                                        {% if question.type == "multiple" and correct_count > 1 %}{{ _('Select %(count)s', count=correct_count) }}{% else %}{{ _('Select one') }}{% endif %}
+                                    </span>
+                                </div>
+
+                                <div class="is-card p-4 mb-3">
+                                    <p class="is-stem mb-4">{{ question.text }}</p>
+
+                                    {% if question.type == "boolean" %}
+                                    <label class="is-choice">
+                                        <input type="radio" name="question_{{ question.id }}" value="Verdadero" />
+                                        <span class="is-key">1</span>
+                                        <span>{{ _('True') }}</span>
+                                    </label>
+                                    <label class="is-choice">
+                                        <input type="radio" name="question_{{ question.id }}" value="Falso" />
+                                        <span class="is-key">2</span>
+                                        <span>{{ _('False') }}</span>
+                                    </label>
+                                    {% elif question.type == "multiple" %} {% for option in question.options %}
+                                    <label class="is-choice">
+                                        <input
+                                            type="{% if correct_count > 1 %}checkbox{% else %}radio{% endif %}"
+                                            name="question_{{ question.id }}"
+                                            value="{{ option.id }}"
+                                        />
+                                        <span class="is-key">{{ loop.index }}</span>
+                                        <span>{{ option.text }}</span>
+                                    </label>
+                                    {% endfor %} {% endif %}
+
+                                    <hr class="my-4" />
+
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-secondary is-flag"
+                                            aria-pressed="false"
+                                        >
+                                            {{ _('Flag for review') }}
+                                        </button>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary is-prev">
+                                                &larr; {{ _('Previous') }}
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-dark is-next">{{ _('Next') }} &rarr;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            {% endfor %}
+
+                            <section id="is-review" hidden>
+                                <div class="is-item-meta mb-2"><span class="is-count">{{ _('Review') }}</span></div>
+                                <div class="is-card p-4 mb-3">
+                                    <p class="is-stem mb-3">{{ _('Check anything you left open, then submit.') }}</p>
+                                    <p class="mb-1"><strong id="is-review-answered">0</strong> {{ _('answered') }}</p>
+                                    <p class="mb-1">
+                                        <strong id="is-review-unanswered">0</strong> {{ _('unanswered') }}
+                                        <span class="text-secondary">&mdash; {{ _('an unanswered item is scored as incorrect.') }}</span>
+                                    </p>
+                                    <p class="mb-3 is-flagged-note"><strong id="is-review-flagged">0</strong> {{ _('flagged') }}</p>
+                                    <div id="is-review-links" class="mb-4"></div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-outline-secondary" id="is-back-to-items">
+                                            {{ _('Back to the items') }}
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">{{ _('Submit for scoring') }}</button>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                                <p class="is-keys mb-0">
+                                    <kbd>1</kbd>&ndash;<kbd>9</kbd> answer &middot; <kbd>F</kbd> flag &middot;
+                                    <kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &middot; <kbd>Enter</kbd> next
+                                </p>
+                                <button type="button" class="btn btn-outline-secondary" id="is-go-review">{{ _('Review &amp; submit') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            (function () {
+                "use strict";
+                var form = document.getElementById("is-exam-form");
+                var items = Array.prototype.slice.call(form.querySelectorAll(".is-item"));
+                var review = document.getElementById("is-review");
+                var strip = document.getElementById("is-strip");
+                var answeredCount = document.getElementById("is-answered-count");
+                var i18n = form.dataset;
+                function itemLabel(number) {
+                    return i18n.itemLabel.replace("__N__", number);
+                }
+                var current = 0;
+                var flagged = items.map(function () {
+                    return false;
+                });
+
+                function inputsFor(item) {
+                    return Array.prototype.slice.call(item.querySelectorAll("input"));
+                }
+                function isAnswered(item) {
+                    return inputsFor(item).some(function (input) {
+                        return input.checked;
+                    });
+                }
+
+                var cells = items.map(function (item, i) {
+                    var cell = document.createElement("button");
+                    cell.type = "button";
+                    cell.setAttribute("aria-label", itemLabel(i + 1));
+                    cell.addEventListener("click", function () {
+                        show(i);
+                    });
+                    strip.appendChild(cell);
+                    return cell;
+                });
+
+                function refresh() {
+                    var answered = 0;
+                    items.forEach(function (item, i) {
+                        var done = isAnswered(item);
+                        if (done) answered += 1;
+                        cells[i].setAttribute("data-answered", done ? "1" : "0");
+                        cells[i].setAttribute("data-flagged", flagged[i] ? "1" : "0");
+                        cells[i].setAttribute("aria-current", i === current && review.hidden ? "true" : "false");
+                    });
+                    answeredCount.textContent = answered;
+                    return answered;
+                }
+
+                function measureBar() {
+                    var bar = document.querySelector(".is-exam-bar");
+                    if (bar) {
+                        document.documentElement.style.setProperty("--is-bar-h", bar.offsetHeight + "px");
+                    }
+                }
+                measureBar();
+                window.addEventListener("resize", measureBar);
+
+                function show(i, skipScroll) {
+                    if (i < 0 || i >= items.length) return;
+                    items[current].hidden = true;
+                    current = i;
+                    items[current].hidden = false;
+                    review.hidden = true;
+                    inputsFor(items[current]).forEach(function (input) {
+                        input.closest(".is-choice").classList.toggle("is-picked", input.checked);
+                    });
+                    var flag = items[current].querySelector(".is-flag");
+                    flag.setAttribute("aria-pressed", flagged[current] ? "true" : "false");
+                    flag.textContent = flagged[current] ? i18n.flagClear : i18n.flagReview;
+                    flag.classList.toggle("btn-warning", flagged[current]);
+                    flag.classList.toggle("btn-outline-secondary", !flagged[current]);
+                    if (!skipScroll) items[current].scrollIntoView({ block: "start" });
+                    items[current].setAttribute("tabindex", "-1");
+                    items[current].focus({ preventScroll: true });
+                    refresh();
+                }
+
+                function showReview() {
+                    items.forEach(function (item) {
+                        item.hidden = true;
+                    });
+                    review.hidden = false;
+                    var answered = refresh();
+                    document.getElementById("is-review-answered").textContent = answered;
+                    document.getElementById("is-review-unanswered").textContent = items.length - answered;
+                    document.getElementById("is-review-flagged").textContent = flagged.filter(Boolean).length;
+                    var links = document.getElementById("is-review-links");
+                    links.innerHTML = "";
+                    items.forEach(function (item, i) {
+                        if (isAnswered(item) && !flagged[i]) return;
+                        var b = document.createElement("button");
+                        b.type = "button";
+                        b.className = "btn btn-sm btn-outline-secondary me-2 mb-2";
+                        b.textContent = itemLabel(i + 1) + (flagged[i] ? " (" + i18n.flaggedLabel + ")" : " (" + i18n.unansweredLabel + ")");
+                        b.addEventListener("click", function () {
+                            show(i);
+                        });
+                        links.appendChild(b);
+                    });
+                    review.scrollIntoView({ block: "start" });
+                }
+
+                form.addEventListener("change", function (event) {
+                    if (event.target && event.target.matches("input")) {
+                        var item = event.target.closest(".is-item");
+                        inputsFor(item).forEach(function (input) {
+                            input.closest(".is-choice").classList.toggle("is-picked", input.checked);
+                        });
+                        refresh();
+                    }
+                });
+
+                form.addEventListener("click", function (event) {
+                    var t = event.target;
+                    if (t.closest(".is-next")) show(current + 1);
+                    else if (t.closest(".is-prev")) show(current - 1);
+                    else if (t.closest(".is-flag")) {
+                        flagged[current] = !flagged[current];
+                        show(current);
+                    }
+                });
+
+                document.getElementById("is-go-review").addEventListener("click", showReview);
+                document.getElementById("is-back-to-items").addEventListener("click", function () {
+                    show(current);
+                });
+
+                document.addEventListener("keydown", function (event) {
+                    if (event.metaKey || event.ctrlKey || event.altKey) return;
+                    // A focused button keeps its own Enter. Without this, tabbing to
+                    // Previous or Flag and pressing Enter advanced the item instead of
+                    // activating the control, which makes the page unusable by keyboard
+                    // — the very thing these shortcuts exist to support.
+                    if (event.target && event.target.closest("button, a, input, select, textarea")) return;
+                    if (review.hidden === false) return;
+                    var item = items[current];
+                    // An evaluation with no questions has no current item; the numeric
+                    // shortcut below would hand `undefined` to inputsFor and throw.
+                    if (!item) return;
+                    if (event.key === "ArrowRight" || event.key === "Enter") {
+                        event.preventDefault();
+                        if (current === items.length - 1) showReview();
+                        else show(current + 1);
+                    } else if (event.key === "ArrowLeft") {
+                        event.preventDefault();
+                        show(current - 1);
+                    } else if (event.key === "f" || event.key === "F") {
+                        event.preventDefault();
+                        flagged[current] = !flagged[current];
+                        show(current);
+                    } else if (/^[1-9]$/.test(event.key)) {
+                        var choice = inputsFor(item)[parseInt(event.key, 10) - 1];
+                        if (!choice) return;
+                        event.preventDefault();
+                        if (choice.type === "checkbox") choice.checked = !choice.checked;
+                        else choice.checked = true;
+                        choice.dispatchEvent(new Event("change", { bubbles: true }));
+                    }
+                });
+
+                show(0, true);
+            })();
+        </script>
+    </body>
+</html>
