@@ -1,0 +1,393 @@
+{# Intent Solutions practice.
+
+   Three states in one surface: pick a certification, pick one of its domains, or
+   drill that domain.
+
+   Practice is its own area of the product, keyed by CERTIFICATION and outside courses
+   entirely (Max, 2026-08-09). Course was the wrong key: CCA-F alone carries questions
+   for two credentials, so a course-scoped view showed 12 mashed-together domains
+   instead of the 5 or 7 belonging to the certification a member is actually sitting.
+
+   A drill is rehearsal, not an exam. Nothing is recorded, feedback is immediate,
+   and you can work the same weak domain as many times as you like — which is the
+   whole reason it does not create an attempt. The exam surface stays the place
+   where a score is earned.
+#}
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>
+            {% if selected_domain %}{{ selected_domain.name }}{% elif selected_cert %}{{ selected_cert.name }}{% else %}Practice{% endif %} - Intent Solutions Learn
+        </title>
+        {{ current_theme.local_style() }}
+        <style>
+            :root {
+                --is-accent: var(--bs-primary, #f97316);
+                --is-paper: var(--bs-body-bg, #09090b);
+                --is-ink: var(--bs-body-color, #a1a1aa);
+                --is-strong: var(--bs-emphasis-color, #fafafa);
+                --is-muted: var(--bs-secondary-color, #a1a1aa);
+                --is-line: var(--bs-border-color, #27272a);
+                --is-card: var(--bs-secondary-bg, #18181b);
+                --is-bar: var(--bs-tertiary-bg, #1f1f23);
+                --is-pass: #2f9e6f;
+                --is-short: #b4553a;
+            }
+            body.is-practice {
+                background: var(--is-paper);
+                color: var(--is-ink);
+            }
+            .is-practice-bar {
+                background: var(--is-bar);
+                color: var(--is-strong);
+            }
+            .is-mono {
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.8125rem;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+            }
+            .is-card {
+                background: var(--is-card);
+                border: 1px solid var(--is-line);
+                border-radius: 10px;
+            }
+            .is-domain-card {
+                display: block;
+                text-decoration: none;
+                color: inherit;
+                height: 100%;
+            }
+            .is-domain-card:hover {
+                border-color: var(--is-accent);
+            }
+            .is-meter {
+                height: 6px;
+                border-radius: 3px;
+                background: var(--is-line);
+                overflow: hidden;
+            }
+            .is-meter span {
+                display: block;
+                height: 100%;
+                background: var(--is-accent);
+            }
+            .is-meter span.is-pass {
+                background: var(--is-pass);
+            }
+            .is-meter span.is-short {
+                background: var(--is-short);
+            }
+            .is-stem {
+                font-size: 1.125rem;
+                line-height: 1.65;
+                color: var(--is-strong);
+            }
+            .is-choice {
+                display: flex;
+                gap: 0.85rem;
+                align-items: flex-start;
+                width: 100%;
+                text-align: left;
+                border: 1px solid var(--is-line);
+                border-radius: 8px;
+                background: var(--is-card);
+                color: var(--is-ink);
+                padding: 0.85rem 1rem;
+                margin-bottom: 0.6rem;
+                cursor: pointer;
+            }
+            .is-choice:hover {
+                border-color: var(--is-accent);
+            }
+            .is-choice .is-key {
+                flex: 0 0 auto;
+                width: 1.6rem;
+                height: 1.6rem;
+                border: 1px solid var(--is-line);
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.8125rem;
+                color: var(--is-muted);
+            }
+            .is-choice.is-picked {
+                border-color: var(--is-accent);
+            }
+            .is-choice.is-right {
+                border-color: var(--is-pass);
+            }
+            .is-choice.is-right .is-key {
+                background: var(--is-pass);
+                border-color: var(--is-pass);
+                color: var(--bs-body-bg, #09090b);
+            }
+            .is-choice.is-wrong {
+                border-color: var(--is-short);
+            }
+            .is-choice.is-wrong .is-key {
+                background: var(--is-short);
+                border-color: var(--is-short);
+                color: var(--bs-body-bg, #09090b);
+            }
+            .is-feedback {
+                border-top: 1px solid var(--is-line);
+                margin-top: 1rem;
+                padding-top: 1rem;
+                white-space: pre-line;
+                color: var(--is-muted);
+            }
+            .is-keys {
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.75rem;
+                color: var(--is-muted);
+            }
+            .is-keys kbd {
+                background: var(--is-card);
+                border: 1px solid var(--is-line);
+                border-radius: 3px;
+                color: var(--is-strong);
+                padding: 0 0.35rem;
+            }
+        </style>
+    </head>
+
+    <body class="is-practice">
+        {{ current_theme.navbar() }}
+
+        <div class="is-practice-bar">
+            <div class="container py-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span class="fw-bold">
+                    {% if selected_domain %}{{ selected_domain.name }}
+                    {% elif selected_cert %}{{ selected_cert.name }}
+                    {% else %}Practice{% endif %}
+                </span>
+                <span class="is-mono" style="color: var(--is-muted)">
+                    {% if selected_domain %}Drill &middot; nothing is recorded
+                    {% elif selected_cert %}Choose a domain
+                    {% else %}Choose a certification{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container py-4">
+                <div class="row">
+                    <div class="col-lg-9 col-xl-8 mx-auto">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb small">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none" href="{{ url_for('home.panel') }}">Home</a>
+                                </li>
+                                {% if selected_cert %}
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none" href="{{ url_for('evaluation.practice') }}">Practice</a>
+                                </li>
+                                {% if selected_domain %}
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none"
+                                        href="{{ url_for('evaluation.practice', certification_key=selected_cert.key) }}"
+                                        >{{ selected_cert.name }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ selected_domain.name }}</li>
+                                {% else %}
+                                <li class="breadcrumb-item active" aria-current="page">{{ selected_cert.name }}</li>
+                                {% endif %}
+                                {% else %}
+                                <li class="breadcrumb-item active" aria-current="page">Practice</li>
+                                {% endif %}
+                            </ol>
+                        </nav>
+
+                        {% if not selected_cert %}
+                        <p class="mb-4" style="color: var(--is-muted)">
+                            Practice is organised by certification, not by course — a single course can carry
+                            questions for more than one credential. Nothing here is recorded.
+                        </p>
+                        {% if certifications %}
+                        <div class="row g-3">
+                            {% for cert in certifications %}
+                            <div class="col-md-6">
+                                <a
+                                    class="is-card is-domain-card p-3"
+                                    href="{{ url_for('evaluation.practice', certification_key=cert.key) }}"
+                                >
+                                    <div class="fw-semibold mb-1" style="color: var(--is-strong)">{{ cert.name }}</div>
+                                    <div class="is-mono" style="color: var(--is-muted)">
+                                        {{ cert.domains | length }} domain{{ '' if cert.domains | length == 1 else 's' }}
+                                        &middot; {{ cert.total }} question{{ '' if cert.total == 1 else 's' }}
+                                    </div>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="is-card p-4">
+                            <p class="mb-0">
+                                No questions carry a certification yet. Re-run the course seeder to label them.
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        {% elif not selected_domain %}
+                        <p class="mb-4" style="color: var(--is-muted)">
+                            Every question for this certification, grouped by domain. Standing reflects your most
+                            recent answer to each question, so a domain you have since learned is not held down by an
+                            early guess.
+                        </p>
+                        <div class="row g-3">
+                            {% for row in domains %}
+                            {% set pct = (row.correct * 100.0 / row.seen) if row.seen else 0 %}
+                            <div class="col-md-6">
+                                <a
+                                    class="is-card is-domain-card p-3"
+                                    href="{{ url_for('evaluation.practice', certification_key=selected_cert.key, domain_key=row.key) }}"
+                                >
+                                    <div class="fw-semibold mb-1" style="color: var(--is-strong)">{{ row.name }}</div>
+                                    <div class="is-mono mb-2" style="color: var(--is-muted)">
+                                        {{ row.questions | length }} question{{ '' if row.questions | length == 1 else 's' }}
+                                        {% if row.seen %}&middot; {{ row.correct }}/{{ row.seen }} right
+                                        {% else %}&middot; not attempted{% endif %}
+                                    </div>
+                                    {% if row.seen %}
+                                    <div class="is-meter">
+                                        <span class="{{ 'is-pass' if pct >= 72 else 'is-short' }}" style="width: {{ pct }}%"></span>
+                                    </div>
+                                    {% endif %}
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        {% else %}
+                        <div id="is-drill" data-count="{{ questions | length }}">
+                            {% for question in questions %}
+                            {% set correct_count = question.options | selectattr("is_correct", "equalto", true) | list | length %}
+                            <section class="is-drill-item" data-index="{{ loop.index0 }}" {% if not loop.first %}hidden{% endif %}>
+                                <div class="d-flex justify-content-between align-items-center mb-2 is-mono">
+                                    <span style="color: var(--is-accent)">
+                                        Question {{ loop.index }} of {{ questions | length }}
+                                    </span>
+                                    <span style="color: var(--is-muted)">
+                                        {% if correct_count > 1 %}Select {{ correct_count }}{% else %}Select one{% endif %}
+                                    </span>
+                                </div>
+
+                                <div class="is-card p-4 mb-3">
+                                    <p class="is-stem mb-4">{{ question.text }}</p>
+
+                                    {% for option in question.options %}
+                                    <button type="button" class="is-choice" data-correct="{{ '1' if option.is_correct else '0' }}">
+                                        <span class="is-key">{{ loop.index }}</span>
+                                        <span>{{ option.text }}</span>
+                                    </button>
+                                    {% endfor %}
+
+                                    <div class="is-feedback" hidden>
+                                        {% if question.explanation %}{{ question.explanation }}{% else %}The highlighted
+                                        option is the correct one.{% endif %}
+                                    </div>
+
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary is-reveal">
+                                            Show the answer
+                                        </button>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary is-prev">
+                                                &larr; Previous
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-dark is-next">Next &rarr;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <p class="is-keys mb-0">
+                                <kbd>1</kbd>&ndash;<kbd>9</kbd> answer &middot; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> move
+                            </p>
+                            <a
+                                class="btn btn-outline-dark"
+                                href="{{ url_for('evaluation.practice', certification_key=selected_cert.key) }}"
+                                >Pick another domain</a
+                            >
+                        </div>
+
+                        <script>
+                            (function () {
+                                "use strict";
+                                var root = document.getElementById("is-drill");
+                                if (!root) return;
+                                var items = Array.prototype.slice.call(root.querySelectorAll(".is-drill-item"));
+                                if (!items.length) return;
+                                var current = 0;
+
+                                function reveal(item) {
+                                    item.querySelectorAll(".is-choice").forEach(function (choice) {
+                                        if (choice.dataset.correct === "1") choice.classList.add("is-right");
+                                    });
+                                    item.querySelector(".is-feedback").hidden = false;
+                                }
+
+                                function show(i) {
+                                    if (i < 0 || i >= items.length) return;
+                                    items[current].hidden = true;
+                                    current = i;
+                                    items[current].hidden = false;
+                                    items[current].scrollIntoView({ block: "nearest" });
+                                }
+
+                                root.addEventListener("click", function (event) {
+                                    var item = items[current];
+                                    var choice = event.target.closest(".is-choice");
+                                    if (choice) {
+                                        choice.classList.add(choice.dataset.correct === "1" ? "is-right" : "is-wrong");
+                                        choice.classList.add("is-picked");
+                                        reveal(item);
+                                        return;
+                                    }
+                                    if (event.target.closest(".is-reveal")) reveal(item);
+                                    else if (event.target.closest(".is-next")) show(current + 1);
+                                    else if (event.target.closest(".is-prev")) show(current - 1);
+                                });
+
+                                document.addEventListener("keydown", function (event) {
+                                    if (event.metaKey || event.ctrlKey || event.altKey) return;
+                                    // A focused control keeps its own Enter/Space.
+                                    if (event.target && event.target.closest("button")) return;
+                                    if (!items[current]) return;
+                                    if (event.key === "ArrowRight") {
+                                        event.preventDefault();
+                                        show(current + 1);
+                                    } else if (event.key === "ArrowLeft") {
+                                        event.preventDefault();
+                                        show(current - 1);
+                                    } else if (/^[1-9]$/.test(event.key)) {
+                                        var choices = items[current].querySelectorAll(".is-choice");
+                                        var pick = choices[parseInt(event.key, 10) - 1];
+                                        if (pick) {
+                                            event.preventDefault();
+                                            pick.click();
+                                        }
+                                    }
+                                });
+                            })();
+                        </script>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

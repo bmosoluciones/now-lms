@@ -1,0 +1,368 @@
+{# Intent Solutions result surface.
+
+   Adds what the platform result page cannot show: how the member did in each
+   domain of the syllabus, not just one aggregate percentage. That is the whole
+   point of a practice exam — a 74% that is uniformly thin means something very
+   different from a 74% carried by two strong domains and one that is failing.
+
+   Correctness is recomputed here the same way the platform template does it —
+   comparing the submitted option ids against the correct ones — rather than
+   trusting a stored flag, because none is stored.
+
+   Unanswered questions are walked too. Iterating `attempt.answers` alone would
+   silently drop them from their domain's denominator and inflate every domain a
+   member skipped, which is exactly backwards.
+#}
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+{% set ns = namespace(order=[], stats={}) %}
+{% for question in attempt.evaluation.questions %}
+    {% set label = question.domain_name or question.domain_key %}
+    {% if label %}
+        {% if label not in ns.stats %}
+            {% set _ = ns.order.append(label) %}
+            {% set _ = ns.stats.update({label: {"correct": 0, "total": 0}}) %}
+        {% endif %}
+        {% set answer = (attempt.answers | selectattr("question_id", "equalto", question.id) | list | first) %}
+        {% set correct_ids = question.options | selectattr("is_correct", "equalto", true) | map(attribute="id") | list %}
+        {% set selected_ids = (answer.selected_option_ids | fromjson) if (answer and answer.selected_option_ids) else [] %}
+        {% set hit = 1 if (selected_ids and selected_ids | sort == correct_ids | sort) else 0 %}
+        {% set _ = ns.stats[label].update({"correct": ns.stats[label]["correct"] + hit, "total": ns.stats[label]["total"] + 1}) %}
+    {% endif %}
+{% endfor %}
+
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ attempt.evaluation.title }} - Intent Solutions Learn</title>
+        {{ current_theme.local_style() }}
+        <style>
+            /* Bound to the theme's Bootstrap tokens, never to literal brand hexes:
+               theme.min.css overrides brand.css, so the live surface is dark and the
+               live accent is --bs-primary. */
+            :root {
+                --is-accent: var(--bs-primary, #f97316);
+                --is-paper: var(--bs-body-bg, #09090b);
+                --is-ink: var(--bs-body-color, #a1a1aa);
+                --is-strong: var(--bs-emphasis-color, #fafafa);
+                --is-muted: var(--bs-secondary-color, #a1a1aa);
+                --is-line: var(--bs-border-color, #27272a);
+                --is-card: var(--bs-secondary-bg, #18181b);
+                --is-bar: var(--bs-tertiary-bg, #1f1f23);
+                --is-pass: #2f9e6f;
+                --is-short: #b4553a;
+            }
+            body.is-result {
+                background: var(--is-paper);
+                color: var(--is-ink);
+            }
+            .is-result-bar {
+                background: var(--is-bar);
+                color: var(--is-strong);
+            }
+            .is-mono {
+                font-family: var(--bs-font-monospace, monospace);
+                font-size: 0.8125rem;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+            }
+            .is-card {
+                background: var(--is-card);
+                border: 1px solid var(--is-line);
+                border-radius: 10px;
+            }
+            .is-score {
+                font-size: 3rem;
+                font-weight: 700;
+                line-height: 1;
+                color: var(--is-strong);
+            }
+            .is-verdict {
+                font-weight: 700;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+            }
+            .is-verdict.is-pass {
+                color: var(--is-pass);
+            }
+            .is-verdict.is-short {
+                color: var(--is-short);
+            }
+            .is-domain + .is-domain {
+                margin-top: 1.1rem;
+            }
+            .is-domain-name {
+                color: var(--is-strong);
+            }
+            .is-meter {
+                height: 8px;
+                border-radius: 4px;
+                background: var(--is-line);
+                overflow: hidden;
+            }
+            .is-meter span {
+                display: block;
+                height: 100%;
+                border-radius: 4px;
+                background: var(--is-accent);
+            }
+            .is-meter span.is-pass {
+                background: var(--is-pass);
+            }
+            .is-meter span.is-short {
+                background: var(--is-short);
+            }
+            /* Native <details> rather than a JS accordion: it collapses without
+               scripting, is keyboard-operable and screen-reader-announced for free,
+               and browser find-in-page can open a closed section. */
+            .is-q {
+                border-top: 1px solid var(--is-line);
+                padding-top: 1rem;
+                margin-top: 1rem;
+            }
+            .is-q > summary {
+                list-style: none;
+                cursor: pointer;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem 0.75rem;
+                align-items: baseline;
+                justify-content: space-between;
+            }
+            .is-q > summary::-webkit-details-marker {
+                display: none;
+            }
+            .is-q > summary:hover {
+                color: var(--is-accent);
+            }
+            /* Wraps and shrinks: a `flex: 0 0 auto` row here measured 380px inside a
+               316px column at 390px wide and pushed the whole page sideways. */
+            .is-q-meta {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 0.5rem;
+                flex: 0 1 auto;
+                min-width: 0;
+            }
+            .is-q-meta .is-tag {
+                max-width: 100%;
+            }
+            /* The LABELS carry the verdict in colour; the answer text itself stays in
+               the body colour so it reads as content rather than as a judgement. An
+               unanswered question takes the wrong colour, matching its summary badge —
+               it scores as incorrect. Colour is never the only signal: the badge still
+               says Correct, Incorrect or Not answered in words. */
+            .is-answer-right {
+                color: var(--is-pass);
+            }
+            .is-answer-wrong {
+                color: var(--is-short);
+            }
+            .is-q-caret::before {
+                content: "+";
+                font-family: var(--bs-font-monospace, monospace);
+                color: var(--is-muted);
+            }
+            .is-q[open] > summary .is-q-caret::before {
+                content: "\2212";
+            }
+            .is-q-body {
+                padding-top: 0.85rem;
+            }
+            .is-tag {
+                font-size: 0.6875rem;
+                border: 1px solid var(--is-line);
+                border-radius: 999px;
+                padding: 0.1rem 0.55rem;
+                color: var(--is-muted);
+            }
+            @media (max-width: 575.98px) {
+                .is-score {
+                    font-size: 2.25rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="is-result">
+        {{ current_theme.navbar() }}
+
+        <div class="is-result-bar">
+            <div class="container py-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="is-exam-id" style="min-width: 0; max-width: 100%">
+                    <span class="fw-bold d-block text-truncate">{{ attempt.evaluation.title }}</span>
+                </div>
+                <span class="is-mono" style="color: var(--is-muted)">Attempt result</span>
+            </div>
+        </div>
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container py-4">
+                <div class="row">
+                    <div class="col-lg-9 col-xl-8 mx-auto">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb small">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none" href="{{ url_for('home.panel') }}">Home</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none"
+                                        href="{{ url_for('course.tomar_curso', course_code=attempt.evaluation.section.curso) }}"
+                                        >Course</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Result</li>
+                            </ol>
+                        </nav>
+
+                        <div class="is-card p-4 mb-4">
+                            <div class="d-flex flex-wrap align-items-end justify-content-between gap-3">
+                                <div>
+                                    <div class="is-score">{{ "%.1f" | format(attempt.score or 0) }}%</div>
+                                    <div class="is-mono mt-2" style="color: var(--is-muted)">
+                                        Pass mark {{ attempt.evaluation.passing_score }}%
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    {% if attempt.passed %}
+                                    <div class="is-verdict is-pass">Passed</div>
+                                    {% else %}
+                                    <div class="is-verdict is-short">Not yet</div>
+                                    <div class="small mt-1" style="color: var(--is-muted)">
+                                        {{ "%.1f" | format(attempt.evaluation.passing_score - (attempt.score or 0)) }} points short
+                                    </div>
+                                    {% endif %} {% if attempt.submitted_at %}
+                                    <div class="is-mono mt-2" style="color: var(--is-muted)">
+                                        {{ attempt.submitted_at.strftime('%d %b %Y, %H:%M') }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if ns.order %}
+                        <div class="is-card p-4 mb-4">
+                            <h5 class="mb-1" style="color: var(--is-strong)">Where you stand by domain</h5>
+                            <p class="small mb-4" style="color: var(--is-muted)">
+                                An unanswered item counts against its domain, the same way it counts against your score.
+                            </p>
+
+                            {% for label in ns.order %} {% set row = ns.stats[label] %} {% set pct = (row.correct * 100.0 /
+                            row.total) if row.total else 0 %}
+                            <div class="is-domain">
+                                <div class="d-flex justify-content-between align-items-baseline gap-2 mb-1">
+                                    <span class="is-domain-name">{{ label }}</span>
+                                    <span class="is-mono" style="color: var(--is-muted)">
+                                        {{ row.correct }}/{{ row.total }} &middot; {{ "%.0f" | format(pct) }}%
+                                    </span>
+                                </div>
+                                <div class="is-meter">
+                                    <span
+                                        class="{{ 'is-pass' if pct >= attempt.evaluation.passing_score else 'is-short' }}"
+                                        style="width: {{ pct }}%"
+                                    ></span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="is-card p-4">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                <h5 class="mb-0" style="color: var(--is-strong)">Every question</h5>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="is-expand-all">
+                                    Expand all
+                                </button>
+                            </div>
+                            {% for question in attempt.evaluation.questions %} {% set answer = (attempt.answers |
+                            selectattr("question_id", "equalto", question.id) | list | first) %} {% set correct_ids =
+                            question.options | selectattr("is_correct", "equalto", true) | map(attribute="id") | list %} {% set
+                            selected_ids = (answer.selected_option_ids | fromjson) if (answer and answer.selected_option_ids)
+                            else [] %} {% set is_correct = selected_ids and selected_ids | sort == correct_ids | sort %}
+                            <details class="is-q">
+                                <summary>
+                                    <span class="is-mono" style="color: var(--is-muted)">Question {{ loop.index }}</span>
+                                    <span class="is-q-meta">
+                                        {% if question.domain_name %}
+                                        <span class="is-tag">{{ question.domain_name }}</span>
+                                        {% endif %} {% if is_correct %}
+                                        <span class="is-verdict is-pass" style="font-size: 0.75rem">Correct</span>
+                                        {% elif not selected_ids %}
+                                        <span class="is-verdict is-short" style="font-size: 0.75rem">Not answered</span>
+                                        {% else %}
+                                        <span class="is-verdict is-short" style="font-size: 0.75rem">Incorrect</span>
+                                        {% endif %}
+                                        <span class="is-q-caret" aria-hidden="true"></span>
+                                    </span>
+                                </summary>
+
+                                <div class="is-q-body">
+                                <p style="color: var(--is-strong)">{{ question.text }}</p>
+
+                                <div class="small mb-2">
+                                    <div class="{{ 'is-answer-right' if is_correct else 'is-answer-wrong' }}">Your answer</div>
+                                    {% if selected_ids %} {% for option in question.options %} {% if option.id in selected_ids %}
+                                    <div>{{ option.text }}</div>
+                                    {% endif %} {% endfor %} {% else %}
+                                    <div><em>Left blank</em></div>
+                                    {% endif %}
+                                </div>
+
+                                {% if not is_correct %}
+                                <div class="small mb-2">
+                                    <div class="is-answer-right">Correct answer</div>
+                                    {% for option in question.options %} {% if option.is_correct %}
+                                    <div>{{ option.text }}</div>
+                                    {% endif %} {% endfor %}
+                                </div>
+                                {% endif %} {% if question.explanation %}
+                                <p class="small mb-0" style="color: var(--is-muted); white-space: pre-line">
+                                    {{ question.explanation }}
+                                </p>
+                                {% endif %}
+                                </div>
+                            </details>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mt-4">
+                            <a
+                                class="btn btn-outline-secondary"
+                                href="{{ url_for('course.tomar_curso', course_code=attempt.evaluation.section.curso) }}"
+                                >Back to the course</a
+                            >
+                            <a
+                                class="btn btn-primary"
+                                href="{{ url_for('evaluation.take_evaluation', evaluation_id=attempt.evaluation.id) }}"
+                                >Take it again</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script>
+            (function () {
+                "use strict";
+                var button = document.getElementById("is-expand-all");
+                if (!button) return;
+                var items = Array.prototype.slice.call(document.querySelectorAll("details.is-q"));
+                button.addEventListener("click", function () {
+                    var opening = items.some(function (item) {
+                        return !item.open;
+                    });
+                    items.forEach(function (item) {
+                        item.open = opening;
+                    });
+                    button.textContent = opening ? "Collapse all" : "Expand all";
+                });
+            })();
+        </script>
+    </body>
+</html>

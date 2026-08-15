@@ -79,6 +79,8 @@ LESSONS_DIR = CONTENT_DIR / "lessons"
 MAX_QUESTION_TEXT = 1000
 MAX_EXPLANATION = 1000
 MAX_OPTION_TEXT = 500
+MAX_DOMAIN_KEY = 50
+MAX_DOMAIN_NAME = 150
 
 
 def _truncate(value: str, limit: int) -> str:
@@ -88,6 +90,26 @@ def _truncate(value: str, limit: int) -> str:
     if len(value) <= limit:
         return value
     return value[: limit - 1].rstrip() + "…"
+
+
+# Which certification each bank prepares for. Only Matthew's bank declares this in its
+# own header; the other five are mapped here rather than by editing them, because the
+# two licensed banks are used unchanged under their authors' reuse grants and the
+# in-house banks predate the field.
+#
+# Practice is organised by certification, not by course (Max, 2026-08-09: "practice
+# tests are their own domain ... outside of courses"). A course is the wrong key: CCA-F
+# alone carries questions for TWO credentials, so grouping practice by course showed a
+# member 12 mashed-together domains instead of the 5 or 7 that belong to the
+# certification they are sitting.
+BANK_CERTIFICATIONS = {
+    "questions-associate.json": ("CCAO-F", "Claude Certified Associate — Foundations"),
+    "matthew-purcell-practice-exams.json": ("CCAO-F", "Claude Certified Associate — Foundations"),
+    "questions-developer.json": ("CCD", "Claude Certified Developer"),
+    "questions.json": ("CCA-F", "Claude Certified Architect — Foundations"),
+    "rick-practice-exams.json": ("CCA-F", "Claude Certified Architect — Foundations"),
+    "questions-architect-professional.json": ("CCA-P", "Claude Certified Architect — Professional"),
+}
 
 
 def _correct_positions(item: dict) -> set[int]:
@@ -145,11 +167,30 @@ def _correct_positions(item: dict) -> set[int]:
 
 
 def _load_bank(filename: str) -> list[dict]:
-    """Load a vendored question bank and return its ``questions`` list."""
+    """Load a vendored question bank and return its ``questions`` list.
+
+    Each item is stamped with the certification its bank prepares for, taken from the
+    bank's own ``certification`` header when it has one and from BANK_CERTIFICATIONS
+    otherwise. Stamping here rather than at each call site means every path that
+    reaches a question — section quiz, mock, extra exam — carries it without having to
+    remember to.
+    """
     path = BANKS_DIR / filename
     with path.open(encoding="utf-8") as handle:
         data = json.load(handle)
-    return data["questions"] if isinstance(data, dict) else data
+    questions = data["questions"] if isinstance(data, dict) else data
+
+    declared = data.get("certification") if isinstance(data, dict) else None
+    if declared and declared.get("code"):
+        key, name = declared["code"], declared.get("name") or declared["code"]
+    else:
+        key, name = BANK_CERTIFICATIONS.get(filename, (None, None))
+
+    if key:
+        for item in questions:
+            item.setdefault("certificationKey", key)
+            item.setdefault("certificationName", name)
+    return questions
 
 
 def _load_bank_optional(filename: str) -> list[dict]:
@@ -322,12 +363,27 @@ def _add_evaluation(db, models, section_id: str, title: str, description: str, i
         rationale = (item.get("rationale") or "").strip()
         source = (item.get("source") or "").strip()
         explanation = rationale + (f"\n\nSource: {source}" if source else "")
+        # Carry the bank's domain onto the row. Every bank item already declares one;
+        # until now the importer read it only to group questions into sections and then
+        # dropped it, so a full-length exam — whose items span every domain inside ONE
+        # evaluation — could not be scored per domain, and no bank could be drilled one
+        # domain at a time. Falling back to the integer `domain` keeps items from an
+        # older bank shape usable rather than silently unlabelled.
+        domain_key = (item.get("domainKey") or "").strip() or None
+        if domain_key is None and item.get("domain") is not None:
+            domain_key = str(item["domain"])
+        domain_name = (item.get("domainName") or "").strip() or None
+
         question = models["Question"](
             evaluation_id=evaluation.id,
             type="multiple",
             text=_truncate(item["text"], MAX_QUESTION_TEXT),
             explanation=_truncate(explanation, MAX_EXPLANATION),
             order=order,
+            domain_key=_truncate(domain_key, MAX_DOMAIN_KEY) or None,
+            domain_name=_truncate(domain_name, MAX_DOMAIN_NAME) or None,
+            certification_key=_truncate(item.get("certificationKey"), MAX_DOMAIN_KEY) or None,
+            certification_name=_truncate(item.get("certificationName"), MAX_DOMAIN_NAME) or None,
         )
         db.session.add(question)
         db.session.commit()  # flush so question.id is available for options

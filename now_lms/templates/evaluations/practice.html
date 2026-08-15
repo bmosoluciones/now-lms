@@ -1,0 +1,94 @@
+{# Platform default for practice.
+
+   Deliberately plain: the fork's branded version lives in
+   themes/intent_learn/overrides/practice.j2 and is selected by
+   themes.get_practice_template(). This file is what any other theme gets.
+
+   Practice is keyed by certification rather than by course — one course can carry
+   questions for more than one credential.
+#}
+{% set current_theme = current_theme() %}
+
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _('Práctica') }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container py-4">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <h3>
+                            {% if selected_domain %}{{ selected_domain.name }}
+                            {% elif selected_cert %}{{ selected_cert.name }}
+                            {% else %}{{ _('Práctica') }}{% endif %}
+                        </h3>
+
+                        {% if not selected_cert %}
+                        <p class="text-muted">{{ _('Elija una certificación. La práctica no se registra.') }}</p>
+                        <div class="list-group">
+                            {% for cert in certifications %}
+                            <a
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                href="{{ url_for('evaluation.practice', certification_key=cert.key) }}"
+                            >
+                                <span>{{ cert.name }}</span>
+                                <span class="badge bg-secondary rounded-pill">{{ cert.total }}</span>
+                            </a>
+                            {% else %}
+                            <p>{{ _('No hay preguntas con certificación.') }}</p>
+                            {% endfor %}
+                        </div>
+
+                        {% elif not selected_domain %}
+                        <p class="text-muted">{{ _('Elija un dominio.') }}</p>
+                        <div class="list-group">
+                            {% for row in domains %}
+                            <a
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                href="{{ url_for('evaluation.practice', certification_key=selected_cert.key, domain_key=row.key) }}"
+                            >
+                                <span>{{ row.name }}</span>
+                                <span class="badge bg-secondary rounded-pill">{{ row.questions | length }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+
+                        {% else %}
+                        <p class="text-muted">{{ _('La práctica no se registra. Las respuestas correctas se muestran abajo.') }}</p>
+                        {% for question in questions %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ _('Pregunta') }} {{ loop.index }}</h6>
+                                <p class="card-text">{{ question.text }}</p>
+                                <ul class="list-unstyled mb-2">
+                                    {% for option in question.options %}
+                                    <li>
+                                        {% if option.is_correct %}<strong>{{ option.text }}</strong>{% else %}{{ option.text }}{% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% if question.explanation %}
+                                <p class="small text-muted mb-0" style="white-space: pre-line">{{ question.explanation }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <a class="btn btn-secondary" href="{{ url_for('evaluation.practice', certification_key=selected_cert.key) }}">
+                            {{ _('Elegir otro dominio') }}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

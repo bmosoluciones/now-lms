@@ -234,6 +234,34 @@
                             </section>
                             {% endif %}
 
+                            {# The drill had no entry point at all: nothing in the theme or the
+                               platform templates linked to it, so a member could only reach it by
+                               typing the URL. A practice resource nobody can find is not a
+                               resource. #}
+                            <section class="isl-panel">
+                                <div class="isl-panel-head">
+                                    <i class="bi bi-bullseye" aria-hidden="true"></i>
+                                    <h2>{{ _('Practice by domain') }}</h2>
+                                </div>
+                                <div class="isl-panel-body">
+                                    <p class="isl-prose">
+                                        {{ _('Practice is organised by certification, not by course. Work through every question in one '
+                                             'part of the syllabus at a time, with the answer and the reasoning shown as you go. '
+                                             'Nothing is recorded — this is rehearsal, not a score.') }}
+                                    </p>
+                                    {# `isl-btn`, not Bootstrap's `btn`: this override does not load
+                                       Bootstrap at all, so `btn btn-primary` rendered as plain inline
+                                       text with no background, padding or radius. Verified in the
+                                       browser — the class existed, the rule did not. #}
+                                    <a
+                                        class="isl-btn isl-btn-primary"
+                                        href="{{ url_for('evaluation.practice') }}"
+                                    >
+                                        {{ _('Practice by certification') }}
+                                    </a>
+                                </div>
+                            </section>
+
                             <section class="isl-panel">
                                 <div class="isl-panel-head">
                                     <i class="bi bi-list-ul" aria-hidden="true"></i>
