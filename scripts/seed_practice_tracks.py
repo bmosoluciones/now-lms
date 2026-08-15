@@ -29,7 +29,8 @@ Usage
 -----
     python scripts/seed_practice_tracks.py                  # create, skip existing
     python scripts/seed_practice_tracks.py --reset          # rebuild the three
-    python scripts/seed_practice_tracks.py --remove-demo    # also drop upstream demo courses
+    python scripts/seed_practice_tracks.py --remove-demo       # also drop upstream demo content
+    python scripts/seed_practice_tracks.py --only-remove-demo  # remove only; seed nothing
 
 All three tracks sit at the same level. They are peers — three ways to prove the
 same house method — not a ladder, so ranking one above another would be a claim
@@ -50,7 +51,20 @@ import sys
 from datetime import datetime, timezone
 
 from now_lms import lms_app
-from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, database
+from now_lms.db import (
+    Announcement,
+    BlogPost,
+    Coupon,
+    Curso,
+    CursoRecurso,
+    CursoSeccion,
+    CursoUsuarioAvance,
+    EstudianteCurso,
+    ForoMensaje,
+    Mensaje,
+    Pago,
+    database,
+)
 
 # Upstream's demo seed data. Codes come from now_lms/db/initial_data.py.
 #
@@ -68,7 +82,29 @@ from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, datab
 # ALSO returns 302, so the smoke check cannot tell the two apart.
 #
 # Bead now-lms-4vf.
-DEMO_COURSE_CODES = ["now", "details", "free", "resources"]
+# Code -> the name upstream seeds it with. The NAME is checked as well as the code,
+# because a course code is editable and reusable: an administrator can repurpose
+# "free" into real content and, if nobody has enrolled yet, an automated cleanup
+# keyed on the code alone would delete it. A code is an address; the name is the
+# only cheap evidence the row is still upstream's sample.
+DEMO_COURSES = {
+    "now": "OnLine Teaching 101",
+    "details": "Course Details",
+    "free": "Free Course",
+    "resources": "Demo Course",
+}
+DEMO_COURSE_CODES = list(DEMO_COURSES)
+
+# Upstream's sample blog post, created by crear_blog_post_predeterminado(). Identified
+# by the slug that function derives from its own title, which is stable.
+#
+# It is served PUBLICLY at /blog under Intent Solutions copyright, bylined "System
+# Administrator", and it is about online learning in general — not about anything
+# Intent does. A stranger evaluating the company reads it as our writing.
+DEMO_BLOG_SLUG = "the-importance-of-online-learning-in-todays-world"
+
+# The first sentence upstream seeds, used as a content fingerprint alongside the slug.
+DEMO_BLOG_OPENING = "The COVID-19 pandemic transformed the way we live, work, and learn."
 
 HOUSE_CORE_NOTE = (
     "All members begin with the shared house core, regardless of track. "
@@ -130,17 +166,83 @@ def _stamp(row, who: str = "seed_practice_tracks"):
     return row
 
 
+# Tables holding rows a PERSON owns that hang off a course. Deleting a Curso cascades
+# through all of them silently — 27 foreign keys point at `curso.codigo` and the
+# cascades are declared at the database level, so nothing raises and nothing logs.
+#
+# Checking enrollments alone is not enough, and not hypothetically: `crear_certificacion()`
+# seeds a Certificacion for course "now" against the admin with NO matching
+# EstudianteCurso row, so the FIRST deploy after this lands would have taken that path
+# and destroyed a certification record.
+# Certificacion is deliberately NOT here. Intent Solutions does not issue
+# certifications — these are practice tests (Max, 2026-08-09) — so the only
+# Certificacion rows that exist are upstream's own demo data: `crear_certificacion()`
+# seeds one against course "now" for the admin, with no matching enrollment. Treating
+# that as a member asset would mean the cleanup could never remove `now`, which is
+# exactly the demo course most visible on the front door.
+MEMBER_OWNED = (
+    (EstudianteCurso, "curso", "enrollment"),
+    (Pago, "curso", "payment"),
+    (ForoMensaje, "curso_id", "forum message"),
+    (Mensaje, "curso", "message"),
+    (CursoUsuarioAvance, "curso", "progress record"),
+    (Coupon, "curso", "coupon"),
+    (Announcement, "course_id", "announcement"),
+)
+
+
+def _rows_a_person_owns(db, code: str) -> list:
+    """Every member-owned row that a delete of this course would take with it."""
+    found = []
+    for model, column, label in MEMBER_OWNED:
+        if not hasattr(model, column):
+            continue
+        rows = db.session.execute(db.select(model).filter_by(**{column: code})).scalars().all()
+        if rows:
+            found.append(f"{len(rows)} {label}{'' if len(rows) == 1 else 's'}")
+    return found
+
+
+def remove_demo_blog_post(db) -> None:
+    """Delete upstream's sample blog post, refusing anything a person has touched.
+
+    Two guards, because this deletes published content rather than sample courses
+    nobody enrolled in. The post is removed only when it is still recognisably
+    upstream's: the exact seeded slug, and no comments. A comment means a member
+    engaged with it, and quietly deleting their words to tidy the blog is worse than
+    leaving a stale post up — so that case reports and keeps.
+    """
+    post = db.session.execute(db.select(BlogPost).filter_by(slug=DEMO_BLOG_SLUG)).scalars().first()
+    if post is None:
+        return
+    # The slug is derived from the title, so rewriting the body leaves it unchanged —
+    # an automated cleanup keyed on the slug alone would delete an administrator's real
+    # article that happens to still sit at that address. Check the body still opens the
+    # way upstream seeded it.
+    if not (post.content or "").lstrip().startswith(DEMO_BLOG_OPENING):
+        print(f"[keep] blog post {DEMO_BLOG_SLUG!r}: body has been rewritten — refusing to delete")
+        return
+    if post.comment_count or post.comments:
+        count = post.comment_count or len(post.comments)
+        print(f"[keep] blog post {DEMO_BLOG_SLUG!r}: {count} comment(s) — refusing to delete")
+        return
+    db.session.delete(post)
+    db.session.commit()
+    print(f"[drop] blog post {DEMO_BLOG_SLUG!r}")
+
+
 def remove_demo_courses(db) -> None:
     """Delete upstream's demo courses, refusing any that a member is enrolled in."""
-    for code in DEMO_COURSE_CODES:
+    for code, seeded_name in DEMO_COURSES.items():
         curso = db.session.execute(db.select(Curso).filter_by(codigo=code)).scalars().first()
         if curso is None:
             continue
-        enrolled = (
-            db.session.execute(db.select(EstudianteCurso).filter_by(curso=code)).scalars().all()
-        )
-        if enrolled:
-            print(f"[keep] {code}: {len(enrolled)} enrollment(s) — refusing to delete")
+        if (curso.nombre or "").strip() != seeded_name:
+            print(f"[keep] {code}: renamed to {curso.nombre!r} — not upstream's sample, refusing to delete")
+            continue
+        owned = _rows_a_person_owns(db, code)
+        if owned:
+            print(f"[keep] {code}: {', '.join(owned)} — refusing to delete")
             continue
         for model in (CursoRecurso, CursoSeccion):
             for row in db.session.execute(db.select(model).filter_by(curso=code)).scalars().all():
@@ -221,13 +323,22 @@ def seed(db, reset: bool) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reset", action="store_true", help="rebuild tracks that already exist")
-    parser.add_argument("--remove-demo", action="store_true", help="delete upstream's demo courses")
+    parser.add_argument(
+        "--remove-demo", action="store_true", help="delete upstream's demo courses and sample blog post"
+    )
+    parser.add_argument(
+        "--only-remove-demo",
+        action="store_true",
+        help="remove upstream demo content and do nothing else (used by the deploy)",
+    )
     args = parser.parse_args()
 
     with lms_app.app_context():
-        if args.remove_demo:
+        if args.remove_demo or args.only_remove_demo:
             remove_demo_courses(database)
-        seed(database, reset=args.reset)
+            remove_demo_blog_post(database)
+        if not args.only_remove_demo:
+            seed(database, reset=args.reset)
 
         codes = [c.codigo for c in database.session.execute(database.select(Curso)).scalars().all()]
         print(f"\ncourses now present: {sorted(codes)}")

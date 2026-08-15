@@ -140,6 +140,16 @@ done
 echo "==> Smoke check"
 bash scripts/deploy-smoke.sh
 
+# AFTER the smoke check, and non-fatal. This is cosmetic cleanup; the smoke check is
+# the deploy's only proof that the running container, the checkout and the served bytes
+# agree. Run above it under `set -euo pipefail`, any non-zero exit here — a lock fight
+# with live traffic, an OperationalError, a schema lag — aborts the deploy BEFORE that
+# proof runs, while the new image is already serving. The operator would get a failure
+# about demo content and no verification at all.
+echo "==> Removing upstream demo content (idempotent; refuses anything in use)"
+docker compose exec -T app /usr/bin/python3.12 scripts/seed_practice_tracks.py --only-remove-demo \
+    || echo "WARN: demo-content cleanup failed; the deploy itself is verified and stands"
+
 if [ "${BUILD_SHA}" = "${ORIGIN_SHA}" ]; then
     echo "==> Deploy of ${BUILD_SHA} verified (== ${REMOTE_REF})."
 else
