@@ -221,6 +221,70 @@ def test_build_specs_includes_rick_practice_exams():
         assert len(exam["questions"]) == 60
 
 
+@_content_required
+def test_build_specs_includes_matthew_practice_exam():
+    """When Matthew's bank is vendored, Course A gains his full-length CCAO-F exam."""
+    if not seed._load_bank_optional("matthew-purcell-practice-exams.json"):
+        pytest.skip("Matthew practice-exam bank not vendored in this checkout")
+    cca_a = {s["codigo"]: s for s in seed._build_specs()}["CCA-A"]
+    assert cca_a.get("extra_exams"), "Course A carries no extra exams"
+    assert len(cca_a["extra_exams"]) == 1
+    assert len(cca_a["extra_exams"][0]["questions"]) == 60
+
+
+@_content_required
+def test_every_multi_correct_item_in_the_curriculum_reaches_a_course_spec():
+    """The regression guard for the defect this test was written for.
+
+    ``_correct_positions`` has honoured ``answerIndexes`` since PR #76, and the importer
+    marks both options — both are covered by synthetic fixtures above. What was NEVER
+    covered is whether any bank containing such an item is actually LOADED. It was not:
+    ``_build_specs`` named five banks by hardcoded filename, and the one bank holding
+    every select-TWO item in the curriculum was not among them. A real end-to-end seed
+    produced 539 questions, every one with a single correct answer, and nothing failed
+    or warned — the platform's multi-correct support simply had no data to act on.
+
+    So this asserts the wiring, not the helper: every multi-correct item that exists on
+    disk must appear in at least one course spec. A future bank added to the curriculum
+    but not to ``_build_specs`` fails here instead of shipping silently.
+    """
+    banks_dir = seed.BANKS_DIR
+    on_disk = {}
+    for path in sorted(banks_dir.glob("*.json")):
+        try:
+            items = seed._load_bank(path.name)
+        except (KeyError, TypeError):
+            # Not a question bank. Without this, any other JSON dropped into banks/
+            # makes this test red for a reason that has nothing to do with wiring, and
+            # the failure names the wrong cause.
+            continue
+        for item in items:
+            if len(seed._correct_positions(item)) > 1:
+                # Keyed by (bank, id) rather than text: two banks could legitimately
+                # word an item identically, and text-matching would then let one bank's
+                # inclusion mask another's absence. Every item carries an id.
+                on_disk[(path.name, item.get("id") or item["text"])] = path.name
+    if not on_disk:
+        pytest.skip("no multi-correct items vendored in this checkout")
+
+    def _identity(question):
+        return question.get("id") or question["text"]
+
+    seeded = set()
+    for spec in seed._build_specs():
+        for section in spec.get("sections", []):
+            seeded.update(_identity(q) for q in section.get("questions", []))
+        seeded.update(_identity(q) for q in spec.get("mock_questions", []))
+        for exam in spec.get("extra_exams", []):
+            seeded.update(_identity(q) for q in exam["questions"])
+
+    missing = {key: bank for key, bank in on_disk.items() if key[1] not in seeded}
+    assert not missing, (
+        f"{len(missing)} multi-correct item(s) exist on disk but reach no course spec, "
+        f"so the platform can never grade them. Unreached banks: {sorted(set(missing.values()))}"
+    )
+
+
 # --------------------------------------------------------------------------- #
 # Integration (in-memory DB via the self-contained cca_db fixture)
 # --------------------------------------------------------------------------- #

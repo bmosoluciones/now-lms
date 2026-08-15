@@ -82,6 +82,9 @@ MAX_OPTION_TEXT = 500
 MAX_DOMAIN_KEY = 50
 MAX_DOMAIN_NAME = 150
 
+# Matthew Purcell's set is one full-length form matched to the live exam's item count.
+MATTHEW_EXAM_ITEMS = 60
+
 
 def _truncate(value: str, limit: int) -> str:
     """Clip ``value`` to ``limit`` chars, appending an ellipsis if clipped."""
@@ -541,6 +544,47 @@ def _build_specs() -> list[dict]:
     architect = _load_bank("questions-architect-professional.json")
     general = _load_bank("questions.json")
 
+    # Matthew Purcell's authored CCAO-F practice exam (optional, reuse-granted on
+    # condition of credit) -> one full-length exam appended to Course A.
+    #
+    # This bank is the ONLY source of select-TWO items in the curriculum. Until it was
+    # loaded here, `_correct_positions` had correct multi-correct handling that nothing
+    # ever exercised: a real end-to-end seed imported 533 questions from these banks
+    # (539 rows in the database, the difference being upstream's own demo courses),
+    # every one with exactly one correct option and no two-correct group at all.
+    #
+    # Left exam-shaped rather than partitioned through `_weighted_exam_series`, because
+    # the author wrote it as a single full-length form against the published blueprint.
+    # That shape is asserted rather than assumed: the bank's own `examShape.items` is
+    # unreachable here because `_load_bank` returns only the questions list, so the
+    # count is checked directly. A bank that grows to 75 items would otherwise become a
+    # 75-question "full-length" exam with nothing anywhere noticing.
+    matthew = _load_bank_optional("matthew-purcell-practice-exams.json")
+    if matthew and len(matthew) != MATTHEW_EXAM_ITEMS:
+        raise ValueError(
+            f"matthew-purcell-practice-exams.json is exam-shaped at {MATTHEW_EXAM_ITEMS} items; "
+            f"got {len(matthew)}. Update MATTHEW_EXAM_ITEMS deliberately if the author revised it."
+        )
+    associate_extra_exams: list[dict] = []
+    if matthew:
+        associate_extra_exams.append({
+            "nombre": "Practice exam — Matthew Purcell (full-length CCAO-F)",
+            "descripcion": "Full-length practice exam, including select-TWO items. Unlimited attempts.",
+            "lesson": "# Practice exam — Matthew Purcell's CCAO-F set\n\n"
+                      "A full-length, exam-shaped practice test written against the public CCAO-F Exam "
+                      "Guide blueprint by Matthew Purcell, reused with permission. Some items ask you to "
+                      "**select TWO** answers; those are graded all-or-nothing, so a partially correct "
+                      "selection scores zero. Attempts are unlimited. Work the domain quizzes first, then "
+                      "use this to rehearse under exam conditions.\n\n"
+                      "These are ORIGINAL practice questions written against the publicly available "
+                      "CCAO-F Exam Guide v1.0 (July 2026) and its blueprint objectives. They are **not** "
+                      "actual exam content, are **not** drawn from the live item bank, and reproduce no "
+                      "question encountered on the exam. Exam content is confidential. No practice set "
+                      "guarantees a pass; use it alongside hands-on experience and the official "
+                      "documentation.",
+            "questions": matthew,
+        })
+
     specs: list[dict] = []
 
     # --- Course 0: Getting Started (onboarding, no exam) ---
@@ -594,6 +638,7 @@ def _build_specs() -> list[dict]:
             for _num, name, key, qs in _group_by_domain(associate)
         ],
         "mock_questions": associate,
+        "extra_exams": associate_extra_exams,
     })
 
     # --- Course B: Developer ---
