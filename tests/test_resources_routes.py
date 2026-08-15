@@ -11,6 +11,7 @@ from now_lms.db import (
     CursoRecursoAvance,
     CursoSeccion,
     CursoUsuarioAvance,
+    DocenteCurso,
     EstudianteCurso,
     Pago,
     Usuario,
@@ -185,9 +186,11 @@ def test_descargar_calendario_meet_generado(app, db_session):
 
 
 def test_google_calendar_link_redirecciona(app, db_session):
-    _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)
     curso = _crear_curso(db_session, code="c_google")
     seccion = _crear_seccion(db_session, curso)
+    db_session.add(DocenteCurso(curso=curso.codigo, usuario=instructor.usuario, vigente=True))
+    db_session.commit()
     recurso = _crear_recurso_meet(db_session, curso, seccion)
 
     client = app.test_client()

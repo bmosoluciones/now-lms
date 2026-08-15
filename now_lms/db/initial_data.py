@@ -9,6 +9,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+from contextlib import nullcontext
 from datetime import datetime, time, timedelta, timezone
 from os import environ, listdir, makedirs, path
 from shutil import copyfile, copytree
@@ -65,8 +66,26 @@ if TYPE_CHECKING:
 
 
 def system_info(app: "Flask") -> None:
-    """Información básica de la instalación."""
-    with app.app_context():
+    """Información básica de la instalación.
+
+    Reutiliza el application context activo si ya existe en lugar de anidar uno
+    nuevo. Anidarlo no era inocuo: al salir del context interno Flask ejecuta
+    ``teardown_appcontext``, y flask-alembic responde invalidando la conexión
+    que dejó cacheada la última operación de Alembic (``initial_setup()`` llama
+    ``alembic.stamp()`` justo antes de esta función). Contra una base en disco
+    eso sólo fuerza una reconexión, pero contra ``sqlite:///:memory:`` esa
+    conexión *es* la base de datos: se perdía el esquema recién creado y el
+    bootstrap fallaba con ``no such table: ad_sense`` (la primera tabla del
+    flush, no la única ausente).
+
+    Las demás funciones de carga inicial ya dependen del context del llamador;
+    esta era la excepción.
+    """
+    from flask import has_app_context
+
+    contexto = nullcontext() if has_app_context() else app.app_context()
+
+    with contexto:
         try:
             existing = {row.param for row in database.session.query(SystemInfo.param).all()}
         except Exception:

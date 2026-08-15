@@ -67,6 +67,29 @@ def test_get_course_library_path_structure():
     assert p.replace("\\", "/").endswith("files/curso123/library")
 
 
+def test_get_course_library_path_rejects_traversal_codes():
+    """Ningún código de curso puede escapar ni reubicar el directorio de biblioteca."""
+    import pytest
+
+    # Separadores de ruta y secuencias ".." deben rechazarse, no sanearse en silencio.
+    for malicious in ("..", "../..", "a/../..", "a\\..\\..", "foo..bar", "", "."):
+        with pytest.raises(ValueError):
+            get_course_library_path(malicious)
+
+
+def test_validate_course_code_rejects_dot_dot():
+    """`..` cumple el patrón de caracteres permitidos, pero debe rechazarse igualmente."""
+    import pytest
+
+    from now_lms.vistas.courses.helpers import _validate_course_code
+
+    _validate_course_code("curso-123")  # caso válido, no debe lanzar
+
+    for malicious in ("..", "foo..bar", "..foo"):
+        with pytest.raises(ValueError):
+            _validate_course_code(malicious)
+
+
 def test_ensure_course_library_directory_creates(tmp_path, monkeypatch):
     # Redefinir la constante usada en helpers directamente para evitar reload
     import now_lms.vistas.courses.helpers as helpers_mod

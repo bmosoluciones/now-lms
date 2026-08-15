@@ -26,7 +26,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache, cache_key_with_query_string
+from now_lms.cache import cache, cache_key_with_auth_state, cache_key_with_query_string
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, BlogComment, BlogPost, BlogTag, database, select
 from now_lms.forms import BlogCommentForm, BlogPostForm, BlogTagForm
@@ -111,7 +111,7 @@ def blog_index() -> str:
 
 
 @blog.route("/blog/<slug>", methods=["GET"])
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def blog_post(slug: str) -> str:
     """Display a single blog post."""
     post = database.session.execute(

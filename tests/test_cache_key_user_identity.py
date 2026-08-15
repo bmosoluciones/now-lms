@@ -143,17 +143,19 @@ def test_auth_gated_views_no_longer_use_the_default_view_key(app):
     """Guard against a bare `@cache.cached(timeout=N)` reappearing on these views.
 
     Each of these renders content that depends on who is asking; the default key is
-    the request path alone.
+    the request path alone. `blog_post` is the per-user case (a comment form is
+    rendered for signed-in readers and its CSRF token is per-session); the other
+    modules are auth-gated rosters.
     """
     import inspect
 
-    from now_lms.vistas import programs
+    from now_lms.vistas import blog, programs
     from now_lms.vistas.announcements import admin as ann_admin
     from now_lms.vistas.announcements import instructor as ann_instructor
     from now_lms.vistas.profiles import admin as profiles_admin
     from now_lms.vistas.profiles import instructor as profiles_instructor
 
-    modulos = [programs, ann_admin, ann_instructor, profiles_admin, profiles_instructor]
+    modulos = [blog, programs, ann_admin, ann_instructor, profiles_admin, profiles_instructor]
     for modulo in modulos:
         fuente = inspect.getsource(modulo)
         assert "@cache.cached(timeout=60)\n" not in fuente, f"{modulo.__name__} has an unkeyed cached view"
@@ -170,3 +172,70 @@ def test_error_handlers_that_branch_on_the_user_are_not_cached(app):
     assert "@cache.cached()\n    def error_403" not in fuente
     assert "@cache.cached()\n    def error_404" not in fuente
     assert "@cache.cached()\n    def error_405" not in fuente
+
+
+# --------------------------------------------------------------------------------------
+# blog_post: the comment form (and its CSRF) varies by viewer
+# --------------------------------------------------------------------------------------
+
+
+def _crear_post(db_session, slug: str):
+    from now_lms.db import BlogPost, Usuario
+
+    autor = Usuario(
+        usuario=f"autor_{slug}",
+        acceso=proteger_passwd("password123"),
+        nombre="Autor",
+        correo_electronico=f"autor_{slug}@example.com",
+        tipo="instructor",
+        activo=True,
+    )
+    db_session.add(autor)
+    db_session.commit()
+
+    post = BlogPost(
+        title=f"Post {slug}",
+        slug=slug,
+        content="contenido",
+        author_id=autor.usuario,
+        status="published",
+        allow_comments=True,
+    )
+    db_session.add(post)
+    db_session.commit()
+    return post
+
+
+def test_blog_post_cache_key_differs_per_user(app, db_session):
+    """`blog_post` used `@cache.cached(timeout=60)` with the default path-only key.
+    The page renders a `BlogCommentForm` (with a per-session CSRF) for signed-in
+    readers, so two users with different session cookies must never share a
+    cache entry.
+    """
+    from flask_login import login_user, logout_user
+
+    ana = _crear_usuario(db_session, "ana_blog")
+    _crear_post(db_session, "post-llaves")
+
+    with app.test_request_context("/blog/post-llaves"):
+        login_user(ana)
+        autenticada = cache_key_with_auth_state()
+
+    with app.test_request_context("/blog/post-llaves"):
+        logout_user()
+        anonima = cache_key_with_auth_state()
+
+    assert autenticada != anonima
+
+
+def test_blog_post_does_not_use_a_bare_cached_decorator(app):
+    """Regression guard: `blog_post` must declare a `key_prefix` so the cache
+    cannot replay one viewer's comment form to another.
+    """
+    import inspect
+
+    from now_lms.vistas import blog
+
+    fuente = inspect.getsource(blog)
+    assert "@cache.cached(timeout=60)\n" not in fuente
+    assert "cache_key_with_auth_state" in fuente

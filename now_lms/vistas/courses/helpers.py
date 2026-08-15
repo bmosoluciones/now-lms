@@ -50,7 +50,17 @@ _COURSE_CODE_RE = re.compile(r"^[a-zA-Z0-9_.-]+$")
 
 
 def _validate_course_code(course_code: str) -> None:
-    if not _COURSE_CODE_RE.match(course_code):
+    """Rechaza códigos de curso que no puedan usarse como un único segmento de ruta.
+
+    El patrón permitido ya excluye los separadores de ruta ("/" y "\\"), pero por sí
+    solo acepta "." y ".." — que ``os.path.join`` interpreta como "este directorio" y
+    "subir un directorio". Se rechazan explícitamente para que ningún código de curso
+    pueda reubicar la biblioteca fuera de ``<publicos>/files/<curso>/`` (equivale al
+    saneamiento de ".." que hace upstream en ``get_course_library_path``).
+    """
+    if not course_code or not _COURSE_CODE_RE.match(course_code):
+        raise ValueError(f"Invalid course code: {course_code!r}")
+    if ".." in course_code or course_code in {".", ".."}:
         raise ValueError(f"Invalid course code: {course_code!r}")
 
 
