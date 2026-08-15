@@ -2051,16 +2051,27 @@ The pandemic accelerated a trend that was already underway. Online learning is n
     log.debug("Default blog post created successfully.")
 
 
-def crear_paginas_estaticas_predeterminadas() -> None:
-    """Create default static pages (About Us, Privacy Policy) with translatable content."""
-    from now_lms.i18n import get_configuracion
+#: The language the default custom pages fall back to. Named once so the
+#: fallback inside paginas_predeterminadas() and the language reported by
+#: sincronizar_paginas_predeterminadas() cannot drift apart, and so adding a
+#: fourth shipped language is a single edit here.
+IDIOMA_PREDETERMINADO = "en"
 
-    log.trace("Creating default static pages.")
+#: Languages the default custom pages ship in.
+IDIOMAS_PAGINAS_PREDETERMINADAS = (IDIOMA_PREDETERMINADO, "es", "pt_BR")
 
-    # Get system language from configuration
-    config = get_configuracion()
-    lang = config.lang if config else "en"
 
+def paginas_predeterminadas(lang: str = "en") -> Dict[str, Dict[str, str]]:
+    """Return the default custom pages for ``lang``, keyed by slug.
+
+    The single source of truth for what a default page says. Both
+    :func:`crear_paginas_estaticas_predeterminadas` (fresh install) and
+    :func:`sincronizar_paginas_predeterminadas` (repair) read this, so the seeder
+    and the repair can never end up disagreeing about the shipped copy.
+
+    An unknown language falls back to English, matching the original seeding
+    behaviour.
+    """
     # Define content in different languages
     about_us_content = {
         "en": """<h2>About Us</h2>
@@ -2228,47 +2239,158 @@ def crear_paginas_estaticas_predeterminadas() -> None:
     }
 
     # Get content based on system language, fallback to English
-    about_content = about_us_content.get(lang, about_us_content["en"])
-    privacy_content = privacy_policy_content.get(lang, privacy_policy_content["en"])
-    about_title = about_us_titles.get(lang, about_us_titles["en"])
-    privacy_title = privacy_policy_titles.get(lang, privacy_policy_titles["en"])
+    return {
+        "about-us": {
+            "title": about_us_titles.get(lang, about_us_titles[IDIOMA_PREDETERMINADO]),
+            "content": about_us_content.get(lang, about_us_content[IDIOMA_PREDETERMINADO]),
+        },
+        "privacy-policy": {
+            "title": privacy_policy_titles.get(lang, privacy_policy_titles[IDIOMA_PREDETERMINADO]),
+            "content": privacy_policy_content.get(lang, privacy_policy_content[IDIOMA_PREDETERMINADO]),
+        },
+    }
 
-    # Check if pages already exist
+
+def crear_paginas_estaticas_predeterminadas() -> None:
+    """Create default static pages (About Us, Privacy Policy) with translatable content."""
     from now_lms.db import CustomPage
+    from now_lms.i18n import get_configuracion
 
-    existing_about = database.session.execute(
-        database.select(CustomPage).filter(CustomPage.slug == "about-us")
-    ).scalar_one_or_none()
+    log.trace("Creating default static pages.")
 
-    if not existing_about:
-        about_page = CustomPage(
-            slug="about-us",
-            title=about_title,
-            content=about_content,
-            is_active=True,
-            mostrar_en_footer=True,
+    # Get system language from configuration
+    config = get_configuracion()
+    lang = config.lang if config else IDIOMA_PREDETERMINADO
+
+    for slug, pagina in paginas_predeterminadas(lang).items():
+        existente = database.session.execute(
+            database.select(CustomPage).filter(CustomPage.slug == slug)
+        ).scalar_one_or_none()
+
+        if existente:
+            log.debug(f"Custom page {slug} already exists.")
+            continue
+
+        database.session.add(
+            CustomPage(
+                slug=slug,
+                title=pagina["title"],
+                content=pagina["content"],
+                is_active=True,
+                mostrar_en_footer=True,
+            )
         )
-        database.session.add(about_page)
-        log.debug("About Us page created.")
-    else:
-        log.debug("About Us page already exists.")
-
-    existing_privacy = database.session.execute(
-        database.select(CustomPage).filter(CustomPage.slug == "privacy-policy")
-    ).scalar_one_or_none()
-
-    if not existing_privacy:
-        privacy_page = CustomPage(
-            slug="privacy-policy",
-            title=privacy_title,
-            content=privacy_content,
-            is_active=True,
-            mostrar_en_footer=True,
-        )
-        database.session.add(privacy_page)
-        log.debug("Privacy Policy page created.")
-    else:
-        log.debug("Privacy Policy page already exists.")
+        log.debug(f"Custom page {slug} created.")
 
     database.session.commit()
     log.debug("Default static pages created successfully.")
+
+
+def sincronizar_paginas_predeterminadas(lang: str | None = None, *, aplicar: bool = False) -> list[Dict[str, Any]]:
+    """Report, and optionally repair, default custom pages left in a stale language.
+
+    :func:`crear_paginas_estaticas_predeterminadas` only ever creates a page that
+    is absent, and it runs once, from ``initial_setup``, which does not re-run on
+    a populated database. Changing ``Configuracion.lang`` afterwards — through
+    ``lmsctl settings lang_set`` or the admin settings form — therefore leaves
+    About Us and Privacy Policy frozen in whatever language the site was first
+    seeded in, with no error and no log line. This function is the missing
+    correction path.
+
+    A row is rewritten **only** when its stored title and content are byte
+    identical to a default this version ships, in one of
+    :data:`IDIOMAS_PAGINAS_PREDETERMINADAS`. That equality is the only available
+    proof that nobody has edited the page: ``custom_pages`` carries no language
+    column and no edited flag. Anything else is reported as ``personalizada`` and
+    left exactly as it is, so an administrator's own words cannot be overwritten
+    here.
+
+    Returns one record per default slug — ``slug``, ``estado``, the ``idioma`` the
+    stored row is written in where that is knowable, and its current ``titulo``.
+    ``estado`` is one of ``faltante`` (no row), ``al-dia`` (matches the target
+    language), ``desactualizada`` (an untouched default in a different language)
+    or ``personalizada`` (edited; never touched).
+
+    Writes nothing at all unless ``aplicar`` is true.
+    """
+    from now_lms.cache import invalidate_all_cache
+    from now_lms.db import CustomPage
+    from now_lms.i18n import get_configuracion
+
+    if lang is None:
+        config = get_configuracion()
+        lang = config.lang if config else IDIOMA_PREDETERMINADO
+
+    # paginas_predeterminadas() falls back to English for a language it does not
+    # ship, so an unsupported Configuracion.lang must be resolved to the language
+    # actually written before it is reported. Reporting the raw code would have
+    # the report claim a page is in, say, French, when the row holds the English
+    # default, and reporting truthfully is this function's whole job.
+    idioma_efectivo = lang if lang in IDIOMAS_PAGINAS_PREDETERMINADAS else IDIOMA_PREDETERMINADO
+
+    objetivo = paginas_predeterminadas(lang)
+    conocidas = {idioma: paginas_predeterminadas(idioma) for idioma in IDIOMAS_PAGINAS_PREDETERMINADAS}
+
+    reporte: list[Dict[str, Any]] = []
+    escrituras = 0
+
+    for slug, pagina in objetivo.items():
+        fila = database.session.execute(
+            database.select(CustomPage).filter(CustomPage.slug == slug)
+        ).scalar_one_or_none()
+
+        if fila is None:
+            registro: Dict[str, Any] = {"slug": slug, "estado": "faltante", "idioma": None, "titulo": None}
+        elif (fila.title, fila.content) == (pagina["title"], pagina["content"]):
+            registro = {"slug": slug, "estado": "al-dia", "idioma": idioma_efectivo, "titulo": fila.title}
+        else:
+            idioma_actual = next(
+                (
+                    idioma
+                    for idioma, paginas in conocidas.items()
+                    if (fila.title, fila.content) == (paginas[slug]["title"], paginas[slug]["content"])
+                ),
+                None,
+            )
+            registro = {
+                "slug": slug,
+                "estado": "desactualizada" if idioma_actual else "personalizada",
+                "idioma": idioma_actual,
+                "titulo": fila.title,
+            }
+
+        if aplicar and registro["estado"] in ("faltante", "desactualizada"):
+            if fila is None:
+                database.session.add(
+                    CustomPage(
+                        slug=slug,
+                        title=pagina["title"],
+                        content=pagina["content"],
+                        is_active=True,
+                        mostrar_en_footer=True,
+                    )
+                )
+            else:
+                # Title and content only, deliberately. The insert branch above
+                # sets is_active and mostrar_en_footer because it is creating a
+                # page that does not exist yet; here an administrator may have
+                # hidden this page or taken it out of the footer on purpose, and
+                # a language correction is not a reason to undo that. The
+                # asymmetry with the insert branch is intended, not an omission.
+                fila.title = pagina["title"]
+                fila.content = pagina["content"]
+            escrituras += 1
+            log.debug(f"Custom page {slug} synchronised to {idioma_efectivo}.")
+
+        reporte.append(registro)
+
+    if aplicar and escrituras:
+        database.session.commit()
+        # A corrected page the cache hides for five more minutes is not a
+        # corrected page: the footer helper is memoized and /page/<slug> is a
+        # cached view. Both are dropped through the same helper a theme change
+        # already uses, rather than reaching into flask-caching's memoize keys
+        # for a function that is nested inside get_custom_pages().
+        invalidate_all_cache()
+
+    return reporte

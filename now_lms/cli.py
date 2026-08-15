@@ -107,6 +107,59 @@ def migrate():
     alembic.upgrade()
 
 
+def _reporte_paginas_predeterminadas(reporte) -> int:
+    """Print a default-page sync report and return how many rows are correctable."""
+    etiquetas = {
+        "faltante": "missing, would be created",
+        "al-dia": "up to date",
+        "desactualizada": "untouched default, still in {idioma}",
+        "personalizada": "edited here, will not be touched",
+    }
+    for registro in reporte:
+        etiqueta = etiquetas[registro["estado"]].format(idioma=registro["idioma"])
+        titulo = registro["titulo"] or "-"
+        click.echo(f"  {registro['slug']:<16} {titulo:<28} {etiqueta}")
+    return len([r for r in reporte if r["estado"] in ("faltante", "desactualizada")])
+
+
+@database.command("sync-default-pages")
+@click.option("--apply", "aplicar", is_flag=True, default=False, help="Rewrite the stale pages instead of only reporting.")
+def sync_default_pages(aplicar: bool) -> None:
+    """Report, and with --apply repair, default pages left in a stale language.
+
+    The default pages are seeded once and never revisited, so changing the site
+    language afterwards leaves About Us and Privacy Policy in the language the
+    site was first seeded in. Without --apply this writes nothing: it is a safe
+    way to read what the pages actually say on a running deployment.
+
+    A page is only ever rewritten when its stored title and content are byte
+    identical to a default this version ships. A page edited here is reported
+    and left alone.
+    """
+    from now_lms.db.initial_data import sincronizar_paginas_predeterminadas
+
+    with lms_app.app_context():
+        reporte = sincronizar_paginas_predeterminadas()
+        click.echo("Default custom pages:")
+        pendientes = _reporte_paginas_predeterminadas(reporte)
+
+        if not aplicar:
+            if pendientes:
+                click.echo(f"\n{pendientes} page(s) can be synchronised. Re-run with --apply to do it.")
+            else:
+                click.echo("\nNothing to do.")
+            return
+
+        if not pendientes:
+            click.echo("\nNothing to do.")
+            return
+
+        click.confirm(f"\nRewrite {pendientes} default page(s)?", abort=True)
+        sincronizar_paginas_predeterminadas(aplicar=True)
+        click.echo("Done. Re-reading:")
+        _reporte_paginas_predeterminadas(sincronizar_paginas_predeterminadas())
+
+
 @database.command()
 def drop():
     """Delete database schema and all the data in it."""
@@ -479,14 +532,23 @@ def lang_get():
 
 @settings.command()
 def lang_set():
-    """Set the current theme."""
+    """Set the current language."""
     from now_lms.db import Configuracion
+    from now_lms.db.initial_data import sincronizar_paginas_predeterminadas
 
     with lms_app.app_context():
         lang_ = click.prompt("Enter the language code", type=str)
         confg = db.session.execute(select(Configuracion)).scalars().first()
         confg.lang = lang_
         db.session.commit()
+
+        # The default pages are seeded once and never revisited, so this commit
+        # leaves them in the previous language with nothing to say so.
+        rezagadas = [r for r in sincronizar_paginas_predeterminadas() if r["estado"] == "desactualizada"]
+        if rezagadas:
+            slugs = ", ".join(r["slug"] for r in rezagadas)
+            click.echo(f"Warning: {len(rezagadas)} default page(s) are still in their original language: {slugs}")
+            click.echo("Run 'lmsctl database sync-default-pages' to see them, or add --apply to update them.")
 
 
 @settings.command()

@@ -197,6 +197,22 @@ You can use the following options to configure NOW-LMS:
 - **NOW_LMS_TIMEZONE** (<span style="color:green">optional</span>): Default timezone for the system. Must be a valid timezone identifier (e.g., `UTC`, `America/New_York`, `Europe/Madrid`). Defaults to `UTC`.
 - **NOW_LMS_CURRENCY** (<span style="color:green">optional</span>): Default currency for paid courses. Uses standard currency codes (e.g., `USD`, `EUR`, `MXN`). Defaults to `USD`.
 
+!!! note "Changing the language later does not rewrite the default pages"
+    The default custom pages (About Us, Privacy Policy) are written once, during
+    initial setup, in whatever language was configured at that moment. Changing the
+    language afterwards — in the admin settings or with `lmsctl settings lang_set` —
+    leaves those two pages in the original language.
+
+    To see what they currently say, and in which language:
+
+    ```
+    lmsctl database sync-default-pages
+    ```
+
+    That reports and writes nothing. Add `--apply` to rewrite them in the configured
+    language. A page you have edited yourself is reported and left untouched, so the
+    command cannot overwrite your own copy.
+
 ### Email Configuration
 
 - **MAIL_SERVER** (<span style="color:green">optional</span>): SMTP server hostname for sending emails.
