@@ -422,29 +422,62 @@ def test_explore_serves_the_teaser_to_anonymous_visitors(client, db_session):
         assert leaked not in body
 
 
-def test_explore_shows_members_the_panel_pointer(app, db_session):
-    _use_intent_learn_theme(db_session)
-    student = Usuario(
-        usuario="student",
-        acceso=proteger_passwd("student"),
-        nombre="Student",
-        correo_electronico="s@example.com",
-        tipo="student",
-        activo=True,
+def _signed_in(app, db_session, usuario: str, tipo: str):
+    """Create a user of ``tipo`` and return a client already logged in as them."""
+    db_session.add(
+        Usuario(
+            usuario=usuario,
+            acceso=proteger_passwd(usuario),
+            nombre=usuario.title(),
+            correo_electronico=f"{usuario}@example.com",
+            tipo=tipo,
+            activo=True,
+        )
     )
-    db_session.add(student)
     db_session.commit()
     client = app.test_client()
-    client.post("/user/login", data={"usuario": "student", "acceso": "student"}, follow_redirects=False)
+    client.post("/user/login", data={"usuario": usuario, "acceso": usuario}, follow_redirects=False)
+    return client
+
+
+def test_explore_keeps_a_signed_in_member_inside_the_app(app, db_session):
+    """A member who clicks "Explore courses" must not land on the public front door.
+
+    The teaser is the prospect's page: marketing nav pointing at landing-page
+    anchors, the public footer, "Request access". Serving it to a member meant
+    every in-app explore link walked them out of the app.
+    """
+    _use_intent_learn_theme(db_session)
+    client = _signed_in(app, db_session, "student", "student")
+
+    resp = client.get("/course/explore")
+    assert resp.status_code == 200
+    body = resp.data.decode("utf-8")
+
+    # None of the front door reaches a member.
+    assert "isl-tracks-list" not in body, "a signed-in member is being served the public teaser"
+    assert "Request access" not in body
+    assert "isl-footer" not in body
+    # The app shell does.
+    assert "navbar" in body
+    assert 'href="/my_courses"' in body, "the member view must offer their own courses"
+    assert "Courses here are assigned, not browsed." in body
+
+
+def test_explore_does_not_loop_a_moderator_back_to_itself(app, db_session):
+    """`my_courses` flashes and redirects every role it does not serve.
+
+    It handles student, instructor and admin; a moderator sent there bounces
+    straight back to /course/explore, which is the loop this page exists to
+    close. Moderators get the dashboard instead.
+    """
+    _use_intent_learn_theme(db_session)
+    client = _signed_in(app, db_session, "moderator", "moderator")
 
     body = client.get("/course/explore").data.decode("utf-8")
-    assert "isl-tracks-list" in body
-    # A signed-in member is pointed onward to their own courses, not asked to
-    # request access they already hold. `my_courses` serves student, instructor
-    # and admin; other roles are sent to the dashboard instead (linking them to
-    # my_courses would bounce them straight back to this page).
-    assert "Go to my courses" in body
-    assert "Request access" not in body
+    assert "isl-tracks-list" not in body
+    assert 'href="/my_courses"' not in body, "a moderator was linked into the my_courses redirect loop"
+    assert 'href="/home/panel"' in body
 
 
 def test_gated_course_redirects_anonymous_to_the_intake(client, db_session):

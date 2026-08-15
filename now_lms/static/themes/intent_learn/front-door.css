@@ -443,8 +443,6 @@
 .isl-tracks-notes { margin-top: 0.5rem; border-top: 1px solid rgb(var(--line)); padding-top: 1.4rem; }
 .isl-tracks-notes p { max-width: 62ch; margin: 0 0 0.7rem; color: rgb(var(--ink-faint)); font-size: 0.83rem; }
 .isl-tracks-notes p strong { color: var(--graphite); }
-.isl-tracks-member { margin: 0 0 1.6rem; padding: 0.9rem 1.1rem; border-left: 4px solid var(--signal); background: var(--paper); color: rgb(var(--ink-dim)); font-size: 0.88rem; }
-.isl-tracks-member a { color: var(--signal-dark); font-weight: 650; }
 
 @media (max-width: 980px) {
     .isl-nav > a.link { display: none; }

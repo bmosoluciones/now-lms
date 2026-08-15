@@ -1,0 +1,62 @@
+{# The signed-in view of /course/explore.
+
+   `overrides/course_list.j2` routes here whenever the visitor is authenticated;
+   anonymous visitors keep the public practice-tracks teaser. The teaser is the
+   front door — public header nav pointing at landing-page anchors, the marketing
+   footer, "Request access" — and a member who clicked "Explore courses" inside
+   the app had left the app.
+
+   This page says the one true thing instead. `_course_explore_query` filters
+   `Curso.publico.is_(True)` and `scripts/seed_cca_courses.py` gates every course
+   (`publico=False`, re-enforced on each run), so there is no catalogue to browse
+   here for anybody. Members are enrolled; they do not shop.
+
+   Follows the themed-page pattern of pages/dashboard.html: no {% extends %},
+   chrome from the current_theme() macros, colour from theme.css's Bootstrap
+   token remap. Mobile first — one col-12 column that only narrows at lg.
+#}
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _('Courses') }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-3 py-4">
+                <div class="row">
+                    <div class="col-12 col-lg-8">
+                        <h1 class="h3 mb-1">{{ _('Courses') }}</h1>
+                        <p class="text-muted">{{ _('Your place in the practice, not a shop window.') }}</p>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="mb-3">
+                                    {{ _('Courses here are assigned, not browsed. Your cohort lead enrols you, and everything you are enrolled in shows up on your dashboard.') }}
+                                </p>
+                                {# `my_courses` serves student, instructor and admin. Every other role falls
+                                   through to a flash plus a redirect back to this route, so linking a
+                                   moderator there would loop them straight back here. #}
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% if current_user.tipo in ("student", "instructor", "admin") %}
+                                    <a class="btn btn-primary" href="{{ url_for('course.my_courses') }}">
+                                        <i class="bi bi-card-checklist me-1" aria-hidden="true"></i>{{ _('My courses') }}
+                                    </a>
+                                    {% endif %}
+                                    <a class="btn btn-outline-secondary" href="{{ url_for('home.panel') }}">
+                                        <i class="bi bi-speedometer2 me-1" aria-hidden="true"></i>{{ _('Dashboard') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
