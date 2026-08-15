@@ -4481,7 +4481,7 @@ msgstr "Response details"
 #: now_lms/templates/instructor/edit_question_option.html:60
 #: now_lms/templates/instructor/new_question_option.html:60
 msgid "Pregunta"
-msgstr "Ask"
+msgstr "Question"
 
 #: now_lms/templates/evaluations/evaluation_result.html:104
 msgid "Tu respuesta:"
@@ -6137,7 +6137,7 @@ msgstr "Recent attempts"
 
 #: now_lms/templates/instructor/evaluation_results.html:163
 msgid "Puntaje"
-msgstr "Ask"
+msgstr "Score"
 
 #: now_lms/templates/instructor/evaluation_results.html:165
 msgid "Fecha Envío"
