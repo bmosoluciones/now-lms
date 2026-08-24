@@ -20,4 +20,4 @@ coverage==7.15.4
 pytest-cov==7.1.0
 
 # Verificación de tipos
-mypy==2.1.0
+mypy==2.3.1
