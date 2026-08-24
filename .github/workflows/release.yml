@@ -79,14 +79,14 @@ jobs:
               run: |
                   bash dev/catalog_freshness_check.sh
                   pybabel compile -d now_lms/translations
-                  pytest --cov=now_lms
-            - uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
+                  pytest --cov=now_lms --cov-report=xml:coverage-sqlite.xml
+            - name: Upload SQLite coverage
+              if: ${{ always() }}
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
               with:
-                  fail_ci_if_error: true
-                  flags: unittests
-                  name: codecov-sqlite
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  verbose: true
+                  name: coverage-sqlite
+                  path: coverage-sqlite.xml
+                  if-no-files-found: ignore
 
     test-postgresql:
         name: Test with PostgreSQL
@@ -128,14 +128,14 @@ jobs:
                   FLASK_APP: now_lms
               run: |
                   bash dev/catalog_freshness_check.sh
-                  pytest -v -v --cov=now_lms
-            - uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
+                  pytest -v -v --cov=now_lms --cov-report=xml:coverage-postgresql.xml
+            - name: Upload PostgreSQL coverage
+              if: ${{ always() }}
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
               with:
-                  fail_ci_if_error: true
-                  flags: unittests
-                  name: codecov-postgresql
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  verbose: true
+                  name: coverage-postgresql
+                  path: coverage-postgresql.xml
+                  if-no-files-found: ignore
 
     test-mysql:
         name: Test with MySQL
@@ -173,11 +173,33 @@ jobs:
                   FLASK_APP: now_lms
               run: |
                   bash dev/catalog_freshness_check.sh
-                  pytest -v -v --cov=now_lms
+                  pytest -v -v --cov=now_lms --cov-report=xml:coverage-mysql.xml
+            - name: Upload MySQL coverage
+              if: ${{ always() }}
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+              with:
+                  name: coverage-mysql
+                  path: coverage-mysql.xml
+                  if-no-files-found: ignore
+
+    codecov:
+        name: Upload coverage to Codecov
+        if: ${{ always() }}
+        needs: [test-sqlite, test-postgresql, test-mysql]
+        runs-on: ubuntu-latest
+        continue-on-error: true
+        steps:
+            - name: Download coverage artifacts
+              uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+              with:
+                  pattern: coverage-*
+                  path: coverage
+                  merge-multiple: true
             - uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
               with:
                   fail_ci_if_error: true
+                  files: coverage/coverage-sqlite.xml,coverage/coverage-postgresql.xml,coverage/coverage-mysql.xml
                   flags: unittests
-                  name: codecov-mysql
+                  name: codecov-databases
                   token: ${{ secrets.CODECOV_TOKEN }}
                   verbose: true
