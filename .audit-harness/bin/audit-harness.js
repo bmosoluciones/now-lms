@@ -31,6 +31,7 @@ const COMMANDS = {
   'currency':      { script: 'currency.py',      args: [] },
   'migration-notes': { script: 'migration-notes.py', args: [] },
   'gen-layer-applicability': { script: 'gen-layer-applicability.py', args: [] },
+  'worktree-run':  { script: 'worktree-run.sh',  args: [] },
 };
 
 // Gate commands that may be no-op'd by the AUDIT_HARNESS_DISABLE kill-switch.
@@ -38,6 +39,7 @@ const COMMANDS = {
 // itself (every gate enforcement=disabled). verify/init/list always run.
 const KILLABLE_GATES = new Set([
   'escape-scan', 'cred-gate', 'arch', 'bias', 'gherkin-lint', 'crap', 'emit-evidence',
+  'worktree-run',
 ]);
 
 function usage() {
@@ -118,6 +120,12 @@ Commands:
   emit-evidence            Wrap a gate-result JSON envelope in an in-toto
                            Statement v1 (predicate https://evals.intentsolutions.io/gate-result/v1)
                            Read JSON on stdin: <gate> --json | audit-harness emit-evidence
+  worktree-run             Pre-push gate runner: checks the ref being pushed in
+                           a disposable git worktree (verify + escape-scan on
+                           the push range fail-closed; conform + audit advisory)
+                           and emits gate-result/v1 rows. No push authority, no
+                           repo writes. --pre-push | --ref REF | --range A..B |
+                           --out FILE. Wire via lefthook pre-push (see README).
 
 Evidence Bundle (v0.3.0+):
   All gates support --json to emit machine-readable gate-result envelopes

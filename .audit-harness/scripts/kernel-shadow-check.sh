@@ -32,6 +32,22 @@
 #                           This is a separate, shallower contract from the
 #                           kernel authoring/v1 validity SSoT — intentionally
 #                           different, not a re-declaration.
+#   * **/dist/**, **/build/**
+#                         — compiler output. Whatever a bundle or .d.ts contains
+#                           is a mechanical restatement of source that this
+#                           detector already checks; flagging both reports one
+#                           authoring decision twice and cannot be fixed in the
+#                           generated file.
+#
+# NOT a shadow (by construction — the anchors below):
+#   * `export { type EvidenceBundle, ... } from "@intentsolutions/core/..."`
+#     A re-export entry names the kernel's type in order to FORWARD it. That is
+#     the single-source-of-truth pattern this detector exists to encourage, and
+#     matching it was a false positive that flagged three j-rig files for doing
+#     exactly the right thing. The identifier in a re-export or import list is
+#     followed by `,`, `}`, or a newline — never by declaration syntax — so the
+#     anchors require `=`, `{`, `<`, `(`, `:`, `extends`, or `implements` after
+#     the name.
 #
 # Background: iah-E02 (the architecture question — peerDep-only vs full TS port
 # vs second-emitter — that historically blocked a standing kernel-shadow check)
@@ -78,8 +94,60 @@ is_allowlisted() {
     schemas/conform/*) return 0 ;;
     node_modules/*)   return 0 ;;
     .git/*)           return 0 ;;
+    dist/*|*/dist/*)   return 0 ;;
+    build/*|*/build/*) return 0 ;;
     *) return 1 ;;
   esac
+}
+
+# The class-2 declaration anchor (see the block comment above the class-2 loop).
+CLASS2_PATTERN='(^|[[:space:]])((export|declare|abstract)[[:space:]]+)*(interface|class|type)[[:space:]]+(EvidenceBundlePayload|EvidenceBundle|GateResultV1)([[:space:]]*[{<(:=]|[[:space:]]+(extends|implements)[[:space:]])'
+
+# is_kernel_imported FILE SYMBOL — true when SYMBOL appears inside an import or
+# re-export statement that resolves to @intentsolutions/core in FILE. Statements
+# are reconstructed by joining the file and splitting on ';', so a multi-line
+# `import {\n  A,\n  B,\n} from "@intentsolutions/core/..."` is handled.
+is_kernel_imported() {
+  local file="$1" sym="$2"
+  awk -v sym="$sym" '
+    { buf = buf " " $0 }
+    END {
+      n = split(buf, stmts, /;/)
+      for (i = 1; i <= n; i++) {
+        if (stmts[i] ~ /@intentsolutions\/core/ &&
+            stmts[i] ~ ("(^|[^A-Za-z0-9_])" sym "([^A-Za-z0-9_]|$)")) { found = 1 }
+      }
+      exit(found ? 0 : 1)
+    }
+  ' "$file"
+}
+
+# is_kernel_derivation FILE LINE — true when LINE is a type alias whose right-hand
+# side is a pure derivation of a kernel-imported symbol. Anything else (an
+# interface, a class, a structural type literal, a union, or a derivation from a
+# locally-declared schema) returns false and is treated as a real declaration.
+is_kernel_derivation() {
+  local file="$1" line="$2" rhs sym
+  # Only `type X = ...` can derive; interface/class always declare a shape.
+  [[ "$line" =~ (^|[[:space:]])((export|declare|abstract)[[:space:]]+)*type[[:space:]] ]] || return 1
+  [[ "$line" == *=* ]] || return 1
+
+  rhs="${line#*=}"
+  # Strip comments, trailing semicolon, and surrounding whitespace.
+  rhs="${rhs%%//*}"
+  rhs="$(printf '%s' "$rhs" | sed -E 's/[[:space:]]*;?[[:space:]]*$//; s/^[[:space:]]+//')"
+
+  if [[ "$rhs" =~ ^z\.(infer|input|output)\<typeof[[:space:]]+([A-Za-z_][A-Za-z0-9_]*)\>$ ]]; then
+    sym="${BASH_REMATCH[2]}"
+  elif [[ "$rhs" =~ ^typeof[[:space:]]+([A-Za-z_][A-Za-z0-9_]*)$ ]]; then
+    sym="${BASH_REMATCH[1]}"
+  elif [[ "$rhs" =~ ^([A-Za-z_][A-Za-z0-9_]*)$ ]]; then
+    sym="${BASH_REMATCH[1]}"
+  else
+    return 1   # structural / union / intersection → a real declaration
+  fi
+
+  is_kernel_imported "$file" "$sym"
 }
 
 shadows=()
@@ -88,26 +156,66 @@ shadows=()
 #    The kernel owns gate-result/<ver> and evidence-bundle/<ver> ids under
 #    evals.intentsolutions.io. conform/v1 ids are the harness's own (allowlisted
 #    structurally by the schemas/conform/ path skip below).
+#
+#    EXEMPT: a redirect stub. A document that carries an `x-redirect` marker is
+#    the ratified discoverability pattern (Blueprint B § 7.0 "Lab specs/ MAY host
+#    redirect stubs"; ISEDC Session 5 DR-018 § 6.4 Option α-minus) — it claims the
+#    id in order to $ref the kernel's schema, which is referencing, not
+#    re-declaring. The lab's own schema-drift.yml already allowlists exactly this
+#    marker; flagging it here would contradict a gate the platform ratified.
 # shellcheck disable=SC2016  # the grep pattern's $id is a literal, not a shell var
 while IFS= read -r f; do
   [[ -z "$f" ]] && continue
   rel="${f#./}"
   is_allowlisted "$rel" && continue
+  grep -qE '"x-redirect"[[:space:]]*:' "$f" && continue
   shadows+=("$rel  (re-declares a kernel-owned JSON Schema \$id)")
 done < <(grep -rIlE '"\$id"[[:space:]]*:[[:space:]]*"https://evals\.intentsolutions\.io/(gate-result|evidence-bundle)/' \
             --include='*.json' --exclude-dir=node_modules --exclude-dir=.git . 2>/dev/null || true)
 
-# 2. TS/Python source DEFINING (not importing) a kernel-owned type/class.
-#    Definitions look like `interface GateResultV1`, `class EvidenceBundle`,
-#    `type EvidenceBundlePayload = ...`. Imports (`import { GateResultV1Schema }
-#    from '@intentsolutions/core/...'`) are NOT matched by these anchors.
+# 2. TS/Python source DEFINING (not importing, not re-exporting) a kernel-owned
+#    type/class. The keyword alone is not enough to tell a definition from a
+#    re-export — `export { type EvidenceBundle } from "@intentsolutions/core"`
+#    carries `type EvidenceBundle` too. What separates them is what FOLLOWS the
+#    identifier, so the anchor requires actual declaration syntax:
+#
+#      interface X {        interface X<T>        interface X extends Y
+#      class X {            class X<T>            class X extends Y
+#      class X(Base):       class X:              class X implements Y   (py/ts)
+#      type X =             type X<T> =
+#
+#    A re-export or import entry is followed by `,`, `}`, `;`, or end-of-line and
+#    therefore cannot match. `declare`/`abstract` prefixes are tolerated.
+#
+#    EXEMPT: a pure DERIVATION of a kernel-imported symbol, e.g.
+#      export type EvidenceBundle = z.infer<typeof EvidenceBundlePayloadSchema>;
+#    where `EvidenceBundlePayloadSchema` is imported/re-exported from
+#    @intentsolutions/core in the same file. Such an alias has no independent
+#    shape — it is defined BY the kernel schema and changes when the kernel
+#    changes, so it cannot drift, which is the entire harm this detector guards
+#    against. Only three RHS forms qualify (`z.infer|input|output<typeof S>`,
+#    `typeof S`, bare `S`); anything structural (`{`, `|`, `&`) is a real
+#    declaration and still flags, as does a derivation from a NON-kernel symbol.
 while IFS= read -r f; do
   [[ -z "$f" ]] && continue
   rel="${f#./}"
   is_allowlisted "$rel" && continue
-  shadows+=("$rel  (defines a kernel-owned type — should import from @intentsolutions/core)")
-done < <(grep -rIlE \
-            '(^|[[:space:]])(export[[:space:]]+)?(interface|class|type)[[:space:]]+(GateResultV1|EvidenceBundle|EvidenceBundlePayload)\b' \
+
+  # Per-LINE triage: a file is reported only if it holds at least one match that
+  # is not an exempt kernel derivation.
+  real_hits=()
+  while IFS= read -r hit; do
+    [[ -z "$hit" ]] && continue
+    lineno="${hit%%:*}"
+    text="${hit#*:}"
+    if is_kernel_derivation "$f" "$text"; then continue; fi
+    real_hits+=("$lineno")
+  done < <(grep -nE "$CLASS2_PATTERN" "$f" 2>/dev/null || true)
+
+  [[ ${#real_hits[@]} -eq 0 ]] && continue
+  lines="$(IFS=,; echo "${real_hits[*]}")"
+  shadows+=("$rel  (defines a kernel-owned type at line(s) ${lines} — should import from @intentsolutions/core)")
+done < <(grep -rIlE "$CLASS2_PATTERN" \
             --include='*.ts' --include='*.py' --exclude-dir=node_modules --exclude-dir=.git . 2>/dev/null || true)
 
 if [[ ${#shadows[@]} -eq 0 ]]; then

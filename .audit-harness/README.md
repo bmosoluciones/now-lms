@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Provenance](https://img.shields.io/badge/sigstore-provenance-066da5)](https://www.npmjs.com/package/@intentsolutions/audit-harness)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U5S225PTME)
+
 Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/intent-eval-platform)** — the umbrella grouping the platform's six repos: five converge via a shared Evidence Bundle schema (`intent-eval-core`, `intent-eval-lab`, `audit-harness`, `j-rig-skill-binary-eval`, `intent-rollout-gate`), plus `intent-eval-dashboard` as a satellite consumer (not part of the convergence taxonomy).
 
 Deterministic test-enforcement toolkit. Companion to the `audit-tests` and `implement-tests` Claude Code skills — but usable standalone in any repo that wants hash-pinned, escape-scanned, AI-resistant quality gates.
@@ -106,9 +108,21 @@ git commit -m "chore(test): lower coverage floor to 75"
 
 The harness enforces this rule: **policy changes must be conscious, not silent.**
 
-Engineer-owned files (`tests/TESTING.md`, `features/*.feature`, `.dependency-cruiser.cjs`, `stryker.conf.json`, etc.) are hashed into a manifest. Any diff that changes their content without a fresh `audit-harness init` is caught by pre-commit / CI and **REFUSED**.
+Engineer-owned files (`tests/TESTING.md`, package test scripts, CI workflows,
+coverage and mutation configs, acceptance features, and architecture rules) are
+hashed into a manifest. Any diff that changes their content without a fresh
+`audit-harness init` is caught by pre-commit / CI and **REFUSED**. Ordinary
+application source is deliberately outside this denominator.
 
 AI agents remain useful (they can read policy, they can implement within constraints). What they can't do is silently weaken the constraints. That's the entire design.
+
+The same walls can close the loop **before a push leaves the machine**:
+`audit-harness worktree-run --pre-push` checks the exact ref being pushed in a
+disposable `git worktree` — `verify` + `escape-scan` on the push range stay
+fail-closed, `conform` + `audit` contribute advisory gate-result/v1 rows — then
+removes the worktree. It has no push authority, no LLM stage, and never writes
+to the repo. Wire it as a lefthook `pre-push` job (this repo's `lefthook.yml`
+is the reference) so CI becomes confirmation instead of discovery.
 
 See `audit-tests/references/philosophy.md` in the companion skill for the full rationale.
 

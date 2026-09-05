@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutions/audit-harness",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Deterministic test-enforcement harness — escape-scan, hash-pinning, CRAP, architecture checks, bias detection, Gherkin lint. Companion to the audit-tests and implement-tests Claude Code skills.",
   "license": "Apache-2.0",
   "author": "Jeremy Longshore <jeremy@intentsolutions.io>",

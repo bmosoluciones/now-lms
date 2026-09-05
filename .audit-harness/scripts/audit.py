@@ -183,6 +183,21 @@ def d_perf(repo, deps):
 def d_a11y(repo, deps):
     if any(x in deps for x in ("axe-core", "@axe-core/playwright", "jest-axe", "pa11y")):
         return True, "a11y tooling dep"
+    # Accessibility is not a web-only layer. QML, native, CLI/TUI, mobile, and
+    # desktop projects commonly assert roles, names, focus, keyboard routing,
+    # contrast, or screen-reader contracts in ordinary language-native tests.
+    # Keep the filename signal test-specific so an accessibility.md design
+    # document alone does not masquerade as executable evidence.
+    if has_dir(repo, "a11y", "accessibility"):
+        return True, "a11y/accessibility test dir"
+    test_exts = (".js", ".ts", ".py", ".go", ".rs", ".java", ".kt", ".cs", ".rb")
+    if has_file_matching(
+        repo,
+        lambda f: ("a11y" in f.lower() or "accessibility" in f.lower())
+        and ("test" in f.lower() or "spec" in f.lower())
+        and f.lower().endswith(test_exts),
+    ):
+        return True, "a11y/accessibility test file"
     return False, "no accessibility test infrastructure detected"
 
 

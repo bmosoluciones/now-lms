@@ -6,6 +6,45 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-09-01
+
+### Added
+
+- `worktree-run` — pre-push gate runner that checks the exact ref being pushed
+  in a disposable `git worktree`: `verify` + `escape-scan --range` on the push
+  range fail-closed, `conform` + `audit --fast` advisory, gate-result/v1 rows
+  written outside the repo. No push authority, no LLM stage, no repo writes.
+  Wired as a lefthook `pre-push` job in this repo (reference recipe for
+  consumers). Extracted from the no-mistakes discovery (2026-08-30): the
+  isolated-worktree pre-push loop was the one idea worth keeping; the LLM
+  review stage, auto-fix authority, and proxy-push were deliberately not
+  adopted. Honors `AUDIT_HARNESS_DISABLE=1`.
+- `bias-count` now counts source-introspection tests — a test whose only
+  evidence is reading the implementation source (`inspect.getsource`, reading
+  files under `src/`) instead of asserting observable behaviour of a public
+  interface. Deterministic counterpart of the prose rule in the
+  implement-tests auto-remediation reference; advisory like every bias
+  pattern (promotion to blocking goes through `fp-rate`).
+
+### Fixed
+
+- `bias-count` no longer dies mid-report on a clean directory: under
+  `pipefail`, a zero-match grep exited 1 and aborted the scan (truncated
+  output, exit 1) before the summary — the "gate that looks like it ran"
+  failure class from 1.3.1. Zero-match patterns now count as 0.
+- Expanded the default `harness-hash` denominator to include package test
+  scripts, `tests/TESTING.md`, common JavaScript and Python coverage/mutation
+  configs, and primary CI workflow files. Previously an edit could weaken the
+  command or workflow that enforced a pinned threshold without changing one of
+  the few files protected by the manifest.
+- Added an offline contract suite proving those files are pinned, their edits
+  or removal produce `HARNESS_TAMPERED` (exit 2), and ordinary source changes do
+  not require a policy re-pin.
+- Accessibility detection now recognises dedicated a11y/accessibility test
+  files and directories for native, QML, CLI/TUI, and other non-web stacks.
+  Previously it recognised only four web dependencies and falsely advised
+  projects to add irrelevant tooling despite executable accessibility tests.
+
 > **Riding a future v2.1 routine release (descoped from 1.2.0):** OTel event-name
 > polish (iah-E07b/c). The `agent.rollout.gate.evaluated` and `gate.decision.emitted`
 > event names are already locked + tested on main (PRs #78, #81 per NORMATIVE
@@ -20,6 +59,10 @@ flagship gate. No CLI surface change, no new commands, no policy change — the 
 now detects escapes it previously let through. Adopters on 1.3.0 should upgrade:
 two of the five were **fail-open**, meaning a real threshold-lowering escape merged
 clean.
+
+**First required dogfood (2026-07-23):** CCPI (`claude-code-plugins-plus-skills`)
+made `audit-harness conform --strict` a **required** branch-protection context
+(`skill-conform`, own workflow — never inside `ci-required`). See CCPI#1118.
 
 ### Fixed
 
@@ -414,7 +457,8 @@ Initial release. Extracted from the `audit-tests` Claude Code skill v7.0.0 to en
 - **`audit-harness gherkin-lint`** — advisory Gherkin quality check.
 - **`audit-harness crap`** — CRAP (Complexity × Coverage) scorer for Python, JS/TS, Go, Rust.
 
-[Unreleased]: https://github.com/jeremylongshore/intent-audit-harness/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/jeremylongshore/intent-audit-harness/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/jeremylongshore/intent-audit-harness/compare/v1.3.1...v1.4.0
 [1.2.2]: https://github.com/jeremylongshore/intent-audit-harness/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/jeremylongshore/intent-audit-harness/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/jeremylongshore/intent-audit-harness/compare/v1.1.8...v1.2.0
